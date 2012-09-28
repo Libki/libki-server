@@ -1,0 +1,28 @@
+.row {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.display-none {
+    display: none;
+}
+
+form .required {
+    font-weight: bold;
+}
+
+.libki-message {
+    z-index: 999999;
+    position:absolute;
+    width:50%;
+}
+
+.table-row-toolbar {
+    display:none;
+    z-index:9999;
+    float:left;
+}

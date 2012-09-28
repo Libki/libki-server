@@ -1,0 +1,106 @@
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active">
+        <a data-toggle="tab" href="#users-tab">Users</a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#clients-tab">Clients</a>
+    </li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="users-tab">
+    <div class="row">
+        <div class="span4" style="float:right">
+            <button class="btn btn-primary" type="button">New User</button>
+        </div>
+    </div>
+
+        <table id="user-list" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <thead>
+                <th>Username</th>
+                <th>Minutes</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Notes</th>
+                <th>Troublemaker</th>
+                <th>Client</th>
+                <th>Status</th>
+            </thead>
+        </table> 
+
+  </div>
+
+  <div class="tab-pane" id="clients-tab">
+        <table id="client-list">
+
+        </table> 
+  </div>
+</div>
+
+<div id="table-toolbar" class="table-row-toolbar btn-group">
+    <button id="table-row-toolbar-edit"   class="btn btn-inverse" onclick="alert('ID: ' + window.selected_id )" ><i class="icon-edit icon-white"></i>Edit</button>
+    <button id="table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )" ><i class="icon-trash icon-white"></i>Delete</button>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    oTable = $('#user-list').dataTable( {
+        "bProcessing": true,  // Indicate when the table is processing data
+        "bServerSide": true,  // Indicate that the datatable gets data from a
+                              // HTTP GET request
+        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
+        "sPaginationType": "bootstrap",
+        "fnDrawCallback": function(oSettings, json) {
+            AddTableRowToolbar( $('#table-toolbar'), $('#user-list'), $('#user-list tbody tr') );
+        }
+    } );
+
+    /* Add a click handler to the rows */
+    $("#user-list tbody").click(function(event) {
+        // Clear selection from any existing rows
+        $(oTable.fnSettings().aoData).each(function (){
+            $(this.nTr).removeClass('row_selected');
+        });
+
+        // Set the class for the selected row
+        $(event.target.parentNode).addClass('row_selected');
+    });
+
+    // Add a callback to a text <input> so that it can automatically search
+    // rather than require a submit button
+    $('#filter_woo').bind("input", filter_woo );
+} );
+
+// Add a filter for a specific column
+function filter_woo() {
+    var t = $('#user-list').dataTable();
+
+    // In this case, only search if the <input> value is long enough (stops
+    // stupid searches on single chars)
+    if ( $('#filter_woo').val().length > 3 ) {
+        t.fnFilter($('#filter_woo').val(),0);
+    }
+    else {
+        t.fnFilter('',0);
+    };
+}
+
+function LibkiDeleteUser( id ) {
+  if ( confirm("Are you sure you want to delete this user?") ) {
+    $.getJSON( '[% c.uri_for('/administration/api/user/delete') %]' + '/' + id, function() {})
+     .success(function(data, textStatus, jqXHR) { 
+         if ( data.success ) {
+             DisplayMessage( 'success', 'User deleted!' );
+             // Refresh the table to remove the deleted row
+             $("#user-list").dataTable().fnDraw(true);
+         } else {
+             DisplayMessage( 'error', 'User not delete!' );
+         }
+     })
+     .error(function() {
+     })
+     .complete(function() { });
+  }
+}
+</script>
