@@ -6,14 +6,15 @@
         <a data-toggle="tab" href="#clients-tab">Clients</a>
     </li>
 </ul>
- 
+
+
 <div class="tab-content">
   <div class="tab-pane active" id="users-tab">
-    <div class="row">
-        <div class="span4" style="float:right">
-            <button class="btn btn-primary" type="button">New User</button>
+        <div class="row">
+            <div class="span4" style="float:right">
+                <a id="new-user-button" href="#" class="btn btn-primary"><i class="icon-plus icon-white"></i> New User <i class="icon-user icon-white"></i></a>
+            </div>
         </div>
-    </div>
 
         <table id="user-list" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
@@ -28,6 +29,11 @@
             </thead>
         </table> 
 
+    <div id="table-toolbar" class="table-row-toolbar btn-group">
+        <button id="table-row-toolbar-edit"   class="btn btn-inverse" onclick="alert('ID: ' + window.selected_id )" ><i class="icon-edit icon-white"></i> Edit</button>
+        <button id="table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )" ><i class="icon-trash icon-white"></i> Delete</button>
+    </div>
+
   </div>
 
   <div class="tab-pane" id="clients-tab">
@@ -37,13 +43,43 @@
   </div>
 </div>
 
-<div id="table-toolbar" class="table-row-toolbar btn-group">
-    <button id="table-row-toolbar-edit"   class="btn btn-inverse" onclick="alert('ID: ' + window.selected_id )" ><i class="icon-edit icon-white"></i>Edit</button>
-    <button id="table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )" ><i class="icon-trash icon-white"></i>Delete</button>
+
+<div class="modal hide" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="new-user-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="new-user-modal-label">New User</h3>
+    </div>
+    <div class="modal-body">
+        <form id="new-user-modal-form">
+            <div class="control-group">
+                <label>Username</label>
+                <input id="new-user-modal-form-username" name="username" type="text" placeholder="Username">
+                <span class="help-block">Username must be unique.</span>
+            </div>
+
+            <div class="control-group">
+                <label>Password</label>
+                <input id="new-user-modal-form-password" name="password" type="password" placeholder="Enter password">
+                <input id="new-user-modal-form-password-confirm" name="password-confirm" type="password" placeholder="Confirm password">
+                <span class="help-block">Password fields must match.</span>
+            </div>
+
+            <div class="control-group">
+                <label>Minutes</label>
+                <input id="new-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
+                <span class="help-block">Leave empty for default amount of time.</span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button id="new-user-modal-form-submit" class="btn btn-primary">Create user</button>
+    </div>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
+    // Initalize the Users table as a datatable
     oTable = $('#user-list').dataTable( {
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
@@ -70,7 +106,79 @@ $(document).ready(function() {
     // Add a callback to a text <input> so that it can automatically search
     // rather than require a submit button
     $('#filter_woo').bind("input", filter_woo );
-} );
+
+    /* New User Actions */
+    // Set up the 'new user' button
+    $('#new-user-button').click(function(){
+        $('#table-toolbar').hide();
+
+        $('#new-user-modal-form-username').val('');
+        $('#new-user-modal-form-username').parent().removeClass('success warning error');
+
+        $('#new-user-modal-form-password').val('');
+        $('#new-user-modal-form-password-confirm').val('');
+
+        $('#new-user-modal-form-minutes').val('')
+
+        $('#new-user-modal-form-submit').removeAttr('disabled');
+
+        $('#new-user-modal').modal();
+        $('#new-user-modal-form-username').focus();
+
+    });
+
+    // When a username is entered in the new user form, we need to check it for uniqueness
+    $('#new-user-modal-form-username').blur(function(){
+        $.getJSON('[% c.uri_for("api/user/is_username_unique") %]/' + $(this).val(), function(data) {
+            if ( parseInt( data.is_unique ) ) {
+                $('#new-user-modal-form-submit').removeAttr('disabled');
+                $('#new-user-modal-form-username').parent().removeClass('warning error');
+                $('#new-user-modal-form-username').parent().addClass('success');
+            } else {
+                $('#new-user-modal-form-username').parent().removeClass('success error');
+                $('#new-user-modal-form-username').parent().addClass('warning');
+                $('#new-user-modal-form-submit').attr('disabled','disabled');
+            }
+        });
+    });
+
+    // Handle the new user form submission
+    $('#new-user-modal-form-submit').click(function(){
+        $('#new-user-modal-form-username').parent().removeClass('success warning error');
+        $('#new-user-modal-form-password').parent().removeClass('success warning error');
+
+        var no_errors = true;
+        if ( ! $('#new-user-modal-form-username').val() ) {
+            $('#new-user-modal-form-username').parent().addClass('error');
+            no_errors = false;
+        }
+        if ( $('#new-user-modal-form-password').val() != $('#new-user-modal-form-password-confirm').val() ) {
+            $('#new-user-modal-form-password').parent().addClass('error');
+            no_errors = false;
+        }
+        if ( $('#new-user-modal-form-minutes').val() ) {
+            if ( isNaN( $('#new-user-modal-form-minutes').val() ) ) {
+                $('#new-user-modal-form-minutes').parent().addClass('error');
+                no_errors = false;
+            }
+        }
+
+        if ( no_errors ) {
+            $('#new-user-modal-form-submit').attr('disabled','disabled');
+
+            $.post('[% c.uri_for("api/user/create") %]', $('#new-user-modal-form').serialize(), function(data) {
+                $('#new-user-modal').modal('hide');
+
+                if ( data.success ) {
+                    DisplayMessage( 'success', 'User created!' );
+                    $("#user-list").dataTable().fnDraw(true);
+                } else {
+                    DisplayMessage( 'error', 'User not created!' );
+                }
+            });
+        }
+    });
+});
 
 // Add a filter for a specific column
 function filter_woo() {
@@ -95,7 +203,7 @@ function LibkiDeleteUser( id ) {
              // Refresh the table to remove the deleted row
              $("#user-list").dataTable().fnDraw(true);
          } else {
-             DisplayMessage( 'error', 'User not delete!' );
+             DisplayMessage( 'error', 'User not deleted!' );
          }
      })
      .error(function() {

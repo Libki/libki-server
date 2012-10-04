@@ -16,6 +16,37 @@ Catalyst Controller.
 
 =cut
 
+=head2 create
+
+=cut
+
+sub create : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $params = $c->request->params;
+
+    my $username = $params->{'username'};
+    my $password = $params->{'password'};
+    my $minutes  = $params->{'minutes'}
+      || 30;    #TODO: Move the default to a system preference
+
+    my $success = 0;
+
+    my $user = $c->model('DB::User')->create(
+        {
+            username => $username,
+            password => $password,
+            minutes  => $minutes,
+            status   => 'enabled',
+        }
+    );
+
+    $success = 1 if ( $user );
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 delete
 
 =cut
@@ -23,14 +54,31 @@ Catalyst Controller.
 sub delete : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
 
-    my $user = $c->model('DB::User')->find($id);
+    my $user    = $c->model('DB::User')->find($id);
     my $success = 0;
-    
+
     if ( $user->delete() ) {
         $success = 1;
     }
 
     $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 is_username_unique
+
+=cut
+
+sub is_username_unique : Local : Args(1) {
+    my ( $self, $c, $username ) = @_;
+
+    my $count =
+      $c->model('DB::User')->search( { username => $username } )->count();
+
+    my $is_unique = ($count) ? 0 : 1;
+
+    $c->stash( is_unique => $is_unique );
+
     $c->forward( $c->view('JSON') );
 }
 
