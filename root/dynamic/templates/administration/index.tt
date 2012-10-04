@@ -30,8 +30,8 @@
         </table> 
 
     <div id="table-toolbar" class="table-row-toolbar btn-group">
-        <button id="table-row-toolbar-edit"   class="btn btn-inverse" onclick="alert('ID: ' + window.selected_id )" ><i class="icon-edit icon-white"></i> Edit</button>
-        <button id="table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )" ><i class="icon-trash icon-white"></i> Delete</button>
+        <button id="user-table-row-toolbar-edit"   class="btn btn-inverse"><i class="icon-edit icon-white"></i> Edit</button>
+        <button id="user-table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="icon-trash icon-white"></i> Delete</button>
     </div>
 
   </div>
@@ -74,6 +74,47 @@
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
         <button id="new-user-modal-form-submit" class="btn btn-primary">Create user</button>
+    </div>
+</div>
+
+<div class="modal hide" id="edit-user-modal" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="edit-user-modal-label">Edit User</h3>
+    </div>
+    <div class="modal-body">
+        <form id="edit-user-modal-form">
+            <input id="edit-user-modal-form-id" name="id" type="hidden" />
+
+            <div class="control-group">
+                <label>Username</label>
+                <input id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" disabled>
+                <span class="help-block">Username must be unique.</span>
+            </div>
+
+            <div class="control-group">
+                <label>Minutes</label>
+                <input id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
+                <span class="help-block">Leave empty for default amount of time.</span>
+            </div>
+
+            <div class="control-group">
+                <label>Status</label>
+                <select id="edit-user-modal-form-status" name="status">
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Notes</label>
+                <textarea id="edit-user-modal-form-notes" name="notes"></textarea>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button id="edit-user-modal-form-submit" class="btn btn-primary">Update user</button>
     </div>
 </div>
 
@@ -178,6 +219,53 @@ $(document).ready(function() {
             });
         }
     });
+
+    /* Edit User Actions */
+    // Set up the 'edit user' button
+    $('#user-table-row-toolbar-edit').click(function(){
+        $('#table-toolbar').hide();
+
+        $('#edit-user-modal-form-submit').removeAttr('disabled');
+        $('#edit-user-modal-form-username').parent().removeClass('success warning error');
+
+        $.getJSON('[% c.uri_for("api/user/get") %]/' + window.selected_id, function(data) {
+            $('#edit-user-modal-form-username').val( data.username );
+            $('#edit-user-modal-form-minutes').val( data.minutes );
+            $('#edit-user-modal-form-status').val( data.status );
+            $('#edit-user-modal-form-notes').val( data.notes );
+            $('#edit-user-modal-form-id').val( data.id );
+        });
+
+        $('#edit-user-modal').modal();
+    });
+
+    // Handle the edit user form submission
+    $('#edit-user-modal-form-submit').click(function(){
+        var no_errors = true;
+
+        if ( $('#edit-user-modal-form-minutes').val() ) {
+            if ( isNaN( $('#edit-user-modal-form-minutes').val() ) ) {
+                $('#edit-user-modal-form-minutes').parent().addClass('error');
+                no_errors = false;
+            }
+        }
+
+        if ( no_errors ) {
+            $('#edit-user-modal-form-submit').attr('disabled','disabled');
+
+            $.post('[% c.uri_for("api/user/update") %]', $('#edit-user-modal-form').serialize(), function(data) {
+                $('#edit-user-modal').modal('hide');
+
+                if ( data.success ) {
+                    DisplayMessage( 'success', 'User updated!' );
+                    $("#user-list").dataTable().fnDraw(true);
+                } else {
+                    DisplayMessage( 'error', 'User not updated!' );
+                }
+            });
+        }
+    });
+
 });
 
 // Add a filter for a specific column

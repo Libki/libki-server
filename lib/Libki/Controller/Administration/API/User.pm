@@ -16,6 +16,30 @@ Catalyst Controller.
 
 =cut
 
+=head2 get
+
+=cut
+
+sub get : Local : Args(1) {
+    my ( $self, $c, $id ) = @_;
+
+    my $user = $c->model('DB::User')->find($id);
+
+    $c->stash(
+        {
+            'id'              => $user->id,
+            'username'        => $user->username,
+            'minutes'         => $user->minutes,
+            'status'          => $user->status,
+            'message'         => $user->message,
+            'notes'           => $user->notes,
+            'is_troublemaker' => $user->is_troublemaker,
+        }
+    );
+
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 create
 
 =cut
@@ -41,7 +65,34 @@ sub create : Local : Args(0) {
         }
     );
 
-    $success = 1 if ( $user );
+    $success = 1 if ($user);
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 update
+
+=cut
+
+sub update : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    my $success = 0;
+
+    my $id = $c->request->params->{'id'};
+    my $minutes = $c->request->params->{'minutes'};
+    my $notes = $c->request->params->{'notes'};
+    my $status = $c->request->params->{'status'};
+
+    my $user = $c->model('DB::User')->find($id);
+
+    $user->set_column( 'minutes', $minutes );
+    $user->set_column( 'notes', $notes );
+    $user->set_column( 'status', $status );
+
+    if ( $user->update() ) {
+        $success = 1;
+    }
 
     $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );
