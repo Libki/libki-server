@@ -89,6 +89,13 @@ __PACKAGE__->table("users");
   extra: {list => ["Yes","No"]}
   is_nullable: 0
 
+=head2 is_guest
+
+  data_type: 'enum'
+  default_value: 'No'
+  extra: {list => ["Yes","No"]}
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -107,6 +114,13 @@ __PACKAGE__->add_columns(
   "message",
   { data_type => "text", is_nullable => 1 },
   "is_troublemaker",
+  {
+    data_type => "enum",
+    default_value => "No",
+    extra => { list => ["Yes", "No"] },
+    is_nullable => 0,
+  },
+  "is_guest",
   {
     data_type => "enum",
     default_value => "No",
@@ -184,8 +198,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-10 13:11:43
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1f9zpZgLfjMNkEMPHJXm1Q
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-10 16:31:01
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iaGkdf9yheifP9uoNR7X8A
 
 __PACKAGE__->add_columns(
     'password' => {
