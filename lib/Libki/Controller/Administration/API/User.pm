@@ -79,16 +79,16 @@ sub update : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $success = 0;
 
-    my $id = $c->request->params->{'id'};
+    my $id      = $c->request->params->{'id'};
     my $minutes = $c->request->params->{'minutes'};
-    my $notes = $c->request->params->{'notes'};
-    my $status = $c->request->params->{'status'};
+    my $notes   = $c->request->params->{'notes'};
+    my $status  = $c->request->params->{'status'};
 
     my $user = $c->model('DB::User')->find($id);
 
     $user->set_column( 'minutes', $minutes );
-    $user->set_column( 'notes', $notes );
-    $user->set_column( 'status', $status );
+    $user->set_column( 'notes',   $notes );
+    $user->set_column( 'status',  $status );
 
     if ( $user->update() ) {
         $success = 1;
@@ -130,6 +130,51 @@ sub is_username_unique : Local : Args(1) {
 
     $c->stash( is_unique => $is_unique );
 
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 toggle_troublemaker
+
+=cut
+
+sub toggle_troublemaker : Local : Args(1) {
+    my ( $self, $c, $id ) = @_;
+    my $success = 0;
+
+    my $user = $c->model('DB::User')->find($id);
+
+    my $is_troublemaker = ( $user->is_troublemaker eq 'Yes' ) ? 'No' : 'Yes';
+
+    $user->set_column( 'is_troublemaker', $is_troublemaker );
+
+    if ( $user->update() ) {
+        $success = 1;
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 change_password
+
+=cut
+
+sub change_password : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    my $success = 0;
+
+    my $id       = $c->request->params->{'id'};
+    my $password = $c->request->params->{'password'};
+
+    my $user = $c->model('DB::User')->find($id);
+
+    $user->set_column( 'password', $password );
+
+    if ( $user->update() ) {
+        $success = 1;
+    }
+
+    $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );
 }
 
