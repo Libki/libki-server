@@ -1,5 +1,4 @@
 use utf8;
-
 package Libki::Schema::DB::Result::User;
 
 # Created by DBIx::Class::Schema::Loader
@@ -33,7 +32,7 @@ extends 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp", "EncodedColumn" );
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
 =head1 TABLE: C<users>
 
@@ -93,27 +92,27 @@ __PACKAGE__->table("users");
 =cut
 
 __PACKAGE__->add_columns(
-    "id",
-    { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-    "username",
-    { data_type => "varchar", is_nullable => 0, size => 255 },
-    "password",
-    { data_type => "varchar", is_nullable => 0, size => 255 },
-    "minutes",
-    { data_type => "integer", default_value => 0, is_nullable => 0 },
-    "status",
-    { data_type => "varchar", is_nullable => 0, size => 255 },
-    "notes",
-    { data_type => "text", is_nullable => 0 },
-    "message",
-    { data_type => "text", is_nullable => 1 },
-    "is_troublemaker",
-    {
-        data_type     => "enum",
-        default_value => "No",
-        extra         => { list => [ "Yes", "No" ] },
-        is_nullable   => 0,
-    },
+  "id",
+  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "username",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
+  "password",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
+  "minutes",
+  { data_type => "integer", default_value => 0, is_nullable => 0 },
+  "status",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
+  "notes",
+  { data_type => "text", is_nullable => 0 },
+  "message",
+  { data_type => "text", is_nullable => 1 },
+  "is_troublemaker",
+  {
+    data_type => "enum",
+    default_value => "No",
+    extra => { list => ["Yes", "No"] },
+    is_nullable => 0,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -140,7 +139,7 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint( "username", ["username"] );
+__PACKAGE__->add_unique_constraint("username", ["username"]);
 
 =head1 RELATIONS
 
@@ -153,10 +152,10 @@ Related object: L<Libki::Schema::DB::Result::Session>
 =cut
 
 __PACKAGE__->might_have(
-    "session",
-    "Libki::Schema::DB::Result::Session",
-    { "foreign.user_id" => "self.id" },
-    { cascade_copy      => 0, cascade_delete => 0 },
+  "session",
+  "Libki::Schema::DB::Result::Session",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 user_roles
@@ -168,10 +167,10 @@ Related object: L<Libki::Schema::DB::Result::UserRole>
 =cut
 
 __PACKAGE__->has_many(
-    "user_roles",
-    "Libki::Schema::DB::Result::UserRole",
-    { "foreign.user_id" => "self.id" },
-    { cascade_copy      => 0, cascade_delete => 0 },
+  "user_roles",
+  "Libki::Schema::DB::Result::UserRole",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 roles
@@ -182,10 +181,11 @@ Composing rels: L</user_roles> -> role
 
 =cut
 
-__PACKAGE__->many_to_many( "roles", "user_roles", "role" );
+__PACKAGE__->many_to_many("roles", "user_roles", "role");
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-05-08 08:34:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XR5m0Gc9/+LH7kPNy74sZQ
+
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-10 13:11:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1f9zpZgLfjMNkEMPHJXm1Q
 
 __PACKAGE__->add_columns(
     'password' => {
@@ -195,7 +195,7 @@ __PACKAGE__->add_columns(
         encode_class        => 'Digest',
         encode_args         => {
           algorithm   => 'MD5',
-          format      => 'base64',
+          format      => 'base64',   
           salt_length => 0
         },
         encode_check_method => 'check_password',

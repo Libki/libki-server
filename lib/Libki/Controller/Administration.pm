@@ -22,6 +22,9 @@ Catalyst Controller.
 
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->stash( 'DefaultTimeAllowance' =>
+          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value );
 }
 
 =head2 auto
@@ -54,11 +57,11 @@ sub auto : Private {
             $c->response->body('Unauthorized!');
         }
     }
-    else { # If a user doesn't exist, force login
-        # Redirect the user to the login page
+    else {    # If a user doesn't exist, force login
+              # Redirect the user to the login page
         $c->response->redirect( $c->uri_for('/administration/login') );
 
-        # Return 0 to cancel 'post-auto' processing and prevent use of application
+      # Return 0 to cancel 'post-auto' processing and prevent use of application
         return 0;
     }
 

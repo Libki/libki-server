@@ -98,6 +98,7 @@
 <body>
 
     [% INCLUDE navbar.tt %]
+    [% INCLUDE breadcrumbs.tt %]
 
     <div id="container-fluid">
 

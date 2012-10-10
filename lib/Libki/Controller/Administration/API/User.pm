@@ -1,5 +1,8 @@
 package Libki::Controller::Administration::API::User;
+
 use Moose;
+use String::Random qw(random_string);
+
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
@@ -52,7 +55,7 @@ sub create : Local : Args(0) {
     my $username = $params->{'username'};
     my $password = $params->{'password'};
     my $minutes  = $params->{'minutes'}
-      || 30;    #TODO: Move the default to a system preference
+      || $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
 
     my $success = 0;
 
@@ -68,6 +71,48 @@ sub create : Local : Args(0) {
     $success = 1 if ($user);
 
     $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 create_guest
+
+=cut
+
+sub create_guest : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $params = $c->request->params;
+
+    my $current_guest_number_setting =
+      $c->model('DB::Setting')->find('CurrentGuestNumber');
+    my $current_guest_number = $current_guest_number_setting->value + 1;
+    $current_guest_number_setting->set_column( 'value', $current_guest_number );
+    $current_guest_number_setting->update();
+
+    my $username = "guest" . $current_guest_number;
+    my $password =
+      random_string("nnnn");    #TODO: Make the pattern a system setting
+    my $minutes = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+
+    my $success = 0;
+
+    my $user = $c->model('DB::User')->create(
+        {
+            username => $username,
+            password => $password,
+            minutes  => $minutes,
+            status   => 'enabled',
+        }
+    );
+
+    $success = 1 if ($user);
+
+    $c->stash(
+        'success'  => $success,
+        'username' => $username,
+        'password' => $password,
+        'minutes'  => $minutes
+    );
     $c->forward( $c->view('JSON') );
 }
 

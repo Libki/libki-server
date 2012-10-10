@@ -12,7 +12,10 @@
   <div class="tab-pane active" id="users-tab">
         <div class="row">
             <div class="span4" style="float:right">
-                <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user <i class="icon-user icon-white"></i></a>
+                <div class="btn-group">
+                    <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+                    <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+                </div>
             </div>
         </div>
 
@@ -41,7 +44,10 @@
   <div class="tab-pane" id="clients-tab">
         <div class="row">
             <div class="span4" style="float:right">
-                <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user <i class="icon-user icon-white"></i></a>
+                <div class="btn-group">
+                    <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+                    <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+                </div>
             </div>
         </div>
 
@@ -89,7 +95,7 @@
 
             <div class="control-group">
                 <label>Minutes</label>
-                <input id="new-user-modal-form-minutes" name="minutes" class="input-mini" type="text" placeholder="30">
+                <input id="new-user-modal-form-minutes" name="minutes" class="input-mini" type="text" placeholder="[% DefaultTimeAllowance %]">
                 <span class="help-block">Leave unmodified for default amount of time.</span>
             </div>
         </form>
@@ -97,6 +103,34 @@
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
         <button id="new-user-modal-form-submit" class="btn btn-primary">Create user</button>
+    </div>
+</div>
+
+<div class="modal hide" id="new-guest-modal" tabindex="-1" role="dialog" aria-labelledby="new-guest-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="new-guest-modal-label">New guest user created</h3>
+    </div>
+    <div class="modal-body">
+        <form id="new-guest-modal-form">
+            <div class="control-group">
+                <label>Username</label>
+                <span id="new-guest-modal-form-username" class="input-xlarge uneditable-input"></span>
+            </div>
+
+            <div class="control-group">
+                <label>Password</label>
+                <span id="new-guest-modal-form-password" class="input-medium uneditable-input"></span>
+            </div>
+
+            <div class="control-group">
+                <label>Minutes</label>
+                <span id="new-guest-modal-form-minutes" class="input-small uneditable-input"></span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Dismiss</button>
     </div>
 </div>
 
@@ -236,14 +270,11 @@ $(document).ready(function() {
         $(event.target.parentNode).addClass('row_selected');
     });
 
-
-    // Add a callback to a text <input> so that it can automatically search
-    // rather than require a submit button
-
-    /* New User Actions */
+    /*********** Page Wide Actions ***********/
     // Set up the 'new user' button
     $('.new-user-button').click(function(){
         $('#user-table-row-toolbar').hide();
+        $('#client-table-row-toolbar').hide();
 
         $('#new-user-modal-form-username').val('');
         $('#new-user-modal-form-username').parent().removeClass('success warning error');
@@ -310,6 +341,27 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+
+    // Set up the 'new guest' button
+    $('.new-guest-button').click(function(){
+        $.getJSON('[% c.uri_for("api/user/create_guest") %]/', function(data) {
+            if ( parseInt( data.success ) ) {
+                $("#user-table").dataTable().fnDraw(true);
+                $("#client-table").dataTable().fnDraw(true);
+
+                $('#user-table-row-toolbar').hide();
+                $('#client-table-row-toolbar').hide();
+
+                $('#new-guest-modal-form-username').text( data.username );
+                $('#new-guest-modal-form-password').text( data.password );
+                $('#new-guest-modal-form-minutes').text( data.minutes );
+
+                $('#new-guest-modal').modal();
+            } else {
+                DisplayMessage( 'error', "Unable to create guest user!" );
+            }
+        });
     });
 
     /*********** Users Table ***********/

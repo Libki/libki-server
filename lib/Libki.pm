@@ -31,6 +31,8 @@ use Catalyst qw/
   Session::State::Cookie
 
   StatusMessage
+  
+  Breadcrumbs
   /;
 
 extends 'Catalyst';
@@ -67,6 +69,14 @@ __PACKAGE__->config(
     },
     'default_view' => 'HTML',
 );
+
+__PACKAGE__->config(
+    breadcrumbs => {
+        hide_index => 1,
+        hide_home  => 0,
+    },
+);
+
 
 # Start the application
 __PACKAGE__->setup();
