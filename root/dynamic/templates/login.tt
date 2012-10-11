@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Log In</button>
+            <input type="submit" name="submitted" value="Log in" class="btn btn-primary" />
         </div>
 
     </fieldset>

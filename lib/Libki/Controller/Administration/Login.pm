@@ -26,8 +26,9 @@ sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     # Get the username and password from form
-    my $username = $c->request->params->{username};
-    my $password = $c->request->params->{password};
+    my $username  = $c->request->params->{username};
+    my $password  = $c->request->params->{password};
+    my $submitted = $c->request->params->{submitted} || 0;
 
     # If the username and password values were found in form
     if ( $username && $password ) {
@@ -45,7 +46,10 @@ sub index : Path : Args(0) {
 
             # If successful, then let them use the application
             $c->response->redirect(
-                $c->uri_for( $c->controller('Administration')->action_for('index') ) );
+                $c->uri_for(
+                    $c->controller('Administration')->action_for('index')
+                )
+            );
             return;
         }
         else {
@@ -55,9 +59,11 @@ sub index : Path : Args(0) {
         }
     }
     else {
+        if ($submitted) {
 
-        # Set an error message
-        $c->stash( error_message => "Empty username or password." );
+            # Set an error message
+            $c->stash( error_message => "Empty username or password." );
+        }
     }
 
     # If either of above don't work out, send to the login page
@@ -88,7 +94,7 @@ You should have received a copy of the GNU General Public License
 along with Libki.  If not, see <http://www.gnu.org/licenses/>.
                                                 
 =cut
-                                                
+
 __PACKAGE__->meta->make_immutable;
 
 1;
