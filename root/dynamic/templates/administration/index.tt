@@ -1,9 +1,9 @@
 <ul class="nav nav-tabs" id="myTab">
     <li class="active">
-        <a data-toggle="tab" href="#users-tab">Users</a>
+        <a id="user-tab-label" data-toggle="tab" href="#users-tab">Users</a>
     </li>
     <li>
-        <a data-toggle="tab" href="#clients-tab">Clients</a>
+        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">Clients</a>
     </li>
 </ul>
 
@@ -23,13 +23,15 @@
             </thead>
         </table> 
 
-        <div class="row">
-            <div class="span4" style="float:right">
-                <div id="user-table-toolbar" class="table-toolbar btn-group">
-                    <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
-                    <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
-                </div>
-            </div>
+        <div id="user-table-toolbar" class="table-toolbar float-right btn-group">
+            <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+            <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+        </div>
+
+        <div id="user-table-refresh" class="table-toolbar input-prepend">
+            <span id="user-table-refresh-label" class="add-on">Refresh</span>
+            <button id="user-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
+            <!-- <span id="user-table-refresh-counter" class="add-on">30</span> -->
         </div>
 
         <div id="user-table-row-toolbar" class="table-row-toolbar btn-group">
@@ -55,13 +57,15 @@
             </thead>
         </table> 
 
-        <div class="row">
-            <div class="span4" style="float:right">
-                <div id="client-table-toolbar" class="table-toolbar btn-group">
-                    <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
-                    <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
-                </div>
-            </div>
+        <div id="client-table-toolbar" class="table-toolbar float-right btn-group">
+            <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+            <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+        </div>
+
+        <div id="client-table-refresh" class="table-toolbar input-prepend">
+            <span id="client-table-refresh-label" class="add-on">Refresh</span>
+            <button id="client-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
+            <span id="client-table-refresh-counter" class="add-on">30</span>
         </div>
 
         <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
@@ -220,6 +224,19 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    /**** Handle refreshing of tables ****/
+    // Refresh the client table automatically, as its date will go stale quickly
+    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
+
+    // Set up the manual refresh buttons for each table
+    $('#client-table-refresh-button').click( function(){ ForceClientTableRefresh() });
+    $('#user-table-refresh-button').click( function(){ ForceUserTableRefresh() });
+
+    // When we switch tabs, refresh the new tab automatically
+    $('#user-tab-label').click( function(){ ForceUserTableRefresh() });
+    $('#client-tab-label').click( function(){ ForceClientTableRefresh() });
+
+    /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
     uTable = $('#user-table').dataTable( {
         "bProcessing": true,  // Indicate when the table is processing data
@@ -234,6 +251,7 @@ $(document).ready(function() {
     } );
 
     $('#user-table-toolbar').prependTo($('#user-table_filter'));
+    $('#user-table-refresh').prependTo($('#user-table_length'));
      
     /* Add a click handler to the rows */
     $("#user-table tbody").click(function(event) {
@@ -260,6 +278,7 @@ $(document).ready(function() {
     } );
 
     $('#client-table-toolbar').prependTo($('#client-table_filter'));
+    $('#client-table-refresh').prependTo($('#client-table_length'));
 
     /* Add a click handler to the rows */
     $("#client-table tbody").click(function(event) {
@@ -350,7 +369,7 @@ $(document).ready(function() {
         $.getJSON('[% c.uri_for("api/user/create_guest") %]/', function(data) {
             if ( parseInt( data.success ) ) {
                 $("#user-table").dataTable().fnDraw(true);
-                $("#client-table").dataTable().fnDraw(true);
+                ForceClientTableRefresh();
 
                 $('#user-table-row-toolbar').hide();
                 $('#client-table-row-toolbar').hide();
@@ -486,7 +505,7 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     DisplayMessage( 'success', "User's time updated!" );
-                    $("#client-table").dataTable().fnDraw(true);
+                    ForceClientTableRefresh();
                 } else {
                     DisplayMessage( 'error', "User's time not updated!" );
                 }
@@ -543,4 +562,24 @@ function LibkiDeleteUser( id ) {
      .complete(function() { });
   }
 }
+
+function HandleClientTableRefreshCounter() {
+    var countdown = parseInt( $('#client-table-refresh-counter').text() ) - 1;
+
+    if ( countdown ) {
+        $('#client-table-refresh-counter').text( countdown );
+    } else {
+        ForceClientTableRefresh();
+    }
+}
+
+function ForceClientTableRefresh() {
+     $("#client-table").dataTable().fnDraw(true);
+     $('#client-table-refresh-counter').text( '30' );
+}
+
+function ForceUserTableRefresh() {
+     $("#user-table").dataTable().fnDraw(true);
+}
+
 </script>
