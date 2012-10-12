@@ -6,8 +6,6 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
-
     <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.7.2.min.js') %]"></script>
 
     <link rel="stylesheet" href="[% c.uri_for('/static/css/smoothness/jquery-ui-1.8.21.custom.css') %]" />
@@ -29,6 +27,7 @@
     <script type="text/javascript" src="[% c.uri_for('/static/js/DT_bootstrap.js') %]"></script>
 
     <script type="text/javascript" src="[% c.uri_for('/static/js/main.js') %]"></script>
+    <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
 
     <script type="text/javascript">
         $(document).ready(function () {

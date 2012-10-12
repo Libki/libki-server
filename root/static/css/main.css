@@ -7,6 +7,14 @@
     visibility: hidden;
 }
 
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
 .display-none {
     display: none;
 }
@@ -16,13 +24,20 @@ form .required {
 }
 
 .libki-message {
-    z-index: 999999;
-    position:absolute;
-    width:50%;
+    z-index:  999999;
+    position: absolute;
+    width: 50%;
 }
 
 .table-row-toolbar {
-    display:none;
-    z-index:9999;
-    float:left;
+    display: none;
+    z-index: 9999;
+    float: left;
+}
+
+.table-toolbar {
+    margin-left: 10px;
+    margin-right: 10px;
+
+    float: right;
 }
