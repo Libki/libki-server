@@ -174,6 +174,8 @@ sub is_username_unique : Local : Args(1) {
 
     my $is_unique = ($count) ? 0 : 1;
 
+    $is_unique = 0 if ( $username =~ '^guest' );
+
     $c->stash( is_unique => $is_unique );
 
     $c->forward( $c->view('JSON') );
