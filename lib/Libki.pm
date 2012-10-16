@@ -73,7 +73,7 @@ __PACKAGE__->config(
 __PACKAGE__->config(
     breadcrumbs => {
         hide_index => 1,
-        hide_home  => 0,
+        hide_home  => 1,
     },
 );
 

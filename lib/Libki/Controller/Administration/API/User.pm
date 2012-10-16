@@ -28,6 +28,12 @@ sub get : Local : Args(1) {
 
     my $user = $c->model('DB::User')->find($id);
 
+    my $roles = $user->roles;
+    my @roles;
+    while ( my $role = $roles->next() ) {
+        push( @roles, $role->role );
+    }
+
     $c->stash(
         {
             'id'              => $user->id,
@@ -37,6 +43,7 @@ sub get : Local : Args(1) {
             'message'         => $user->message,
             'notes'           => $user->notes,
             'is_troublemaker' => $user->is_troublemaker,
+            'roles'           => \@roles,
         }
     );
 
@@ -129,6 +136,7 @@ sub update : Local : Args(0) {
     my $minutes = $c->request->params->{'minutes'};
     my $notes   = $c->request->params->{'notes'};
     my $status  = $c->request->params->{'status'};
+    my @roles   = $c->request->params->{'roles'};
 
     my $user = $c->model('DB::User')->find($id);
 
@@ -138,6 +146,25 @@ sub update : Local : Args(0) {
 
     if ( $user->update() ) {
         $success = 1;
+    }
+
+    if ( $c->check_user_roles(qw/superadmin/) ) {
+
+        # Update the user's roles
+        my $roles_rs = $c->model('DB::Role')->search();
+        while ( my $r = $roles_rs->next() ) {
+            my $role = $r->role;
+            if ( grep { /$role/ } @roles ) {
+                ## Add the role if it doesn't exists
+                $c->model('DB::UserRole')
+                  ->find_or_create( { user_id => $id, role_id => $r->id } );
+            }
+            else {
+                ## Delete the role if it does already exist
+                $c->model('DB::UserRole')
+                  ->search( { user_id => $id, role_id => $r->id } )->delete();
+            }
+        }
     }
 
     $c->stash( 'success' => $success );

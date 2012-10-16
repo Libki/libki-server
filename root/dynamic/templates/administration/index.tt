@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs" id="myTab">
+<ul class="nav nav-tabs" id="primary-tabs">
     <li class="active">
         <a id="user-tab-label" data-toggle="tab" href="#users-tab">Users</a>
     </li>
@@ -140,35 +140,63 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="edit-user-modal-label">Edit user</h3>
+
+        <ul class="nav nav-tabs" id="edit-user-modal-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#edit-user-modal-form-tab-details">Details</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#edit-user-modal-form-tab-roles">Roles</a>
+            </li>
+        </ul>
+
     </div>
     <div class="modal-body">
         <form id="edit-user-modal-form">
-            <input id="edit-user-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label>Username</label>
-                <input id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" disabled>
-                <span class="help-block">Username must be unique.</span>
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="edit-user-modal-form-tab-details">
+                    <input id="edit-user-modal-form-id" name="id" type="hidden" />
+
+                    <div class="control-group">
+                        <label>Username</label>
+                        <input id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" disabled>
+                        <span class="help-block">Username must be unique.</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Minutes</label>
+                        <input id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
+                        <span class="help-block">Leave empty for default amount of time.</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Status</label>
+                        <select id="edit-user-modal-form-status" name="status">
+                            <option value="enabled">Enabled</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Notes</label>
+                        <textarea id="edit-user-modal-form-notes" name="notes"></textarea>
+                    </div>
+                </div> 
+
+                <div class="tab-pane active" id="edit-user-modal-form-tab-roles">
+                    <label class="checkbox">
+                        <input id="edit-user-modal-form-roles-admin" name="roles" type="checkbox" value="admin">Administrator
+                    </label>
+
+                    <label class="checkbox">
+                        <input id="edit-user-modal-form-roles-superadmin" name="roles" type="checkbox" value="superadmin">Super-Administrator
+                    </label>
+                </div>
+
             </div>
 
-            <div class="control-group">
-                <label>Minutes</label>
-                <input id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
-                <span class="help-block">Leave empty for default amount of time.</span>
-            </div>
-
-            <div class="control-group">
-                <label>Status</label>
-                <select id="edit-user-modal-form-status" name="status">
-                    <option value="enabled">Enabled</option>
-                    <option value="disabled">Disabled</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Notes</label>
-                <textarea id="edit-user-modal-form-notes" name="notes"></textarea>
-            </div>
         </form>
     </div>
     <div class="modal-footer">
@@ -386,7 +414,7 @@ $(document).ready(function() {
     });
 
     /*********** Users Table ***********/
-    /* Edit User Actions */
+    /* Edit User */
     // Set up the 'edit user' button
     $('#user-table-row-toolbar-edit').click(function(){
         $('#user-table-row-toolbar').hide();
@@ -394,13 +422,28 @@ $(document).ready(function() {
         $('#edit-user-modal-form-submit').removeAttr('disabled');
         $('#edit-user-modal-form-username').parent().removeClass('success warning error');
 
+        $('#edit-user-modal-form-roles-admin').attr('checked', false);
+        $('#edit-user-modal-form-roles-superadmin').attr('checked', false);
+
         $.getJSON('[% c.uri_for("api/user/get") %]/' + window.selected_id, function(data) {
             $('#edit-user-modal-form-username').val( data.username );
             $('#edit-user-modal-form-minutes').val( data.minutes );
             $('#edit-user-modal-form-status').val( data.status );
             $('#edit-user-modal-form-notes').val( data.notes );
             $('#edit-user-modal-form-id').val( data.id );
+            for ( var i in data.roles ) {
+                $('#edit-user-modal-form-roles-' + data.roles[i]).attr('checked', true);
+            }
         });
+
+        [% UNLESS Catalyst.check_user_roles('superadmin') %]
+            $('#edit-user-modal-form-roles-admin').attr('disabled', true);
+            $('#edit-user-modal-form-roles-superadmin').attr('disabled', true);
+        [% END %]
+
+        // Always start on first tab ( i.e. details tab )
+        $('#edit-user-modal-tabs a:last').tab('show'); // Fixes display bug where both tabs content shows on first tab.
+        $('#edit-user-modal-tabs a:first').tab('show');
 
         $('#edit-user-modal').modal();
     });

@@ -30,7 +30,7 @@ sub modify_time : Local : Args(0) {
     my $client = $c->model('DB::Client')->find($client_id);
 
     if ( defined($client) && defined( $client->session ) ) {
-        my $user = $c->model('DB::User')->find( $client->session->user->id );
+        my $user = $client->session->user;
 
         if ( $minutes =~ /^[+-]/ ) {
             $minutes = $user->minutes + $minutes;
