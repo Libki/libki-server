@@ -6,6 +6,9 @@ use warnings;
 use Config::JFDI;
 use Getopt::Long::Descriptive;
 
+use FindBin;
+use lib "$FindBin::Bin/../../lib";
+
 use Libki::Schema::DB;
 
 my ( $opt, $usage ) = describe_options(
@@ -20,7 +23,7 @@ my ( $opt, $usage ) = describe_options(
 print( $usage->text ), exit unless ( $opt->username );
 
 my $config =
-  Config::JFDI->new( file => 'libki_local.conf', no_06_warning => 1 );
+  Config::JFDI->new( file => "$FindBin::Bin/../../libki_local.conf", no_06_warning => 1 );
 my $config_hash  = $config->get();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
