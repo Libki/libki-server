@@ -57,8 +57,14 @@ __PACKAGE__->table("clients");
 =head2 location
 
   data_type: 'varchar'
-  is_nullable: 0
+  is_nullable: 1
   size: 255
+
+=head2 last_registered
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
 
 =cut
 
@@ -68,7 +74,13 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "location",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "last_registered",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    is_nullable => 1,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -82,6 +94,20 @@ __PACKAGE__->add_columns(
 =cut
 
 __PACKAGE__->set_primary_key("id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<name>
+
+=over 4
+
+=item * L</name>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("name", ["name"]);
 
 =head1 RELATIONS
 
@@ -101,8 +127,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-11 13:39:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/b+9HqVANQxVKXTcaIuKfQ
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 11:50:12
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:W/90hTrc2ib/o5zTgHaEjw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
