@@ -31,6 +31,7 @@ requires 'Catalyst::Helper::View::JSON';
 
 requires 'DBIx::Class::TimeStamp';
 requires 'DBIx::Class::EncodedColumn';
+requires 'DBIx::Class::Numeric';
 
 requires 'Moose';
 requires 'namespace::autoclean';

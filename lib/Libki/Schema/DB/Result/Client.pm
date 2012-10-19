@@ -28,11 +28,18 @@ extends 'DBIx::Class::Core';
 
 =item * L<DBIx::Class::EncodedColumn>
 
+=item * L<DBIx::Class::Numeric>
+
 =back
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "EncodedColumn");
+__PACKAGE__->load_components(
+  "InflateColumn::DateTime",
+  "TimeStamp",
+  "EncodedColumn",
+  "Numeric",
+);
 
 =head1 TABLE: C<clients>
 
@@ -127,8 +134,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 11:50:12
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:W/90hTrc2ib/o5zTgHaEjw
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 13:54:24
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/H0D7XBbMAn/zfUQZIxvPA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
