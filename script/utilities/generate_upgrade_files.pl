@@ -12,7 +12,8 @@ use Config::JFDI;
 
 use Libki::Schema::DB;
 
-my $config = Config::JFDI->new( file => 'libki_local.conf', no_06_warning => 1 );
+my $config =
+  Config::JFDI->new( file => "$FindBin::Bin/../../libki_local.conf", no_06_warning => 1 );
 my $config_hash  = $config->get();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 

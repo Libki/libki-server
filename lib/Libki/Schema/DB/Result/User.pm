@@ -208,6 +208,8 @@ __PACKAGE__->many_to_many("roles", "user_roles", "role");
 # Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 13:54:24
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UPnrW0o+r+4aV7HbXzvdCg
 
+__PACKAGE__->numeric_columns(qw/minutes/);
+
 __PACKAGE__->add_columns(
     'password' => {
         data_type           => "TEXT",
