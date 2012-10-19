@@ -1,4 +1,4 @@
-package Libki::Controller::API::Client;
+package Libki::Controller::API::Client::v1_0;
 use Moose;
 use namespace::autoclean;
 
@@ -6,7 +6,7 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
 
-Libki::Controller::API::Client - Catalyst Controller
+Libki::Controller::API::Client::v1_0 - Catalyst Controller
 
 =head1 DESCRIPTION
 
@@ -16,15 +16,11 @@ Catalyst Controller.
 
 =cut
 
-=head2 legacy
-
-This version of the client api is designed to be directly
-compatible with the client that is used with the php based
-server and the client_server integration layer.
+=head2 index
 
 =cut
 
-sub legacy : Local : Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
