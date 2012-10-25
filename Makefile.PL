@@ -39,6 +39,8 @@ requires 'Config::General';
 
 requires 'Perl6::Junction';
 
+requires 'IO::Socket::INET';
+
 test_requires 'Test::More' => '0.88';
 catalyst;
 

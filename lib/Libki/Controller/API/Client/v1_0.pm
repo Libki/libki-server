@@ -2,6 +2,8 @@ package Libki::Controller::API::Client::v1_0;
 use Moose;
 use namespace::autoclean;
 
+use IO::Socket::INET;
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -55,6 +57,34 @@ sub index : Path : Args(0) {
           $c->model('DB::User')->search( { username => $username } )->next();
 
         if ( $action eq 'login' ) {
+
+            ## If SIP is enabled, try SIP first
+            if ( $c->config->{SIP}->{enable} ) {
+                my ( $success, $error ) =
+                  authenticate_via_sip( $c, $username, $password );
+
+                if ($success) {
+                    if ($user) {    ## User authenticated and exists in Libki
+                        $user->set_column( 'password', $password );
+                        $user->update();
+                    }
+                    else {    ## User authenticated and does not exits in Libki
+                        my $minutes =
+                          $c->model('DB::Setting')->find('DefaultTimeAllowance')
+                          ->value;
+
+                        $user = $c->model('DB::User')->create(
+                            {
+                                username => $username,
+                                password => $password,
+                                minutes  => $minutes,
+                                status   => 'enabled',
+                            }
+                        );
+                    }
+                }
+            }
+
             if (
                 $c->authenticate(
                     {
@@ -150,6 +180,64 @@ sub index : Path : Args(0) {
     }
 
     $c->forward( $c->view('JSON') );
+}
+
+sub authenticate_via_sip {
+    my ( $c, $username, $password ) = @_;
+
+    my ( $sec, $min, $hour, $day, $month, $year ) = localtime(time);
+    $year += 1900;
+
+    my $host = $c->config->{SIP}->{host};
+    my $port = $c->config->{SIP}->{port};
+
+    my $login_user_id  = $c->config->{SIP}->{username};
+    my $login_password = $c->config->{SIP}->{password};
+    my $location_code  = $c->config->{SIP}->{location};
+
+    my $institution_id    = $location_code;
+    my $patron_identifier = $username;
+    my $terminal_password = $login_password;
+    my $patron_password   = $password;
+    my $transaction_date  = "$year$month$day    $hour$min$sec";
+
+    my $socket = IO::Socket::INET->new("$host:$port")
+      or die "ERROR in Socket Creation : $!\n";
+
+    my $login_command =
+      "9300CN$login_user_id|CO$login_password|CP$location_code";
+
+    print $socket $login_command . "\n";
+
+    my $data = <$socket>;
+
+    if ( $data =~ '^941' ) {
+        my $patron_status_request = "23001"
+          . $transaction_date . "AO"
+          . $institution_id . "|AA"
+          . $patron_identifier . "|AC"
+          . $terminal_password . "|AD"
+          . $patron_password;
+        print $socket $patron_status_request . "\n";
+
+        $data = <$socket>;
+
+        if ( index( $data, 'BLY' ) != -1 ) {
+            if ( index( $data, 'CQY' ) != -1 ) {
+                return 1;
+            }
+            else {
+                return ( 0, 'INVALID_PASSWORD' );
+            }
+        }
+        else {
+            return ( 0, 'INVALID_USER' );
+        }
+    }
+    else {
+        return ( 0, 'CONNECTION_FAILURE' );
+    }
+
 }
 
 =head1 AUTHOR
