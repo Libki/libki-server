@@ -87,7 +87,7 @@ __PACKAGE__->table("users");
 =head2 message
 
   data_type: 'text'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 is_troublemaker
 
@@ -119,7 +119,7 @@ __PACKAGE__->add_columns(
   "notes",
   { data_type => "text", is_nullable => 0 },
   "message",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "text", is_nullable => 0 },
   "is_troublemaker",
   {
     data_type => "enum",
@@ -205,8 +205,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 13:54:24
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UPnrW0o+r+4aV7HbXzvdCg
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-25 15:15:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rn+bsxM4gz9un/HWYEWnBw
 
 __PACKAGE__->numeric_columns(qw/minutes/);
 
