@@ -107,8 +107,9 @@ sub clients : Local Args(0) {
     if ($search_term) {
         $filter = {
             -or => [
-                'me.name'       => { 'like', "%$search_term%" },
-                'me.location'   => { 'like', "%$search_term%" },
+                'me.name'     => { 'like', "%$search_term%" },
+                'me.location' => { 'like', "%$search_term%" },
+
                 #'user.username' => { 'like', "%$search_term%" },
                 #'user.notes'    => { 'like', "%$search_term%" },
                 #'user.message'  => { 'like', "%$search_term%" },
@@ -157,7 +158,7 @@ sub clients : Local Args(0) {
         $r->{'1'}        = $c->location;
         $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'} =
-    defined( $c->session ) ? $c->session->user->username : undef;
+          defined( $c->session ) ? $c->session->user->username : undef;
         $r->{'4'} = defined( $c->session ) ? $c->session->user->minutes : undef;
         $r->{'5'} = defined( $c->session ) ? $c->session->user->status  : undef;
         $r->{'6'} = defined( $c->session ) ? $c->session->user->message : undef;
@@ -168,6 +169,77 @@ sub clients : Local Args(0) {
         push( @results, $r );
     }
 
+    $c->stash(
+        {
+            'iTotalRecords'        => $total_records,
+            'iTotalDisplayRecords' => $count,
+            'sEcho'                => $c->request->param('sEcho') || undef,
+            'aaData'               => \@results,
+        }
+    );
+    $c->forward( $c->view('JSON') );
+}
+
+sub statistics : Local Args(0) {
+    my ( $self, $c ) = @_;
+
+    # We need to map the table columns to field names for ordering
+    my @columns = qw/ me.username me.clientname, me.action me.when /;
+
+    my $search_term = $c->request->param("sSearch");
+    my $filter;
+    if ($search_term) {
+        $filter = {
+            -or => [
+                'me.username'   => { 'like', "%$search_term%" },
+                'me.clientname' => { 'like', "%$search_term%" },
+                'me.when'       => { 'like', "%$search_term%" },
+                'me.action'     => { 'like', "%$search_term%" },
+            ]
+        };
+    }
+
+    # Sorting options
+    my @sorting;
+    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+        push(
+            @sorting,
+            {
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
+            }
+        );
+    }
+
+    my $total_records = $c->model('DB::Statistic')->count;
+
+    # In case of pagination, we need to know how many records match in total
+    my $count = $c->model('DB::Statistic')->count($filter);
+
+    # Do the search, including any required sorting and pagination.
+    print "SORTING: " . Data::Dumper::Dumper( @sorting );
+    my @stats = $c->model('DB::Statistic')->search(
+        $filter,
+        {
+            order_by => \@sorting,
+            rows     => $c->request->param('iDisplayLength'),
+            offset   => $c->request->param('iDisplayStart'),
+        }
+    );
+
+    my @results;
+    foreach my $s (@stats) {
+        my $r;
+        $r->{'DT_RowId'} = $s->id;
+        $r->{'0'}        = $s->username;
+        $r->{'1'}        = $s->clientname;
+        $r->{'2'}        = $s->action;
+        $r->{'3'}        = $s->when->strftime('%m/%d/%Y %I:%M %p');
+
+        push( @results, $r );
+    }
+print "RESULTS: " . Data::Dumper::Dumper( @results );
     $c->stash(
         {
             'iTotalRecords'        => $total_records,
