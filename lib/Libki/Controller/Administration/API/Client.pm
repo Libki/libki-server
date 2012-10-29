@@ -47,6 +47,25 @@ sub modify_time : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 logout
+
+=cut
+
+sub logout : Local : Args(1) {
+    my ( $self, $c, $client_id ) = @_;
+    my $success = 0;
+
+    my $client = $c->model('DB::Client')->find($client_id);
+
+    if ( defined($client) && defined( $client->session ) ) {
+        if ( $client->session->delete() ) {
+            $success = 1;
+        }
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
 
 =head1 AUTHOR
 
