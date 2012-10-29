@@ -1,3 +1,6 @@
+[% META title = 'Administration / Home' -%]
+[% SET active_class = 'administration__index' %]
+
 <ul class="nav nav-tabs" id="primary-tabs">
     <li class="active">
         <a id="user-tab-label" data-toggle="tab" href="#users-tab">Users</a>

@@ -13,7 +13,17 @@
             [% IF c.user_exists %]
                 <div class="nav-collapse">
                     <ul class="nav">
+                        <li class="[% IF active_class.search('^administration__index') %] active [% END %]">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home</a>
+                        </li>
 
+                        <li class="dropdown [% IF active_class.search('^history|^settings') %] active [% END %]">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li [% IF active_class == 'locations'   %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')   %]">History</a></li>
+                                <li [% IF active_class == 'settings'    %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings')  %]">Settings</a></li>
+                            </ul>
+                        </li>
                     </ul>
 
                     <ul class="nav pull-right">
