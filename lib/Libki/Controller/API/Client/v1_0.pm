@@ -83,8 +83,17 @@ sub index : Path : Args(0) {
                         );
                     }
                 }
+                elsif ( $error eq 'INVALID_USER' ) {
+                    ## This user may have existing in SIP, but is now deleted
+                    ## In this case, we don't want the now deleted user to be
+                    ## able to log into Libki, so let's attempt to delete that
+                    ## username before we try to authenticate.
+                    $c->model('DB::User')->search( { username => $username } )
+                      ->delete();
+                }
             }
 
+            ## Process client requests
             if (
                 $c->authenticate(
                     {
