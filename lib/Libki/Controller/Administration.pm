@@ -23,8 +23,12 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( 'DefaultTimeAllowance' =>
-          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value );
+    $c->stash(
+        'DefaultTimeAllowance' =>
+          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
+        'KohaServerURL' =>
+          $c->model('DB::Setting')->find('KohaServerURL')->value,
+    );
 }
 
 =head2 auto

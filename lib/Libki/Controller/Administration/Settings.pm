@@ -51,7 +51,7 @@ sub update :Local :Args(0) {
     
     while ( my $s = $settings->next() ) {
         my $new_setting = $c->request->params->{ $s->name };
-        if ( $new_setting ) {
+        if ( defined( $new_setting ) ) {
             $s->value( $new_setting );
             $s->update();
         }
