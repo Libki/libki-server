@@ -439,7 +439,7 @@ $(document).ready(function() {
             }
         });
 
-        [% UNLESS Catalyst.check_user_roles('superadmin') %]
+        [% UNLESS c.check_user_roles('superadmin') %]
             $('#edit-user-modal-form-roles-admin').attr('disabled', true);
             $('#edit-user-modal-form-roles-superadmin').attr('disabled', true);
         [% END %]

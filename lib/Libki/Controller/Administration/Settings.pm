@@ -16,6 +16,15 @@ Catalyst Controller.
 
 =cut
 
+=head2 auto
+
+=cut 
+
+sub auto : Private {
+    my ( $self, $c ) = @_;
+
+    $c->assert_user_roles( qw/superadmin/ );    
+}
 
 =head2 index
 
@@ -23,7 +32,7 @@ Catalyst Controller.
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    
+
     my $settings = $c->model('DB::Setting')->search();
     
     while ( my $s = $settings->next() ) {
@@ -37,7 +46,7 @@ sub index :Path :Args(0) {
 
 sub update :Local :Args(0) {
     my ( $self, $c ) = @_;
-    
+
     my $settings = $c->model('DB::Setting')->search();
     
     while ( my $s = $settings->next() ) {
