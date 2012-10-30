@@ -1,0 +1,32 @@
+[% META title = 'Administration / Settings' -%]
+[% SET active_class = 'administration__settings' %]
+
+<form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+    <div class="control-group">
+        <label class="control-label" for="DefaultTimeAllowance">Default time allowance</label>
+        <div class="controls">
+            <div class="input-append">
+                <input type="text" class="input-mini" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
+                <span class="add-on">minutes</span>
+            </div>
+            <span class="help-inline">Amount of time a user is given daily.</span>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="PostCrashTimeout">Post crash timeout</label>
+        <div class="controls">
+            <div class="input-append">
+                <input type="text" class="input-mini" id="PostCrashTimeout" name="PostCrashTimeout" value="[% PostCrashTimeout %]">
+                <span class="add-on">minutes</span>
+            </div>
+            <span class="help-inline">If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.</span>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">Update settings</button>
+        </div>
+    </div>
+</form>
