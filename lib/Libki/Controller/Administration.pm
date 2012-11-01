@@ -23,11 +23,20 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+    my @locations = $c->model('DB::Client')->search(
+        {},
+        {
+            columns  => [qw/location/],
+            distinct => 1
+        }
+    )->get_column('location')->all();
+
     $c->stash(
         'DefaultTimeAllowance' =>
           $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
         'KohaServerURL' =>
           $c->model('DB::Setting')->find('KohaServerURL')->value,
+        'locations' => \@locations,
     );
 }
 

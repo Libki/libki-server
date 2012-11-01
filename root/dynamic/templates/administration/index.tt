@@ -46,6 +46,20 @@
   </div>
 
   <div class="tab-pane" id="clients-tab">
+    <ul class="nav nav-pills" id="primary-tabs">
+      <li>
+          <a>Locations:</a>
+      </li>
+      <li class="active">
+          <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('');">All</a>
+      </li>
+      [% FOREACH location IN locations %]
+          <li>
+              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location %]</a>
+          </li>
+      [% END %]
+    </ul>
+
         <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>Name</th>
@@ -318,7 +332,15 @@ $(document).ready(function() {
                 }
             [% END %]
         },
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+            if ( window.location_filter ) {
+                aoData.push( { "name": "location_filter", "value": window.location_filter } );
+            }
 
+            $.getJSON( sSource, aoData, function (json) { 
+                fnCallback(json)
+            } );
+        },
     } );
 
     $('#client-table-toolbar').prependTo($('#client-table_filter'));
@@ -646,6 +668,11 @@ function HandleClientTableRefreshCounter() {
     } else {
         ForceClientTableRefresh();
     }
+}
+
+function ClientTableUpdateLocationFilter( location ) {
+    window.location_filter = location;
+    ForceClientTableRefresh();
 }
 
 function ForceClientTableRefresh() {

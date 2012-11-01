@@ -102,21 +102,26 @@ sub clients : Local Args(0) {
     my @columns =
       qw/ me.name session.status user.username user.minutes user.status user.message user.notes user.is_troublemaker/;
 
-    my $search_term = $c->request->param("sSearch");
-    my $filter;
-    if ($search_term) {
-        $filter = {
-            -or => [
-                'me.name'     => { 'like', "%$search_term%" },
-                'me.location' => { 'like', "%$search_term%" },
+    # Set up filters
+    my $filter = {};
 
-                #'user.username' => { 'like', "%$search_term%" },
-                #'user.notes'    => { 'like', "%$search_term%" },
-                #'user.message'  => { 'like', "%$search_term%" },
-            ]
-        };
+    my $search_term = $c->request->param("sSearch");
+    if ($search_term) {
+        $filter->{-or} = [
+            'me.name'     => { 'like', "%$search_term%" },
+            'me.location' => { 'like', "%$search_term%" },
+
+            #'user.username' => { 'like', "%$search_term%" },
+            #'user.notes'    => { 'like', "%$search_term%" },
+            #'user.message'  => { 'like', "%$search_term%" },
+        ];
     }
 
+    if ( $c->request->param("location_filter") ) {
+        $filter->{'location'} = $c->request->param("location_filter");
+    }
+
+warn "FILTER: " . Data::Dumper::Dumper( $filter );
     # Sorting options
     my @sorting;
     for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
@@ -218,7 +223,7 @@ sub statistics : Local Args(0) {
     my $count = $c->model('DB::Statistic')->count($filter);
 
     # Do the search, including any required sorting and pagination.
-    print "SORTING: " . Data::Dumper::Dumper( @sorting );
+    print "SORTING: " . Data::Dumper::Dumper(@sorting);
     my @stats = $c->model('DB::Statistic')->search(
         $filter,
         {
@@ -239,7 +244,7 @@ sub statistics : Local Args(0) {
 
         push( @results, $r );
     }
-print "RESULTS: " . Data::Dumper::Dumper( @results );
+    print "RESULTS: " . Data::Dumper::Dumper(@results);
     $c->stash(
         {
             'iTotalRecords'        => $total_records,
