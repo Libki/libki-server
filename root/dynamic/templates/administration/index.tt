@@ -569,16 +569,19 @@ $(document).ready(function() {
     /*********** Client Table ***********/
     /* Modify Time */
     $('#modify-time-modal-form-submit').click(function(){
-        var no_errors = true;
+        var errors = false;
 
         if ( $('#modify-time-modal-form-minutes').val() ) {
             if ( isNaN( $('#modify-time-modal-form-minutes').val() ) ) {
-                $('#modify-time-modal-form-minutes').parent().addClass('error');
-                no_errors = false;
+                errors = true;
             }
+        } else {
+            errors = true;
         }
 
-        if ( no_errors ) {
+        if ( errors ) {
+            $('#modify-time-modal-form-minutes').parent().addClass('error');
+        } else {
             $('#modify-time-modal-form-submit').attr('disabled','disabled');
 
             $.post('[% c.uri_for("api/client/modify_time") %]', $('#modify-time-modal-form').serialize(), function(data) {
@@ -591,6 +594,13 @@ $(document).ready(function() {
                     DisplayMessage( 'error', "User's time not updated!" );
                 }
             });
+        }
+    });
+
+    $("#modify-time-modal-form-minutes").keypress(function(e){
+        if (e.which == 13) {
+            e.preventDefault();
+            $('#modify-time-modal-form-submit').click();
         }
     });
 
