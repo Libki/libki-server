@@ -16,14 +16,18 @@ my ( $opt, $usage ) = describe_options(
     [ 'username|u=s', "the username for this user, required" ],
     [ 'password|p=s', "the password for this user" ],
     [ 'minutes|m=s',  "number of minutes for this user" ],
+    [ 'admin|a',      "makes the user an admin" ],
+    [ 'superadmin|s', "makes the user a superadmin" ],
     [],
     [ 'verbose|v', "print extra stuff" ],
 );
 
 print( $usage->text ), exit unless ( $opt->username );
 
-my $config =
-  Config::JFDI->new( file => "$FindBin::Bin/../../libki_local.conf", no_06_warning => 1 );
+my $config = Config::JFDI->new(
+    file          => "$FindBin::Bin/../../libki_local.conf",
+    no_06_warning => 1
+);
 my $config_hash  = $config->get();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
@@ -32,15 +36,41 @@ my $schema = Libki::Schema::DB->connect($connect_info)
 
 my $user_rs = $schema->resultset('User');
 
-$user_rs->create(
+my $user = $user_rs->create(
     {
-        username        => $opt->username,
-        password        => $opt->password,
-        minutes         => $opt->minutes,
+        username => $opt->username,
+        password => $opt->password,
+        minutes  => $opt->minutes
+          || $schema->resultset('Setting')->find('DefaultTimeAllowance')
+          ->value(),
         status          => 'enabled',
         is_troublemaker => 'No',
     }
 );
+
+if ( $opt->superadmin ) {
+    my $role =
+      $schema->resultset('Role')->search( { role => 'superadmin' } )->single();
+
+    $schema->resultset('UserRole')->create(
+        {
+            role_id => $role->id,
+            user_id => $user->id,
+        }
+    );
+}
+
+if ( $opt->admin || $opt->superadmin ) {
+    my $role =
+      $schema->resultset('Role')->search( { role => 'admin' } )->single();
+
+    $schema->resultset('UserRole')->create(
+        {
+            role_id => $role->id,
+            user_id => $user->id,
+        }
+    );
+}
 
 =head1 AUTHOR
 
