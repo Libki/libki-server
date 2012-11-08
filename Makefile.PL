@@ -16,7 +16,6 @@ requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Action::RenderView';
 
 requires 'Catalyst::Controller::REST';
-requires 'Catalyst::TraitFor::Controller:jQuery::jqGrid';
 
 requires 'Catalyst::Plugin::Authentication';
 
