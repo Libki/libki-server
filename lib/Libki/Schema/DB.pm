@@ -16,15 +16,10 @@ __PACKAGE__->load_namespaces;
 
 our $VERSION = '2.00.00.00';
 
-__PACKAGE__->load_components('+DBIx::Class::Schema::Versioned');
-
-use FindBin;
-__PACKAGE__->upgrade_directory("$FindBin::Bin/../../migration");
-
 sub ddl_filename {
     my ( $self, $type, $version, $dir, $preversion ) = @_;
 
-    my $dir = File::Spec->catdir( $dir, $version );
+    $dir = File::Spec->catdir( $dir, $version );
     mkdir( $dir );
     my $filename = File::Spec->catfile( $dir, "$type.sql" );
     $filename =~ s/$version/$preversion-$version/ if ($preversion);

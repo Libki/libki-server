@@ -189,7 +189,7 @@ sub statistics : Local Args(0) {
     my ( $self, $c ) = @_;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/ me.username me.clientname, me.action me.when /;
+    my @columns = ( 'me.username', 'me.clientname', 'me.action', 'me.when' );
 
     my $search_term = $c->request->param("sSearch");
     my $filter;

@@ -231,8 +231,8 @@ sub authenticate_via_sip {
 
         $data = <$socket>;
 
-        if ( index( $data, 'BLY' ) != -1 ) {
-            if ( index( $data, 'CQY' ) != -1 ) {
+        if ( CORE::index( $data, 'BLY' ) != -1 ) {
+            if ( CORE::index( $data, 'CQY' ) != -1 ) {
                 return 1;
             }
             else {
