@@ -18,12 +18,14 @@ requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Controller::REST';
 
 requires 'Catalyst::Plugin::Authentication';
-
 requires 'Catalyst::Plugin::Authorization::Roles';
 
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Session::State::Cookie';
+requires 'Catalyst::Plugin::StatusMessage';
+
+requires 'Catalyst::Plugin::Breadcrumbs';
 requires 'Catalyst::Plugin::StatusMessage';
 
 requires 'Catalyst::Helper::View::JSON';
@@ -39,6 +41,7 @@ requires 'Config::General';
 requires 'Perl6::Junction';
 
 requires 'IO::Socket::INET';
+requires 'String::Random';
 
 test_requires 'Test::More' => '0.88';
 catalyst;
