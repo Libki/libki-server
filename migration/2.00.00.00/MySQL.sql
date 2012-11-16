@@ -63,6 +63,13 @@ CREATE TABLE `settings` (
   PRIMARY KEY (`name`)
 );
 
+INSERT INTO `settings` (`name`, `value`) VALUES
+('CurrentGuestNumber', '1'),
+('DefaultTimeAllowance', '45'),
+('KohaServerURL', ''),
+('PostCrashTimeout', '2'),
+('Version', '2.00.00.000');
+
 DROP TABLE IF EXISTS `statistics`;
 
 --
