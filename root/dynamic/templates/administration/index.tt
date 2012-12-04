@@ -27,7 +27,9 @@
         </table> 
 
         <div id="user-table-toolbar" class="table-toolbar float-right btn-group">
-            <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+            [% END %]
             <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
         </div>
 
@@ -38,8 +40,10 @@
         </div>
 
         <div id="user-table-row-toolbar" class="table-row-toolbar btn-group">
-            <button id="user-table-row-toolbar-edit"   class="btn btn-inverse"><i class="icon-edit icon-white"></i> Edit</button>
-            <button id="user-table-row-toolbar-password"   class="btn btn-primary"><i class="icon-retweet icon-white"></i> Password</button>
+            <button id="user-table-row-toolbar-edit" class="btn btn-inverse"><i class="icon-edit icon-white"></i> Edit</button>
+            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                <button id="user-table-row-toolbar-password" class="btn btn-primary"><i class="icon-retweet icon-white"></i> Password</button>
+            [% END %]
             <button id="user-table-row-toolbar-troublemaker" class="btn btn-warning"><i class="icon-warning-sign icon-white"></i> Troublemaker</button>
             <button id="user-table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="icon-trash icon-white"></i> Delete</button>
         </div>
