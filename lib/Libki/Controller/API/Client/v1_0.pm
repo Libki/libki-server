@@ -58,8 +58,8 @@ sub index : Path : Args(0) {
 
         if ( $action eq 'login' ) {
 
-            ## If SIP is enabled, try SIP first
-            if ( $c->config->{SIP}->{enable} ) {
+            ## If SIP is enabled, try SIP first, unless we have a guest or staff account
+            if ( $c->config->{SIP}->{enable} && $user->is_guest() eq 'No' && $c->check_any_user_role( $user, qw/admin superadmin/ ) ) {
                 my ( $success, $error ) =
                   authenticate_via_sip( $c, $username, $password );
 
