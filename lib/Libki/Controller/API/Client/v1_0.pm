@@ -59,37 +59,46 @@ sub index : Path : Args(0) {
         if ( $action eq 'login' ) {
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
-            if ( $c->config->{SIP}->{enable} && $user->is_guest() eq 'No' && $c->check_any_user_role( $user, qw/admin superadmin/ ) ) {
-                my ( $success, $error ) =
-                  authenticate_via_sip( $c, $username, $password );
+            if ( $c->config->{SIP}->{enable} ) {
+                if (
+                    !$user
+                    || (   $user
+                        && $user->is_guest() eq 'No'
+                        && !$c->check_any_user_role( $user,
+                            qw/admin superadmin/ ) )
+                  )
+                {
+                    my ( $success, $error ) =
+                      authenticate_via_sip( $c, $username, $password );
 
-                if ($success) {
-                    if ($user) {    ## User authenticated and exists in Libki
-                        $user->set_column( 'password', $password );
-                        $user->update();
-                    }
-                    else {    ## User authenticated and does not exits in Libki
-                        my $minutes =
-                          $c->model('DB::Setting')->find('DefaultTimeAllowance')
-                          ->value;
+                    if ($success) {
+                        if ($user) {   ## User authenticated and exists in Libki
+                            $user->set_column( 'password', $password );
+                            $user->update();
+                        }
+                        else { ## User authenticated and does not exits in Libki
+                            my $minutes =
+                              $c->model('DB::Setting')
+                              ->find('DefaultTimeAllowance')->value;
 
-                        $user = $c->model('DB::User')->create(
-                            {
-                                username => $username,
-                                password => $password,
-                                minutes  => $minutes,
-                                status   => 'enabled',
-                            }
-                        );
+                            $user = $c->model('DB::User')->create(
+                                {
+                                    username => $username,
+                                    password => $password,
+                                    minutes  => $minutes,
+                                    status   => 'enabled',
+                                }
+                            );
+                        }
                     }
-                }
-                elsif ( $error eq 'INVALID_USER' ) {
-                    ## This user may have existing in SIP, but is now deleted
-                    ## In this case, we don't want the now deleted user to be
-                    ## able to log into Libki, so let's attempt to delete that
-                    ## username before we try to authenticate.
-                    $c->model('DB::User')->search( { username => $username } )
-                      ->delete();
+                    elsif ( $error eq 'INVALID_USER' ) {
+                        ## This user may have existing in SIP, but is now deleted
+                        ## In this case, we don't want the now deleted user to be
+                        ## able to log into Libki, so let's attempt to delete that
+                        ## username before we try to authenticate.
+                        $c->model('DB::User')
+                          ->search( { username => $username } )->delete();
+                    }
                 }
             }
 
