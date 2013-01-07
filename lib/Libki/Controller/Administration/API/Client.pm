@@ -36,6 +36,8 @@ sub modify_time : Local : Args(0) {
             $minutes = $user->minutes + $minutes;
         }
 
+        $minutes = 0 if ( $minutes < 0 );
+
         $user->set_column( 'minutes', $minutes );
 
         if ( $user->update() ) {

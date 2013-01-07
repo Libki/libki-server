@@ -64,6 +64,8 @@ sub create : Local : Args(0) {
     my $minutes  = $params->{'minutes'}
       || $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
 
+    $minutes = 0 if ( $minutes < 0 );
+
     my $success = 0;
 
     my $user = $c->model('DB::User')->create(
@@ -137,6 +139,8 @@ sub update : Local : Args(0) {
     my $notes   = $c->request->params->{'notes'};
     my $status  = $c->request->params->{'status'};
     my @roles   = $c->request->params->{'roles'};
+
+    $minutes = 0 if ( $minutes < 0 );
 
     my $user = $c->model('DB::User')->find($id);
 

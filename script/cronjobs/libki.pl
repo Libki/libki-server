@@ -23,20 +23,24 @@ my $schema = Libki::Schema::DB->connect($connect_info)
 ## Decrement time for logged in users.
 my $session_rs = $schema->resultset('Session');
 while ( my $session = $session_rs->next() ) {
-    $session->user->decrease_minutes(1);
-    $session->user->update();
+    if ( $session->user->minutes() > 0 ) {
+        $session->user->decrease_minutes(1);
+        $session->user->update();
+    }
 }
 
 ## Delete clients that haven't updated recently
-my $post_crash_timeout = $schema->resultset('Setting')->find('PostCrashTimeout')->value;
+my $post_crash_timeout =
+  $schema->resultset('Setting')->find('PostCrashTimeout')->value;
 my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-  localtime(time - ( $post_crash_timeout * 60 ) );
+  localtime( time - ( $post_crash_timeout * 60 ) );
 my $timestamp = sprintf(
     "%04d-%02d-%02d %02d:%02d:%02d",
     $year + 1900,
     $mon + 1, $mday, $hour, $min, $sec
 );
-$schema->resultset('Client')->search({ last_registered => { '<', $timestamp } })->delete();
+$schema->resultset('Client')
+  ->search( { last_registered => { '<', $timestamp } } )->delete();
 
 =head1 AUTHOR
 
