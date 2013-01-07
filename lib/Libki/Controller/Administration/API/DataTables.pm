@@ -223,7 +223,6 @@ sub statistics : Local Args(0) {
     my $count = $c->model('DB::Statistic')->count($filter);
 
     # Do the search, including any required sorting and pagination.
-    print "SORTING: " . Data::Dumper::Dumper(@sorting);
     my @stats = $c->model('DB::Statistic')->search(
         $filter,
         {
@@ -244,7 +243,7 @@ sub statistics : Local Args(0) {
 
         push( @results, $r );
     }
-    print "RESULTS: " . Data::Dumper::Dumper(@results);
+
     $c->stash(
         {
             'iTotalRecords'        => $total_records,
