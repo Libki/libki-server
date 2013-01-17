@@ -52,6 +52,7 @@ sub index : Path : Args(0) {
         my $username    = $c->request->params->{'username'};
         my $password    = $c->request->params->{'password'};
         my $client_name = $c->request->params->{'node'};
+        my $client_location = $c->request->params->{'location'};
 
         my $user =
           $c->model('DB::User')->search( { username => $username } )->next();
@@ -140,7 +141,8 @@ sub index : Path : Args(0) {
                         $c->model('DB::Statistic')->create(
                             {
                                 username   => $username,
-                                clientname => $client_name,
+                                client_name => $client_name,
+                                client_location => $client_location,
                                 action     => 'LOGIN',
                                 when       => $now
                             }
@@ -189,7 +191,7 @@ sub index : Path : Args(0) {
             $c->model('DB::Statistic')->create(
                 {
                     username   => $username,
-                    clientname => $client_name,
+                    client_name => $client_name,
                     action     => 'LOGOUT',
                     when       => $now
                 }

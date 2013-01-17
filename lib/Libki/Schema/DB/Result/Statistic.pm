@@ -61,10 +61,16 @@ __PACKAGE__->table("statistics");
   is_nullable: 0
   size: 255
 
-=head2 clientname
+=head2 client_name
 
   data_type: 'varchar'
   is_nullable: 0
+  size: 255
+
+=head2 client_location
+
+  data_type: 'varchar'
+  is_nullable: 1
   size: 255
 
 =head2 action
@@ -86,8 +92,10 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
   { data_type => "varchar", is_nullable => 0, size => 255 },
-  "clientname",
+  "client_name",
   { data_type => "varchar", is_nullable => 0, size => 255 },
+  "client_location",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
   "action",
   {
     data_type => "enum",
@@ -115,8 +123,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 15:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CJwKqRHL07KjWRZnBvt6Yw
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-17 15:41:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GWGlsXl5dOWxue76Jp8WPA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

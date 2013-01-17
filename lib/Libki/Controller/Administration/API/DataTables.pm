@@ -189,7 +189,7 @@ sub statistics : Local Args(0) {
     my ( $self, $c ) = @_;
 
     # We need to map the table columns to field names for ordering
-    my @columns = ( 'me.username', 'me.clientname', 'me.action', 'me.when' );
+    my @columns = ( 'me.username', 'me.client_name', 'me.action', 'me.when' );
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -197,7 +197,7 @@ sub statistics : Local Args(0) {
         $filter = {
             -or => [
                 'me.username'   => { 'like', "%$search_term%" },
-                'me.clientname' => { 'like', "%$search_term%" },
+                'me.client_name' => { 'like', "%$search_term%" },
                 'me.when'       => { 'like', "%$search_term%" },
                 'me.action'     => { 'like', "%$search_term%" },
             ]
@@ -237,7 +237,7 @@ sub statistics : Local Args(0) {
         my $r;
         $r->{'DT_RowId'} = $s->id;
         $r->{'0'}        = $s->username;
-        $r->{'1'}        = $s->clientname;
+        $r->{'1'}        = $s->client_name;
         $r->{'2'}        = $s->action;
         $r->{'3'}        = $s->when->strftime('%m/%d/%Y %I:%M %p');
 

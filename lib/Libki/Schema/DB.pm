@@ -1,5 +1,4 @@
 use utf8;
-
 package Libki::Schema::DB;
 
 # Created by DBIx::Class::Schema::Loader
@@ -11,10 +10,11 @@ extends 'DBIx::Class::Schema';
 
 __PACKAGE__->load_namespaces;
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-05-04 09:16:55
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cpTh6RhuHr1lLgfpUkL45A
 
-our $VERSION = '2.00.00.00';
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-17 15:41:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NoN4DpNWQJan5m6llyALEg
+
+our $VERSION = '3.00.00.00';
 
 sub ddl_filename {
     my ( $self, $type, $version, $dir, $preversion ) = @_;
@@ -27,6 +27,7 @@ sub ddl_filename {
     return $filename;
 }
 
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 1;
 
 =head1 AUTHOR
