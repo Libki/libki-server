@@ -20,7 +20,8 @@
                         <li class="dropdown [% IF active_class.search('^administration__history|^administration__settings') %] active [% END %]">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li [% IF active_class == 'administration__history'  %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')  %]">History</a></li>
+                                <li [% IF active_class == 'administration__history' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')    %]">History</a></li>
+                                <li [% IF active_class == 'administration__history__statistics' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history/statistics') %]">Statistics</a></li>
                                 [% IF c.check_user_roles('superadmin') %]
                                     <li [% IF active_class == 'administration__settings' %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings') %]">Settings</a></li>
                                 [% END %]
