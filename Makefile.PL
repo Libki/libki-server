@@ -43,6 +43,9 @@ requires 'Perl6::Junction';
 requires 'IO::Socket::INET';
 requires 'String::Random';
 
+requires 'DateTime';
+requires 'DateTime::Format::DateParse';
+
 test_requires 'Test::More' => '0.88';
 catalyst;
 

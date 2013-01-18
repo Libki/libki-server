@@ -4,6 +4,9 @@ use namespace::autoclean;
 
 use Catalyst::Runtime 5.80;
 
+use DateTime;
+use DateTime::Format::DateParse;
+
 # Set flags and add plugins for the application.
 #
 # Note that ORDERING IS IMPORTANT here as plugins are initialized in order,
@@ -63,6 +66,8 @@ __PACKAGE__->config(
             __PACKAGE__->path_to( 'root', 'dynamic', 'includes' ),
         ],
 
+        PLUGIN_BASE => 'Libki::Template::Plugin',
+        
         # Set to 1 for detailed timer stats in your HTML as comments
         TIMER   => 0,
         WRAPPER => 'wrapper.tt',

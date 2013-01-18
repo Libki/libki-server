@@ -27,23 +27,36 @@ sub index : Path : Args(0) {
 sub statistics : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $from = $c->request->params->{'from'};
+    my $to   = $c->request->params->{'to'};
+
+    $from ||= DateTime->today()->subtract( months => 1 )->ymd();
+    $to ||= DateTime->today()->ymd();
+
+    $from = DateTime::Format::DateParse->parse_datetime($from)->ymd();
+    $to   = DateTime::Format::DateParse->parse_datetime($to)->ymd();
+
+    if ( $from gt $to ) {
+        ( $from, $to ) = ( $to, $from );
+    }
+
+    $from .= " 00:00:00";
+    $to .= " 23:59:59";
     my @by_location = $c->model('DB::Statistic')->search(
-        { action => 'LOGIN', },
+        {
+            'when' =>
+              { '>=' => $from, '<=' => $to, },
+            'action' => 'LOGIN',
+        },
         {
             select => [
                 'client_location',
                 { 'COUNT' => '*' },
-                { 'DAY'   => 'when', '-as' => 'theday' },
+                { 'DAY'   => 'when' },
                 { 'MONTH' => 'when' },
                 { 'YEAR'  => 'when' }
             ],
             as       => [ 'location', 'count', 'day', 'month', 'year', ],
-            group_by => [
-                { 'DAY'   => 'when' },
-                { 'MONTH' => 'when' },
-                { 'YEAR'  => 'when' },
-                'client_location'
-            ],
             group_by => [
                 { 'DAY'   => 'when' },
                 { 'MONTH' => 'when' },
@@ -57,15 +70,20 @@ sub statistics : Local : Args(0) {
     my $columns;
     foreach my $b (@by_location) {
         my %columns = $b->get_columns;
+        $columns{'location'} = "__UNDEFINED__"
+          unless ( defined( $columns{'location'} ) );
         $results->{ $columns{'year'} . '-'
-              . $columns{'month'} . '-'
-              . $columns{'day'} }->{ $columns{'location'} } = $columns{'count'};
+              . sprintf( "%02d", $columns{'month'} ) . '-'
+              . sprintf( "%02d", $columns{'day'} ) }->{ $columns{'location'} } =
+          $columns{'count'};
         $columns->{ $columns{'location'} } = 1;
     }
     my @columns = sort keys %$columns;
     $c->stash(
         'by_location'         => $results,
         'by_location_columns' => \@columns,
+        'from'                => $from,
+        'to'                  => $to,
     );
 
 }
