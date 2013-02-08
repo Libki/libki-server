@@ -49,9 +49,9 @@ sub index : Path : Args(0) {
         $c->stash( registered => $registered );
     }
     else {
-        my $username    = $c->request->params->{'username'};
-        my $password    = $c->request->params->{'password'};
-        my $client_name = $c->request->params->{'node'};
+        my $username        = $c->request->params->{'username'};
+        my $password        = $c->request->params->{'password'};
+        my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
 
         my $user =
@@ -140,11 +140,11 @@ sub index : Path : Args(0) {
                         $c->stash( authenticated => $session && 1 );
                         $c->model('DB::Statistic')->create(
                             {
-                                username   => $username,
-                                client_name => $client_name,
+                                username        => $username,
+                                client_name     => $client_name,
                                 client_location => $client_location,
-                                action     => 'LOGIN',
-                                when       => $now
+                                action          => 'LOGIN',
+                                when            => $now
                             }
                         );
                     }
@@ -190,10 +190,10 @@ sub index : Path : Args(0) {
 
             $c->model('DB::Statistic')->create(
                 {
-                    username   => $username,
+                    username    => $username,
                     client_name => $client_name,
-                    action     => 'LOGOUT',
-                    when       => $now
+                    action      => 'LOGOUT',
+                    when        => $now
                 }
             );
         }
@@ -207,6 +207,11 @@ sub authenticate_via_sip {
 
     my ( $sec, $min, $hour, $day, $month, $year ) = localtime(time);
     $year += 1900;
+    $month = sprintf( "%02d", $month );
+    $day   = sprintf( "%02d", $day );
+    $hour  = sprintf( "%02d", $hour );
+    $min   = sprintf( "%02d", $min );
+    $sec   = sprintf( "%02d", $sec );
 
     my $host = $c->config->{SIP}->{host};
     my $port = $c->config->{SIP}->{port};
@@ -221,11 +226,13 @@ sub authenticate_via_sip {
     my $patron_password   = $password;
     my $transaction_date  = "$year$month$day    $hour$min$sec";
 
+    warn "TDATE: *$transaction_date*";
+
     my $socket = IO::Socket::INET->new("$host:$port")
       or die "ERROR in Socket Creation : $!\n";
 
     my $login_command =
-      "9300CN$login_user_id|CO$login_password|CP$location_code";
+      "9300CN$login_user_id|CO$login_password|CP$location_code|";
 
     print $socket $login_command . "\n";
 
@@ -237,7 +244,7 @@ sub authenticate_via_sip {
           . $institution_id . "|AA"
           . $patron_identifier . "|AC"
           . $terminal_password . "|AD"
-          . $patron_password;
+          . $patron_password . "|";
         print $socket $patron_status_request . "\n";
 
         $data = <$socket>;
