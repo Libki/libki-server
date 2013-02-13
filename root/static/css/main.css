@@ -39,3 +39,12 @@ form .required {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+/* 'Group' headers for grouping results in DataTables */
+td.group {
+	background-color: #d1cfd0 !important;
+	border-bottom: 2px solid #A19B9E;
+	border-top: 2px solid #A19B9E;
+        text-align: left;
+        font-weight: bold;
+}

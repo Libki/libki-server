@@ -118,6 +118,21 @@ __PACKAGE__->add_unique_constraint("name", ["name"]);
 
 =head1 RELATIONS
 
+=head2 reservation
+
+Type: might_have
+
+Related object: L<Libki::Schema::DB::Result::Reservation>
+
+=cut
+
+__PACKAGE__->might_have(
+  "reservation",
+  "Libki::Schema::DB::Result::Reservation",
+  { "foreign.client_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 session
 
 Type: might_have
@@ -134,8 +149,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 13:54:24
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/H0D7XBbMAn/zfUQZIxvPA
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-02-14 09:35:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rXU/yyn0Y/OIs2aKPyVWRA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

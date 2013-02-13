@@ -47,14 +47,11 @@ sub index :Path :Args(0) {
 sub update :Local :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $settings = $c->model('DB::Setting')->search();
-    
-    while ( my $s = $settings->next() ) {
-        my $new_setting = $c->request->params->{ $s->name };
-        if ( defined( $new_setting ) ) {
-            $s->value( $new_setting );
-            $s->update();
-        }
+    foreach my $setting ( keys %{$c->request->params} ) {
+        $c->model('DB::Setting')->update_or_create(
+            'name'  => $setting,
+            'value' => $c->request->params->{ $setting },
+        );
     }
     
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );

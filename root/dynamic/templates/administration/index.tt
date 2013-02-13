@@ -75,6 +75,7 @@
                 <th>Message</th>
                 <th>Notes</th>
                 <th>Troublemaker</th>
+                <th>Reserved</th>
             </thead>
         </table> 
 
@@ -345,6 +346,12 @@ $(document).ready(function() {
                 fnCallback(json)
             } );
         },
+        "aoColumnDefs": [
+            [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
+                { "bVisible": false, "aTargets": [ 9 ] },
+            [% END %]
+        ],
+
     } );
 
     $('#client-table-toolbar').prependTo($('#client-table_filter'));

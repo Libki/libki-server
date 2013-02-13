@@ -62,7 +62,7 @@ sub users : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => $c->request->param('iDisplayLength'),
+            rows     => ( $c->request->param('iDisplayLength') > 0 ) ? $c->request->param('iDisplayLength') : undef,
             offset   => $c->request->param('iDisplayStart'),
             prefetch => { session => 'client' },
         }
@@ -121,7 +121,6 @@ sub clients : Local Args(0) {
         $filter->{'location'} = $c->request->param("location_filter");
     }
 
-warn "FILTER: " . Data::Dumper::Dumper( $filter );
     # Sorting options
     my @sorting;
     for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
@@ -151,7 +150,7 @@ warn "FILTER: " . Data::Dumper::Dumper( $filter );
             order_by => \@sorting,
             rows     => $c->request->param('iDisplayLength'),
             offset   => $c->request->param('iDisplayStart'),
-            prefetch => { session => 'user' },
+            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
         }
     );
 
@@ -170,7 +169,7 @@ warn "FILTER: " . Data::Dumper::Dumper( $filter );
         $r->{'7'} = defined( $c->session ) ? $c->session->user->notes   : undef;
         $r->{'8'} =
           defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-
+        $r->{'9'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
         push( @results, $r );
     }
 

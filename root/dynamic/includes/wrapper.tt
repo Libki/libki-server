@@ -98,7 +98,12 @@
 
 <body>
 
-    [% INCLUDE navbar.tt %]
+    [% IF interface == 'administration' %]
+        [% INCLUDE navbar_administration.tt %]
+    [% ELSE %]
+        [% INCLUDE navbar_public.tt %]
+    [% END %]
+
     [% INCLUDE breadcrumbs.tt %]
 
     <div id="container-fluid">

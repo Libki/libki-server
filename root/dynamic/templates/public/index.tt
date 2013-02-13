@@ -1,0 +1,306 @@
+[% SET active_class = "public__index" %]
+
+<!-- We don't need this for the time being, but may later
+<ul class="nav nav-tabs" id="primary-tabs">
+    <li class="active">
+        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">Clients</a>
+    </li>
+</ul>
+-->
+
+<div class="tab-content">
+  <div class="tab-pane active" id="clients-tab">
+        <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <thead>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Estimated time remaining</th>
+                <th>Reservation status</th>
+            </thead>
+        </table> 
+
+        <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
+            [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
+                <button id="client-table-row-toolbar-make-reservation" class="btn btn-inverse">
+                    <i class="icon-plus-sign icon-white"></i> Make reservation
+                </button>
+
+                <button id="client-table-row-toolbar-cancel-reservation" class="btn btn-danger">
+                    <i class="icon-minus-sign icon-white"></i> Cancel reservation
+                </button>
+            [% END %]
+        </div>
+  </div>
+</div>
+
+<div class="modal hide" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="make-reservation-modal-label">Make reservation for <i><span id="make-reservation-modal-for"></span></i></h3>
+    </div>
+
+    <div class="modal-body">
+        <form id="make-reservation-modal-form" class="form-horizontal">
+            <input id="make-reservation-modal-form-id" name="id" type="hidden" />
+
+            <div class="control-group">
+                <label class="control-label" for="make-reservation-username">Username</label>
+                <div class="controls">
+                    <input type="text" id="make-reservation-username" name="username" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="make-reservation-password">Password</label>
+                <div class="controls">
+                    <input type="password" id="make-reservation-password" name="password" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button id="make-reservation-modal-form-submit" class="btn btn-primary">Make reservation</button>
+    </div>
+</div>
+
+<div class="modal hide" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="cancel-reservation-modal-label">Cancel reservation for <i><span id="cancel-reservation-modal-for"></span></i></h3>
+    </div>
+
+    <div class="modal-body">
+        <form id="cancel-reservation-modal-form" class="form-horizontal">
+            <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
+
+            <div class="control-group">
+                <label class="control-label" for="cancel-reservation-password">Password</label>
+                <div class="controls">
+                    <input type="password" id="cancel-reservation-password" name="password" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">Make reservation</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    // Initalize the Clients table as a datatable
+    cTable = $("#client-table").dataTable( {
+        "bPaginate": false,
+        "bFilter": false, // Hide the search form
+        "bProcessing": false,  // Indicate when the table is processing data
+        "bServerSide": true,  // Indicate that the datatable gets data from a
+                              // HTTP GET request
+        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'><'span6'p>>",
+        "sAjaxSource": "[% c.uri_for("/api/public/datatables/clients") %]",  // The actual URL to call for data
+        "sPaginationType": "bootstrap",
+        "fnDrawCallback": function(oSettings, json) {
+            AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
+        },
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            if ( aData[2] ) {
+                $("td:eq(1)", nRow).html( "In use" );
+            } else {
+                $("td:eq(1)", nRow).html( "Open" );
+            }
+
+            if ( aData[3] ) {
+                $("td:eq(2)", nRow).html( aData[3] + " " + "minutes" );
+            }
+
+            if ( Boolean( aData[4] ) ) {
+                if ( [% Settings.ReservationShowUsername %] ) {
+                    $("td:eq(3)", nRow).html( "Reserved for" + " " + "<i>" + aData[4] + "</i>" );
+                }
+                else {
+                    $("td:eq(3)", nRow).html( "Reserved" );
+                }
+            }
+        },
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+            if ( window.location_filter ) {
+                aoData.push( { "name": "location_filter", "value": window.location_filter } );
+            }
+
+            $.getJSON( sSource, aoData, function (json) { 
+                fnCallback(json)
+            } );
+        },
+        "fnDrawCallback": function ( oSettings, json ) {
+            AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
+
+            if ( oSettings.aiDisplay.length == 0 ) {
+                return;
+            }
+
+            var nTrs = $("#client-table tbody tr");
+            var iColspan = nTrs[0].getElementsByTagName("td").length;
+            var sLastGroup = "";
+
+            for ( var i=0 ; i<nTrs.length ; i++ ) {
+                var iDisplayIndex = oSettings._iDisplayStart + i;
+                var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[1];
+
+                if ( sGroup != sLastGroup ) {
+                    var nGroup = document.createElement( "tr" );
+                    var nCell = document.createElement( "td" );
+                    nCell.colSpan = iColspan;
+                    nCell.className = "group";
+                    nCell.innerHTML = sGroup;
+                    nGroup.appendChild( nCell );
+                    nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                    sLastGroup = sGroup;
+                }
+            }
+        },
+        "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [ 1 ] },
+            [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
+                { "bVisible": false, "aTargets": [ 4 ] },
+            [% END %]
+        ],
+        "aaSortingFixed": [[ 0, "asc" ]],
+        "aaSorting": [[ 1, "asc" ]],
+    } );
+
+    $("#client-table-row-toolbar-make-reservation").click(function(){
+        if ( ! $("#" + window.selected_id).children(":nth(3)").text() ) {
+            $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
+
+            $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
+
+            $("#client-table-row-toolbar").hide();
+
+            $("#make-reservation-modal-form-id").val( window.selected_id );
+
+            $("#make-reservation-username").val("");
+            $("#make-reservation-username").parent().removeClass("success warning error");
+
+            $("#make-reservation-password").val("");
+            $("#make-reservation-password").parent().removeClass("success warning error");
+
+            $("#make-reservation-modal").modal();
+            $("#make-reservation-username").focus();
+
+            $("#make-reservation-modal-form-submit").removeAttr("disabled");
+        } else {
+            alert("This client is already reserved.");
+        }
+    });
+
+    $("#make-reservation-modal-form-submit").click(function(){
+        var errors = false;
+        $("#make-reservation-username").parent().parent().removeClass("error");
+        $("#make-reservation-password").parent().parent().removeClass("error");
+
+        if ( ! $("#make-reservation-password").val() ) {
+            errors = true;
+            $("#make-reservation-password").parent().parent().addClass("error");
+            $("#make-reservation-password").focus();
+        }
+ 
+       if ( ! $("#make-reservation-username").val() ) {
+            errors = true;
+            $("#make-reservation-username").parent().parent().addClass("error").focus();
+            $("#make-reservation-username").focus();
+        }
+
+        if ( ! errors ) {
+            $("#make-reservation-modal-form-submit").attr("disabled","disabled");
+
+            $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
+
+                if ( data.success ) {
+                    $("#make-reservation-modal").modal("hide");
+                    DisplayMessage( "success", "Reservation created!" );
+                    ForceClientTableRefresh();
+                }
+                else if ( data.reason == "CLIENT_USER_ALREADY_RESERVED" ) {
+                    DisplayMessage( "warning", "You have already reserved this client!" );
+                } 
+                else if ( data.reason == "USER_ALREADY_RESERVED" ) {
+                    DisplayMessage( "error", "You have already a reservation on a different client!" );
+                } 
+                else if ( data.reason == "CLIENT_ALREADY_RESERVED" ) {
+                    DisplayMessage( "error", "This client is already reserved for someone else!" );
+                } 
+                else if ( data.reason == "UNKOWN" ) {
+                    DisplayMessage( "error", "Your reservation failed for an unknown reason!" );
+                } 
+                else  {
+                    DisplayMessage( "error", "Username & password do not match!" );
+                    $("#client-table-row-toolbar-make-reservation").click();
+                }
+
+            });
+        }
+    });
+
+    $("#client-table-row-toolbar-cancel-reservation").click(function(){
+        if ( $("#" + window.selected_id).children(":nth(3)").text() ) {
+            $("#cancel-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
+
+            $("#client-table-row-toolbar").hide();
+
+            $("#cancel-reservation-modal-form-id").val( window.selected_id );
+
+            $("#cancel-reservation-password").val("");
+            $("#cancel-reservation-password").parent().removeClass("success warning error");
+
+            $("#cancel-reservation-modal").modal();
+            $("#cancel-reservation-password").focus();
+
+            $("#cancel-reservation-modal-form-submit").removeAttr("disabled");
+        } else {
+            alert("This client is not currently reserved.");
+        }
+    });
+
+    $("#cancel-reservation-modal-form-submit").click(function(){
+        var errors = false;
+        $("#cancel-reservation-password").parent().parent().removeClass("error");
+
+        if ( ! $("#cancel-reservation-password").val() ) {
+            errors = true;
+            $("#cancel-reservation-password").parent().parent().addClass("error");
+            $("#cancel-reservation-password").focus();
+        }
+ 
+        if ( ! errors ) {
+            $("#cancel-reservation-modal-form-submit").attr("disabled","disabled");
+
+            $.post("[% c.uri_for("/api/public/reservations/delete") %]", $("#cancel-reservation-modal-form").serialize(), function(data) {
+
+                if ( data.success ) {
+                    $("#cancel-reservation-modal").modal("hide");
+                    DisplayMessage( "success", "Reservation canceled!" );
+                    ForceClientTableRefresh();
+                }
+                else if ( data.reason == "UNKOWN" ) {
+                    DisplayMessage( "error", "Your reservation cancelation failed for an unknown reason!" );
+                } 
+                else  {
+                    DisplayMessage( "error", "Incorrect password!" );
+                    $("#client-table-row-toolbar-cancel-reservation").click();
+                }
+
+            });
+        }
+    });
+
+    //window.setInterval( function(){ ForceClientTableRefresh() }, 5000 );
+});
+
+/*********** Helper Functions ***********/
+function ForceClientTableRefresh() {
+     $("#client-table").dataTable().fnDraw(true);
+}
+
+</script>

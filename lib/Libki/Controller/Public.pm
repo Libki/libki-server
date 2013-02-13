@@ -1,28 +1,23 @@
-package Libki::Controller::Root;
+package Libki::Controller::Public;
 use Moose;
 use namespace::autoclean;
 
-BEGIN { extends 'Catalyst::Controller' }
-
-#
-# Sets the actions in this controller to be registered with no prefix
-# so they function identically to actions created in MyApp.pm
-#
-__PACKAGE__->config(namespace => '');
+BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
 
-Libki::Controller::Root - Root Controller for Libki
+Libki::Controller::Public - Catalyst Controller
 
 =head1 DESCRIPTION
 
-[enter your description here]
+Catalyst Controller.
 
 =head1 METHODS
 
-=head2 index
+=cut
 
-The root page (/)
+
+=head2 index
 
 =cut
 
@@ -30,38 +25,18 @@ sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 }
 
-=head2 default
-
-Standard 404 error page
-
-=cut
-
-sub default :Path {
-    my ( $self, $c ) = @_;
-    $c->response->body( 'Page not found' );
-    $c->response->status(404);
-}
-
-=head2 end
-
-Attempt to render a view, if needed.
-
-=cut
-
-sub end : ActionClass('RenderView') {}
-
 =head2 auto
     
-Stash all the system settings
+Check if there is an authorized user and, if not, forward to login page
     
 =cut
 
+# Note that 'auto' runs after 'begin' but before your actions and that
+# 'auto's "chain" (all from application path to most specific class are run)
+# See the 'Actions' section of 'Catalyst::Manual::Intro' for more info.
 sub auto : Private {
     my ( $self, $c ) = @_;
-    
-    my @settings = $c->model('DB::Setting')->all();
-    my %s = map { $_->name() => $_->value() } @settings;
-    $c->stash( 'Settings' => \%s );
+    $c->stash( interface => 'public' );
 }
 
 =head1 AUTHOR

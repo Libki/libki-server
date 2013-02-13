@@ -28,6 +28,75 @@
     </fieldset>
 
     <fieldset>
+        <legend>Client behavior</legend>
+    
+        <div class="control-group">
+            <div class="controls">
+                <label class="radio">
+                    <input type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" checked>
+                    First come, first served. A patron walks up to an open client and logs in.
+                </label>
+
+                <label class="radio">
+                    <input type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
+                    Reservation only. A patron must place a reservation for a client before logging in to to.
+                </label>
+
+                <label class="radio">
+                    <input type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES">
+                    First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).
+                </label>
+            </div>
+        </div>
+    </fieldset>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var value = "[% ClientBehavior %]";
+            $("input[name=ClientBehavior][value=" + value + "]").prop('checked', true);
+        });
+    </script>
+
+    <fieldset>
+        <legend>Reservation settings</legend>
+    
+        <div class="control-group">
+            <label class="control-label" for="ReservationTimeout">Reservation timeout</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
+                    <span class="add-on">minutes</span>
+                </div>
+                <span class="help-inline">The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.</span>
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label" for="ReservationShowUsername">Display usernames</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input id="ReservationShowUsernameCheckbox" type="checkbox">
+                    <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
+                    When a Libki client is reserved and waiting, display the username of the person it is waiting for.
+                </label>
+            </div>
+        </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
+
+            $("#ReservationShowUsernameCheckbox").change( function() {
+                if ( $(this).attr('checked') == 'checked') {
+                    $("#ReservationShowUsername").val( 1 );
+                } else {
+                    $("#ReservationShowUsername").val( 0 );
+                }
+            });
+        });
+    </script>
+    </fieldset>
+
+    <fieldset>
         <legend>Koha integration</legend>
     
         <div class="control-group">

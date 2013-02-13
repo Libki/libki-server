@@ -52,6 +52,8 @@ Check if there is an authorized user and, if not, forward to login page
 sub auto : Private {
     my ( $self, $c ) = @_;
 
+    $c->stash( interface => 'administration' );
+    
     # Allow unauthenticated users to reach the login page.  This
     # allows unauthenticated users to reach any action in the Login
     # controller.  To lock it down to a single action, we could use:
