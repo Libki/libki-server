@@ -19,27 +19,45 @@
             <thead>
                 <tr>
                     <th>Date</th>
+                    [% SET location_totals = {} %]
                     [% FOREACH b IN by_location_columns %]
+                        [% SET location_totals.$b = '0' %]
                         <th>
-                            [% IF b == '__UNDEFINED__' %]
+                            [% IF b == 'XXX__UNDEFINED__' %]
                                 <i>No Location Set</i>
                             [% ELSE %]
                                 [% b %]
                             [% END %]
                         </th>
                     [% END %]
+                    <th>Total by date</th>
                 </tr>
             </thead>
             <tbody>
+                [% SET grand_total = 0 %]
                 [% FOREACH key IN by_location.keys.sort %]
                     <tr>
                         <td>[% LibkiDate.format(key) %]</td>
+                        [% SET date_total = 0 %]
                         [% FOREACH b IN by_location_columns %]
                             <td>[% by_location.$key.$b || '0' %]</td>
+                            [% SET date_total = date_total + by_location.$key.$b %]
+                            [% SET location_totals.$b = location_totals.$b + by_location.$key.$b %]
                         [% END %]
+                        [% SET grand_total = grand_total + date_total %]
+                        <th>[% date_total %]</th>
                     </tr>
                 [% END %]
             </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total by location</th>
+                    [% FOREACH key IN location_totals.keys.sort %]
+                        <th>[% location_totals.$key %]</th>
+                    [% END %]
+                    <th><i>[% grand_total %]</i></th>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
