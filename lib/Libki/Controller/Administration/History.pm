@@ -70,7 +70,7 @@ sub statistics : Local : Args(0) {
     my $columns;
     foreach my $b (@by_location) {
         my %columns = $b->get_columns;
-        $columns{'location'} = "__UNDEFINED__"
+        $columns{'location'} = "XXX__UNDEFINED__"
           unless ( defined( $columns{'location'} ) );
         $results->{ $columns{'year'} . '-'
               . sprintf( "%02d", $columns{'month'} ) . '-'
