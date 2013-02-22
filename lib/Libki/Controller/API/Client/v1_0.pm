@@ -58,10 +58,29 @@ sub index : Path : Args(0) {
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
-        my $client_name     = $c->request->params->{'node'};
+        my $client_name  = $c->request->params->{'node'};
         my $reserved_for = $c->request->params->{'reserved_for'};
-        warn "RESERVATION ACKNOWLEDGED: $client_name :: $reserved_for";
-    } else {
+
+        my $reservation =
+          $c->model('DB::Reservation')
+          ->search( {},
+            { 'username' => $reserved_for, 'name' => $client_name } )->next();
+
+        unless ( $reservation->expiration() ) {
+            $reservation->expiration(
+                DateTime::Format::MySQL->format_datetime(
+                    DateTime->now( time_zone => 'local' )->add_duration(
+                        DateTime::Duration->new(
+                            minutes =>
+                              $c->stash->{'Settings'}->{'ReservationTimeout'}
+                        )
+                    )
+                )
+            );
+            $reservation->update();
+        }
+    }
+    else {
         my $username        = $c->request->params->{'username'};
         my $password        = $c->request->params->{'password'};
         my $client_name     = $c->request->params->{'node'};

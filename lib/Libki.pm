@@ -6,6 +6,7 @@ use Catalyst::Runtime 5.80;
 
 use DateTime;
 use DateTime::Format::DateParse;
+use DateTime::Format::MySQL;
 
 # Set flags and add plugins for the application.
 #
