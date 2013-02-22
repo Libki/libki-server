@@ -37,18 +37,31 @@ sub index : Path : Args(0) {
 
     if ( $action eq 'register_node' ) {
 
-        my $registered = $c->model('DB::Client')->update_or_create(
+        my $client = $c->model('DB::Client')->update_or_create(
             {
                 name            => $c->request->params->{'node_name'},
                 location        => $c->request->params->{'location'},
                 last_registered => $now,
             }
         );
-        $registered &&= 1;
 
-        $c->stash( registered => $registered );
+        my $reservation = $client->reservation || undef;
+        if ($reservation) {
+            $c->stash( reserved_for => $reservation->user->username() );
+        }
+
+        $c->stash(
+            registered     => !!$client,
+            ClientBehavior => $c->stash->{'Settings'}->{'ClientBehavior'},
+            ReservationShowUsername =>
+              $c->stash->{'Settings'}->{'ReservationShowUsername'},
+        );
     }
-    else {
+    elsif ( $action eq 'acknowledge_reservation' ) {
+        my $client_name     = $c->request->params->{'node'};
+        my $reserved_for = $c->request->params->{'reserved_for'};
+        warn "RESERVATION ACKNOWLEDGED: $client_name :: $reserved_for";
+    } else {
         my $username        = $c->request->params->{'username'};
         my $password        = $c->request->params->{'password'};
         my $client_name     = $c->request->params->{'node'};
@@ -130,23 +143,44 @@ sub index : Path : Args(0) {
                       ->search( { name => $client_name } )->next();
 
                     if ($client) {
-                        my $session = $c->model('DB::Session')->create(
-                            {
-                                user_id   => $user->id,
-                                client_id => $client->id,
-                                status    => 'active'
-                            }
-                        );
-                        $c->stash( authenticated => $session && 1 );
-                        $c->model('DB::Statistic')->create(
-                            {
-                                username        => $username,
-                                client_name     => $client_name,
-                                client_location => $client_location,
-                                action          => 'LOGIN',
-                                when            => $now
-                            }
-                        );
+                        my $reservation = $client->reservation;
+
+                        if (
+                            !$reservation
+                            && !(
+                                $c->stash->{'Settings'}->{'ClientBehavior'} =~
+                                'FCFS'
+                            )
+                          )
+                        {
+                            $c->stash( error => 'RESERVATION_REQUIRED' );
+                        }
+                        elsif ( !$reservation
+                            || $reservation->user_id() == $user->id() )
+                        {
+                            $reservation->delete() if $reservation;
+
+                            my $session = $c->model('DB::Session')->create(
+                                {
+                                    user_id   => $user->id,
+                                    client_id => $client->id,
+                                    status    => 'active'
+                                }
+                            );
+                            $c->stash( authenticated => $session && 1 );
+                            $c->model('DB::Statistic')->create(
+                                {
+                                    username        => $username,
+                                    client_name     => $client_name,
+                                    client_location => $client_location,
+                                    action          => 'LOGIN',
+                                    when            => $now
+                                }
+                            );
+                        }
+                        else {
+                            $c->stash( error => 'RESERVED_FOR_OTHER' );
+                        }
                     }
                     else {
                         $c->stash( error => 'INVALID_CLIENT' );
@@ -198,7 +232,8 @@ sub index : Path : Args(0) {
             );
         }
     }
-
+    delete( $c->stash->{'Settings'} );
+    warn Data::Dumper::Dumper( $c->stash );
     $c->forward( $c->view('JSON') );
 }
 

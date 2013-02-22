@@ -295,7 +295,7 @@ $(document).ready(function() {
         }
     });
 
-    //window.setInterval( function(){ ForceClientTableRefresh() }, 5000 );
+    window.setInterval( function(){ ForceClientTableRefresh() }, 5000 );
 });
 
 /*********** Helper Functions ***********/
