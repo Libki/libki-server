@@ -299,8 +299,8 @@ $(document).ready(function() {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            [% IF KohaServerURL %]
-                $('td:eq(0)', nRow).html( '<a target="_blank" href="http://[% KohaServerURL %]/cgi-bin/koha/members/member.pl?member=' + aData[0] + '">' + aData[0] + '</b>' );
+            [% IF Settings.ThirdPartyURL %]
+                $('td:eq(0)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[0] + '">' + aData[0] + '</b>' );
             [% END %]
         },
     } );

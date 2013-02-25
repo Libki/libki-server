@@ -34,8 +34,6 @@ sub index : Path : Args(0) {
     $c->stash(
         'DefaultTimeAllowance' =>
           $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
-        'KohaServerURL' =>
-          $c->model('DB::Setting')->find('KohaServerURL')->value,
         'locations' => \@locations,
     );
 }

@@ -97,16 +97,16 @@
     </fieldset>
 
     <fieldset>
-        <legend>Koha integration</legend>
+        <legend>Third party integration</legend>
     
         <div class="control-group">
-            <label class="control-label" for="KohaServerURL">Koha server URL</label>
+            <label class="control-label" for="ThirdPartyURL">URL</label>
             <div class="controls">
                 <div class="input-prepend">
-                    <span class="add-on">http://</span>
-                    <input type="text" class="input-xxlarge" id="KohaServerURL" name="KohaServerURL" value="[% KohaServerURL %]">
+                    <input type="text" class="input-xxlarge" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
                 </div>
-                <span class="help-inline">Enabling Koha integration will cause usernames to hyperlink to a Koha patron search for that username. To enable, simply input your Koha server's base URL here.</span>
+                <span class="help-inline">Entering a url here will cause a username to becaome a hyperlink with the user's username at the end. make sure to add "http://" or "https://" at the beginning.</span>
+                <span class="help-inline">For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?member=</i> will link to the Koha ILS's search function for the given username.</span>
             </div>
         </div>
     </fieldset>
