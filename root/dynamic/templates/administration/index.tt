@@ -331,9 +331,9 @@ $(document).ready(function() {
             AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            [% IF KohaServerURL %]
+            [% IF Settings.ThirdPartyURL %]
                 if ( aData[3] ) {
-                    $('td:eq(3)', nRow).html( '<a target="_blank" href="http://[% KohaServerURL %]/cgi-bin/koha/members/member.pl?member=' + aData[3] + '">' + aData[3] + '</b>' );
+                    $('td:eq(3)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[3] + '">' + aData[3] + '</b>' );
                 }
             [% END %]
         },
