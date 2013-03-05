@@ -28,6 +28,7 @@ The root page (/)
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
+    $c->go( 'Libki::Controller::Public', 'index' );
 }
 
 =head2 default
