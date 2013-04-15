@@ -31,6 +31,21 @@ while ( my $session = $session_rs->next() ) {
         $session->user->decrease_minutes(1);
         $session->user->update();
     }
+    else {
+	## If somehow a session exists with
+	## 0 or a negative number of minutes,
+	## we need to clean if out.
+        $c->model('DB::Statistic')->create(
+            {
+                username    => $session->user->username(),
+                client_name => $session->client->name(),
+                action      => 'SESSION_DELETED',
+                when        => $now
+            }
+        );
+
+        $session->delete();
+    }
 }
 
 ## Delete clients that haven't updated recently
