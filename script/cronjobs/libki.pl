@@ -6,6 +6,7 @@ use warnings;
 use Env;
 use Config::JFDI;
 use DateTime::Format::MySQL;
+use DateTime;
 
 use FindBin;
 use lib "$FindBin::Bin/../../lib";
@@ -30,6 +31,21 @@ while ( my $session = $session_rs->next() ) {
     if ( $session->user->minutes() > 0 ) {
         $session->user->decrease_minutes(1);
         $session->user->update();
+    }
+    else {
+	## If somehow a session exists with
+	## 0 or a negative number of minutes,
+	## we need to clean if out.
+        $schema->resultset('Schema')->create(
+            {
+                username    => $session->user->username(),
+                client_name => $session->client->name(),
+                action      => 'SESSION_DELETED',
+                when        => DateTime::Format::MySQL->format_datetime( DateTime->now() ),
+            }
+        );
+
+        $session->delete();
     }
 }
 
