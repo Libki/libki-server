@@ -36,7 +36,7 @@ while ( my $session = $session_rs->next() ) {
 	## If somehow a session exists with
 	## 0 or a negative number of minutes,
 	## we need to clean if out.
-        $schema->resultset('Schema')->create(
+        $schema->resultset('Statistic')->create(
             {
                 username    => $session->user->username(),
                 client_name => $session->client->name(),
