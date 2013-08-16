@@ -97,6 +97,85 @@
     </fieldset>
 
     <fieldset>
+        <legend>Client login banner settings</legend>
+    
+        <fieldset>
+            <legend>Top banner</legend>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerTopURL">Source URL</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">http://</span>
+                        <input type="text" class="input-xxlarge" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
+                    </div>
+                    <span class="help-inline">The URL for the source image or image service.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerTopWidth">Width</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" class="input-mini" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
+                        <span class="add-on">pixels</span>
+                    </div>
+                    <span class="help-inline">The width of the source image or image service in pixels.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerTopHeight">Height</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" class="input-mini" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
+                        <span class="add-on">pixels</span>
+                    </div>
+                    <span class="help-inline">The height of the source image or image service in pixels.</span>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Bottom banner</legend>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerBottomURL">Source URL</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">http://</span>
+                        <input type="text" class="input-xxlarge" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
+                    </div>
+                    <span class="help-inline">The URL for the source image or image service.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerBottomWidth">Width</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" class="input-mini" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
+                        <span class="add-on">pixels</span>
+                    </div>
+                    <span class="help-inline">The width of the source image or image service in pixels.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="BannerBottomHeight">Height</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" class="input-mini" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
+                        <span class="add-on">pixels</span>
+                    </div>
+                    <span class="help-inline">The height of the source image or image service in pixels.</span>
+                </div>
+            </div>
+        </fieldset>
+        
+    </fieldset>
+
+    <fieldset>
         <legend>Third party integration</legend>
     
         <div class="control-group">
