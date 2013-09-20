@@ -8,3 +8,12 @@
         quote_names 1
     </connect_info>
 </Model::DB>
+<SIP>
+    enable 0
+    host ils.mylibrary.org
+    port 6001
+    location LIB
+    username libki_sipuser
+    password PassW0rd
+    separator CR
+</SIP>

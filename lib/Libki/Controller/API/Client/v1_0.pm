@@ -2,6 +2,7 @@ package Libki::Controller::API::Client::v1_0;
 use Moose;
 use namespace::autoclean;
 
+use Socket qw(:crlf);
 use IO::Socket::INET;
 
 BEGIN { extends 'Catalyst::Controller'; }
@@ -267,6 +268,9 @@ sub index : Path : Args(0) {
 sub authenticate_via_sip {
     my ( $c, $username, $password ) = @_;
 
+    my $terminator = ( $c->config->{SIP}->{terminator} eq 'CR' ) ? $CR : $CRLF;
+    local $/ = $terminator;
+
     my ( $sec, $min, $hour, $day, $month, $year ) = localtime(time);
     $year += 1900;
     $month = sprintf( "%02d", $month );
@@ -296,7 +300,7 @@ sub authenticate_via_sip {
     my $login_command =
       "9300CN$login_user_id|CO$login_password|CP$location_code|";
 
-    print $socket $login_command . "\n";
+    print $socket $login_command . $terminator;
 
     my $data = <$socket>;
 
@@ -307,7 +311,7 @@ sub authenticate_via_sip {
           . $patron_identifier . "|AC"
           . $terminal_password . "|AD"
           . $patron_password . "|";
-        print $socket $patron_status_request . "\n";
+        print $socket $patron_status_request . $terminator;
 
         $data = <$socket>;
 

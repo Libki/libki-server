@@ -41,6 +41,7 @@ requires 'Config::General';
 requires 'Perl6::Junction';
 
 requires 'IO::Socket::INET';
+requires 'Socket';
 requires 'String::Random';
 
 requires 'DateTime';
