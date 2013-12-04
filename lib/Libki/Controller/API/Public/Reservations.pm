@@ -28,9 +28,14 @@ sub create : Local : Args(0) {
     my $client_id = $c->request->params->{'id'};
 
     my $user =
-      $c->model('DB::User')->search( { username => $username } )->next();
+      $c->model('DB::User')->single( { username => $username } );
+
+    my ( $success, $error_code ) = ( 1, undef ); # Defaults for non-sip using systems
+    ( $success, $error_code ) = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )
+        if $c->config->{SIP}->{enable};
 
     if (
+        $success && 
         $c->authenticate(
             {
                 username => $username,
