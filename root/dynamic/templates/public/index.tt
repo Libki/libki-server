@@ -222,6 +222,10 @@ $(document).ready(function() {
                     DisplayMessage( "success", "Reservation created!" );
                     ForceClientTableRefresh();
                 }
+                else if ( data.reason == "INVALID_USER" || data.reason == "INVALID_PASSWORD" )  {
+                    DisplayMessage( "error", "Username & password do not match!" );
+                    $("#client-table-row-toolbar-make-reservation").click();
+                }
                 else if ( data.reason == "CLIENT_USER_ALREADY_RESERVED" ) {
                     DisplayMessage( "warning", "You have already reserved this client!" );
                 } 
@@ -231,15 +235,53 @@ $(document).ready(function() {
                 else if ( data.reason == "CLIENT_ALREADY_RESERVED" ) {
                     DisplayMessage( "error", "This client is already reserved for someone else!" );
                 } 
-                else if ( data.reason == "UNKNOWN" ) {
-                    DisplayMessage( "error", "Your reservation failed for an unknown reason!" );
-                } 
                 else if ( data.reason == "FEE_LIMIT" ) {
                     DisplayMessage( "error", "You owe more than $" + data.details.fee_limit + " in fees!" );
                 } 
-                else  {
-                    DisplayMessage( "error", "Username & password do not match!" );
-                    $("#client-table-row-toolbar-make-reservation").click();
+                else if ( data.reason == "CHARGE_PRIVILEGES_DENIED" ) {
+                    DisplayMessage( "error", "Your charge privileges have been denied!" );
+                } 
+                else if ( data.reason == "RENEWAL_PRIVILEGES_DENIED" ) {
+                    DisplayMessage( "error", "Your renewal privileges have been denied!" );
+                } 
+                else if ( data.reason == "RECALL_PRIVILEGES_DENIED" ) {
+                    DisplayMessage( "error", "Your recall privileges have been denied!" );
+                } 
+                else if ( data.reason == "HOLD_PRIVILEGES_DENIED" ) {
+                    DisplayMessage( "error", "Your hold privileges have been denied!" );
+                } 
+                else if ( data.reason == "CARD_REPORTED_LOST" ) {
+                    DisplayMessage( "error", "Your card has been reported lost!" );
+                } 
+                else if ( data.reason == "TOO_MANY_ITEMS_CHARGED" ) {
+                    DisplayMessage( "error", "You have too many items charged to your account!" );
+                } 
+                else if ( data.reason == "TOO_MANY_ITEMS_OVERDUE" ) {
+                    DisplayMessage( "error", "You have too many items overdue!" );
+                } 
+                else if ( data.reason == "TOO_MANY_ITEMS_RENEWALS" ) {
+                    DisplayMessage( "error", "You have renewed items too many times!" );
+                } 
+                else if ( data.reason == "TOO_MANY_CLAIMS_OF_ITEMS_RETURNED" ) {
+                    DisplayMessage( "error", "You have claimed to many items as returned!" );
+                } 
+                else if ( data.reason == "TOO_MANY_ITEMS_LOST" ) {
+                    DisplayMessage( "error", "You have have lost too many items!" );
+                } 
+                else if ( data.reason == "EXCESSIVE_OUTSTANDING_FINES" ) {
+                    DisplayMessage( "error", "You have excessive outstanding fines!" );
+                } 
+                else if ( data.reason == "EXCESSIVE_OUTSTANDING_FEES" ) {
+                    DisplayMessage( "error", "You have excessive outstanding fees!" );
+                } 
+                else if ( data.reason == "RECALL_OVERDUE" ) {
+                    DisplayMessage( "error", "You have a recalled item which is overdue!" );
+                } 
+                else if ( data.reason == "TOO_MANY_ITEMS_VILLED" ) {
+                    DisplayMessage( "error", "You have been billed for too many items!" );
+                } 
+                else {
+                    DisplayMessage( "error", data.reason );
                 }
 
             });
