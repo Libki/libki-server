@@ -38,7 +38,8 @@ sub authenticate_via_sip {
     my $data = <$socket>;
 
     if ( $data =~ '^941' ) {
-        my $patron_status_request = "63001"
+        my $patron_status_request =
+            "63001" 
           . $summary
           . $transaction_date . "AO"
           . $institution_id . "|AA"
@@ -52,14 +53,14 @@ sub authenticate_via_sip {
         if ( CORE::index( $data, 'BLY' ) != -1 ) {
             if ( CORE::index( $data, 'CQY' ) != -1 ) {
 
-                if ($user) {   ## User authenticated and exists in Libki
+                if ($user) {    ## User authenticated and exists in Libki
                     $user->set_column( 'password', $password );
                     $user->update();
                 }
-                else { ## User authenticated and does not exits in Libki
+                else {    ## User authenticated and does not exits in Libki
                     my $minutes =
-                      $c->model('DB::Setting')
-                      ->find('DefaultTimeAllowance')->value;
+                      $c->model('DB::Setting')->find('DefaultTimeAllowance')
+                      ->value;
 
                     $user = $c->model('DB::User')->create(
                         {
@@ -69,6 +70,18 @@ sub authenticate_via_sip {
                             status   => 'enabled',
                         }
                     );
+                }
+
+                if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
+                    my $sip_fields = sip_message_to_hashref($data);
+
+                    # If the fee limit is a SIP2 field, use that field as the fee limit
+                    $fee_limit = $sip_fields->{$fee_limit}
+                      if ( $fee_limit =~ /[A-Z][A-Z]/ );
+
+                    if ( $sip_fields->{BV} > $fee_limit ) {
+                        return ( 0, 'FEE_LIMIT', { fee_limit => $fee_limit } );
+                    }
                 }
 
                 return 1;
@@ -82,8 +95,8 @@ sub authenticate_via_sip {
             ## In this case, we don't want the now deleted user to be
             ## able to log into Libki, so let's attempt to delete that
             ## username before we try to authenticate.
-            $c->model('DB::User')
-              ->search( { username => $username } )->delete();
+            $c->model('DB::User')->search( { username => $username } )
+              ->delete();
 
             return ( 0, 'INVALID_USER' );
         }
@@ -92,6 +105,19 @@ sub authenticate_via_sip {
         return ( 0, 'CONNECTION_FAILURE' );
     }
 
+}
+
+sub sip_message_to_hashref {
+    my ($data) = @_;
+
+    my @parts = split( /\|/, $data );
+
+    shift(@parts);
+    pop(@parts);
+
+    my %fields = map { substr( $_, 0, 2 ) => substr( $_, 2 ) } @parts;
+
+    return \%fields;
 }
 
 1;

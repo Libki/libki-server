@@ -30,8 +30,8 @@ sub create : Local : Args(0) {
     my $user =
       $c->model('DB::User')->single( { username => $username } );
 
-    my ( $success, $error_code ) = ( 1, undef ); # Defaults for non-sip using systems
-    ( $success, $error_code ) = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )
+    my ( $success, $error_code, $details ) = ( 1, undef, undef ); # Defaults for non-sip using systems
+    ( $success, $error_code, $details ) = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )
         if $c->config->{SIP}->{enable};
 
     if (
@@ -77,6 +77,8 @@ sub create : Local : Args(0) {
                 $c->stash( 'success' => 0, 'reason' => 'UNKNOWN' );
             }
         }
+    } else {
+        $c->stash( 'success' => 0, 'reason' => $error_code, details => $details );
     }
 
     $c->logout();

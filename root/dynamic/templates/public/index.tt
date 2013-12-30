@@ -231,8 +231,11 @@ $(document).ready(function() {
                 else if ( data.reason == "CLIENT_ALREADY_RESERVED" ) {
                     DisplayMessage( "error", "This client is already reserved for someone else!" );
                 } 
-                else if ( data.reason == "UNKOWN" ) {
+                else if ( data.reason == "UNKNOWN" ) {
                     DisplayMessage( "error", "Your reservation failed for an unknown reason!" );
+                } 
+                else if ( data.reason == "FEE_LIMIT" ) {
+                    DisplayMessage( "error", "You owe more than $" + data.details.fee_limit + " in fees!" );
                 } 
                 else  {
                     DisplayMessage( "error", "Username & password do not match!" );

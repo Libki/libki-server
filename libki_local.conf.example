@@ -16,4 +16,5 @@
     username libki_sipuser
     password PassW0rd
     separator CR
+    fee_limit 5.00 # Can be either a fee amount, or a SIP2 field that defines the fee limit ( e.g. CC ), delete for no fee limit
 </SIP>
