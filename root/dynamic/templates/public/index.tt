@@ -236,7 +236,7 @@ $(document).ready(function() {
                     DisplayMessage( "error", "This client is already reserved for someone else!" );
                 } 
                 else if ( data.reason == "FEE_LIMIT" ) {
-                    DisplayMessage( "error", "You owe more than $" + data.details.fee_limit + " in fees!" );
+                    DisplayMessage( "error", "You have excessive outstanding fees!" );
                 } 
                 else if ( data.reason == "CHARGE_PRIVILEGES_DENIED" ) {
                     DisplayMessage( "error", "Your charge privileges have been denied!" );
@@ -277,7 +277,7 @@ $(document).ready(function() {
                 else if ( data.reason == "RECALL_OVERDUE" ) {
                     DisplayMessage( "error", "You have a recalled item which is overdue!" );
                 } 
-                else if ( data.reason == "TOO_MANY_ITEMS_VILLED" ) {
+                else if ( data.reason == "TOO_MANY_ITEMS_BILLED" ) {
                     DisplayMessage( "error", "You have been billed for too many items!" );
                 } 
                 else {

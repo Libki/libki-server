@@ -56,13 +56,14 @@ sub index : Path : Args(0) {
             ReservationShowUsername =>
               $c->stash->{'Settings'}->{'ReservationShowUsername'},
 
-            BannerTopURL => $c->stash->{'Settings'}->{'BannerTopURL'},
-            BannerTopWidth => $c->stash->{'Settings'}->{'BannerTopWidth'},
+            BannerTopURL    => $c->stash->{'Settings'}->{'BannerTopURL'},
+            BannerTopWidth  => $c->stash->{'Settings'}->{'BannerTopWidth'},
             BannerTopHeight => $c->stash->{'Settings'}->{'BannerTopHeight'},
 
-            BannerBottomURL => $c->stash->{'Settings'}->{'BannerBottomURL'},
+            BannerBottomURL   => $c->stash->{'Settings'}->{'BannerBottomURL'},
             BannerBottomWidth => $c->stash->{'Settings'}->{'BannerBottomWidth'},
-            BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
+            BannerBottomHeight =>
+              $c->stash->{'Settings'}->{'BannerBottomHeight'},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
@@ -94,12 +95,12 @@ sub index : Path : Args(0) {
         my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
 
-        my $user =
-          $c->model('DB::User')->single( { username => $username } );
+        my $user = $c->model('DB::User')->single( { username => $username } );
 
         if ( $action eq 'login' ) {
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
+            my ( $success, $error ) = ( 1, undef );
             if ( $c->config->{SIP}->{enable} ) {
                 if (
                     !$user
@@ -109,84 +110,90 @@ sub index : Path : Args(0) {
                             qw/admin superadmin/ ) )
                   )
                 {
-                    my ( $success, $error ) =
-                      Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
+                    ( $success, $error ) =
+                      Libki::SIP::authenticate_via_sip( $c, $user, $username,
+                        $password );
                 }
             }
 
             ## Process client requests
-            if (
-                $c->authenticate(
-                    {
-                        username => $username,
-                        password => $password
+            if ($success) {
+                if (
+                    $c->authenticate(
+                        {
+                            username => $username,
+                            password => $password
+                        }
+                    )
+                  )
+                {
+                    $c->stash( units => $user->minutes );
+
+                    if ( $user->session ) {
+                        $c->stash( error => 'ACCOUNT_IN_USE' );
                     }
-                )
-              )
-            {
-                $c->stash( units => $user->minutes );
-
-                if ( $user->session ) {
-                    $c->stash( error => 'ACCOUNT_IN_USE' );
-                }
-                elsif ( $user->status eq 'disabled' ) {
-                    $c->stash( error => 'ACCOUNT_DISABLED' );
-                }
-                elsif ( $user->minutes < 1 ) {
-                    $c->stash( error => 'NO_TIME' );
-                }
-                else {
-                    my $client =
-                      $c->model('DB::Client')
-                      ->search( { name => $client_name } )->next();
-
-                    if ($client) {
-                        my $reservation = $client->reservation;
-
-                        if (
-                            !$reservation
-                            && !(
-                                $c->stash->{'Settings'}->{'ClientBehavior'} =~
-                                'FCFS'
-                            )
-                          )
-                        {
-                            $c->stash( error => 'RESERVATION_REQUIRED' );
-                        }
-                        elsif ( !$reservation
-                            || $reservation->user_id() == $user->id() )
-                        {
-                            $reservation->delete() if $reservation;
-
-                            my $session = $c->model('DB::Session')->create(
-                                {
-                                    user_id   => $user->id,
-                                    client_id => $client->id,
-                                    status    => 'active'
-                                }
-                            );
-                            $c->stash( authenticated => $session && 1 );
-                            $c->model('DB::Statistic')->create(
-                                {
-                                    username        => $username,
-                                    client_name     => $client_name,
-                                    client_location => $client_location,
-                                    action          => 'LOGIN',
-                                    when            => $now
-                                }
-                            );
-                        }
-                        else {
-                            $c->stash( error => 'RESERVED_FOR_OTHER' );
-                        }
+                    elsif ( $user->status eq 'disabled' ) {
+                        $c->stash( error => 'ACCOUNT_DISABLED' );
+                    }
+                    elsif ( $user->minutes < 1 ) {
+                        $c->stash( error => 'NO_TIME' );
                     }
                     else {
-                        $c->stash( error => 'INVALID_CLIENT' );
+                        my $client =
+                          $c->model('DB::Client')
+                          ->search( { name => $client_name } )->next();
+
+                        if ($client) {
+                            my $reservation = $client->reservation;
+
+                            if (
+                                !$reservation
+                                && !(
+                                    $c->stash->{'Settings'}
+                                    ->{'ClientBehavior'} =~ 'FCFS'
+                                )
+                              )
+                            {
+                                $c->stash( error => 'RESERVATION_REQUIRED' );
+                            }
+                            elsif ( !$reservation
+                                || $reservation->user_id() == $user->id() )
+                            {
+                                $reservation->delete() if $reservation;
+
+                                my $session = $c->model('DB::Session')->create(
+                                    {
+                                        user_id   => $user->id,
+                                        client_id => $client->id,
+                                        status    => 'active'
+                                    }
+                                );
+                                $c->stash( authenticated => $session && 1 );
+                                $c->model('DB::Statistic')->create(
+                                    {
+                                        username        => $username,
+                                        client_name     => $client_name,
+                                        client_location => $client_location,
+                                        action          => 'LOGIN',
+                                        when            => $now
+                                    }
+                                );
+                            }
+                            else {
+                                $c->stash( error => 'RESERVED_FOR_OTHER' );
+                            }
+                        }
+                        else {
+                            $c->stash( error => 'INVALID_CLIENT' );
+                        }
                     }
+                }
+                else {
+                    $c->stash( error => 'BAD_LOGIN' );
                 }
             }
             else {
-                $c->stash( error => 'BAD_LOGIN' );
+                $c->stash( error => $error );
             }
         }
         elsif ( $action eq 'clear_message' ) {
