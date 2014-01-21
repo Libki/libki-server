@@ -70,10 +70,10 @@ sub create : Local : Args(0) {
 
     my $user = $c->model('DB::User')->create(
         {
-            username => $username,
-            password => $password,
-            minutes  => $minutes,
-            status   => 'enabled',
+            username          => $username,
+            password          => $password,
+            minutes_allotment => $minutes,
+            status            => 'enabled',
         }
     );
 
@@ -107,11 +107,11 @@ sub create_guest : Local : Args(0) {
 
     my $user = $c->model('DB::User')->create(
         {
-            username => $username,
-            password => $password,
-            minutes  => $minutes,
-            status   => 'enabled',
-            is_guest => 'Yes',
+            username          => $username,
+            password          => $password,
+            minutes_allotment => $minutes,
+            status            => 'enabled',
+            is_guest          => 'Yes',
         }
     );
 

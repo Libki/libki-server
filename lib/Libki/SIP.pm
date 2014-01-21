@@ -64,10 +64,10 @@ sub authenticate_via_sip {
 
                     $user = $c->model('DB::User')->create(
                         {
-                            username => $username,
-                            password => $password,
-                            minutes  => $minutes,
-                            status   => 'enabled',
+                            username          => $username,
+                            password          => $password,
+                            minutes_allotment => $minutes,
+                            status            => 'enabled',
                         }
                     );
                 }
@@ -86,7 +86,7 @@ sub authenticate_via_sip {
 
                 if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
 
-                    # If the fee limit is a SIP2 field, use that field as the fee limit
+             # If the fee limit is a SIP2 field, use that field as the fee limit
                     $fee_limit = $sip_fields->{$fee_limit}
                       if ( $fee_limit =~ /[A-Z][A-Z]/ );
 

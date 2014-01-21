@@ -5,7 +5,7 @@
     <fieldset>
         <legend>Basic settings</legend>
         <div class="control-group">
-            <label class="control-label" for="DefaultTimeAllowance">Default time allowance</label>
+            <label class="control-label" for="DefaultTimeAllowance">Default time allowance per day</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
@@ -14,9 +14,20 @@
                 <span class="help-inline">Amount of time a user is given daily.</span>
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label" for="DefaultSessionTimeAllowance">Default time allowance per session</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
+                    <span class="add-on">minutes</span>
+                </div>
+                <span class="help-inline">Amount of time a user is given per session.</span>
+            </div>
+        </div>
     
         <div class="control-group">
-            <label class="control-label" for="PostCrashTimeout">Post crash timeout</label>
+            <label class="control-label" for="PostCrashTimeout">Client registration update delay limit</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="PostCrashTimeout" name="PostCrashTimeout" value="[% PostCrashTimeout %]">

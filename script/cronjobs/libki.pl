@@ -33,15 +33,16 @@ while ( my $session = $session_rs->next() ) {
         $session->user->update();
     }
     else {
-	## If somehow a session exists with
-	## 0 or a negative number of minutes,
-	## we need to clean if out.
+        ## If somehow a session exists with
+        ## 0 or a negative number of minutes,
+        ## we need to clean if out.
         $schema->resultset('Statistic')->create(
             {
                 username    => $session->user->username(),
                 client_name => $session->client->name(),
                 action      => 'SESSION_DELETED',
-                when        => DateTime::Format::MySQL->format_datetime( DateTime->now() ),
+                when =>
+                  DateTime::Format::MySQL->format_datetime( DateTime->now() ),
             }
         );
 
@@ -73,6 +74,31 @@ $schema->resultset('Reservation')->search(
         }
     }
 )->delete();
+
+## Refill session minutes from allotted minutes for users not logged in to a client
+my $default_time_allowance =
+  $schema->resultset('Setting')->find('DefaultTimeAllowance')->value;
+my $default_session_time_allowance =
+  $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
+
+my $users_rs = $schema->resultset('User')->search(
+    {
+        minutes           => { '<' => $default_session_time_allowance },
+        minutes_allotment => { '>' => 0 }
+    }
+);
+
+while ( my $user = $users_rs->next() ) {
+    unless ( $user->session() ) {
+        while ($user->minutes() < $default_session_time_allowance
+            && $user->minutes_allotment() > 0 )
+        {
+            $user->decrease_minutes_allotment(1);
+            $user->increase_minutes(1);
+        }
+        $user->update();
+    }
+}
 
 =head1 AUTHOR
 

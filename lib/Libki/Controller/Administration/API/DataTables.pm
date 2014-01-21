@@ -73,13 +73,14 @@ sub users : Local Args(0) {
         my $r;
         $r->{'DT_RowId'} = $u->id;
         $r->{'0'}        = $u->username;
-        $r->{'1'}        = $u->minutes;
-        $r->{'2'}        = $u->status;
-        $r->{'3'}        = $u->message;
-        $r->{'4'}        = $u->notes;
-        $r->{'5'}        = $u->is_troublemaker;
-        $r->{'6'} = defined( $u->session ) ? $u->session->client->name : undef;
-        $r->{'7'} = defined( $u->session ) ? $u->session->status : undef;
+        $r->{'1'}        = $u->minutes_allotment;
+        $r->{'2'}        = $u->minutes;
+        $r->{'3'}        = $u->status;
+        $r->{'4'}        = $u->message;
+        $r->{'5'}        = $u->notes;
+        $r->{'6'}        = $u->is_troublemaker;
+        $r->{'7'} = defined( $u->session ) ? $u->session->client->name : undef;
+        $r->{'8'} = defined( $u->session ) ? $u->session->status : undef;
 
         push( @results, $r );
     }

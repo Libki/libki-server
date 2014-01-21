@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Config::JFDI;
+use List::Util qw(max min);
 
 use FindBin;
 use lib "$FindBin::Bin/../../lib";
@@ -21,6 +22,11 @@ my $schema = Libki::Schema::DB->connect($connect_info)
   || die("Couldn't Connect to DB");
 
 my $default_time_allowance = $schema->resultset('Setting')->find('DefaultTimeAllowance')->value;
+my $default_session_time_allowance = $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
+
+my $user_minutes_allotment = $default_time_allowance;
+my $user_minutes = min( $user_minutes_allotment, $default_session_time_allowance );
+$user_minutes_allotment -= $user_minutes;
 
 ## Delete any guest accounts
 $schema->resultset('User')->search({ is_guest => 'Yes' })->delete();
@@ -33,7 +39,8 @@ $current_guest_number->update();
 ## Reset user minutes, set to disabled if a troublemaker
 my $user_rs = $schema->resultset('User');
 while ( my $user = $user_rs->next() ) {
-    $user->minutes( $default_time_allowance );
+    $user->minutes_allotment( $user_minutes_allotment );
+    $user->minutes( $user_minutes );
     $user->status( 'disabled' ) if ( $user->is_troublemaker eq 'Yes' );
     $user->update();
 }

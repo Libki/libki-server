@@ -38,9 +38,9 @@ my $user_rs = $schema->resultset('User');
 
 my $user = $user_rs->create(
     {
-        username => $opt->username,
-        password => $opt->password,
-        minutes  => $opt->minutes
+        username          => $opt->username,
+        password          => $opt->password,
+        minutes_allotment => $opt->minutes
           || $schema->resultset('Setting')->find('DefaultTimeAllowance')
           ->value(),
         status          => 'enabled',

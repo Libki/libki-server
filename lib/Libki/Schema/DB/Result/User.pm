@@ -67,6 +67,12 @@ __PACKAGE__->table("users");
   is_nullable: 0
   size: 255
 
+=head2 minutes_allotment
+
+  data_type: 'integer'
+  default_value: 0
+  is_nullable: 1
+
 =head2 minutes
 
   data_type: 'integer'
@@ -112,6 +118,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "password",
   { data_type => "varchar", is_nullable => 0, size => 255 },
+  "minutes_allotment",
+  { data_type => "integer", default_value => 0, is_nullable => 1 },
   "minutes",
   { data_type => "integer", default_value => 0, is_nullable => 0 },
   "status",
@@ -220,10 +228,10 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-02-14 09:35:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rCnLDzoS1Lz7g2l7OnSxHQ
+# Created by DBIx::Class::Schema::Loader v0.07039 @ 2014-01-21 08:57:32
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RK6ek842hnj7k6CPks77ZA
 
-__PACKAGE__->numeric_columns(qw/minutes/);
+__PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
 __PACKAGE__->add_columns(
     'password' => {
@@ -252,6 +260,32 @@ sub has_role {
 
     # Does this user posses the required role?
     return any(map { $_->role } $self->roles) eq $role;
+}
+
+=head2 insert
+
+Wrap DBIx::Class::Row::insert to handle daily vs session minutes
+
+=cut
+sub insert {
+    my ( $self, @args ) = @_;
+
+    my $schema = $self->result_source->schema;
+    my $default_time_allowance =
+      $schema->resultset('Setting')->find('DefaultTimeAllowance')->value;
+    my $default_session_time_allowance =
+      $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
+
+    while ($self->minutes() < $default_session_time_allowance
+        && $self->minutes_allotment() > 0 )
+    {
+        $self->decrease_minutes_allotment(1);
+        $self->increase_minutes(1);
+    }
+
+    $self->next::method(@args);
+
+    return $self;
 }
 
 __PACKAGE__->meta->make_immutable;
