@@ -101,7 +101,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name session.status user.username user.minutes user.status user.message user.notes user.is_troublemaker/;
+      qw/ me.name me.location session.status user.username user.minutes user.status user.message user.notes user.is_troublemaker/;
 
     # Set up filters
     my $filter = {};
