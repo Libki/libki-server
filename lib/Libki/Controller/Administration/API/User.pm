@@ -126,6 +126,66 @@ sub create_guest : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 batch_create_guest
+
+=cut
+
+
+sub batch_create_guest : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $params = $c->request->params;
+
+    my $current_guest_number_setting =
+                 $c->model('DB::Setting')->find('CurrentGuestNumber');
+    my $guest_count = $c->model('DB::Setting')->find('GuestBatchCount')->value;
+    my $guest_pass_line1 = $c->model('DB::Setting')->find('GuestPassLine1')->value;
+    my $guest_pass_line2 = $c->model('DB::Setting')->find('GuestPassLine2')->value;
+    my $success = 0;
+    my $minutes = 0;
+    my $current_guest_number = 
+		$current_guest_number_setting->value + 1;
+    open(my $fh_guest, '>', $c->model('DB::Setting')->find('GuestPassFile')->value);
+    print $fh_guest "\n\n\n";
+    
+      for (my $i=0; $i<$guest_count; $i++) {
+	    
+	$current_guest_number = $current_guest_number + 1;		
+	my $username = "guest" . $current_guest_number;
+	my $password =
+              random_string("nnnn");    #TODO: Make the pattern a system setting
+	$minutes = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+
+	my $user = $c->model('DB::User')->create(
+		{
+		username          => $username,
+		password          => $password,
+		minutes_allotment => $minutes,
+		status            => 'enabled',
+		is_guest          => 'Yes'
+		}
+	);
+
+        print $fh_guest $guest_pass_line1.$username."\n\n";
+        print $fh_guest $guest_pass_line2.$password."\n";
+        print $fh_guest "\n\n\n";
+  
+        $success = $success + 1 if ($user);
+    }
+
+    close $fh_guest;
+    $current_guest_number_setting->set_column( 'value', $current_guest_number );
+    $current_guest_number_setting->update();
+
+    $c->stash(
+        'success'  => $success,
+        'highest' => "guest".$current_guest_number_setting->value,
+        'number' => $guest_count,
+        'minutes'  => $minutes
+    );
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 update
 
 =cut

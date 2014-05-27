@@ -32,6 +32,7 @@
                 <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
             [% END %]
             <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+            <a href="#" class="multi-guest-button btn btn-info">Multiple guests <i class="icon-user icon-white"></i></a>
         </div>
 
         <div id="user-table-refresh" class="table-toolbar input-prepend">
@@ -83,6 +84,7 @@
         <div id="client-table-toolbar" class="table-toolbar float-right btn-group">
             <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
             <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+            <a href="#" class="multi-guest-button btn btn-info">Multiple guests <i class="icon-user icon-white"></i></a>
         </div>
 
         <div id="client-table-refresh" class="table-toolbar input-prepend">
@@ -151,6 +153,34 @@
             <div class="control-group">
                 <label>Minutes</label>
                 <span id="new-guest-modal-form-minutes" class="input-small uneditable-input"></span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Dismiss</button>
+    </div>
+</div>
+
+<div class="modal hide" id="multi-guest-modal" tabindex="-1" role="dialog" aria-labelledby="multi-guest-modal-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="multi-guest-modal-label">New guest user created</h3>
+    </div>
+    <div class="modal-body">
+        <form id="multi-guest-modal-form">
+            <div class="control-group">
+                <label>Highest Guest Account Created</label>
+                <span id="multi-guest-modal-form-highest" class="input-xlarge uneditable-input"></span>
+            </div>
+
+            <div class="control-group">
+                <label>Number of Accounts Created</label>
+                <span id="multi-guest-modal-form-number" class="input-medium uneditable-input"></span>
+            </div>
+
+            <div class="control-group">
+                <label>Minutes</label>
+                <span id="multi-guest-modal-form-minutes" class="input-small uneditable-input"></span>
             </div>
         </form>
     </div>
@@ -463,6 +493,26 @@ $(document).ready(function() {
         });
     });
 
+// Set up the 'multi guest' button
+    $('.multi-guest-button').click(function(){
+        $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/', function(data) {
+            if ( parseInt( data.success ) ) {
+                $("#user-table").dataTable().fnDraw(true);
+                ForceClientTableRefresh();
+
+                $('#user-table-row-toolbar').hide();
+                $('#client-table-row-toolbar').hide();
+
+                $('#multi-guest-modal-form-highest').text( data.highest );
+                $('#multi-guest-modal-form-number').text( data.number );
+                $('#multi-guest-modal-form-minutes').text( data.minutes );
+
+                $('#multi-guest-modal').modal();
+            } else {
+                DisplayMessage( 'error', "Unable to create guest user!" );
+            }
+        });
+    });
     /*********** Users Table ***********/
     /* Edit User */
     // Set up the 'edit user' button
