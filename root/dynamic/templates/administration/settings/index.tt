@@ -187,6 +187,56 @@
     </fieldset>
 
     <fieldset>
+        <legend>Batch guest pass generator</legend>
+        <div class="control-group">
+            <label class="control-label" for="GuestBatchCount">Number of passes to create per batch:</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-small" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
+                    <span class="add-on">passes</span>
+                </div>
+                <span class="help-inline">The number of passes to create per batch.</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="GuestPassFile">Save the guest pass batch file in:</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-xxlarge" id="GuestPassFile" name="GuestPassFile" value="[% GuestPassFile %]">
+                </div>
+                <span class="help-inline">This is the path to the file you wish to create, for example: <i>/mnt/share/guestpasses.txt</i></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="BatchGuestPassUsernameLabel">Username label:</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-xxlarge" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
+                </div>
+                <span class="help-inline">
+                    The text in this field will be prepended to the guest username, for example <i>Username: </i>.
+                    <i>This field is displayed in monosapce for ease of formatting.</i>
+                </span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="BatchGuestPassPasswordLabel">Password label:</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-xxlarge" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
+                </div>
+                <span class="help-inline">
+                    The text in this field will be prepended to the guest password, for example <i>Password: </i>.
+                    <i>This field is displayed in monosapce for ease of formatting.</i>
+                </span>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
         <legend>Third party integration</legend>
     
         <div class="control-group">

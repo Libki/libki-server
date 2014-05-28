@@ -29,9 +29,9 @@
 
         <div id="user-table-toolbar" class="table-toolbar float-right btn-group">
             [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
+                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> New user</i></a>
             [% END %]
-            <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+            <a href="#" class="new-guest-button btn btn-primary">New guest <i class="icon-user icon-white"></i></a>
             <a href="#" class="multi-guest-button btn btn-info">Multiple guests <i class="icon-user icon-white"></i></a>
         </div>
 
@@ -82,8 +82,10 @@
         </table> 
 
         <div id="client-table-toolbar" class="table-toolbar float-right btn-group">
-            <a href="#" class="new-user-button btn btn-primary"><i class="icon-plus icon-white"></i> New user</i></a>
-            <a href="#" class="new-guest-button btn btn-info">New guest <i class="icon-user icon-white"></i></a>
+            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> New user</i></a>
+            [% END %]
+            <a href="#" class="new-guest-button btn btn-primary">New guest <i class="icon-user icon-white"></i></a>
             <a href="#" class="multi-guest-button btn btn-info">Multiple guests <i class="icon-user icon-white"></i></a>
         </div>
 
@@ -164,7 +166,7 @@
 <div class="modal hide" id="multi-guest-modal" tabindex="-1" role="dialog" aria-labelledby="multi-guest-modal-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="multi-guest-modal-label">New guest user created</h3>
+        <h3 id="multi-guest-modal-label">New guest batch created</h3>
     </div>
     <div class="modal-body">
         <form id="multi-guest-modal-form">
@@ -182,6 +184,8 @@
                 <label>Minutes</label>
                 <span id="multi-guest-modal-form-minutes" class="input-small uneditable-input"></span>
             </div>
+
+            <a href="#" id="multi-guest-modal-form-print" class="btn"><i class="icon-print"></i> View & print guest pass file</a>
         </form>
     </div>
     <div class="modal-footer">
@@ -493,7 +497,7 @@ $(document).ready(function() {
         });
     });
 
-// Set up the 'multi guest' button
+    // Set up the 'multi guest' button
     $('.multi-guest-button').click(function(){
         $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/', function(data) {
             if ( parseInt( data.success ) ) {
@@ -507,12 +511,20 @@ $(document).ready(function() {
                 $('#multi-guest-modal-form-number').text( data.number );
                 $('#multi-guest-modal-form-minutes').text( data.minutes );
 
+                guest_pass_file_contents = data.contents;
+
                 $('#multi-guest-modal').modal();
             } else {
                 DisplayMessage( 'error', "Unable to create guest user!" );
             }
         });
     });
+    $('#multi-guest-modal-form-print').click(function(){
+        var guestPassWindow = window.open();
+        guestPassWindow.document.write("<pre>" + guest_pass_file_contents + "</pre>");
+    });
+
+
     /*********** Users Table ***********/
     /* Edit User */
     // Set up the 'edit user' button
