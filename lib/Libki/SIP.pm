@@ -79,7 +79,7 @@ sub authenticate_via_sip {
 
                     foreach my $d (@deny_on) {
                         if ( $sip_fields->{patron_status}->{$d} eq 'Y' ) {
-                            return ( 0, uc($d) );
+                            return { success => 0, error => uc($d), user => $user };
                         }
                     }
                 }
@@ -91,14 +91,14 @@ sub authenticate_via_sip {
                       if ( $fee_limit =~ /[A-Z][A-Z]/ );
 
                     if ( $sip_fields->{BV} > $fee_limit ) {
-                        return ( 0, 'FEE_LIMIT', { fee_limit => $fee_limit } );
+                        return { success => 0, error => 'FEE_LIMIT', details => { fee_limit => $fee_limit }, user => $user };
                     }
                 }
 
-                return 1;
+                return { success => 1, user => $user };
             }
             else {
-                return ( 0, 'INVALID_PASSWORD' );
+                return { success => 0, error => 'INVALID_PASSWORD', user => $user };
             }
         }
         else {
@@ -109,11 +109,11 @@ sub authenticate_via_sip {
             $c->model('DB::User')->search( { username => $username } )
               ->delete();
 
-            return ( 0, 'INVALID_USER' );
+            return { success => 0, error => 'INVALID_USER', user => $user };
         }
     }
     else {
-        return ( 0, 'CONNECTION_FAILURE' );
+        return { success => 0, error => 'CONNECTION_FAILURE', user => $user };
     }
 
 }

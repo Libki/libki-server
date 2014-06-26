@@ -110,9 +110,12 @@ sub index : Path : Args(0) {
                             qw/admin superadmin/ ) )
                   )
                 {
-                    ( $success, $error ) =
+                    my $ret =
                       Libki::SIP::authenticate_via_sip( $c, $user, $username,
                         $password );
+                    $success = $ret->{success};
+                    $error = $ret->{error};
+                    $user = $ret->{user};
                 }
             }
 

@@ -31,8 +31,14 @@ sub create : Local : Args(0) {
       $c->model('DB::User')->single( { username => $username } );
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef ); # Defaults for non-sip using systems
-    ( $success, $error_code, $details ) = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )
-        if $c->config->{SIP}->{enable};
+
+    if ( $c->config->{SIP}->{enable} ) {
+        my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
+        $success = $ret->{success};
+        $error_code = $ret->{error_code};
+        $details = $ret->{details};
+        $user = $ret->{user};
+    }
 
     if (
         $success && 
