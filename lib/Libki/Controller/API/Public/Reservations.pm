@@ -35,7 +35,7 @@ sub create : Local : Args(0) {
     if ( $c->config->{SIP}->{enable} ) {
         my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
         $success = $ret->{success};
-        $error_code = $ret->{error_code};
+        $error_code = $ret->{error};
         $details = $ret->{details};
         $user = $ret->{user};
     }

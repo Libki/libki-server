@@ -75,7 +75,7 @@ sub authenticate_via_sip {
                 my $sip_fields = sip_message_to_hashref($data);
 
                 if ( my $deny_on = $c->config->{SIP}->{deny_on} ) {
-                    my @deny_on = ref($deny) eq "ARRAY" ? @$deny_on : $deny_on;
+                    my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
 
                     foreach my $d (@deny_on) {
                         if ( $sip_fields->{patron_status}->{$d} eq 'Y' ) {
