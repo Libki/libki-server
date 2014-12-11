@@ -7,3 +7,4 @@ then
 else
     echo "update_schema.sh database username password"
 fi
+
