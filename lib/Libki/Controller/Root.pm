@@ -46,10 +46,15 @@ sub default :Path {
 =head2 end
 
 Attempt to render a view, if needed.
+Set the desired language.
 
 =cut
 
-sub end : ActionClass('RenderView') {}
+sub end : ActionClass('RenderView') {
+    my ( $self, $c ) = @_;
+    my $lang = $c->session->{lang};
+    $c->languages([$lang]) if $lang;
+}
 
 =head2 auto
     
@@ -59,7 +64,6 @@ Stash all the system settings
 
 sub auto : Private {
     my ( $self, $c ) = @_;
-    
     my @settings = $c->model('DB::Setting')->all();
     my %s = map { $_->name() => $_->value() } @settings;
     $c->stash( 'Settings' => \%s );

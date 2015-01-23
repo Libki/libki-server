@@ -153,10 +153,14 @@ sub _label_for {
         if exists $c->config->{breadcrumbs}->{labels}->{$path};
 
     $label =~ s/_(.)/' ' . uc($1)/eg;
+
+    # I18N Plugin
+    $label = $c->loc("breadcrumb.$label");
     return !$c->config->{breadcrumbs}->{lowercase}
         ? ucfirst($label)
         : lc($label);
 }
+
 
 1;
 
