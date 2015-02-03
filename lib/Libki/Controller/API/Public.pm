@@ -53,6 +53,9 @@ sub client : Local : Args(1) {
         }
 
     }
+    else {
+        $c->stash( error => 'authentication' );
+    }
 
     $c->forward( $c->view('JSON') );
 }
