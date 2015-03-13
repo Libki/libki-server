@@ -1,61 +1,61 @@
-[% META title = 'Administration / Settings' -%]
+[% meta.title = c.loc("admin.settings.head.title") %]
 [% SET active_class = 'administration__settings' %]
 
 <form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
     <fieldset>
-        <legend>Basic settings</legend>
+        <legend>[% c.loc("admin.settings.basic.legend") %]</legend>
         <div class="control-group">
-            <label class="control-label" for="DefaultTimeAllowance">Default time allowance per day</label>
+            <label class="control-label" for="DefaultTimeAllowance">[% c.loc("admin.settings.basic.allowance.day.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
-                    <span class="add-on">minutes</span>
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
                 </div>
-                <span class="help-inline">Amount of time a user is given daily.</span>
+                <span class="help-inline">[% c.loc("admin.settings.basic.allowance.day.help") %]</span>
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="DefaultSessionTimeAllowance">Default time allowance per session</label>
+            <label class="control-label" for="DefaultSessionTimeAllowance">[% c.loc("admin.settings.basic.allowance.session.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
-                    <span class="add-on">minutes</span>
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
                 </div>
-                <span class="help-inline">Amount of time a user is given per session.</span>
+                <span class="help-inline">[% c.loc("admin.settings.basic.allowance.session.help") %]</span>
             </div>
         </div>
     
         <div class="control-group">
-            <label class="control-label" for="PostCrashTimeout">Client registration update delay limit</label>
+            <label class="control-label" for="PostCrashTimeout">[% c.loc("admin.settings.basic.client.registrationupdatelimit.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="PostCrashTimeout" name="PostCrashTimeout" value="[% PostCrashTimeout %]">
-                    <span class="add-on">minutes</span>
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
                 </div>
-                <span class="help-inline">If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.</span>
+                <span class="help-inline">[% c.loc("admin.settings.basic.client.registrationupdatelimit.help") %]</span>
             </div>
         </div>
     </fieldset>
 
     <fieldset>
-        <legend>Client behavior</legend>
+        <legend>[% c.loc("admin.settings.clientbehaviour.legend") %]</legend>
     
         <div class="control-group">
             <div class="controls">
                 <label class="radio">
                     <input type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" checked>
-                    First come, first served. A patron walks up to an open client and logs in.
+                    [% c.loc("admin.settings.clientbehaviour.FCFS.help") %]
                 </label>
 
                 <label class="radio">
                     <input type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
-                    Reservation only. A patron must place a reservation for a client before logging in to to.
+                    [% c.loc("admin.settings.clientbehaviour.RES.help") %]
                 </label>
 
                 <label class="radio">
                     <input type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES">
-                    First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).
+                    [% c.loc("admin.settings.clientbehaviour.FCFSRES.help") %]
                 </label>
             </div>
         </div>
@@ -68,27 +68,27 @@
     </script>
 
     <fieldset>
-        <legend>Reservation settings</legend>
+        <legend>[% c.loc("admin.settings.reservation.legend") %]</legend>
     
         <div class="control-group">
-            <label class="control-label" for="ReservationTimeout">Reservation timeout</label>
+            <label class="control-label" for="ReservationTimeout">[% c.loc("admin.settings.reservation.timeout.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
-                    <span class="add-on">minutes</span>
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
                 </div>
-                <span class="help-inline">The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.</span>
+                <span class="help-inline">[% c.loc("admin.settings.reservation.timeout.help") %]</span>
             </div>
         </div>
 
 
         <div class="control-group">
-            <label class="control-label" for="ReservationShowUsername">Display usernames</label>
+            <label class="control-label" for="ReservationShowUsername">[% c.loc("admin.settings.reservation.showusername.label") %]</label>
             <div class="controls">
                 <label class="checkbox">
                     <input id="ReservationShowUsernameCheckbox" type="checkbox">
                     <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
-                    When a Libki client is reserved and waiting, display the username of the person it is waiting for.
+                    [% c.loc("admin.settings.reservation.showusername.help") %]
                 </label>
             </div>
         </div>
@@ -108,78 +108,78 @@
     </fieldset>
 
     <fieldset>
-        <legend>Client login banner settings</legend>
+        <legend>[% c.loc("admin.settings.clientloginbanner.legend") %]</legend>
     
         <fieldset>
-            <legend>Top banner</legend>
+        <legend>[% c.loc("admin.settings.clientloginbanner.top.legend") %]</legend>
 
             <div class="control-group">
-                <label class="control-label" for="BannerTopURL">Source URL</label>
+                <label class="control-label" for="BannerTopURL">[% c.loc("admin.settings.clientloginbanner.source.label") %]</label>
                 <div class="controls">
                     <div class="input-prepend">
                         <span class="add-on">http://</span>
                         <input type="text" class="input-xxlarge" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
                     </div>
-                    <span class="help-inline">The URL for the source image or image service.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.source.help") %]</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="BannerTopWidth">Width</label>
+                <label class="control-label" for="BannerTopWidth">[% c.loc("admin.settings.clientloginbanner.width.label") %]</label>
                 <div class="controls">
                     <div class="input-append">
                         <input type="text" class="input-mini" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
-                        <span class="add-on">pixels</span>
+                        <span class="add-on">[% c.loc("word.pixel.plural") %]</span>
                     </div>
-                    <span class="help-inline">The width of the source image or image service in pixels.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.width.help") %]</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="BannerTopHeight">Height</label>
+                <label class="control-label" for="BannerTopHeight">[% c.loc("admin.settings.clientloginbanner.height.label") %]</label>
                 <div class="controls">
                     <div class="input-append">
                         <input type="text" class="input-mini" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
-                        <span class="add-on">pixels</span>
+                        <span class="add-on">[% c.loc("word.pixel.plural") %]</span>
                     </div>
-                    <span class="help-inline">The height of the source image or image service in pixels.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.height.help") %]</span>
                 </div>
             </div>
         </fieldset>
 
         <fieldset>
-            <legend>Bottom banner</legend>
+            <legend>[% c.loc("admin.settings.clientloginbanner.bottom.legend") %]</legend>
 
             <div class="control-group">
-                <label class="control-label" for="BannerBottomURL">Source URL</label>
+                <label class="control-label" for="BannerBottomURL">[% c.loc("admin.settings.clientloginbanner.source.label") %]</label>
                 <div class="controls">
                     <div class="input-prepend">
                         <span class="add-on">http://</span>
                         <input type="text" class="input-xxlarge" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
                     </div>
-                    <span class="help-inline">The URL for the source image or image service.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.source.help") %]</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="BannerBottomWidth">Width</label>
+                <label class="control-label" for="BannerBottomWidth">[% c.loc("admin.settings.clientloginbanner.width.label") %]</label>
                 <div class="controls">
                     <div class="input-append">
                         <input type="text" class="input-mini" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
-                        <span class="add-on">pixels</span>
+                        <span class="add-on">[% c.loc("word.pixel.plural") %]</span>
                     </div>
-                    <span class="help-inline">The width of the source image or image service in pixels.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.width.help") %]</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="BannerBottomHeight">Height</label>
+                <label class="control-label" for="BannerBottomHeight">[% c.loc("admin.settings.clientloginbanner.height.label") %]</label>
                 <div class="controls">
                     <div class="input-append">
                         <input type="text" class="input-mini" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
-                        <span class="add-on">pixels</span>
+                        <span class="add-on">[% c.loc("word.pixel.plural") %]</span>
                     </div>
-                    <span class="help-inline">The height of the source image or image service in pixels.</span>
+                    <span class="help-inline">[% c.loc("admin.settings.clientloginbanner.height.help") %]</span>
                 </div>
             </div>
         </fieldset>
@@ -187,73 +187,71 @@
     </fieldset>
 
     <fieldset>
-        <legend>Batch guest pass generator</legend>
+        <legend>[% c.loc("admin.settings.batchguest.legend") %]</legend>
         <div class="control-group">
-            <label class="control-label" for="GuestBatchCount">Number of passes to create per batch:</label>
+            <label class="control-label" for="GuestBatchCount">[% c.loc("admin.settings.batchguest.count.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-small" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
-                    <span class="add-on">passes</span>
+                    <span class="add-on">[% c.loc("word.pass.plural") %]</span>
                 </div>
-                <span class="help-inline">The number of passes to create per batch.</span>
+                <span class="help-inline">[% c.loc("admin.settings.batchguest.count.help") %]</span>
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="GuestPassFile">Save the guest pass batch file in:</label>
+            <label class="control-label" for="GuestPassFile">[% c.loc("admin.settings.batchguest.passfile.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-xxlarge" id="GuestPassFile" name="GuestPassFile" value="[% GuestPassFile %]">
                 </div>
-                <span class="help-inline">This is the path to the file you wish to create, for example: <i>/mnt/share/guestpasses.txt</i></span>
+                <span class="help-inline">[% c.loc("admin.settings.batchguest.passfile.help") %]</span>
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="BatchGuestPassUsernameLabel">Username label:</label>
+            <label class="control-label" for="BatchGuestPassUsernameLabel">[% c.loc("admin.settings.batchguest.usernamelabel.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-xxlarge" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
                 </div>
                 <span class="help-inline">
-                    The text in this field will be prepended to the guest username, for example <i>Username: </i>.
-                    <i>This field is displayed in monosapce for ease of formatting.</i>
+                    [% c.loc("admin.settings.batchguest.usernamelabel.help") %]
                 </span>
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="BatchGuestPassPasswordLabel">Password label:</label>
+            <label class="control-label" for="BatchGuestPassPasswordLabel">[% c.loc("admin.settings.batchguest.passwordlabel.label") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-xxlarge" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
                 </div>
                 <span class="help-inline">
-                    The text in this field will be prepended to the guest password, for example <i>Password: </i>.
-                    <i>This field is displayed in monosapce for ease of formatting.</i>
+                    [% c.loc("admin.settings.batchguest.passwordlabel.help") %]
                 </span>
             </div>
         </div>
     </fieldset>
 
     <fieldset>
-        <legend>Third party integration</legend>
+        <legend>[% c.loc("admin.settings.thirdparty.legend") %]</legend>
     
         <div class="control-group">
-            <label class="control-label" for="ThirdPartyURL">URL</label>
+            <label class="control-label" for="ThirdPartyURL">[% c.loc("admin.settings.thirdparty.url.label") %]</label>
             <div class="controls">
                 <div class="input-prepend">
                     <input type="text" class="input-xxlarge" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
                 </div>
-                <span class="help-inline">Entering a url here will cause a username to becaome a hyperlink with the user's username at the end. make sure to add "http://" or "https://" at the beginning.</span>
-                <span class="help-inline">For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?member=</i> will link to the Koha ILS's search function for the given username.</span>
+                <span class="help-inline">[% c.loc("admin.settings.thirdparty.url.help") %]</span>
+                <span class="help-inline">[% c.loc("admin.settings.thirdparty.url.help.example") %]</span>
             </div>
         </div>
     </fieldset>
 
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn">Update settings</button>
+            <button type="submit" class="btn">[% c.loc("admin.settings.submitbutton.text") %]</button>
         </div>
     </div>
 </form>

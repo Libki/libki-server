@@ -1,0 +1,762 @@
+# POT file for libkiserver.
+# Copyright (C) 2015
+# This file is distributed under the same license as the Libki package.
+# Maxime Beaulieu <maxime.beaulieu@inlibro.com>, 2015.
+#
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2015-01-22\n"
+"PO-Revision-Date: 2015-01-22\n"
+"Last-Translator: Maxime Beaulieu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: root/dynamic/templates/administration/index.tt:300
+msgid "admin.changepassword.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:306
+msgid "admin.changepassword.submit.text"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:290
+msgid "admin.changepassword.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:174
+msgid "admin.guestbatch.highest"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:179
+msgid "admin.guestbatch.number"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:188
+msgid "admin.guestbatch.print"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:169
+msgid "admin.guestbatch.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:1
+msgid "admin.history.header.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:17
+msgid "admin.history.statistics.caption"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:2
+msgid "admin.history.statistics.head.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:27
+msgid "admin.history.statistics.nolocationset"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:33
+msgid "admin.history.statistics.totalbydate"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:54
+msgid "admin.history.statistics.totalbylocation"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1
+msgid "admin.home.head.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:9
+msgid "admin.index.navtab.clients"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:6
+msgid "admin.index.navtab.users"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:625
+msgid "admin.js.message.changepassword.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:622
+msgid "admin.js.message.changepassword.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:714
+msgid "admin.js.message.deleteuser.confirm"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:722
+msgid "admin.js.message.deleteuser.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:718
+msgid "admin.js.message.deleteuser.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:731
+msgid "admin.js.message.logoutuser.confirm"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:739
+msgid "admin.js.message.logoutuser.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:735
+msgid "admin.js.message.logoutuser.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:668
+msgid "admin.js.message.modifytime.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:665
+msgid "admin.js.message.modifytime.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:495 root/dynamic/templates/administration/index.tt:518
+msgid "admin.js.message.newguest.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:473
+msgid "admin.js.message.newuser.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:470
+msgid "admin.js.message.newuser.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:638
+msgid "admin.js.message.troublemaker.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:635
+msgid "admin.js.message.troublemaker.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:584
+msgid "admin.js.message.updateuser.error"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:581
+msgid "admin.js.message.updateuser.success"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:277
+msgid "admin.modifytime.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:283
+msgid "admin.modifytime.submit.text"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:141
+msgid "admin.newguest.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:134
+msgid "admin.newuser.createbutton.text"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:122
+msgid "admin.newuser.password.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:128 root/dynamic/templates/administration/index.tt:228
+msgid "admin.newuser.time.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:108
+msgid "admin.newuser.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:115 root/dynamic/templates/administration/index.tt:222
+msgid "admin.newuser.username.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:114
+msgid "admin.newuser.username.placeholder"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:50
+msgid "admin.rowtoolbar.delete"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:45
+msgid "admin.rowtoolbar.edit"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:100
+msgid "admin.rowtoolbar.logout"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:99
+msgid "admin.rowtoolbar.modifytime"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:47
+msgid "admin.rowtoolbar.password"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:49
+msgid "admin.rowtoolbar.troublemaker"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:14
+msgid "admin.settings.basic.allowance.day.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:8
+msgid "admin.settings.basic.allowance.day.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:25
+msgid "admin.settings.basic.allowance.session.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:19
+msgid "admin.settings.basic.allowance.session.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:36
+msgid "admin.settings.basic.client.registrationupdatelimit.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:30
+msgid "admin.settings.basic.client.registrationupdatelimit.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:6
+msgid "admin.settings.basic.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:198
+msgid "admin.settings.batchguest.count.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:192
+msgid "admin.settings.batchguest.count.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:190
+msgid "admin.settings.batchguest.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:208
+msgid "admin.settings.batchguest.passfile.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:203
+msgid "admin.settings.batchguest.passfile.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:231
+msgid "admin.settings.batchguest.passwordlabel.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:225
+msgid "admin.settings.batchguest.passwordlabel.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:219
+msgid "admin.settings.batchguest.usernamelabel.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:213
+msgid "admin.settings.batchguest.usernamelabel.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:48
+msgid "admin.settings.clientbehaviour.FCFS.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:58
+msgid "admin.settings.clientbehaviour.FCFSRES.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:53
+msgid "admin.settings.clientbehaviour.RES.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:42
+msgid "admin.settings.clientbehaviour.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:151
+msgid "admin.settings.clientloginbanner.bottom.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:145 root/dynamic/templates/administration/settings/index.tt:182
+msgid "admin.settings.clientloginbanner.height.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:139 root/dynamic/templates/administration/settings/index.tt:176
+msgid "admin.settings.clientloginbanner.height.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:111
+msgid "admin.settings.clientloginbanner.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:123 root/dynamic/templates/administration/settings/index.tt:160
+msgid "admin.settings.clientloginbanner.source.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:117 root/dynamic/templates/administration/settings/index.tt:154
+msgid "admin.settings.clientloginbanner.source.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:114
+msgid "admin.settings.clientloginbanner.top.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:134 root/dynamic/templates/administration/settings/index.tt:171
+msgid "admin.settings.clientloginbanner.width.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:128 root/dynamic/templates/administration/settings/index.tt:165
+msgid "admin.settings.clientloginbanner.width.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:1
+msgid "admin.settings.head.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:71
+msgid "admin.settings.reservation.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:91
+msgid "admin.settings.reservation.showusername.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:86
+msgid "admin.settings.reservation.showusername.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:80
+msgid "admin.settings.reservation.timeout.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:74
+msgid "admin.settings.reservation.timeout.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:254
+msgid "admin.settings.submitbutton.text"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:238
+msgid "admin.settings.thirdparty.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:246
+msgid "admin.settings.thirdparty.url.help"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:247
+msgid "admin.settings.thirdparty.url.help.example"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:241
+msgid "admin.settings.thirdparty.url.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:35 root/dynamic/templates/administration/index.tt:89
+msgid "admin.toolbar.multipleguests"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:34 root/dynamic/templates/administration/index.tt:88
+msgid "admin.toolbar.newguest"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:32 root/dynamic/templates/administration/index.tt:86
+msgid "admin.toolbar.newuser"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:261
+msgid "admin.updateuser.submit.text"
+msgstr ""
+
+#Breadcrumb dynamically uses the url, so I added these manually
+#: lib/Catalyst/Plugin/Breadcrumbs.pm:158
+msgid "breadcrumb.administration"
+msgstr ""
+
+msgid "breadcrumb.settings"
+msgstr ""
+
+msgid "breadcrumb.history"
+msgstr ""
+
+msgid "breadcrumb.statistics"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:111
+msgid "client.status.open"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:109
+msgid "client.status.used"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:524
+msgid "file.guestpass.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:121 root/dynamic/templates/administration/index.tt:299
+msgid "form.password.confirm.placeholder"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:120 root/dynamic/templates/administration/index.tt:298
+msgid "form.password.placeholder"
+msgstr ""
+
+#: root/dynamic/includes/wrapper.tt:56
+msgid "js.message.title.alert"
+msgstr ""
+
+#: root/dynamic/includes/wrapper.tt:59
+msgid "js.message.title.error"
+msgstr ""
+
+#: root/dynamic/includes/wrapper.tt:65
+msgid "js.message.title.info"
+msgstr ""
+
+#: root/dynamic/includes/wrapper.tt:62
+msgid "js.message.title.success"
+msgstr ""
+
+#: root/dynamic/templates/login.tt:1
+msgid "login.head.title"
+msgstr ""
+
+#: root/dynamic/templates/login.tt:10
+msgid "login.legend"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:23
+msgid "navbar.history"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:17
+msgid "navbar.home"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:40
+msgid "navbar.logout"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:21
+msgid "navbar.more"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:26
+msgid "navbar.settings"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:24
+msgid "navbar.statistics"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:11 root/dynamic/includes/navbar_public.tt:11
+msgid "navbar.title"
+msgstr "Libki Kiosk Management"
+
+#: root/dynamic/templates/public/index.tt:6
+msgid "public.index.tabs.clients"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:255
+msgid "public.js.message.CARD_REPORTED_LOST"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:243
+msgid "public.js.message.CHARGE_PRIVILEGES_DENIED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:237
+msgid "public.js.message.CLIENT_ALREADY_RESERVED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:246
+msgid "public.js.message.RENEWAL_PRIVILEGES_DENIED"
+msgstr ""
+
+#:root/dynamic/templates/public/index.tt:267
+msgid "public.js.message.TOO_MANY_CLAIMS_OF_ITEMS_RETURNED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:231
+msgid "public.js.message.CLIENT_USER_ALREADY_RESERVED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:276
+msgid "public.js.message.EXCESSIVE_OUTSTANDING_FEES"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:273
+msgid "public.js.message.EXCESSIVE_OUTSTANDING_FINES"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:240
+msgid "public.js.message.FEE_LIMIT"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:252
+msgid "public.js.message.HOLD_PRIVILEGES_DENIED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:227
+msgid "public.js.message.INVALID_LOGIN"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:279
+msgid "public.js.message.RECALL_OVERDUE"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:249
+msgid "public.js.message.RECALL_PRIVILEGES_DENIED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:282
+msgid "public.js.message.TOO_MANY_ITEMS_BILLED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:258
+msgid "public.js.message.TOO_MANY_ITEMS_CHARGED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:270
+msgid "public.js.message.TOO_MANY_ITEMS_LOST"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:261
+msgid "public.js.message.TOO_MANY_ITEMS_OVERDUE"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:264
+msgid "public.js.message.TOO_MANY_ITEMS_RENEWALS"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:234
+msgid "public.js.message.USER_ALREADY_RESERVED"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:308
+msgid "public.js.message.clientnotreserved"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:336
+msgid "public.js.message.reservation.cancel.error.password"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:333
+msgid "public.js.message.reservation.cancel.error.unknown"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:329
+msgid "public.js.message.reservation.cancel.success"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:223
+msgid "public.js.message.reservation.make.success"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:195
+msgid "public.js.message.reservation.reserved"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:88
+msgid "public.reservation.cancel.submit.text"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:71
+msgid "public.reservation.cancel.title"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:64
+msgid "public.reservation.make.submit.text"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:40
+msgid "public.reservation.make.title"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:30
+msgid "public.rowtoolbar.reservation.cancel"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:26
+msgid "public.rowtoolbar.reservation.make"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:123
+msgid "reservation.status.reserved"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:120
+msgid "reservation.status.reservedby"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:8
+msgid "search.from"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:12
+msgid "search.limit"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:10
+msgid "search.to"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:10
+msgid "table.head.action"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:9 root/dynamic/templates/administration/index.tt:25 root/dynamic/templates/public/index.tt:15
+msgid "table.head.client"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:19
+msgid "table.head.dailyminutes"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/statistics.tt:21
+msgid "table.head.date"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:11
+msgid "table.head.datetime"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:57 root/dynamic/templates/administration/index.tt:72 root/dynamic/templates/public/index.tt:16
+msgid "table.head.location"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:22 root/dynamic/templates/administration/index.tt:77
+msgid "table.head.message"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:75
+msgid "table.head.minutes"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:71
+msgid "table.head.name"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:23 root/dynamic/templates/administration/index.tt:78
+msgid "table.head.notes"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:19
+msgid "table.head.reservationstatus"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:80
+msgid "table.head.reserved"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:20
+msgid "table.head.sessionminutes"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:73
+msgid "table.head.sessionstatus"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:21 root/dynamic/templates/administration/index.tt:26 root/dynamic/templates/public/index.tt:17
+msgid "table.head.status"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:18
+msgid "table.head.timeremaining"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:24 root/dynamic/templates/administration/index.tt:79
+msgid "table.head.troublemaker"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:8 root/dynamic/templates/administration/index.tt:18 root/dynamic/templates/administration/index.tt:74
+msgid "table.head.username"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:76
+msgid "table.head.userstatus"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:247
+msgid "user.type.administrator"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:251
+msgid "user.type.superadmin"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:60
+msgid "word.all"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:133 root/dynamic/templates/administration/index.tt:260 root/dynamic/templates/administration/index.tt:282 root/dynamic/templates/administration/index.tt:305 root/dynamic/templates/public/index.tt:63 root/dynamic/templates/public/index.tt:87
+msgid "word.cancel"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:203
+msgid "word.details.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:235
+msgid "word.disabled"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:162 root/dynamic/templates/administration/index.tt:192
+msgid "word.dissmiss"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:234
+msgid "word.enabled"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:126 root/dynamic/templates/administration/index.tt:226 root/dynamic/templates/administration/index.tt:275 root/dynamic/templates/administration/settings/index.tt:12 root/dynamic/templates/administration/settings/index.tt:23 root/dynamic/templates/administration/settings/index.tt:34 root/dynamic/templates/administration/settings/index.tt:78 root/dynamic/templates/public/index.tt:115 root/dynamic/templates/administration/index.tt:184 root/dynamic/templates/administration/index.tt:156
+msgid "word.minute.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:240
+msgid "word.notes"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:196
+msgid "word.pass.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:119 root/dynamic/templates/administration/index.tt:151 root/dynamic/templates/administration/index.tt:297 root/dynamic/templates/login.tt:20 root/dynamic/templates/public/index.tt:55 root/dynamic/templates/public/index.tt:79
+msgid "word.password"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:132 root/dynamic/templates/administration/settings/index.tt:143 root/dynamic/templates/administration/settings/index.tt:169 root/dynamic/templates/administration/settings/index.tt:180
+msgid "word.pixel.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:39
+msgid "word.refresh"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:206
+msgid "word.role.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:232
+msgid "word.status"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:113 root/dynamic/templates/administration/index.tt:146 root/dynamic/templates/administration/index.tt:220 root/dynamic/templates/login.tt:13 root/dynamic/templates/public/index.tt:48
+msgid "word.username"
+msgstr ""
+
+#: Language menu
+msgid "word.language"
+msgstr ""

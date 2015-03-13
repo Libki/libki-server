@@ -37,6 +37,8 @@ use Catalyst qw/
   StatusMessage
   
   Breadcrumbs
+
+  I18N
   /;
 
 extends 'Catalyst';

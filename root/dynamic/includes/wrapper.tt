@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" [%#%]"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>[% template.title or "Libki Kiosk Management System" %]</title>
+    <title>[% template.title or meta.title %]</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -53,16 +53,16 @@
             if ( !title ) {
                 switch( type ) {
                     case 'block':
-                        title = "Alert!";
+                        title = "[% c.loc("js.message.title.alert") %]";
                         break;
                     case 'error':
-                        title = "Error!";
+                        title = "[% c.loc("js.message.title.error") %]";
                         break;
                     case 'success':
-                        title = "Success!";
+                        title = "[% c.loc("js.message.title.success") %]";
                         break;
                     case 'info':
-                        title = "Info!";
+                        title = "[% c.loc("js.message.title.info") %]";
                         break;
                 }
             }
@@ -121,6 +121,5 @@
         [%# This is where TT will stick all of your template's contents. -%]
         [% content %]
     </div><!-- /container -->
-
 </body>
 </html>

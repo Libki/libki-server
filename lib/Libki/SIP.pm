@@ -27,16 +27,16 @@ sub authenticate_via_sip {
 
     my $summary = '          ';
 
-    my $socket = IO::Socket::INET->new("$host:$port")
-      or die "ERROR in Socket Creation : $!\n";
+    my $socket = IO::Socket::INET->new(
+            PeerAddr=>$host,
+            PeerPort=>$port
+    ) or die "ERROR in Socket Creation : $!\n";
 
     my $login_command =
       "9300CN$login_user_id|CO$login_password|CP$location_code|";
 
     print $socket $login_command . $terminator;
-
     my $data = <$socket>;
-
     if ( $data =~ '^941' ) {
         my $patron_status_request =
             "63001" 
@@ -49,7 +49,6 @@ sub authenticate_via_sip {
         print $socket $patron_status_request . $terminator;
 
         $data = <$socket>;
-
         if ( CORE::index( $data, 'BLY' ) != -1 ) {
             if ( CORE::index( $data, 'CQY' ) != -1 ) {
 

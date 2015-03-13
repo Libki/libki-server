@@ -1,14 +1,14 @@
 <div id="primary-navbar" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-
+            [% INCLUDE language_menu.tt %]
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
 
-            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />Libki Kiosk Management System</a>
+            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("navbar.title") %]</a>
 
         </div>
     </div>
