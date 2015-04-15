@@ -31,6 +31,8 @@ sub client : Local : Args(1) {
     my $username = $c->request->params->{'username'};
     my $password = $c->request->params->{'password'};
 
+    $c->log()->debug("API::Public::client( name => $name, username => $username, password => $password");
+
     delete $c->stash->{Settings};
 
     if (   $c->authenticate( { username => $username, password => $password } )
@@ -47,10 +49,16 @@ sub client : Local : Args(1) {
                 my $user = $session->user();
 
                 $c->stash( username => $user->username() );
+                $c->log()->debug("API::Public::client returning ( username => " . $user->username() . " )");
 
             }
 
         }
+
+	if ( $name eq 'TEST_IN' ) {
+		$c->stash( username => 'TEST_OUT' );
+                $c->log()->debug("API::Public::client returning ( username => TEST_OUT ) for testing mode");
+	}
 
     }
     else {

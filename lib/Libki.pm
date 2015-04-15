@@ -20,8 +20,9 @@ use DateTime::Format::MySQL;
 # Static::Simple: will serve static files from the application's root
 #                 directory
 
+use Log::Log4perl::Catalyst;
+
 use Catalyst qw/
-  -Debug
   ConfigLoader
   Static::Simple
 
@@ -40,6 +41,7 @@ use Catalyst qw/
 
   I18N
   /;
+# add -Debug to this list for debugging purposes
 
 extends 'Catalyst';
 
@@ -85,6 +87,8 @@ __PACKAGE__->config(
     },
 );
 
+# Create a Log4perl object
+__PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));
 
 # Start the application
 __PACKAGE__->setup();
