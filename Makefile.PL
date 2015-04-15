@@ -30,6 +30,8 @@ requires 'Catalyst::Plugin::StatusMessage';
 
 requires 'Catalyst::Helper::View::JSON';
 
+reqires 'Log::Log4perl::Catalyst';
+
 requires 'DBIx::Class::TimeStamp';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::Numeric';
