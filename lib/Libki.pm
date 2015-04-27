@@ -87,6 +87,10 @@ __PACKAGE__->config(
     },
 );
 
+# Set the time zone
+#__PACKAGE__->config->{TZ} = DateTime::TimeZone->new( name => 'local' );
+$ENV{TZ} = DateTime::TimeZone->new( name => 'local' )->name();
+
 # Create a Log4perl object
 __PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));
 
