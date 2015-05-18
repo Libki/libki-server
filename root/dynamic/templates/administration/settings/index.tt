@@ -92,19 +92,61 @@
                 </label>
             </div>
         </div>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
 
-            $("#ReservationShowUsernameCheckbox").change( function() {
-                if ( $(this).attr('checked') == 'checked') {
-                    $("#ReservationShowUsername").val( 1 );
-                } else {
-                    $("#ReservationShowUsername").val( 0 );
-                }
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
+
+                $("#ReservationShowUsernameCheckbox").change( function() {
+                    if ( $(this).attr('checked') == 'checked') {
+                        $("#ReservationShowUsername").val( 1 );
+                    } else {
+                        $("#ReservationShowUsername").val( 0 );
+                    }
+                });
             });
-        });
-    </script>
+        </script>
+    </fieldset>
+
+    <fieldset>
+        <legend>[% c.loc("admin.settings.time_extension.legend") %]</legend>
+        <div class="control-group">
+            <label class="control-label" for="AutomaticTimeExtensionLength">[% c.loc("admin.settings.time_extension.length.label") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="AutomaticTimeExtensionLength" name="AutomaticTimeExtensionLength" value="[% AutomaticTimeExtensionLength %]">
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
+                </div>
+                <span class="help-inline">[% c.loc("admin.settings.time_extension.length.help") %]</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="AutomaticTimeExtensionAt">[% c.loc("admin.settings.time_extension.at.label") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="AutomaticTimeExtensionAt" name="AutomaticTimeExtensionAt" value="[% AutomaticTimeExtensionAt %]">
+                    <span class="add-on">[% c.loc("word.minute.plural") %]</span>
+                </div>
+                <span class="help-inline">[% c.loc("admin.settings.time_extension.at.help") %]</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="AutomaticTimeExtensionUnless">[% c.loc("admin.settings.time_extension.unless.label") %]</label>
+            <div class="controls">
+                <select id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
+                    <option value="this_reserved">User's client is reserved</option>
+                    <option value="any_reserved">Any client is reserved</option>
+                </select>
+                <span class="help-inline">[% c.loc("admin.settings.time_extension.unless.help") %]</span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
+            });
+        </script>
     </fieldset>
 
     <fieldset>

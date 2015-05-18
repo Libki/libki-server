@@ -172,6 +172,21 @@ __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 =head1 RELATIONS
 
+=head2 messages
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Message>
+
+=cut
+
+__PACKAGE__->has_many(
+  "messages",
+  "Libki::Schema::DB::Result::Message",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 reservation
 
 Type: might_have
@@ -228,8 +243,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07039 @ 2014-01-21 08:57:32
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RK6ek842hnj7k6CPks77ZA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-19 10:01:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JzES9GX1NlmzGqHNDip/OA
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 

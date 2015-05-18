@@ -75,9 +75,9 @@ __PACKAGE__->table("statistics");
 
 =head2 action
 
-  data_type: 'enum'
-  extra: {list => ["LOGIN","LOGOUT"]}
-  is_nullable: 0
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
 
 =head2 when
 
@@ -97,11 +97,7 @@ __PACKAGE__->add_columns(
   "client_location",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "action",
-  {
-    data_type => "enum",
-    extra => { list => ["LOGIN", "LOGOUT"] },
-    is_nullable => 0,
-  },
+  { data_type => "varchar", is_nullable => 1, size => 255 },
   "when",
   {
     data_type => "timestamp",
@@ -123,8 +119,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-17 15:41:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GWGlsXl5dOWxue76Jp8WPA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-19 10:01:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:M1d0ovX6E3tY76dBKkym3Q
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

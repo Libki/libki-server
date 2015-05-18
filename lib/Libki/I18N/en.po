@@ -764,3 +764,25 @@ msgstr "Language"
 #: Login breadbrumb
 msgid "breadcrumb.login"
 msgstr "Log in"
+
+#: Time extension
+msgid "admin.settings.time_extension.legend"
+msgstr "Automatic time extension"
+
+msgid "admin.settings.time_extension.length.label"
+msgstr "Extension length"
+
+msgid "admin.settings.time_extension.length.help"
+msgstr "Amount of time to automatically increase a user's session time by."
+
+msgid "admin.settings.time_extension.at.label"
+msgstr "Extend time at"
+
+msgid "admin.settings.time_extension.at.help"
+msgstr "Extend the session time when a user has less than this number of session minutes remaining."
+
+msgid "admin.settings.time_extension.unless.label"
+msgstr "Extend time unless"
+
+msgid "admin.settings.time_extension.unless.help"
+msgstr "Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved"
