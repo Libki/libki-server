@@ -760,3 +760,7 @@ msgstr "Username"
 #: Language menu
 msgid "word.language"
 msgstr "Language"
+
+#: Login breadbrumb
+msgid "breadcrumb.login"
+msgstr "Log in"
