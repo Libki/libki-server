@@ -7,30 +7,47 @@ use Data::Dumper;
 
 sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
-    my $terminator;
-    my $data;
+
+    my $host    = $c->config->{SIP}->{host};
+    my $port    = $c->config->{SIP}->{port};
+    my $timeout = $c->config->{SIP}->{timout} || 15;
+
     my $transaction_date = timestamp();
-    my $host             = $c->config->{SIP}->{host};
-    my $port             = $c->config->{SIP}->{port};
+
+    my $data;
     my $patron_status_request;
-    if ( $c->config->{SIP}->{terminator} eq "NL" ) {
-        $terminator = chr(0x0a);
-    }
-    else { $terminator = chr(0x0d) }
+
+    my $terminator;
+    $terminator = chr(0x0a) if $c->config->{SIP}->{terminator} eq "NL";
+    $terminator = $CR       if $c->config->{SIP}->{terminator} eq "CR";
+    $terminator = $CRLF     if $c->config->{SIP}->{terminator} eq "CRLF";
+    $terminator ||= chr(0x0d);    ## Default to CR
+
     my $socket = IO::Socket::INET->new(
         PeerAddr => $host,
         PeerPort => $port,
         Proto    => 'tcp',
-        Timeout  => '15',
+        Timeout  => $timeout,
         Type     => SOCK_STREAM
     ) or die "ERROR in Socket Creation : $!\n";
-    if ( $c->config->{SIP}->{require_sip_auth} == 0 ) {
-        my $run_num = 0;
-        my $string  = "9900302.00";
-        my $final   = checksum( $string, $run_num );
-        my $send99  = $string . $final . $terminator;
-        $socket->send($send99);
-        my ( $response, $split );
+
+    ## Default to requiring authentication if setting doesn't exist
+    $c->config->{SIP}->{require_sip_auth} // 1;
+
+    ## Set location to empty string if not set
+    $c->config->{SIP}->{location} // q{};
+
+    if ( $c->config->{SIP}->{require_sip_auth} ) {
+        my $string = "9300";
+        $string .= "CN" . $c->config->{SIP}->{username} . "|";
+        $string .= "CO" . $c->config->{SIP}->{password} . "|";
+        $string .= "CP" . $c->config->{SIP}->{location} . "|";
+
+        my $str_93 = checksum($string);
+        $str_93 = $string . $str_93 . $terminator;
+        $socket->send($str_93);
+
+        my $response;
         $socket->recv( $response, 1024 );
         chomp $response;
 
@@ -39,52 +56,26 @@ sub authenticate_via_sip {
             chomp $split;
             $response .= $split;
         }
-        if ( ( substr $response, 0, 3 ) eq '98Y' ) {
-            my ( $chk, $end ) = split /\|AY/, $response;
-            $chk .= "|AY";
-            my $run_num = substr( $end, 0, 1 );
-            $patron_status_request = talk63( $c->config->{SIP}->{location},
-                $username, $password, $run_num )
-              . $terminator;
-        }
-    }
-    if ( $c->config->{SIP}->{require_sip_auth} != 0 ) {
-        my $string = "9300";
-        $string .= "CN" . $c->config->{SIP}->{username} . "|";
-        $string .= "CO" . $c->config->{SIP}->{password} . "|";
-        $string .= "CP";
-        if ( $c->config->{SIP}->{location} ) {
-            $string .= $c->config->{SIP}->{location} . "|";
-        }
-        else {
-            $string .= "" . "|";
-        }
-        my $str_93 = checksum($string);
-        $str_93 = $string . $str_93 . $terminator;
-        $socket->send($str_93);
-        my $response;
-        $socket->recv( $response, 1024 );
-        chomp $response;
-        if ( $c->config->{SIP}->{enable_split_messages} ) {
-            $socket->recv( $split, 1024 );
-            chomp $split;
-            $response .= $split;
-        }
-        my $auth    = substr $response, 2, 1;
-        my $run_num = substr $response, 5, 1;
+
+        my $auth    = substr( $response, 2, 1 );
+        my $run_num = substr( $response, 5, 1 );
+
         if ( $auth == "1" ) {
             my $string = "9900302.00";
             my $final  = checksum( $string, $run_num );
             my $send99 = $string . $final . $terminator;
             $socket->send($send99);
+
             my ( $response, $split );
             $socket->recv( $response, 1024 );
             chomp $response;
+
             if ( $c->config->{SIP}->{enable_split_messages} ) {
                 $socket->recv( $split, 1024 );
                 chomp $split;
                 $response .= $split;
             }
+
             if ( ( substr $response, 0, 3 ) eq '98Y' ) {
                 my ( $chk, $end ) = split /\|AY/, $response;
                 $chk .= "|AY";
@@ -98,14 +89,42 @@ sub authenticate_via_sip {
             return { success => 0, error => 'SIP_AUTH_FAILURE', user => $user };
         }
     }
+    else {
+        my $run_num = 0;
+        my $string  = "9900302.00";
+        my $final   = checksum( $string, $run_num );
+        my $send99  = $string . $final . $terminator;
+        $socket->send($send99);
+
+        my ( $response, $split );
+        $socket->recv( $response, 1024 );
+        chomp $response;
+
+        if ( $c->config->{SIP}->{enable_split_messages} ) {
+            $socket->recv( $split, 1024 );
+            chomp $split;
+            $response .= $split;
+        }
+
+        if ( ( substr $response, 0, 3 ) eq '98Y' ) {
+            my ( $chk, $end ) = split /\|AY/, $response;
+            $chk .= "|AY";
+            my $run_num = substr( $end, 0, 1 );
+            $patron_status_request = talk63( $c->config->{SIP}->{location},
+                $username, $password, $run_num )
+              . $terminator;
+        }
+    }
 
     $socket->send( $patron_status_request . $terminator );
     $socket->recv( $data, 1024 );
+
     if ( $c->config->{SIP}->{enable_split_messages} ) {
         $socket->recv( $split, 1024 );
         chomp $split;
         $data .= $split;
     }
+
     if ( CORE::index( $data, 'BLY' ) != -1 ) {
         if ( CORE::index( $data, 'CQY' ) != -1 ) {
 
@@ -138,8 +157,6 @@ sub authenticate_via_sip {
                     }
                 }
 
-                #}
-
                 if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
 
              # If the fee limit is a SIP2 field, use that field as the fee limit
@@ -167,7 +184,7 @@ sub authenticate_via_sip {
             }
         }
         else {
-            ## This user may have existing in SIP, but is now deleted
+            ## This user may have existed in SIP, but is now deleted
             ## In this case, we don't want the now deleted user to be
             ## able to log into Libki, so let's attempt to delete that
             ## username before we try to authenticate.
