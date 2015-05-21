@@ -9,15 +9,20 @@ use Module::Install::Catalyst; # Complain loudly if you don't have
 name 'Libki';
 all_from 'lib/Libki.pm';
 
+requires 'namespace::autoclean';
+
 requires 'Catalyst::Runtime' => '5.90011';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Action::RenderView';
 
+requires 'CatalystX::Script::Server::Starman';
+
 requires 'Catalyst::Controller::REST';
 
 requires 'Catalyst::Plugin::Authentication';
+requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Plugin::Authorization::Roles';
 
 requires 'Catalyst::Plugin::Session';
@@ -27,17 +32,22 @@ requires 'Catalyst::Plugin::StatusMessage';
 
 requires 'Catalyst::Plugin::Breadcrumbs';
 requires 'Catalyst::Plugin::StatusMessage';
+requires 'Catalyst::Plugin::I18N';
+
+requires 'Catalyst::View::TT';
 
 requires 'Catalyst::Helper::View::JSON';
 
-reqires 'Log::Log4perl::Catalyst';
+requires 'Log::Log4perl::Catalyst';
 
 requires 'DBIx::Class::TimeStamp';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::Numeric';
+requires 'DBIx::Class::Cursor::Cached';
 
 requires 'Moose';
-requires 'namespace::autoclean';
+requires 'MooseX::NonMoose';
+
 requires 'Config::General';
 
 requires 'Perl6::Junction';
@@ -48,6 +58,12 @@ requires 'String::Random';
 
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
+
+requires 'Config::JFDI';
+
+requires 'File::Slurp';
+
+requires 'SQL::Script';
 
 test_requires 'Test::More' => '0.88';
 catalyst;

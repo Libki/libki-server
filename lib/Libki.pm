@@ -2,7 +2,7 @@ package Libki;
 use Moose;
 use namespace::autoclean;
 
-use Catalyst::Runtime 5.80;
+use Catalyst::Runtime 5.90011;
 
 use DateTime;
 use DateTime::Format::DateParse;
