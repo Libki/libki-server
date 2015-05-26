@@ -112,7 +112,7 @@
         <div class="row">
             <div class="span12">
                     <div id="alert-message" class="alert alert-success libki-message">
-                        <button class="close" onclick="$(this).parent().stop().slideUp('slow');">×</button>
+                        <button class="close" onclick="$(this).parent().stop().slideUp('slow');"><i class="icon-remove"></i></button>
                         <strong><span id="alert-message-title"></span></strong> <span id="alert-message-content">[% success_message %]</span>
                     </div>
             </div>
