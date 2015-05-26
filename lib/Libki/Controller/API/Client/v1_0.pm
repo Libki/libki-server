@@ -199,12 +199,6 @@ sub index : Path : Args(0) {
                 $c->stash( error => $error );
             }
         }
-        elsif ( $action eq 'clear_message' ) {
-            $user->message('');
-            my $success = $user->update();
-            $success &&= 1;
-            $c->stash( message_cleared => $success );
-        }
         elsif ( $action eq 'get_user_data' ) {
 
             my $status;
@@ -218,11 +212,14 @@ sub index : Path : Args(0) {
                 $status = 'Logged out';
             }
 
+            my @messages = $user->messages()->get_column('content')->all();
+            map { $c->log()->info( "Sent message for " . $user->username() . " : $_" ) } @messages;
             $c->stash(
-                message => $user->message,
-                units   => $user->minutes,
-                status  => $status,
+                messages => \@messages,
+                units    => $user->minutes,
+                status   => $status,
             );
+            $user->messages()->delete();
 
         }
         elsif ( $action eq 'logout' ) {
