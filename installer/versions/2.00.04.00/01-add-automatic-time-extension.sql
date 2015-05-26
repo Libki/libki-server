@@ -5,7 +5,7 @@ INSERT IGNORE INTO settings ( name, value ) VALUES ('AutomaticTimeExtensionUnles
 CREATE TABLE IF NOT EXISTS messages (
     id int(11) NOT NULL AUTO_INCREMENT,
     user_id int(11) NOT NULL,
-    message text NOT NULL,
+    content text NOT NULL,
     PRIMARY KEY (id),
     KEY user_id (user_id)
 ) ENGINE=InnoDB;

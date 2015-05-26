@@ -61,7 +61,7 @@ __PACKAGE__->table("messages");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 message
+=head2 content
 
   data_type: 'text'
   is_nullable: 0
@@ -73,7 +73,7 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "message",
+  "content",
   { data_type => "text", is_nullable => 0 },
 );
 
@@ -107,8 +107,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-18 08:24:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L7+E0BC3ulww7x0N+OBFMQ
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-26 04:36:24
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TNATamQ7Sk6RluID+4IW+w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
