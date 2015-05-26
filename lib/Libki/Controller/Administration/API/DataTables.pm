@@ -21,7 +21,7 @@ sub users : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/me.username me.minutes me.status me.message me.notes me.is_troublemaker client.name session.status/;
+      qw/me.username me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -30,7 +30,6 @@ sub users : Local Args(0) {
             -or => [
                 'me.username' => { 'like', "%$search_term%" },
                 'me.notes'    => { 'like', "%$search_term%" },
-                'me.message'  => { 'like', "%$search_term%" },
             ]
         };
     }
@@ -76,11 +75,10 @@ sub users : Local Args(0) {
         $r->{'1'}        = $u->minutes_allotment;
         $r->{'2'}        = $u->minutes;
         $r->{'3'}        = $u->status;
-        $r->{'4'}        = $u->message;
-        $r->{'5'}        = $u->notes;
-        $r->{'6'}        = $u->is_troublemaker;
-        $r->{'7'} = defined( $u->session ) ? $u->session->client->name : undef;
-        $r->{'8'} = defined( $u->session ) ? $u->session->status : undef;
+        $r->{'4'}        = $u->notes;
+        $r->{'5'}        = $u->is_troublemaker;
+        $r->{'6'} = defined( $u->session ) ? $u->session->client->name : undef;
+        $r->{'7'} = defined( $u->session ) ? $u->session->status : undef;
 
         push( @results, $r );
     }
@@ -101,7 +99,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location session.status user.username user.minutes user.status user.message user.notes user.is_troublemaker/;
+      qw/ me.name me.location session.status user.username user.minutes user.status user.notes user.is_troublemaker/;
 
     # Set up filters
     my $filter = {};
@@ -114,7 +112,6 @@ sub clients : Local Args(0) {
 
             #'user.username' => { 'like', "%$search_term%" },
             #'user.notes'    => { 'like', "%$search_term%" },
-            #'user.message'  => { 'like', "%$search_term%" },
         ];
     }
 
@@ -166,11 +163,10 @@ sub clients : Local Args(0) {
           defined( $c->session ) ? $c->session->user->username : undef;
         $r->{'4'} = defined( $c->session ) ? $c->session->user->minutes : undef;
         $r->{'5'} = defined( $c->session ) ? $c->session->user->status  : undef;
-        $r->{'6'} = defined( $c->session ) ? $c->session->user->message : undef;
-        $r->{'7'} = defined( $c->session ) ? $c->session->user->notes   : undef;
-        $r->{'8'} =
+        $r->{'6'} = defined( $c->session ) ? $c->session->user->notes   : undef;
+        $r->{'7'} =
           defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'9'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
+        $r->{'8'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
         push( @results, $r );
     }
 

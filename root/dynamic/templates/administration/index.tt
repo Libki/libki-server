@@ -19,7 +19,6 @@
                 <th>[% c.loc("table.head.dailyminutes") %]</th>
                 <th>[% c.loc("table.head.sessionminutes") %]</th>
                 <th>[% c.loc("table.head.status") %]</th>
-                <th>[% c.loc("table.head.message") %]</th>
                 <th>[% c.loc("table.head.notes") %]</th>
                 <th>[% c.loc("table.head.troublemaker") %]</th>
                 <th>[% c.loc("table.head.client") %]</th>
@@ -74,7 +73,6 @@
                 <th>[% c.loc("table.head.username") %]</th>
                 <th>[% c.loc("table.head.minutes") %]</th>
                 <th>[% c.loc("table.head.userstatus") %]</th>
-                <th>[% c.loc("table.head.message") %]</th>
                 <th>[% c.loc("table.head.notes") %]</th>
                 <th>[% c.loc("table.head.troublemaker") %]</th>
                 <th>[% c.loc("table.head.reserved") %]</th>
