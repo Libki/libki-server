@@ -291,6 +291,8 @@ sub insert {
     my $default_session_time_allowance =
       $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
 
+    $self->minutes(0) unless $self->minutes();
+
     while ($self->minutes() < $default_session_time_allowance
         && $self->minutes_allotment() > 0 )
     {
