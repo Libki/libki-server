@@ -101,11 +101,11 @@ msgstr "Are you sure you want to log this user out?"
 
 #: root/dynamic/templates/administration/index.tt:739
 msgid "admin.js.message.logoutuser.error"
-msgstr "Log out succeeded!"
+msgstr "Log out failed!"
 
 #: root/dynamic/templates/administration/index.tt:735
 msgid "admin.js.message.logoutuser.success"
-msgstr "Log out failed!"
+msgstr "Log out succeeded!"
 
 #: root/dynamic/templates/administration/index.tt:668
 msgid "admin.js.message.modifytime.error"
