@@ -48,17 +48,20 @@ sub client : Local : Args(1) {
 
                 my $user = $session->user();
 
-                $c->stash( username => $user->username() );
-                $c->log()->debug("API::Public::client returning ( username => " . $user->username() . " )");
+                $c->stash(
+                    username   => $user->username(),
+                    clientname => $client->name(),
+                );
+                $c->log()->debug( "API::Public::client returning ( username => " . $user->username() . ", clientname => " . $client->name() . " )" );
 
             }
 
         }
 
-	if ( $name eq 'TEST_IN' ) {
-		$c->stash( username => 'TEST_OUT' );
-                $c->log()->debug("API::Public::client returning ( username => TEST_OUT ) for testing mode");
-	}
+        if ( $name eq 'TEST_IN' ) {
+            $c->stash( username => 'TEST_OUT', clientname => 'TEST_CLIENTNAME' );
+            $c->log()->debug("API::Public::client returning ( username => TEST_OUT, clientname => TEST_CLIENTNAME ) for testing mode");
+        }
 
     }
     else {
