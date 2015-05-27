@@ -786,3 +786,6 @@ msgstr "Extend time unless"
 
 msgid "admin.settings.time_extension.unless.help"
 msgstr "Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved"
+
+msgid "word.details.plural"
+msgstr "Details"
