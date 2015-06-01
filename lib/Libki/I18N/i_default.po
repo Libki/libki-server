@@ -379,6 +379,66 @@ msgstr "New user"
 msgid "admin.updateuser.submit.text"
 msgstr "Update user"
 
+#: root/dynamic/templates/administration/hours/index.tt:1
+msgid "admin.hours.header.title"
+msgstr "Administration / Closing hours"
+
+#: root/dynamic/templates/administration/hours/index.tt:6
+msgid "updateform.legend"
+msgstr "Closing hours"
+
+#: root/dynamic/templates/administration/hours/index.tt:8
+msgid "updateform.monday"
+msgstr "Monday"
+
+#: root/dynamic/templates/administration/hours/index.tt:17
+msgid "updateform.tuesday"
+msgstr "Tuesday"
+
+#: root/dynamic/templates/administration/hours/index.tt:26
+msgid "updateform.wednesday"
+msgstr "Wednesday"
+
+#: root/dynamic/templates/administration/hours/index.tt:35
+msgid "updateform.thursday"
+msgstr "Thursday"
+
+#: root/dynamic/templates/administration/hours/index.tt:44
+msgid "updateform.friday"
+msgstr "Friday"
+
+#: root/dynamic/templates/administration/hours/index.tt:53
+msgid "updateform.saturday"
+msgstr "Saturday"
+
+#: root/dynamic/templates/administration/hours/index.tt:62
+msgid "updateform.sunday"
+msgstr "Sunday"
+
+#: root/dynamic/templates/administration/hours/index.tt:76
+msgid "updateform.deletion"
+msgstr "Mark for deletion:"
+
+#: root/dynamic/templates/administration/hours/index.tt:82
+msgid "updateform.button"
+msgstr "Update"
+
+#: root/dynamic/templates/administration/hours/index.tt:90
+msgid "addform.legend"
+msgstr "Closing hours for specific dates"
+
+#: root/dynamic/templates/administration/hours/index.tt:94
+msgid "addform.control.label"
+msgstr "Input date and time"
+
+#: root/dynamic/templates/administration/hours/index.tt:106
+msgid "addform.addrow"
+msgstr "Click to add another date"
+
+#: root/dynamic/templates/administration/hours/index.tt:110
+msgid "addform.button"
+msgstr "Save dates"
+
 #Breadcrumb dynamically uses the url, so I added these manually
 #: lib/Catalyst/Plugin/Breadcrumbs.pm:158
 msgid "breadcrumb.administration"
@@ -392,6 +452,9 @@ msgstr "history"
 
 msgid "breadcrumb.statistics"
 msgstr "statistics"
+
+msgid "breadcrumb.hours"
+msgstr "closing hours"
 
 #: root/dynamic/templates/public/index.tt:111
 msgid "client.status.open"
@@ -460,6 +523,10 @@ msgstr "Settings"
 #: root/dynamic/includes/navbar_administration.tt:24
 msgid "navbar.statistics"
 msgstr "Statistics"
+
+#: root/dynamic/includes/navbar_administration.tt:31
+msgid "navbar.hours"
+msgstr "Closing hours"
 
 #: root/dynamic/includes/navbar_administration.tt:11 root/dynamic/includes/navbar_public.tt:11
 msgid "navbar.title"

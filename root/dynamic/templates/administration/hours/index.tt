@@ -1,0 +1,114 @@
+[% meta.title = c.loc('admin.hours.header.title') %]
+[% SET active_class = 'administration__hours' %]
+
+<form id="updateform" class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+    <fieldset>
+        <legend>[% c.loc("updateform.legend") %]</legend>
+        <div class="control-group">
+            <label class="control-label" for="monday">[% c.loc("updateform.monday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="monday" name="monday" value="[% monday %]">
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="tuesday">[% c.loc("updateform.tuesday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="tuesday" name="tuesday" value="[% tuesday %]">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="wednesday">[% c.loc("updateform.wednesday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="wednesday" name="wednesday" value="[% wednesday %]">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="thursday">[% c.loc("updateform.thursday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="thursday" name="thursday" value="[% thursday %]">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="friday">[% c.loc("updateform.friday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="friday" name="friday" value="[% friday %]">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="saturday">[% c.loc("updateform.saturday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="saturday" name="saturday" value="[% saturday %]">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="sunday">[% c.loc("updateform.sunday") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="sunday" name="sunday" value="[% sunday %]">
+                </div>
+            </div>
+        </div>
+[% FOREACH date IN dates -%]
+        <div class="control-group">
+            <label class="control-label" for="[% date.day %]">[% date.day %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="time" class="input-small" id="[% date.day %]" name="[% date.day %]" value="[% date.closingtime %]">
+                </div>
+                <span class="help-inline">[% c.loc("updateform.deletion") %]<input type="checkbox" name="delete" class="delete" value="[% date.day %]"></span>
+            </div>
+        </div>
+[% END -%]
+        <div class="control-group">
+            <div class="controls">
+                <button id="updater" type="submit" class="btn">[% c.loc("updateform.button") %]</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<form id="addform" class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+    <fieldset>
+        <legend>[% c.loc("addform.legend") %]</legend>
+        <div class="dateadd-wrapper">
+            <div class="dateadd">
+                <div class="control-group">
+                    <label class="control-label" for="[% date.day %]">[% c.loc("addform.control.label") %]</label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input type="text" class="date input-medium" placeholder="1999-12-31">
+                        </div>
+                        <div class="input-append">
+                            <input type="time" class="time input-small" name="time"  placeholder="13:55">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span id="addrow" style="padding-left:5em;"><img style="padding-right: 2em;" src="[% c.uri_for('/static/images/plusbutton.png') %]" alt="Button for adding row" width="20"/>[% c.loc("addform.addrow") %]</span>
+    
+    <div class="control-group">
+        <div class="controls">
+            <button style="margin-top:1.5em;" id="adder" type="submit" class="btn">[% c.loc("addform.button") %]</button>
+        </div>
+    </div>
+    </fieldset>
+</form>

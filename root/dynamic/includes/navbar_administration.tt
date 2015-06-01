@@ -27,6 +27,9 @@
                                 [% END %]
                             </ul>
                         </li>
+			<li class="[% IF active_class.search('^administration__hours') %] active [% END %]">
+                            <a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("navbar.hours") %]</a>
+                        </li>
                     </ul>
 
                     <ul class="nav pull-right">

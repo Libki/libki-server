@@ -379,6 +379,66 @@ msgstr ""
 msgid "admin.updateuser.submit.text"
 msgstr ""
 
+#: root/dynamic/templates/administration/hours/index.tt:1
+msgid "admin.hours.header.title"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:6
+msgid "updateform.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:8
+msgid "updateform.monday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:17
+msgid "updateform.tuesday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:26
+msgid "updateform.wednesday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:35
+msgid "updateform.thursday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:44
+msgid "updateform.friday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:53
+msgid "updateform.saturday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:62
+msgid "updateform.sunday"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:76
+msgid "updateform.deletion"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:82
+msgid "updateform.button"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:90
+msgid "addform.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:94
+msgid "addform.control.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:106
+msgid "addform.addrow"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:110
+msgid "addform.button"
+msgstr ""
+
 #Breadcrumb dynamically uses the url, so I added these manually
 #: lib/Catalyst/Plugin/Breadcrumbs.pm:158
 msgid "breadcrumb.administration"
@@ -391,6 +451,9 @@ msgid "breadcrumb.history"
 msgstr ""
 
 msgid "breadcrumb.statistics"
+msgstr ""
+
+msgid "breadcrumb.hours"
 msgstr ""
 
 #: root/dynamic/templates/public/index.tt:111
@@ -459,6 +522,10 @@ msgstr ""
 
 #: root/dynamic/includes/navbar_administration.tt:24
 msgid "navbar.statistics"
+msgstr ""
+
+#: root/dynamic/includes/navbar_administration.tt:31
+msgid "navbar.hours"
 msgstr ""
 
 #: root/dynamic/includes/navbar_administration.tt:11 root/dynamic/includes/navbar_public.tt:11
