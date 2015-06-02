@@ -90,11 +90,6 @@ __PACKAGE__->table("users");
   data_type: 'text'
   is_nullable: 0
 
-=head2 message
-
-  data_type: 'text'
-  is_nullable: 0
-
 =head2 is_troublemaker
 
   data_type: 'enum'
@@ -125,8 +120,6 @@ __PACKAGE__->add_columns(
   "status",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "notes",
-  { data_type => "text", is_nullable => 0 },
-  "message",
   { data_type => "text", is_nullable => 0 },
   "is_troublemaker",
   {
@@ -243,8 +236,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-19 10:01:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JzES9GX1NlmzGqHNDip/OA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-02 06:50:03
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Ymmpunw70z282J9Qa+MOzA
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
