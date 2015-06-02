@@ -349,7 +349,7 @@ msgstr "Update settings"
 
 #: root/dynamic/templates/administration/settings/index.tt:238
 msgid "admin.settings.thirdparty.legend"
-msgstr "Third party intergration"
+msgstr "Third party integration"
 
 #: root/dynamic/templates/administration/settings/index.tt:246
 msgid "admin.settings.thirdparty.url.help"
