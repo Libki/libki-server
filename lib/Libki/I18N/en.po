@@ -714,8 +714,8 @@ msgid "word.disabled"
 msgstr "Disabled"
 
 #: root/dynamic/templates/administration/index.tt:162 root/dynamic/templates/administration/index.tt:192
-msgid "word.dissmiss"
-msgstr "Dissmiss"
+msgid "word.dismiss"
+msgstr "Dismiss"
 
 #: root/dynamic/templates/administration/index.tt:234
 msgid "word.enabled"
