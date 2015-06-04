@@ -40,7 +40,6 @@ sub get : Local : Args(1) {
             'username'        => $user->username,
             'minutes'         => $user->minutes,
             'status'          => $user->status,
-            'message'         => $user->message,
             'notes'           => $user->notes,
             'is_troublemaker' => $user->is_troublemaker,
             'roles'           => \@roles,
@@ -212,7 +211,11 @@ sub update : Local : Args(0) {
     my $minutes = $c->request->params->{'minutes'};
     my $notes   = $c->request->params->{'notes'};
     my $status  = $c->request->params->{'status'};
-    my @roles   = $c->request->params->{'roles'};
+    my @roles   = $c->request->params->{'roles'} || [];
+
+    # For some reason the list of checkboxes are created
+    # as a list within a list if multiple are checked
+    @roles = @{$roles[0]} if ref( $roles[0] ) eq 'ARRAY';
 
     $minutes = 0 if ( $minutes < 0 );
 
@@ -229,18 +232,18 @@ sub update : Local : Args(0) {
     if ( $c->check_user_roles(qw/superadmin/) ) {
 
         # Update the user's roles
-        my $roles_rs = $c->model('DB::Role')->search();
-        while ( my $r = $roles_rs->next() ) {
-            my $role = $r->role;
+        my @libki_roles = $c->model('DB::Role')->search();
+        foreach my $lr ( @libki_roles ) {
+            my $role = $lr->role;
             if ( grep { /$role/ } @roles ) {
                 ## Add the role if it doesn't exists
                 $c->model('DB::UserRole')
-                  ->find_or_create( { user_id => $id, role_id => $r->id } );
+                  ->find_or_create( { user_id => $id, role_id => $lr->id } );
             }
             else {
                 ## Delete the role if it does already exist
                 $c->model('DB::UserRole')
-                  ->search( { user_id => $id, role_id => $r->id } )->delete();
+                  ->search( { user_id => $id, role_id => $lr->id } )->delete();
             }
         }
     }
