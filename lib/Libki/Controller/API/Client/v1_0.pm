@@ -5,6 +5,10 @@ use namespace::autoclean;
 BEGIN { extends 'Catalyst::Controller'; }
 
 use Libki::SIP qw( authenticate_via_sip );
+use Libki::Hours qw( minutes_until_closing );
+
+use DateTime::Format::MySQL;
+use DateTime;
 
 =head1 NAME
 
@@ -114,8 +118,8 @@ sub index : Path : Args(0) {
                       Libki::SIP::authenticate_via_sip( $c, $user, $username,
                         $password );
                     $success = $ret->{success};
-                    $error = $ret->{error};
-                    $user = $ret->{user};
+                    $error   = $ret->{error};
+                    $user    = $ret->{user};
                 }
             }
 
@@ -130,9 +134,20 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
+                    my $minutes_until_closing =
+                      Libki::Hours::minutes_until_closing($c);
+
+                    if ( $minutes_until_closing < $user->minutes ) {
+                        $user->minutes( $minutes_until_closing );
+                        $user->update();
+                    }
+
                     $c->stash( units => $user->minutes );
 
-                    if ( $user->session ) {
+                    if ( $minutes_until_closing && $minutes_until_closing <= 0 ) {
+                        $c->stash( error => 'CLOSED' );
+                    }
+                    elsif ( $user->session ) {
                         $c->stash( error => 'ACCOUNT_IN_USE' );
                     }
                     elsif ( $user->status eq 'disabled' ) {
@@ -213,7 +228,10 @@ sub index : Path : Args(0) {
             }
 
             my @messages = $user->messages()->get_column('content')->all();
-            map { $c->log()->info( "Sent message for " . $user->username() . " : $_" ) } @messages;
+            map {
+                $c->log()
+                  ->info( "Sent message for " . $user->username() . " : $_" )
+            } @messages;
             $c->stash(
                 messages => \@messages,
                 units    => $user->minutes,

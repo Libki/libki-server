@@ -1,1 +1,1 @@
-# ALTER TABLE users DROP message;
+ALTER TABLE users DROP message;

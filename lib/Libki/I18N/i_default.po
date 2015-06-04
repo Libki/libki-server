@@ -388,31 +388,31 @@ msgid "updateform.legend"
 msgstr "Closing hours"
 
 #: root/dynamic/templates/administration/hours/index.tt:8
-msgid "updateform.monday"
+msgid "updateform.Monday"
 msgstr "Monday"
 
 #: root/dynamic/templates/administration/hours/index.tt:17
-msgid "updateform.tuesday"
+msgid "updateform.Tuesday"
 msgstr "Tuesday"
 
 #: root/dynamic/templates/administration/hours/index.tt:26
-msgid "updateform.wednesday"
+msgid "updateform.Wednesday"
 msgstr "Wednesday"
 
 #: root/dynamic/templates/administration/hours/index.tt:35
-msgid "updateform.thursday"
+msgid "updateform.Thursday"
 msgstr "Thursday"
 
 #: root/dynamic/templates/administration/hours/index.tt:44
-msgid "updateform.friday"
+msgid "updateform.Friday"
 msgstr "Friday"
 
 #: root/dynamic/templates/administration/hours/index.tt:53
-msgid "updateform.saturday"
+msgid "updateform.Saturday"
 msgstr "Saturday"
 
 #: root/dynamic/templates/administration/hours/index.tt:62
-msgid "updateform.sunday"
+msgid "updateform.Sunday"
 msgstr "Sunday"
 
 #: root/dynamic/templates/administration/hours/index.tt:76

@@ -22,13 +22,11 @@
                             <ul class="dropdown-menu">
                                 <li [% IF active_class == 'administration__history' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')    %]">[% c.loc("navbar.history") %]</a></li>
                                 <li [% IF active_class == 'administration__history__statistics' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("navbar.statistics") %]</a></li>
+		                        <li class="[% IF active_class.search('^administration__hours') %] active [% END %]"><a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("navbar.hours") %]</a></li>
                                 [% IF c.check_user_roles('superadmin') %]
                                     <li [% IF active_class == 'administration__settings' %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings') %]">[% c.loc("navbar.settings") %]</a></li>
                                 [% END %]
                             </ul>
-                        </li>
-			<li class="[% IF active_class.search('^administration__hours') %] active [% END %]">
-                            <a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("navbar.hours") %]</a>
                         </li>
                     </ul>
 

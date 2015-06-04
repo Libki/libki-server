@@ -293,7 +293,7 @@
 
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn">[% c.loc("admin.settings.submitbutton.text") %]</button>
+            <button type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>
         </div>
     </div>
 </form>

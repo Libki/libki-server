@@ -2,7 +2,10 @@ package Libki::Controller::Administration::Hours;
 use Moose;
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller'; }
+BEGIN { extends 'Catalyst::Controller'; }
+
+our @days_of_week =
+  qw( Monday Tuesday Wednesday Thursday Friday Saturday Sunday );
 
 =head1 NAME
 
@@ -23,74 +26,101 @@ Catalyst Controller.
 sub auto : Private {
     my ( $self, $c ) = @_;
 
-    $c->assert_user_roles( qw/admin/ );    
+    $c->assert_user_roles(qw/admin/);
 }
 
 =head2 index
 
 =cut
 
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash(dates => [$c->model('DB::Closing_hours')->search({
-    -not => [
-      -or => [
-        day => 'monday',
-        day => 'tuesday',
-        day => 'wednesday',
-        day => 'thursday',
-        day => 'friday',
-        day => 'saturday',
-        day => 'sunday',
-      ],
-    ],
-    })]);
-
-    my $days = $c->model('DB::Closing_hours')->search({
-    -or => [
-        day => 'monday',
-        day => 'tuesday',
-        day => 'wednesday',
-        day => 'thursday',
-        day => 'friday',
-        day => 'saturday',
-        day => 'sunday',
-    ],
-    });
-    
+    # Get the list of days of the week
+    my $days = $c->model('DB::ClosingHour')->search( { date => undef } );
     while ( my $day = $days->next() ) {
-        $c->stash( $day->day => $day->closing_time );
+        $c->stash( $day->day => $day );
     }
+
+    # Get the list of specific dates
+    my @dates = $c->model('DB::ClosingHour')->search( { day => undef } );
+    $c->stash( dates => \@dates );
+
 }
 
 =head2 update
 
 =cut
 
-sub update :Local :Args(0) {
+sub update_days : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    foreach my $hour ( keys %{$c->request->params} ) { 
-    
-        if ($hour eq 'delete'){
-            my $datevalue = $c->request->params->{ $hour };
-            my $todelete = $c->model('DB::Closing_hours')->search({ day => $datevalue });
-            $todelete->delete;
+    my $params = $c->request->params;
+
+    my $rs = $c->model('DB::ClosingHour');
+
+    foreach my $day (@days_of_week) {
+        my $hour   = $params->{"$day-hour"};
+        my $minute = $params->{"$day-minute"};
+
+        if ( $hour && $minute ) {
+            if ( my $d = $rs->single( { day => $day } ) ) {
+                $d->update( { day => $day, closing_time => "$hour:$minute" } );
+            }
+            else {
+                $rs->create( { day => $day, closing_time => "$hour:$minute" } );
+            }
         }
-        
         else {
-            $c->model('DB::Closing_hours')->update_or_create(
-                'day'  => $hour,
-                'closing_time' => $c->request->params->{ $hour },
-            );
+            if ( my $d = $rs->single( { day => $day } ) ) {
+                $d->delete();
+            }
         }
     }
-    
+
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
 
 }
 
+sub update_dates : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $params = $c->request->params;
+
+    my $rs = $c->model('DB::ClosingHour');
+
+    my $date   = $params->{date};
+    my $hour   = $params->{hour};
+    my $minute = $params->{minute};
+
+    if ( $date && $hour && $minute ) {
+        $date = DateTime::Format::DateParse->parse_datetime($date)->ymd();
+
+        my $time = "$hour:$minute";
+
+        $rs->create( { date => $date, closing_time => $time } );
+    }
+
+    $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
+
+}
+
+sub delete_dates : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $params = $c->request->params;
+
+    my $rs = $c->model('DB::ClosingHour');
+
+    if ( $params->{delete} ) {
+        my @delete = $params->{delete};
+        @delete = @{ $delete[0] } if ref( $delete[0] ) eq 'ARRAY';
+        map { $rs->find($_)->delete() } @delete;
+    }
+
+    $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
+
+}
 
 =head1 AUTHOR
 
