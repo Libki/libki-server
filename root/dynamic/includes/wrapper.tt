@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="[% c.uri_for('/static/css/DT_bootstrap.css') %]" />
     <script type="text/javascript" src="[% c.uri_for('/static/js/DT_bootstrap.js') %]"></script>
 
+    <link rel="stylesheet" href="[% c.uri_for('/static/css/font-awesome/css/font-awesome.min.css') %]" />
+
     <script type="text/javascript" src="[% c.uri_for('/static/js/main.js') %]"></script>
     <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
 
