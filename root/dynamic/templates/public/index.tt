@@ -23,11 +23,11 @@
         <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
             [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 <button id="client-table-row-toolbar-make-reservation" class="btn btn-inverse">
-                    <i class="icon-plus-sign icon-white"></i>[% c.loc("public.rowtoolbar.reservation.make") %]
+                    <i class="icon-plus-sign icon-white"></i> [% c.loc("public.rowtoolbar.reservation.make") %]
                 </button>
 
                 <button id="client-table-row-toolbar-cancel-reservation" class="btn btn-danger">
-                    <i class="icon-minus-sign icon-white"></i>[% c.loc("public.rowtoolbar.reservation.cancel") %]
+                    <i class="icon-minus-sign icon-white"></i> [% c.loc("public.rowtoolbar.reservation.cancel") %]
                 </button>
             [% END %]
         </div>
@@ -36,8 +36,8 @@
 
 <div class="modal hide" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="make-reservation-modal-label">[% c.loc("public.reservation.make.title") %]<i><span id="make-reservation-modal-for"></span></i></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+        <h3 id="make-reservation-modal-label">[% c.loc("public.reservation.make.title") %] <i><span id="make-reservation-modal-for"></span></i></h3>
     </div>
 
     <div class="modal-body">
@@ -67,8 +67,8 @@
 
 <div class="modal hide" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="cancel-reservation-modal-label">[% c.loc("public.reservation.cancel.title") %]<i><span id="cancel-reservation-modal-for"></span></i></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+        <h3 id="cancel-reservation-modal-label">[% c.loc("public.reservation.cancel.title") %] <i><span id="cancel-reservation-modal-for"></span></i></h3>
     </div>
 
     <div class="modal-body">
@@ -227,6 +227,12 @@ $(document).ready(function() {
                     DisplayMessage( "error", "[% c.loc("public.js.message.INVALID_LOGIN") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
+                else if ( data.reason == "NO_TIME" ) {
+                    DisplayMessage( "warning", "[% c.loc("You have no time remaining") %]" );
+                } 
+                else if ( data.reason == "CLOSED" ) {
+                    DisplayMessage( "warning", "[% c.loc("This kiosk is closed for the day") %]" );
+                } 
                 else if ( data.reason == "CLIENT_USER_ALREADY_RESERVED" ) {
                     DisplayMessage( "warning", "[% c.loc("public.js.message.CLIENT_USER_ALREADY_RESERVED") %]" );
                 } 
