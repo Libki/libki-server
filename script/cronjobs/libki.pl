@@ -12,9 +12,6 @@ use FindBin;
 use lib "$FindBin::Bin/../../lib";
 
 use Libki;
-use Libki::Schema::DB;
-
-use Data::Dumper;
 
 my $config = Config::JFDI->new(
     file          => "$FindBin::Bin/../../libki_local.conf",

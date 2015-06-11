@@ -9,7 +9,7 @@ use List::Util qw(max min);
 use FindBin;
 use lib "$FindBin::Bin/../../lib";
 
-use Libki::Schema::DB;
+use Libki;
 
 my $config = Config::JFDI->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
@@ -18,32 +18,35 @@ my $config = Config::JFDI->new(
 my $config_hash  = $config->get();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
-my $schema = Libki::Schema::DB->connect($connect_info)
-  || die("Couldn't Connect to DB");
+my $c = Libki->new(
+    { database_file => $config->{'Model::DB'}{args}{database_file} } );
 
-my $default_time_allowance = $schema->resultset('Setting')->find('DefaultTimeAllowance')->value;
-my $default_session_time_allowance = $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
+my $default_time_allowance = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+my $default_session_time_allowance = $c->model('DB::Setting')->find('DefaultSessionTimeAllowance')->value;
 
 my $user_minutes_allotment = $default_time_allowance;
 my $user_minutes = min( $user_minutes_allotment, $default_session_time_allowance );
 $user_minutes_allotment -= $user_minutes;
 
 ## Delete any guest accounts
-$schema->resultset('User')->search({ is_guest => 'Yes' })->delete();
+$c->model('DB::User')->search({ is_guest => 'Yes' })->delete();
 
 ## Reset the guest counter
-my $current_guest_number = $schema->resultset('Setting')->find('CurrentGuestNumber');
+my $current_guest_number = $c->model('DB::Setting')->find('CurrentGuestNumber');
 $current_guest_number->value('1');
 $current_guest_number->update();
 
 ## Reset user minutes, set to disabled if a troublemaker
-my $user_rs = $schema->resultset('User');
+my $user_rs = $c->model('DB::User');
 while ( my $user = $user_rs->next() ) {
     $user->minutes_allotment( $user_minutes_allotment );
     $user->minutes( $user_minutes );
     $user->status( 'disabled' ) if ( $user->is_troublemaker eq 'Yes' );
     $user->update();
 }
+
+## Clear out expired sessions
+$c->delete_expired_sessions();
 
 =head1 AUTHOR
 
