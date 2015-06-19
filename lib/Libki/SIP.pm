@@ -8,20 +8,23 @@ use Data::Dumper;
 sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
 
-    my $host    = $c->config->{SIP}->{host};
-    my $port    = $c->config->{SIP}->{port};
-    my $timeout = $c->config->{SIP}->{timout} || 15;
+    my $log = $c->log();
+
+    my $host             = $c->config->{SIP}->{host};
+    my $port             = $c->config->{SIP}->{port};
+    my $timeout          = $c->config->{SIP}->{timout} || 15;
+    my $require_sip_auth = $c->config->{SIP}->{require_sip_auth}
+      // 1;    # Default to requiring authentication if setting doesn't exist
+    $log->debug("require_sip_auth: $require_sip_auth");
 
     my $transaction_date = timestamp();
-
-    my $data;
-    my $patron_status_request;
 
     my $terminator;
     $terminator = chr(0x0a) if $c->config->{SIP}->{terminator} eq "NL";
     $terminator = $CR       if $c->config->{SIP}->{terminator} eq "CR";
     $terminator = $CRLF     if $c->config->{SIP}->{terminator} eq "CRLF";
     $terminator ||= chr(0x0d);    ## Default to CR
+    $log->debug( "TERMINATOR: " . $c->config->{SIP}->{terminator} );
 
     my $socket = IO::Socket::INET->new(
         PeerAddr => $host,
@@ -29,15 +32,15 @@ sub authenticate_via_sip {
         Proto    => 'tcp',
         Timeout  => $timeout,
         Type     => SOCK_STREAM
-    ) or die "ERROR in Socket Creation : $!\n";
-
-    ## Default to requiring authentication if setting doesn't exist
-    $c->config->{SIP}->{require_sip_auth} // 1;
+    ) or $log->fatal("ERROR in Socket Creation : $!\n");
 
     ## Set location to empty string if not set
     $c->config->{SIP}->{location} // q{};
 
-    if ( $c->config->{SIP}->{require_sip_auth} ) {
+    my $data;
+    my $patron_status_request;
+
+    if ($require_sip_auth) {
         my $string = "9300";
         $string .= "CN" . $c->config->{SIP}->{username} . "|";
         $string .= "CO" . $c->config->{SIP}->{password} . "|";
@@ -45,6 +48,7 @@ sub authenticate_via_sip {
 
         my $str_93 = checksum($string);
         $str_93 = $string . $str_93 . $terminator;
+        $log->debug("SEND: $str_93");
         $socket->send($str_93);
 
         my $response;
@@ -56,6 +60,7 @@ sub authenticate_via_sip {
             chomp $split;
             $response .= $split;
         }
+        $log->debug("READ: $response");
 
         my $auth    = substr( $response, 2, 1 );
         my $run_num = substr( $response, 5, 1 );
@@ -64,6 +69,7 @@ sub authenticate_via_sip {
             my $string = "9900302.00";
             my $final  = checksum( $string, $run_num );
             my $send99 = $string . $final . $terminator;
+            $log->debug("SEND: $send99");
             $socket->send($send99);
 
             my ( $response, $split );
@@ -76,13 +82,17 @@ sub authenticate_via_sip {
                 $response .= $split;
             }
 
+            $log->debug("READ: $response");
+
             if ( ( substr $response, 0, 3 ) eq '98Y' ) {
                 my ( $chk, $end ) = split /\|AY/, $response;
                 $chk .= "|AY";
                 my $run_num = substr( $end, 0, 1 );
-                $patron_status_request = talk63( $c->config->{SIP}->{location},
-                    $username, $password, $run_num )
-                  . $terminator;
+                $patron_status_request =
+                  talk63( $c->config->{SIP}->{location}, $username, $password, $run_num ) . $terminator;
+            }
+            else {
+                return { success => 0, error => 'SIP_ACS_OFFLINE', user => $user };
             }
         }
         else {
@@ -94,6 +104,7 @@ sub authenticate_via_sip {
         my $string  = "9900302.00";
         my $final   = checksum( $string, $run_num );
         my $send99  = $string . $final . $terminator;
+        $log->debug("SEND: $send99");
         $socket->send($send99);
 
         my ( $response, $split );
@@ -106,18 +117,21 @@ sub authenticate_via_sip {
             $response .= $split;
         }
 
+        $log->debug("READ: $response");
+
         if ( ( substr $response, 0, 3 ) eq '98Y' ) {
             my ( $chk, $end ) = split /\|AY/, $response;
             $chk .= "|AY";
             my $run_num = substr( $end, 0, 1 );
-            $patron_status_request = talk63( $c->config->{SIP}->{location},
-                $username, $password, $run_num )
-              . $terminator;
+            $patron_status_request =
+              talk63( $c->config->{SIP}->{location}, $username, $password, $run_num ) . $terminator;
         }
     }
 
+    $log->debug("SEND: $patron_status_request");
     $socket->send( $patron_status_request . $terminator );
     $socket->recv( $data, 1024 );
+    $log->debug("READ: $data");
 
     if ( $c->config->{SIP}->{enable_split_messages} ) {
         $socket->recv( $split, 1024 );
@@ -125,78 +139,72 @@ sub authenticate_via_sip {
         $data .= $split;
     }
 
-    if ( CORE::index( $data, 'BLY' ) != -1 ) {
-        if ( CORE::index( $data, 'CQY' ) != -1 ) {
+    if ( CORE::index( $data, 'BLY' ) == -1 ) {
+        ## This user may have existed in SIP, but is now deleted
+        ## In this case, we don't want the now deleted user to be
+        ## able to log into Libki, so let's attempt to delete that
+        ## username before we try to authenticate.
+        $c->model('DB::User')->search( { username => $username } )->delete();
+        return { success => 0, error => 'INVALID_USER', user => $user };
+    }
 
-            if ($user) {    ## User authenticated and exists in Libki
-                $user->set_column( 'password', $password );
-                $user->update();
+    $log->debug("ILS verifies $username exists");
+
+    if ( CORE::index( $data, 'CQY' ) == -1 ) {
+        return {
+            success => 0,
+            error   => 'INVALID_PASSWORD',
+            user    => $user
+        };
+    }
+
+    $log->debug("ILS verfies that password for user $username matches");
+
+    if ($user) {    ## User authenticated and exists in Libki
+        $user->set_column( 'password', $password );
+        $user->update();
+    }
+    else {          ## User authenticated and does not exits in Libki
+        my $minutes = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+
+        $user = $c->model('DB::User')->create(
+            {
+                username          => $username,
+                password          => $password,
+                minutes_allotment => $minutes,
+                status            => 'enabled',
             }
-            else {          ## User authenticated and does not exits in Libki
-                my $minutes =
-                  $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+        );
+    }
 
-                $user = $c->model('DB::User')->create(
-                    {
-                        username          => $username,
-                        password          => $password,
-                        minutes_allotment => $minutes,
-                        status            => 'enabled',
-                    }
-                );
+    my $sip_fields = sip_message_to_hashref($data);
+
+    if ( my $deny_on = $c->config->{SIP}->{deny_on} ) {
+        my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
+
+        foreach my $d (@deny_on) {
+            if ( $sip_fields->{patron_status}->{$d} eq 'Y' ) {
+                return { success => 0, error => uc($d), user => $user };
             }
+        }
 
-            my $sip_fields = sip_message_to_hashref($data);
+        # If the fee limit is a SIP2 field, use that field as the fee limit
+        if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
+            $fee_limit = $sip_fields->{$fee_limit}
+              if ( $fee_limit =~ /[A-Z][A-Z]/ );
 
-            if ( my $deny_on = $c->config->{SIP}->{deny_on} ) {
-                my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
-
-                foreach my $d (@deny_on) {
-                    if ( $sip_fields->{patron_status}->{$d} eq 'Y' ) {
-                        return { success => 0, error => uc($d), user => $user };
-                    }
-                }
-
-                if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
-
-             # If the fee limit is a SIP2 field, use that field as the fee limit
-                    $fee_limit = $sip_fields->{$fee_limit}
-                      if ( $fee_limit =~ /[A-Z][A-Z]/ );
-
-                    if ( $sip_fields->{BV} > $fee_limit ) {
-                        return {
-                            success => 0,
-                            error   => 'FEE_LIMIT',
-                            details => { fee_limit => $fee_limit },
-                            user    => $user
-                        };
-                    }
-                }
-
-                return { success => 1, user => $user };
-            }
-            else {
+            if ( $sip_fields->{BV} > $fee_limit ) {
                 return {
                     success => 0,
-                    error   => 'INVALID_PASSWORD',
+                    error   => 'FEE_LIMIT',
+                    details => { fee_limit => $fee_limit },
                     user    => $user
                 };
             }
         }
-        else {
-            ## This user may have existed in SIP, but is now deleted
-            ## In this case, we don't want the now deleted user to be
-            ## able to log into Libki, so let's attempt to delete that
-            ## username before we try to authenticate.
-            $c->model('DB::User')->search( { username => $username } )
-              ->delete();
+    }
 
-            return { success => 0, error => 'INVALID_USER', user => $user };
-        }
-    }
-    else {
-        return { success => 0, error => 'CONNECTION_FAILURE', user => $user };
-    }
+    return { success => 1, user => $user };
 
 }
 
@@ -208,31 +216,20 @@ sub sip_message_to_hashref {
     my $patron_status_field = shift(@parts);
     $patron_status_field = substr( $patron_status_field, 2, 14 );
     my $patron_status;
-    $patron_status->{charge_privileges_denied} =
-      substr( $patron_status_field, 0, 1 );
-    $patron_status->{renewal_privileges_denied} =
-      substr( $patron_status_field, 1, 1 );
-    $patron_status->{recall_privileges_denied} =
-      substr( $patron_status_field, 2, 1 );
-    $patron_status->{hold_privileges_denied} =
-      substr( $patron_status_field, 3, 1 );
-    $patron_status->{card_reported_lost} = substr( $patron_status_field, 4, 1 );
-    $patron_status->{too_many_items_charged} =
-      substr( $patron_status_field, 5, 1 );
-    $patron_status->{too_many_items_overdue} =
-      substr( $patron_status_field, 6, 1 );
-    $patron_status->{too_many_renewals} = substr( $patron_status_field, 7, 1 );
-    $patron_status->{too_many_claims_of_items_returned} =
-      substr( $patron_status_field, 8, 1 );
-    $patron_status->{too_many_items_lost} =
-      substr( $patron_status_field, 9, 1 );
-    $patron_status->{excessive_outstanding_fines} =
-      substr( $patron_status_field, 10, 1 );
-    $patron_status->{excessive_outstanding_fees} =
-      substr( $patron_status_field, 11, 1 );
-    $patron_status->{recall_overdue} = substr( $patron_status_field, 12, 1 );
-    $patron_status->{too_many_items_billed} =
-      substr( $patron_status_field, 13, 1 );
+    $patron_status->{charge_privileges_denied}          = substr( $patron_status_field, 0,  1 );
+    $patron_status->{renewal_privileges_denied}         = substr( $patron_status_field, 1,  1 );
+    $patron_status->{recall_privileges_denied}          = substr( $patron_status_field, 2,  1 );
+    $patron_status->{hold_privileges_denied}            = substr( $patron_status_field, 3,  1 );
+    $patron_status->{card_reported_lost}                = substr( $patron_status_field, 4,  1 );
+    $patron_status->{too_many_items_charged}            = substr( $patron_status_field, 5,  1 );
+    $patron_status->{too_many_items_overdue}            = substr( $patron_status_field, 6,  1 );
+    $patron_status->{too_many_renewals}                 = substr( $patron_status_field, 7,  1 );
+    $patron_status->{too_many_claims_of_items_returned} = substr( $patron_status_field, 8,  1 );
+    $patron_status->{too_many_items_lost}               = substr( $patron_status_field, 9,  1 );
+    $patron_status->{excessive_outstanding_fines}       = substr( $patron_status_field, 10, 1 );
+    $patron_status->{excessive_outstanding_fees}        = substr( $patron_status_field, 11, 1 );
+    $patron_status->{recall_overdue}                    = substr( $patron_status_field, 12, 1 );
+    $patron_status->{too_many_items_billed}             = substr( $patron_status_field, 13, 1 );
 
     pop(@parts);
 

@@ -29,13 +29,10 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-      localtime(time);
-    my $now = sprintf(
-        "%04d-%02d-%02d %02d:%02d:%02d",
-        $year + 1900,
-        $mon + 1, $mday, $hour, $min, $sec
-    );
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
+    my $now = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $year + 1900, $mon + 1, $mday, $hour, $min, $sec );
+
+    my $log = $c->log();
 
     my $action = $c->request->params->{'action'};
 
@@ -55,19 +52,17 @@ sub index : Path : Args(0) {
         }
 
         $c->stash(
-            registered     => !!$client,
-            ClientBehavior => $c->stash->{'Settings'}->{'ClientBehavior'},
-            ReservationShowUsername =>
-              $c->stash->{'Settings'}->{'ReservationShowUsername'},
+            registered              => !!$client,
+            ClientBehavior          => $c->stash->{'Settings'}->{'ClientBehavior'},
+            ReservationShowUsername => $c->stash->{'Settings'}->{'ReservationShowUsername'},
 
             BannerTopURL    => $c->stash->{'Settings'}->{'BannerTopURL'},
             BannerTopWidth  => $c->stash->{'Settings'}->{'BannerTopWidth'},
             BannerTopHeight => $c->stash->{'Settings'}->{'BannerTopHeight'},
 
-            BannerBottomURL   => $c->stash->{'Settings'}->{'BannerBottomURL'},
-            BannerBottomWidth => $c->stash->{'Settings'}->{'BannerBottomWidth'},
-            BannerBottomHeight =>
-              $c->stash->{'Settings'}->{'BannerBottomHeight'},
+            BannerBottomURL    => $c->stash->{'Settings'}->{'BannerBottomURL'},
+            BannerBottomWidth  => $c->stash->{'Settings'}->{'BannerBottomWidth'},
+            BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
@@ -75,18 +70,13 @@ sub index : Path : Args(0) {
         my $reserved_for = $c->request->params->{'reserved_for'};
 
         my $reservation =
-          $c->model('DB::Reservation')
-          ->search( {},
-            { 'username' => $reserved_for, 'name' => $client_name } )->next();
+          $c->model('DB::Reservation')->search( {}, { 'username' => $reserved_for, 'name' => $client_name } )->next();
 
         unless ( $reservation->expiration() ) {
             $reservation->expiration(
                 DateTime::Format::MySQL->format_datetime(
                     DateTime->now( time_zone => 'local' )->add_duration(
-                        DateTime::Duration->new(
-                            minutes =>
-                              $c->stash->{'Settings'}->{'ReservationTimeout'}
-                        )
+                        DateTime::Duration->new( minutes => $c->stash->{'Settings'}->{'ReservationTimeout'} )
                     )
                 )
             );
@@ -102,6 +92,7 @@ sub index : Path : Args(0) {
         my $user = $c->model('DB::User')->single( { username => $username } );
 
         if ( $action eq 'login' ) {
+            $log->debug( __PACKAGE__ . " - username: $username, client_name: $client_name" );
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
             my ( $success, $error ) = ( 1, undef );
@@ -110,13 +101,10 @@ sub index : Path : Args(0) {
                     !$user
                     || (   $user
                         && $user->is_guest() eq 'No'
-                        && !$c->check_any_user_role( $user,
-                            qw/admin superadmin/ ) )
+                        && !$c->check_any_user_role( $user, qw/admin superadmin/ ) )
                   )
                 {
-                    my $ret =
-                      Libki::SIP::authenticate_via_sip( $c, $user, $username,
-                        $password );
+                    my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
                     $success = $ret->{success};
                     $error   = $ret->{error};
                     $user    = $ret->{user};
@@ -134,11 +122,10 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing =
-                      Libki::Hours::minutes_until_closing($c);
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing($c);
 
                     if ( $minutes_until_closing < $user->minutes ) {
-                        $user->minutes( $minutes_until_closing );
+                        $user->minutes($minutes_until_closing);
                         $user->update();
                     }
 
@@ -157,20 +144,13 @@ sub index : Path : Args(0) {
                         $c->stash( error => 'NO_TIME' );
                     }
                     else {
-                        my $client =
-                          $c->model('DB::Client')
-                          ->search( { name => $client_name } )->next();
+                        my $client = $c->model('DB::Client')->search( { name => $client_name } )->next();
 
                         if ($client) {
                             my $reservation = $client->reservation;
 
-                            if (
-                                !$reservation
-                                && !(
-                                    $c->stash->{'Settings'}
-                                    ->{'ClientBehavior'} =~ 'FCFS'
-                                )
-                              )
+                            if (   !$reservation
+                                && !( $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ) )
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
                             }
@@ -228,10 +208,7 @@ sub index : Path : Args(0) {
             }
 
             my @messages = $user->messages()->get_column('content')->all();
-            map {
-                $c->log()
-                  ->info( "Sent message for " . $user->username() . " : $_" )
-            } @messages;
+            map { $c->log()->info( "Sent message for " . $user->username() . " : $_" ) } @messages;
             $c->stash(
                 messages => \@messages,
                 units    => $user->minutes,

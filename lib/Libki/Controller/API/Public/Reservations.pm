@@ -27,22 +27,24 @@ sub create : Local : Args(0) {
     my $password  = $c->request->params->{'password'};
     my $client_id = $c->request->params->{'id'};
 
-    my $user =
-      $c->model('DB::User')->single( { username => $username } );
+    my $log = $c->log();
 
-    my ( $success, $error_code, $details ) = ( 1, undef, undef ); # Defaults for non-sip using systems
+    my $user = $c->model('DB::User')->single( { username => $username } );
+
+    my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
     if ( $c->config->{SIP}->{enable} ) {
+        $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
         my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
-        $success = $ret->{success};
+        $success    = $ret->{success};
         $error_code = $ret->{error};
-        $details = $ret->{details};
-        $user = $ret->{user};
+        $details    = $ret->{details};
+        $user       = $ret->{user};
     }
 
     if (
-        $success && 
-        $c->authenticate(
+        $success
+        && $c->authenticate(
             {
                 username => $username,
                 password => $password
@@ -51,39 +53,28 @@ sub create : Local : Args(0) {
       )
     {
 
-        if ( $c->model('DB::Reservation')
-            ->search( { user_id => $user->id(), client_id => $client_id } )
-            ->next() )
-        {
+        if ( $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->next() ) {
             $c->stash(
                 'success' => 0,
                 'reason'  => 'CLIENT_USER_ALREADY_RESERVED'
             );
         }
-        elsif (
-            $c->model('DB::Reservation')->search( { client_id => $client_id } )
-            ->next() )
-        {
+        elsif ( $c->model('DB::Reservation')->search( { client_id => $client_id } )->next() ) {
             $c->stash( 'success' => 0, 'reason' => 'CLIENT_ALREADY_RESERVED' );
         }
-        elsif (
-            $c->model('DB::Reservation')->search( { user_id => $user->id() } )
-            ->next() )
-        {
+        elsif ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
             $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
         }
         else {
-            if ( $c->model('DB::Reservation')
-                ->create( { user_id => $user->id(), client_id => $client_id } )
-              )
-            {
+            if ( $c->model('DB::Reservation')->create( { user_id => $user->id(), client_id => $client_id } ) ) {
                 $c->stash( 'success' => 1 );
             }
             else {
                 $c->stash( 'success' => 0, 'reason' => 'UNKNOWN' );
             }
         }
-    } else {
+    }
+    else {
         $c->stash( 'success' => 0, 'reason' => $error_code, details => $details );
     }
 
@@ -114,9 +105,8 @@ sub delete : Local : Args(0) {
       )
     {
 
-        if ( $c->model('DB::Reservation')
-            ->search( { user_id => $user->id(), client_id => $client_id } )
-            ->next()->delete() )
+        if ( $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->next()
+            ->delete() )
         {
             $c->stash( 'success' => 1, );
         }
