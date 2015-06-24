@@ -88,11 +88,16 @@ sub authenticate_via_sip {
                 my ( $chk, $end ) = split /\|AY/, $response;
                 $chk .= "|AY";
                 my $run_num = substr( $end, 0, 1 );
-                $patron_status_request =
-                  talk63( $c->config->{SIP}->{location}, $username, $password, $run_num ) . $terminator;
+                $patron_status_request = talk63( $c->config->{SIP}->{location},
+                    $username, $password, $run_num )
+                  . $terminator;
             }
             else {
-                return { success => 0, error => 'SIP_ACS_OFFLINE', user => $user };
+                return {
+                    success => 0,
+                    error   => 'SIP_ACS_OFFLINE',
+                    user    => $user
+                };
             }
         }
         else {
@@ -123,8 +128,9 @@ sub authenticate_via_sip {
             my ( $chk, $end ) = split /\|AY/, $response;
             $chk .= "|AY";
             my $run_num = substr( $end, 0, 1 );
-            $patron_status_request =
-              talk63( $c->config->{SIP}->{location}, $username, $password, $run_num ) . $terminator;
+            $patron_status_request = talk63( $c->config->{SIP}->{location},
+                $username, $password, $run_num )
+              . $terminator;
         }
     }
 
@@ -160,12 +166,21 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verfies that password for user $username matches");
 
+    my $sip_fields = sip_message_to_hashref($data);
+    $log->debug( "SIP FIELDS: " . Data::Dumper::Dumper($sip_fields) );
+
+    my $birthdate = $sip_fields->{PB} || undef;
+    $birthdate = ( join( '-', unpack( "A4A2A2", $birthdate ) ) )
+      if $birthdate;
+
     if ($user) {    ## User authenticated and exists in Libki
         $user->set_column( 'password', $password );
+        $user->set_column( 'birthdate', $birthdate );
         $user->update();
     }
     else {          ## User authenticated and does not exits in Libki
-        my $minutes = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+        my $minutes =
+          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
 
         $user = $c->model('DB::User')->create(
             {
@@ -173,11 +188,10 @@ sub authenticate_via_sip {
                 password          => $password,
                 minutes_allotment => $minutes,
                 status            => 'enabled',
+                birthdate         => $birthdate,
             }
         );
     }
-
-    my $sip_fields = sip_message_to_hashref($data);
 
     if ( my $deny_on = $c->config->{SIP}->{deny_on} ) {
         my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
@@ -216,20 +230,31 @@ sub sip_message_to_hashref {
     my $patron_status_field = shift(@parts);
     $patron_status_field = substr( $patron_status_field, 2, 14 );
     my $patron_status;
-    $patron_status->{charge_privileges_denied}          = substr( $patron_status_field, 0,  1 );
-    $patron_status->{renewal_privileges_denied}         = substr( $patron_status_field, 1,  1 );
-    $patron_status->{recall_privileges_denied}          = substr( $patron_status_field, 2,  1 );
-    $patron_status->{hold_privileges_denied}            = substr( $patron_status_field, 3,  1 );
-    $patron_status->{card_reported_lost}                = substr( $patron_status_field, 4,  1 );
-    $patron_status->{too_many_items_charged}            = substr( $patron_status_field, 5,  1 );
-    $patron_status->{too_many_items_overdue}            = substr( $patron_status_field, 6,  1 );
-    $patron_status->{too_many_renewals}                 = substr( $patron_status_field, 7,  1 );
-    $patron_status->{too_many_claims_of_items_returned} = substr( $patron_status_field, 8,  1 );
-    $patron_status->{too_many_items_lost}               = substr( $patron_status_field, 9,  1 );
-    $patron_status->{excessive_outstanding_fines}       = substr( $patron_status_field, 10, 1 );
-    $patron_status->{excessive_outstanding_fees}        = substr( $patron_status_field, 11, 1 );
-    $patron_status->{recall_overdue}                    = substr( $patron_status_field, 12, 1 );
-    $patron_status->{too_many_items_billed}             = substr( $patron_status_field, 13, 1 );
+    $patron_status->{charge_privileges_denied} =
+      substr( $patron_status_field, 0, 1 );
+    $patron_status->{renewal_privileges_denied} =
+      substr( $patron_status_field, 1, 1 );
+    $patron_status->{recall_privileges_denied} =
+      substr( $patron_status_field, 2, 1 );
+    $patron_status->{hold_privileges_denied} =
+      substr( $patron_status_field, 3, 1 );
+    $patron_status->{card_reported_lost} = substr( $patron_status_field, 4, 1 );
+    $patron_status->{too_many_items_charged} =
+      substr( $patron_status_field, 5, 1 );
+    $patron_status->{too_many_items_overdue} =
+      substr( $patron_status_field, 6, 1 );
+    $patron_status->{too_many_renewals} = substr( $patron_status_field, 7, 1 );
+    $patron_status->{too_many_claims_of_items_returned} =
+      substr( $patron_status_field, 8, 1 );
+    $patron_status->{too_many_items_lost} =
+      substr( $patron_status_field, 9, 1 );
+    $patron_status->{excessive_outstanding_fines} =
+      substr( $patron_status_field, 10, 1 );
+    $patron_status->{excessive_outstanding_fees} =
+      substr( $patron_status_field, 11, 1 );
+    $patron_status->{recall_overdue} = substr( $patron_status_field, 12, 1 );
+    $patron_status->{too_many_items_billed} =
+      substr( $patron_status_field, 13, 1 );
 
     pop(@parts);
 

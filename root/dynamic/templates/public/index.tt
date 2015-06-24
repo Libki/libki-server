@@ -287,6 +287,9 @@ $(document).ready(function() {
                 else if ( data.reason == "TOO_MANY_ITEMS_BILLED" ) {
                     DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_BILLED") %]" );
                 } 
+                else if ( data.reason == "AGE_MISMATCH" ) {
+                    DisplayMessage( "error", "[% c.loc("You are not of the appropriate age to use this client") %]" );
+                } 
                 else {
                     DisplayMessage( "error", data.reason );
                 }

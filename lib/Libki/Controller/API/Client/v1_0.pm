@@ -45,10 +45,28 @@ sub index : Path : Args(0) {
                 last_registered => $now,
             }
         );
+        $log->debug( "Client Registered: " . $client->name() );
 
         my $reservation = $client->reservation || undef;
         if ($reservation) {
             $c->stash( reserved_for => $reservation->user->username() );
+        }
+
+        my $age_limit = $c->request->params->{'age_limit'};
+        if ($age_limit) {
+            my @limits = split( /,/, $age_limit );
+            foreach my $l (@limits) {
+                my $comparison = substr( $l, 0, 2 );
+                my $age = substr( $l, 2 );
+                $log->debug("Age Limit Found: $comparison : $age");
+                $c->model('DB::ClientAgeLimit')->update_or_create(
+                    {
+                        client     => $client->id(),
+                        comparison => $comparison,
+                        age        => $age,
+                    }
+                );
+            }
         }
 
         $c->stash(
@@ -76,7 +94,9 @@ sub index : Path : Args(0) {
             $reservation->expiration(
                 DateTime::Format::MySQL->format_datetime(
                     DateTime->now( time_zone => 'local' )->add_duration(
-                        DateTime::Duration->new( minutes => $c->stash->{'Settings'}->{'ReservationTimeout'} )
+                        DateTime::Duration->new(
+                            minutes => $c->stash->{'Settings'}->{'ReservationTimeout'}
+                        )
                     )
                 )
             );
@@ -123,13 +143,18 @@ sub index : Path : Args(0) {
                   )
                 {
                     my $minutes_until_closing = Libki::Hours::minutes_until_closing($c);
-                    if ( defined($minutes_until_closing) && $minutes_until_closing < $user->minutes ) {
+                    if ( defined($minutes_until_closing)
+                        && $minutes_until_closing < $user->minutes )
+                    {
                         $user->minutes($minutes_until_closing);
                         $user->update();
                     }
 
+                    my $client = $c->model('DB::Client')->single( { name => $client_name } );
+
                     $c->stash( units => $user->minutes );
 
+                    my $error = {}; # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 ) {
                         $c->stash( error => 'CLOSED' );
                     }
@@ -142,8 +167,12 @@ sub index : Path : Args(0) {
                     elsif ( $user->minutes < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
+                    elsif ( !$client->can_user_use( { user => $user, error => $error } ) ) {
+                        $c->stash( error => $error->{reason}  );
+                    }
                     else {
-                        my $client = $c->model('DB::Client')->search( { name => $client_name } )->next();
+                        my $client =
+                          $c->model('DB::Client')->search( { name => $client_name } )->next();
 
                         if ($client) {
                             my $reservation = $client->reservation;
@@ -231,7 +260,9 @@ sub index : Path : Args(0) {
             );
         }
     }
+
     delete( $c->stash->{'Settings'} );
+
     $c->forward( $c->view('JSON') );
 }
 

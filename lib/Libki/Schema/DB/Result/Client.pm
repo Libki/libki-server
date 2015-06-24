@@ -118,6 +118,21 @@ __PACKAGE__->add_unique_constraint("name", ["name"]);
 
 =head1 RELATIONS
 
+=head2 client_age_limits
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::ClientAgeLimit>
+
+=cut
+
+__PACKAGE__->has_many(
+  "client_age_limits",
+  "Libki::Schema::DB::Result::ClientAgeLimit",
+  { "foreign.client" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 reservation
 
 Type: might_have
@@ -149,12 +164,69 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-02-14 09:35:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rXU/yyn0Y/OIs2aKPyVWRA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-24 11:44:56
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9XVxNhixXIGA0NzhmuNf7Q
 
+=head2 can_user_use
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+$client->can_user_use( { user => $user, error => $error } )
+
+Given a user, this method returns true if the user is allowed to use the
+given client.
+
+If hashref $error is passed in, the specific error message will be set in $error.
+
+=cut
+
+sub can_user_use {
+    my ( $self, $params ) = @_;
+
+    my $user  = $params->{user};
+    my $error = $params->{error};
+
+    unless ( $user ) {
+        $error->{reason}  = 'NO_USER';
+        return 0;
+    }
+
+    if ( my @age_limits = $self->client_age_limits() ) {
+        my $age = $user->age();
+
+        foreach my $age_limit ( @age_limits ) {
+            my $comparison = $age_limit->comparison();
+            my $limit = $age_limit->age();
+
+            my $bool;
+            if ( $comparison eq 'eq' ) {
+                $bool = $age eq $limit;
+            } elsif ( $comparison eq 'ne' ) {
+                $bool = $age ne $limit;
+            } elsif ( $comparison eq 'gt' ) {
+                $bool = $age gt $limit;
+            } elsif ( $comparison eq 'lt' ) {
+                $bool = $age lt $limit;
+            } elsif ( $comparison eq 'ge' ) {
+                $bool = $age ge $limit;
+            } elsif ( $comparison eq 'le' ) {
+                $bool = $age le $limit;
+            }
+
+            unless ( $bool ) {
+                $error->{reason}     = 'AGE_MISMATCH';
+                $error->{comparison} = $comparison;
+                $error->{limit}      = $limit;
+                $error->{age}        = $age;
+                return 0;
+            }
+        }
+    } 
+
+    $error->{success} = 1;
+    return 1;
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;
 
 =head1 AUTHOR

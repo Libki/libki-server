@@ -104,6 +104,12 @@ __PACKAGE__->table("users");
   extra: {list => ["Yes","No"]}
   is_nullable: 0
 
+=head2 birthdate
+
+  data_type: 'date'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -135,6 +141,8 @@ __PACKAGE__->add_columns(
     extra => { list => ["Yes", "No"] },
     is_nullable => 0,
   },
+  "birthdate",
+  { data_type => "date", datetime_undef_if_invalid => 1, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -236,8 +244,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-02 06:50:03
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Ymmpunw70z282J9Qa+MOzA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-24 10:29:36
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wU0j57gx6S2NdvGRemG8qw
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
@@ -298,7 +306,31 @@ sub insert {
     return $self;
 }
 
+sub age {
+    my ( $self ) = @_;
+
+    my $birthdate = $self->birthdate();
+
+    return unless $birthdate;
+
+    ($birthdate) = split( /T/, $birthdate );
+    my ( $year, $month, $day ) = split( /-/, $birthdate );
+
+    $birthdate = DateTime->new(
+        year   => $year,
+        month => $month,
+        day   => $day,
+    );
+
+    my $duration = DateTime->now() - $birthdate;
+
+    my $age = $duration->in_units('years');
+
+    return $age;
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;
 
 =head1 AUTHOR

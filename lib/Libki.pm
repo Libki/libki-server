@@ -93,6 +93,8 @@ $ENV{TZ} = DateTime::TimeZone->new( name => 'local' )->name();
 
 # Create a Log4perl object
 __PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));
+# Handle warnings from Perl as fatal log messages
+$SIG{__WARN__} = sub { __PACKAGE__->log->fatal(@_); };
 
 # Start the application
 __PACKAGE__->setup();

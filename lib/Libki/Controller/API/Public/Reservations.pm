@@ -52,6 +52,8 @@ sub create : Local : Args(0) {
         )
       )
     {
+        my $client = $c->model('DB::Client')->find( $client_id );
+        my $error = {};
 
         if ( $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->next() ) {
             $c->stash(
@@ -64,6 +66,10 @@ sub create : Local : Args(0) {
         }
         elsif ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
             $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
+        }
+        elsif ( !$client->can_user_use( { user => $user, error => $error } ) ) {
+            $log->debug('User Cannot Use Client: ' . Data::Dumper::Dumper( $error ) );
+            $c->stash( %$error );
         }
         else {
             if ( $c->model('DB::Reservation')->create( { user_id => $user->id(), client_id => $client_id } ) ) {
