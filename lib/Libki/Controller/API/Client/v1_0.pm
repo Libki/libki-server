@@ -123,8 +123,7 @@ sub index : Path : Args(0) {
                   )
                 {
                     my $minutes_until_closing = Libki::Hours::minutes_until_closing($c);
-
-                    if ( $minutes_until_closing < $user->minutes ) {
+                    if ( defined($minutes_until_closing) && $minutes_until_closing < $user->minutes ) {
                         $user->minutes($minutes_until_closing);
                         $user->update();
                     }
