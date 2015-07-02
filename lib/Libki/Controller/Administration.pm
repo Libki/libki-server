@@ -32,9 +32,9 @@ sub index : Path : Args(0) {
     )->get_column('location')->all();
 
     $c->stash(
-        'DefaultTimeAllowance' =>
+        DefaultTimeAllowance =>
           $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
-        'locations' => \@locations,
+        locations => \@locations,
     );
 }
 

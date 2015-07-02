@@ -36,7 +36,19 @@ Check if there is an authorized user and, if not, forward to login page
 # See the 'Actions' section of 'Catalyst::Manual::Intro' for more info.
 sub auto : Private {
     my ( $self, $c ) = @_;
-    $c->stash( interface => 'public' );
+
+    my @locations = $c->model('DB::Client')->search(
+        {},
+        {
+            columns  => [qw/location/],
+            distinct => 1
+        }
+    )->get_column('location')->all();
+
+    $c->stash( 
+        interface => 'public',
+        locations => \@locations,
+    );
 }
 
 =head1 AUTHOR
