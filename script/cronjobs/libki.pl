@@ -58,7 +58,7 @@ while ( my $session = $session_rs->next() ) {
                 $user->create_related(
                     'messages',
                     {
-                        message => $c->loc(
+                        content => $c->loc(
                             "Your session time has been automatically extended by [_1] minutes.",
                             $AutomaticTimeExtensionLength
                         )
