@@ -55,6 +55,12 @@ __PACKAGE__->table("closing_hours");
   is_auto_increment: 1
   is_nullable: 0
 
+=head2 location
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =head2 day
 
   data_type: 'enum'
@@ -77,6 +83,8 @@ __PACKAGE__->table("closing_hours");
 __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "location",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "day",
   {
     data_type => "enum",
@@ -111,9 +119,31 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-09 11:55:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UQJ6PY1qt768vtKSh8wJ1g
+=head2 location
+
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "location",
+  "Libki::Schema::DB::Result::Location",
+  { id => "location" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "CASCADE",
+    on_update     => "CASCADE",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-07-13 08:57:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3ilBjYOeCXDzSH6xRlXu4g
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

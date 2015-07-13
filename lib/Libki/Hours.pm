@@ -13,20 +13,32 @@ the return value will be a negative number of minutes *since* closing.
 =cut
 
 sub minutes_until_closing {
-    my ($c) = @_;
+    my ($c, $location_code) = @_;
 
     my $now = DateTime->now( time_zone => $ENV{TZ} );
 
     my $today        = $now->ymd();
     my $current_time = $now->hour() . ":" . $now->minute();
 
-    # Look for a specific date first;
-    my $closing_hours =
-      $c->model('DB::ClosingHour')->single( { date => $today } );
+    my $location = $c->model('DB::Location')->single( { code => $location_code } );
 
-    # Fall back to day of the week
+    my $closing_hours;
+
+    # Look for a specific date for a specific location first
+    $closing_hours =
+      $c->model('DB::ClosingHour')->single( { location => $location->id(), date => $today } ) if $location;
+
+    # Look for a specific date for a "All locations" second
     $closing_hours ||=
-      $c->model('DB::ClosingHour')->single( { day => $now->day_name() } );
+      $c->model('DB::ClosingHour')->single( { location => undef, date => $today } );
+
+    # Look for a day of the week setting for the given location next
+    $closing_hours ||=
+      $c->model('DB::ClosingHour')->single( { location => $location->id(), day => $now->day_name() } ) if $location;
+
+    # Fall back to day of the week for "All locations" last
+    $closing_hours ||=
+      $c->model('DB::ClosingHour')->single( { location => undef, day => $now->day_name() } );
 
     return unless $closing_hours;
 

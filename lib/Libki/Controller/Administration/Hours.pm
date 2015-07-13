@@ -36,15 +36,22 @@ sub auto : Private {
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+    # Get the list of locations
+    my @locations = $c->model('DB::Location')->all();
+
     # Get the list of days of the week
-    my $days = $c->model('DB::ClosingHour')->search( { date => undef } );
-    while ( my $day = $days->next() ) {
-        $c->stash( $day->day => $day );
-    }
+    my @days = $c->model('DB::ClosingHour')->search( { date => undef } );
+    my $days;
+    map { $days->{ $_->location() ? $_->location()->id() : q{all} }->{ $_->day() } = $_ } @days;
 
     # Get the list of specific dates
-    my @dates = $c->model('DB::ClosingHour')->search( { day => undef } );
-    $c->stash( dates => \@dates );
+    my @dates = $c->model('DB::ClosingHour')->search( { day => undef }, { order_by => { -asc => 'date' } } );
+
+    $c->stash(
+        locations => \@locations,
+        days => $days,
+        dates => \@dates,
+    );
 
 }
 
@@ -57,23 +64,50 @@ sub update_days : Local : Args(0) {
 
     my $params = $c->request->params;
 
+    my @locations = $c->model('DB::Location')->all();
+
     my $rs = $c->model('DB::ClosingHour');
 
+    # Default daily hours
     foreach my $day (@days_of_week) {
-        my $hour   = $params->{"$day-hour"};
-        my $minute = $params->{"$day-minute"};
+        my $hour   = $params->{"$day-hour-all"};
+        my $minute = $params->{"$day-minute-all"};
 
         if ( $hour && $minute ) {
-            if ( my $d = $rs->single( { day => $day } ) ) {
-                $d->update( { day => $day, closing_time => "$hour:$minute" } );
+            if ( my $d = $rs->single( { location => undef, day => $day } ) ) {
+                $d->update( { location => undef, day => $day, closing_time => "$hour:$minute" } );
             }
             else {
-                $rs->create( { day => $day, closing_time => "$hour:$minute" } );
+                $rs->create( { location => undef, day => $day, closing_time => "$hour:$minute" } );
             }
         }
         else {
-            if ( my $d = $rs->single( { day => $day } ) ) {
+            if ( my $d = $rs->single( { location => undef, day => $day } ) ) {
                 $d->delete();
+            }
+        }
+    }
+
+    # Daily hours by location
+    foreach my $location ( @locations ) {
+        my $location_id = $location->id();
+
+        foreach my $day (@days_of_week) {
+            my $hour   = $params->{"$day-hour-$location_id"};
+            my $minute = $params->{"$day-minute-$location_id"};
+
+            if ( $hour && $minute ) {
+                if ( my $d = $rs->single( { day => $day } ) ) {
+                    $d->update( { location => $location_id, day => $day, closing_time => "$hour:$minute" } );
+                }
+                else {
+                    $rs->create( { location => $location_id, day => $day, closing_time => "$hour:$minute" } );
+                }
+            }
+            else {
+                if ( my $d = $rs->single( { location => $location_id, day => $day } ) ) {
+                    $d->delete();
+                }
             }
         }
     }
@@ -89,16 +123,23 @@ sub update_dates : Local : Args(0) {
 
     my $rs = $c->model('DB::ClosingHour');
 
-    my $date   = $params->{date};
-    my $hour   = $params->{hour};
-    my $minute = $params->{minute};
+    my $date     = $params->{date};
+    my $hour     = $params->{hour};
+    my $minute   = $params->{minute};
+    my $location = $params->{location} || undef;
 
     if ( $date && $hour && $minute ) {
         $date = DateTime::Format::DateParse->parse_datetime($date)->ymd();
 
         my $time = "$hour:$minute";
 
-        $rs->create( { date => $date, closing_time => $time } );
+        $rs->create(
+            { 
+                date         => $date,
+                closing_time => $time,
+                location     => $location,
+            }
+        );
     }
 
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );

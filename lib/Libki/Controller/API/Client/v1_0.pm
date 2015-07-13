@@ -37,11 +37,19 @@ sub index : Path : Args(0) {
     my $action = $c->request->params->{'action'};
 
     if ( $action eq 'register_node' ) {
+        my $node_name = $c->request->params->{'node_name'};
+        my $location = $c->request->params->{'location'};
+
+        $c->model('DB::Location')->update_or_create(
+            {
+                code => $location,
+            }
+        ) if $location;
 
         my $client = $c->model('DB::Client')->update_or_create(
             {
-                name            => $c->request->params->{'node_name'},
-                location        => $c->request->params->{'location'},
+                name            => $node_name,
+                location        => $location ? $location : undef,
                 last_registered => $now,
             }
         );
@@ -142,7 +150,7 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing($c);
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing($c, $client_location);
                     if ( defined($minutes_until_closing)
                         && $minutes_until_closing < $user->minutes )
                     {
