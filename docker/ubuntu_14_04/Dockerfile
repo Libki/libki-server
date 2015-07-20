@@ -29,9 +29,6 @@ ENV LIBKI_HOME=/home/libki
 # Install needed packages
 RUN apt-get update && apt-get install -y git-core mysql-server perl build-essential libdatetime-perl libdatetime-format-dateparse-perl git mysql-server
 
-# Start some mandatory services
-# RUN  update-rc.d mysql defaults
-
 # Add the user and set the password
 RUN useradd -d $LIBKI_HOME -m -p libki -s /bin/bash libki
 
@@ -50,7 +47,6 @@ RUN sed -e s/USERNAME/libki/g -e s/PASSWORD/libki/g $LIBKI_HOME/libki-server/lib
 
 # Run libki scripts
 RUN /etc/init.d/mysql restart && su -c 'cd $LIBKI_HOME/libki-server && perl ./installer/update_db.pl && ./script/administration/create_user.pl -u admin -p admin -s -m 999' libki 
-CMD ["bash", "/home/libki/start.sh"]
 
 # launch
-#CMD ["su","-c","'$LIBKI_HOME/libki-server/script/libki_server.pl", "-p", "8810'", "libki"]
+CMD ["bash", "/home/libki/start.sh"]
