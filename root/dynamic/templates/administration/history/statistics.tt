@@ -52,7 +52,7 @@
             <tfoot>
                 <tr>
                     <th>[% c.loc("admin.history.statistics.totalbylocation") %]</th>
-                    [% FOREACH key IN location_totals.keys.sort %]
+                    [% FOREACH key IN by_location_columns %]
                         <th>[% location_totals.$key %]</th>
                     [% END %]
                     <th><i>[% grand_total %]</i></th>
