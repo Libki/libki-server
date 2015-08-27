@@ -12,13 +12,13 @@ use FindBin;
 use lib "$FindBin::Bin/../../lib";
 
 use Libki;
+use Libki::Hours;
 
 my $config = Config::JFDI->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
     no_06_warning => 1
 );
-my $c = Libki->new(
-    { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new( { database_file => $config->{'Model::DB'}{args}{database_file} } );
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
@@ -29,12 +29,9 @@ my $session_rs     = $c->model('DB::Session');
 my $setting_rs     = $c->model('DB::Setting');
 my $reservation_rs = $c->model('DB::Reservation');
 
-my $AutomaticTimeExtensionAt =
-  $setting_rs->find('AutomaticTimeExtensionAt')->value;
-my $AutomaticTimeExtensionLength =
-  $setting_rs->find('AutomaticTimeExtensionLength')->value;
-my $AutomaticTimeExtensionUnless =
-  $setting_rs->find('AutomaticTimeExtensionUnless')->value;
+my $AutomaticTimeExtensionAt     = $setting_rs->find('AutomaticTimeExtensionAt')->value;
+my $AutomaticTimeExtensionLength = $setting_rs->find('AutomaticTimeExtensionLength')->value;
+my $AutomaticTimeExtensionUnless = $setting_rs->find('AutomaticTimeExtensionUnless')->value;
 
 ## Decrement time for logged in users.
 while ( my $session = $session_rs->next() ) {
@@ -50,20 +47,34 @@ while ( my $session = $session_rs->next() ) {
             my $count =
                 $AutomaticTimeExtensionUnless eq 'any_reserved'
               ? $reservation_rs->count()
-              : $reservation_rs->search( { client_id => $session->client_id } )
-              ->count();
+              : $reservation_rs->search( { client_id => $session->client_id } )->count();
 
             unless ($count) {
-                $user->increase_minutes($AutomaticTimeExtensionLength);
-                $user->create_related(
-                    'messages',
-                    {
-                        content => $c->loc(
-                            "Your session time has been automatically extended by [_1] minutes.",
-                            $AutomaticTimeExtensionLength
-                        )
-                    }
-                );
+                my $minutes_to_add = $AutomaticTimeExtensionLength;
+
+                # If we are nearing closing time, we need to only add minutes up to the cloasing time
+                my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $session->client->location );
+
+                # If adding this many minutes would go past closing time, we need to reduce the minutes added
+                if ( defined($minutes_until_closing)
+                    && $minutes_until_closing < $minutes_to_add )
+                {
+                    # Set the minutes to add so that it will be exactly closing time
+                    $minutes_to_add = $minutes_until_closing - $user->minutes;
+                }
+
+                if ( $minutes_to_add > 0 ) {
+                    $user->increase_minutes($minutes_to_add);
+                    $user->create_related(
+                        'messages',
+                        {
+                            content => $c->loc(
+                                "Your session time has been automatically extended by [_1] minutes.",
+                                $minutes_to_add
+                            ),
+                        }
+                    );
+                }
             }
         }
 
@@ -79,8 +90,7 @@ while ( my $session = $session_rs->next() ) {
                 username    => $user->username(),
                 client_name => $session->client->name(),
                 action      => 'SESSION_DELETED',
-                when =>
-                  DateTime::Format::MySQL->format_datetime( DateTime->now() ),
+                when        => DateTime::Format::MySQL->format_datetime( DateTime->now() ),
             }
         );
 
@@ -91,31 +101,21 @@ while ( my $session = $session_rs->next() ) {
 ## Delete clients that haven't updated recently
 my $post_crash_timeout = $setting_rs->find('PostCrashTimeout')->value;
 
-my $timestamp = DateTime::Format::MySQL->format_datetime(
-    DateTime->now( time_zone => 'local' )->subtract_duration(
-        DateTime::Duration->new( minutes => $post_crash_timeout )
-    )
-);
+my $timestamp = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => 'local' )
+      ->subtract_duration( DateTime::Duration->new( minutes => $post_crash_timeout ) ) );
 
-$c->model('DB::Client')->search( { last_registered => { '<', $timestamp } } )
-  ->delete();
+$c->model('DB::Client')->search( { last_registered => { '<', $timestamp } } )->delete();
 
 ## Clear out any expired reservations
 $reservation_rs->search(
     {
-        'expiration' => {
-            '<',
-            DateTime::Format::MySQL->format_datetime(
-                DateTime->now( time_zone => 'local' )
-            )
-        }
+        'expiration' => { '<', DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => 'local' ) ) }
     }
 )->delete();
 
 ## Refill session minutes from allotted minutes for users not logged in to a client
-my $default_time_allowance = $setting_rs->find('DefaultTimeAllowance')->value;
-my $default_session_time_allowance =
-  $setting_rs->find('DefaultSessionTimeAllowance')->value;
+my $default_time_allowance         = $setting_rs->find('DefaultTimeAllowance')->value;
+my $default_session_time_allowance = $setting_rs->find('DefaultSessionTimeAllowance')->value;
 
 my $users_rs = $c->model('DB::User')->search(
     {
