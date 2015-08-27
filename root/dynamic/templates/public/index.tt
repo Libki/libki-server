@@ -210,6 +210,12 @@ $(document).ready(function() {
         }
     });
 
+    $("#make-reservation-password").keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            $("#make-reservation-modal-form-submit").click();
+        }
+    });
     $("#make-reservation-modal-form-submit").click(function(){
         var errors = false;
         $("#make-reservation-username").parent().parent().removeClass("error");
@@ -332,6 +338,12 @@ $(document).ready(function() {
         }
     });
 
+    $("#cancel-reservation-password").keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            $("#cancel-reservation-modal-form-submit").click();
+        }
+    });
     $("#cancel-reservation-modal-form-submit").click(function(){
         var errors = false;
         $("#cancel-reservation-password").parent().parent().removeClass("error");
