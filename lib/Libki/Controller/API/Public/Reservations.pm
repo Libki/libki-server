@@ -33,13 +33,15 @@ sub create : Local : Args(0) {
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
-    if ( $c->config->{SIP}->{enable} ) {
-        $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
-        my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
-        $success    = $ret->{success};
-        $error_code = $ret->{error};
-        $details    = $ret->{details};
-        $user       = $ret->{user};
+    unless ( $user && $user->is_guest ) {
+        if ( $c->config->{SIP}->{enable} ) {
+            $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
+            my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
+            $success    = $ret->{success};
+            $error_code = $ret->{error};
+            $details    = $ret->{details};
+            $user       = $ret->{user};
+        }
     }
 
     if (
