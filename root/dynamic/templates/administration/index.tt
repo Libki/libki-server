@@ -71,7 +71,8 @@
                 <th>[% c.loc("table.head.location") %]</th>
                 <th>[% c.loc("table.head.sessionstatus") %]</th>
                 <th>[% c.loc("table.head.username") %]</th>
-                <th>[% c.loc("table.head.minutes") %]</th>
+                <th>[% c.loc("table.head.dailyminutes") %]</th>
+                <th>[% c.loc("table.head.sessionminutes") %]</th>
                 <th>[% c.loc("table.head.userstatus") %]</th>
                 <th>[% c.loc("table.head.notes") %]</th>
                 <th>[% c.loc("table.head.troublemaker") %]</th>

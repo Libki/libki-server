@@ -156,11 +156,12 @@ sub clients : Local Args(0) {
         $r->{'1'}        = $c->location;
         $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'}        = defined( $c->session ) ? $c->session->user->username : undef;
-        $r->{'4'}        = defined( $c->session ) ? $c->session->user->minutes : undef;
-        $r->{'5'}        = defined( $c->session ) ? $c->session->user->status : undef;
-        $r->{'6'}        = defined( $c->session ) ? $c->session->user->notes : undef;
-        $r->{'7'}        = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'8'}        = defined( $c->reservation ) ? $c->reservation->user->username : undef;
+        $r->{'4'}        = defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
+        $r->{'5'}        = defined( $c->session ) ? $c->session->user->minutes : undef;
+        $r->{'6'}        = defined( $c->session ) ? $c->session->user->status : undef;
+        $r->{'7'}        = defined( $c->session ) ? $c->session->user->notes : undef;
+        $r->{'8'}        = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
+        $r->{'9'}        = defined( $c->reservation ) ? $c->reservation->user->username : undef;
         push( @results, $r );
     }
 
