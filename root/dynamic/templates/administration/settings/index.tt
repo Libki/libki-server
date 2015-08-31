@@ -27,13 +27,24 @@
         </div>
     
         <div class="control-group">
-            <label class="control-label" for="PostCrashTimeout">[% c.loc("admin.settings.basic.client.registrationupdatelimit.label") %]</label>
+            <label class="control-label" for="RetainHistoryDays">[% c.loc("admin.settings.basic.client.registrationupdatelimit.label") %]</label>
             <div class="controls">
                 <div class="input-append">
-                    <input type="text" class="input-mini" id="PostCrashTimeout" name="PostCrashTimeout" value="[% PostCrashTimeout %]">
+                    <input type="text" class="input-mini" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
                     <span class="add-on">[% c.loc("word.minute.plural") %]</span>
                 </div>
                 <span class="help-inline">[% c.loc("admin.settings.basic.client.registrationupdatelimit.help") %]</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="DataRetentionDays">[% c.loc("Data retention") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
+                    <span class="add-on">[% c.loc("Days") %]</span>
+                </div>
+                <span class="help-inline">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</span>
             </div>
         </div>
     </fieldset>

@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 
-use strict;
-use warnings;
+use Modern::Perl;
 
 use Config::JFDI;
 use List::Util qw(max min);
+use DateTime;
+use DateTime::Format::MySQL;
 
 use FindBin;
 use lib "$FindBin::Bin/../../lib";
@@ -43,6 +44,15 @@ while ( my $user = $user_rs->next() ) {
     $user->minutes( $user_minutes );
     $user->status( 'disabled' ) if ( $user->is_troublemaker eq 'Yes' );
     $user->update();
+}
+
+## Clear out statistics that are past the retention length
+my $data_retention_days = $c->model('DB::Setting')->find('DataRetentionDays')->value;
+if ( $data_retention_days ) {
+    my $dt = DateTime->today();
+    $dt->subtract( days => $data_retention_days );
+    my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+    $c->model('DB::Statistic')->search( { 'when' => { '<' => $timestamp }  } )->delete();
 }
 
 ## Clear out expired sessions
