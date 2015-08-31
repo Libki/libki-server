@@ -109,11 +109,11 @@ msgstr "Log out succeeded!"
 
 #: root/dynamic/templates/administration/index.tt:668
 msgid "admin.js.message.modifytime.error"
-msgstr "User's time updated!"
+msgstr "User's time not updated!"
 
 #: root/dynamic/templates/administration/index.tt:665
 msgid "admin.js.message.modifytime.success"
-msgstr "User's time not updated!"
+msgstr "User's time updated!"
 
 #: root/dynamic/templates/administration/index.tt:495 root/dynamic/templates/administration/index.tt:518
 msgid "admin.js.message.newguest.error"
