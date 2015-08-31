@@ -107,10 +107,10 @@ sub clients : Local Args(0) {
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
         $filter->{-or} = [
-            'me.name'     => { 'like', "%$search_term%" },
-            'me.location' => { 'like', "%$search_term%" },
+            'me.name'       => { 'like', "%$search_term%" },
+            'me.location'   => { 'like', "%$search_term%" },
+            'user.username' => { 'like', "%$search_term%" },
 
-            #'user.username' => { 'like', "%$search_term%" },
             #'user.notes'    => { 'like', "%$search_term%" },
         ];
     }
@@ -139,7 +139,7 @@ sub clients : Local Args(0) {
     my $total_records = $c->model('DB::Client')->count;
 
     # In case of pagination, we need to know how many records match in total
-    my $count = $c->model('DB::Client')->count($filter);
+    my $count = $c->model('DB::Client')->count($filter, { prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ] } );
 
     # Do the search, including any required sorting and pagination.
     my @clients = $c->model('DB::Client')->search(
