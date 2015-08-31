@@ -45,6 +45,8 @@ requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::Numeric';
 requires 'DBIx::Class::Cursor::Cached';
 
+requires 'Modern::Perl';
+
 requires 'Moose';
 requires 'MooseX::NonMoose';
 
