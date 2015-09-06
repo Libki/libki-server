@@ -55,7 +55,7 @@ sub index : Path : Args(0) {
         else {
 
             # Set an error message
-            $c->stash( error_message => "[% c.loc('Bad username or password.') %]" );
+            $c->stash( error_message => "Bad username or password." );
         }
     }
     else {
