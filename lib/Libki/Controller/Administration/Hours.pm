@@ -97,7 +97,7 @@ sub update_days : Local : Args(0) {
             my $minute = $params->{"$day-minute-$location_id"};
 
             if ( $hour && $minute ) {
-                if ( my $d = $rs->single( { day => $day } ) ) {
+                if ( my $d = $rs->single( { location => $location_id, day => $day } ) ) {
                     $d->update( { location => $location_id, day => $day, closing_time => "$hour:$minute" } );
                 }
                 else {
