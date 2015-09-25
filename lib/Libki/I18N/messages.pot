@@ -4,9 +4,9 @@
 # Maxime Beaulieu <maxime.beaulieu@inlibro.com>, 2015.
 #
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-01-22\n"
-"PO-Revision-Date: 2015-01-22\n"
-"Last-Translator: Maxime Beaulieu\n"
+"POT-Creation-Date: 2015-09-06\n"
+"PO-Revision-Date: 2015-09-06\n"
+"Last-Translator: Erik Öhrn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -319,6 +319,18 @@ msgstr ""
 msgid "admin.settings.clientloginbanner.width.label"
 msgstr ""
 
+#: root/dynamic/templates/administration/settings/index.tt:41
+msgid "admin.settings.basic.dataretention.legend"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:45
+msgid "word.day.plural"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:47
+msgid "admin.settings.basic.dataretention.help"
+msgstr ""
+
 #: root/dynamic/templates/administration/settings/index.tt:1
 msgid "admin.settings.head.title"
 msgstr ""
@@ -343,6 +355,14 @@ msgstr ""
 msgid "admin.settings.reservation.timeout.label"
 msgstr ""
 
+#: root/dynamic/templates/administration/settings/index.tt:150
+msgid "automatic.time.this.reserved"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:151
+msgid "automatic.time.any.reserved"
+msgstr ""
+
 #: root/dynamic/templates/administration/settings/index.tt:254
 msgid "admin.settings.submitbutton.text"
 msgstr ""
@@ -361,6 +381,10 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:241
 msgid "admin.settings.thirdparty.url.label"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:307
+msgid "admin.settings.update.button"
 msgstr ""
 
 #: root/dynamic/templates/administration/index.tt:35 root/dynamic/templates/administration/index.tt:89
@@ -423,6 +447,10 @@ msgstr ""
 msgid "updateform.button"
 msgstr ""
 
+#: root/dynamic/templates/administration/hours/index.tt:83
+msgid "updateform.helptext"
+msgstr ""
+
 #: root/dynamic/templates/administration/hours/index.tt:90
 msgid "addform.legend"
 msgstr ""
@@ -431,12 +459,24 @@ msgstr ""
 msgid "addform.control.label"
 msgstr ""
 
+#: root/dynamic/templates/administration/hours/index.tt:95
+msgid "for"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:95
+msgid "All locations"
+msgstr ""
+
 #: root/dynamic/templates/administration/hours/index.tt:106
 msgid "addform.addrow"
 msgstr ""
 
 #: root/dynamic/templates/administration/hours/index.tt:110
 msgid "addform.button"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:151
+msgid "addform.addrow.button"
 msgstr ""
 
 #Breadcrumb dynamically uses the url, so I added these manually
@@ -498,6 +538,10 @@ msgstr ""
 
 #: root/dynamic/templates/login.tt:10
 msgid "login.legend"
+msgstr ""
+
+#: root/dynamic/templates/login.tt:27
+msgid "login.button"
 msgstr ""
 
 #: root/dynamic/includes/navbar_administration.tt:23

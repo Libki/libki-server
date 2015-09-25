@@ -38,13 +38,13 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="DataRetentionDays">[% c.loc("Data retention") %]</label>
+            <label class="control-label" for="DataRetentionDays">[% c.loc("admin.settings.basic.dataretention.legend") %]</label>
             <div class="controls">
                 <div class="input-append">
                     <input type="text" class="input-mini" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
-                    <span class="add-on">[% c.loc("Days") %]</span>
+                    <span class="add-on">[% c.loc("word.day.plural") %]</span>
                 </div>
-                <span class="help-inline">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</span>
+                <span class="help-inline">[% c.loc("admin.settings.basic.dataretention.help") %]</span>
             </div>
         </div>
     </fieldset>
@@ -147,8 +147,8 @@
             <label class="control-label" for="AutomaticTimeExtensionUnless">[% c.loc("admin.settings.time_extension.unless.label") %]</label>
             <div class="controls">
                 <select id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
-                    <option value="this_reserved">User's client is reserved</option>
-                    <option value="any_reserved">Any client is reserved</option>
+                    <option value="this_reserved">[% c.loc("automatic.time.this.reserved") %]</option>
+                    <option value="any_reserved">[% c.loc("automatic.time.any.reserved") %]</option>
                 </select>
                 <span class="help-inline">[% c.loc("admin.settings.time_extension.unless.help") %]</span>
             </div>
@@ -304,7 +304,7 @@
 
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>
+            <button type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("admin.settings.update.button") %]</button>
         </div>
     </div>
 </form>

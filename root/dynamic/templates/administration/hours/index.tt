@@ -80,7 +80,7 @@
         <div class="control-group">
             <div class="controls">
                 <button id="updater" type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("updateform.button") %]</button>
-                <span class="help-block">Update all closing hours.</span>
+                <span class="help-block">[% c.loc("updateform.helptext") %]</span>
             </div>
         </div>
     </fieldset>
@@ -92,7 +92,7 @@
             <legend>[% c.loc("Manage existing specific dates") %]</legend>
             [% FOREACH date IN dates %]
                 <div class="control-group">
-                    <label class="control-label" for="[% date.day %]">[% DatePlugin.format( date.date _ " 00:00:00" ) %] @ [% date.closing_time.substr(0,5) %] for [% date.location.code || c.loc("All locations") %]</label>
+                    <label class="control-label" for="[% date.day %]">[% DatePlugin.format( date.date _ " 00:00:00" ) %] @ [% date.closing_time.substr(0,5) %] [% c.loc("for") %] [% date.location.code || c.loc("All locations") %]</label>
                     <div class="controls">
                         <div class="input-append">
                             <input type="checkbox" name="delete" class="delete" value="[% date.id %]">
@@ -148,7 +148,7 @@
 
                 <div class="control-group">
                     <div class="controls">
-                        <button type="submit" class="btn"><i class="fa fa-plus-square"></i> [% c.loc("Add") %]</button>
+                        <button type="submit" class="btn"><i class="fa fa-plus-square"></i> [% c.loc("addform.addrow.button") %]</button>
                     </div>
                 </div>
             </div>

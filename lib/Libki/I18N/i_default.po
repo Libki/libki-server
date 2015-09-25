@@ -4,9 +4,9 @@
 # Maxime Beaulieu <maxime.beaulieu@inlibro.com>, 2015.
 #
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-01-22\n"
-"PO-Revision-Date: 2015-01-22\n"
-"Last-Translator: Maxime Beaulieu\n"
+"POT-Creation-Date: 2015-09-06\n"
+"PO-Revision-Date: 2015-09-06\n"
+"Last-Translator: Erik Öhrn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -319,6 +319,18 @@ msgstr "The width of the source image or image service in pixels."
 msgid "admin.settings.clientloginbanner.width.label"
 msgstr "Width"
 
+#: root/dynamic/templates/administration/settings/index.tt:41
+msgid "admin.settings.basic.dataretention.legend"
+msgstr "Data retention"
+
+#: root/dynamic/templates/administration/settings/index.tt:45
+msgid "word.day.plural"
+msgstr "Days"
+
+#: root/dynamic/templates/administration/settings/index.tt:47
+msgid "admin.settings.basic.dataretention.help"
+msgstr "Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely."
+
 #: root/dynamic/templates/administration/settings/index.tt:1
 msgid "admin.settings.head.title"
 msgstr "Administration / Settings"
@@ -343,6 +355,14 @@ msgstr "The size of the time window a patron has to log in to a client. If the p
 msgid "admin.settings.reservation.timeout.label"
 msgstr "Reservation timeout"
 
+#: root/dynamic/templates/administration/settings/index.tt:150
+msgid "automatic.time.this.reserved"
+msgstr "User's client is reserved"
+
+#: root/dynamic/templates/administration/settings/index.tt:151
+msgid "automatic.time.any.reserved"
+msgstr "Any client is reserved"
+
 #: root/dynamic/templates/administration/settings/index.tt:254
 msgid "admin.settings.submitbutton.text"
 msgstr "Update settings"
@@ -362,6 +382,10 @@ msgstr "For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.
 #: root/dynamic/templates/administration/settings/index.tt:241
 msgid "admin.settings.thirdparty.url.label"
 msgstr "URL"
+
+#: root/dynamic/templates/administration/settings/index.tt:307
+msgid "admin.settings.update.button"
+msgstr "Update"
 
 #: root/dynamic/templates/administration/index.tt:35 root/dynamic/templates/administration/index.tt:89
 msgid "admin.toolbar.multipleguests"
@@ -423,6 +447,10 @@ msgstr "Mark for deletion:"
 msgid "updateform.button"
 msgstr "Update"
 
+#: root/dynamic/templates/administration/hours/index.tt:83
+msgid "updateform.helptext"
+msgstr "Update all closing hours."
+
 #: root/dynamic/templates/administration/hours/index.tt:90
 msgid "addform.legend"
 msgstr "Closing hours for specific dates"
@@ -431,6 +459,14 @@ msgstr "Closing hours for specific dates"
 msgid "addform.control.label"
 msgstr "Input date and time"
 
+#: root/dynamic/templates/administration/hours/index.tt:95
+msgid "for"
+msgstr "for"
+
+#: root/dynamic/templates/administration/hours/index.tt:95
+msgid "All locations"
+msgstr "All locations"
+
 #: root/dynamic/templates/administration/hours/index.tt:106
 msgid "addform.addrow"
 msgstr "Click to add another date"
@@ -438,6 +474,10 @@ msgstr "Click to add another date"
 #: root/dynamic/templates/administration/hours/index.tt:110
 msgid "addform.button"
 msgstr "Save dates"
+
+#: root/dynamic/templates/administration/hours/index.tt:151
+msgid "addform.addrow.button"
+msgstr "Add"
 
 #Breadcrumb dynamically uses the url, so I added these manually
 #: lib/Catalyst/Plugin/Breadcrumbs.pm:158
@@ -498,6 +538,10 @@ msgstr "Login"
 
 #: root/dynamic/templates/login.tt:10
 msgid "login.legend"
+msgstr "Log in"
+
+#: root/dynamic/templates/login.tt:27
+msgid "login.button"
 msgstr "Log in"
 
 #: root/dynamic/includes/navbar_administration.tt:23
@@ -833,3 +877,6 @@ msgstr "Fran&ccedil;ais"
 
 msgid "lang.en"
 msgstr "English"
+
+msgid "lang.sv"
+msgstr "Svenska"
