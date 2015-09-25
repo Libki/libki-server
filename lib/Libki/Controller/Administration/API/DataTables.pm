@@ -20,7 +20,7 @@ sub users : Local Args(0) {
     my ( $self, $c ) = @_;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my @columns = qw/me.username me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -96,7 +96,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location session.status user.username user.minutes user.status user.notes user.is_troublemaker/;
+      qw/ me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
 
     # Set up filters
     my $filter = {};
