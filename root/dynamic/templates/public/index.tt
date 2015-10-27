@@ -3,7 +3,7 @@
 <!-- We don't need this for the time being, but may later
 <ul class="nav nav-tabs" id="primary-tabs">
     <li class="active">
-        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">[% c.loc("public.index.tabs.clients") %]</a>
+        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">[% c.loc("Clients") %]</a>
     </li>
 </ul>
 -->
@@ -12,10 +12,10 @@
   <div class="tab-pane active" id="clients-tab">
         <ul class="nav nav-pills" id="primary-tabs">
           <li>
-              <a>[% c.loc("table.head.location") %]: </a>
+              <a>[% c.loc("Location") %]: </a>
           </li>
           <li class="active">
-              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("word.all") %]</a>
+              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
           </li>
           [% FOREACH location IN locations %]
               <li>
@@ -26,22 +26,22 @@
 
         <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
-                <th>[% c.loc("table.head.client") %]</th>
-                <th>[% c.loc("table.head.location") %]</th>
-                <th>[% c.loc("table.head.status") %]</th>
-                <th>[% c.loc("table.head.timeremaining") %]</th>
-                <th>[% c.loc("table.head.reservationstatus") %]</th>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Status") %]</th>
+                <th>[% c.loc("Time remaining") %]</th>
+                <th>[% c.loc("Reservation status") %]</th>
             </thead>
         </table> 
 
         <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
             [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 <button id="client-table-row-toolbar-make-reservation" class="btn btn-inverse">
-                    <i class="icon-plus-sign icon-white"></i> [% c.loc("public.rowtoolbar.reservation.make") %]
+                    <i class="icon-plus-sign icon-white"></i> [% c.loc("Make reservation") %]
                 </button>
 
                 <button id="client-table-row-toolbar-cancel-reservation" class="btn btn-danger">
-                    <i class="icon-minus-sign icon-white"></i> [% c.loc("public.rowtoolbar.reservation.cancel") %]
+                    <i class="icon-minus-sign icon-white"></i> [% c.loc("Cancel reservation") %]
                 </button>
             [% END %]
         </div>
@@ -51,7 +51,7 @@
 <div class="modal hide" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="make-reservation-modal-label">[% c.loc("public.reservation.make.title") %] <i><span id="make-reservation-modal-for"></span></i></h3>
+        <h3 id="make-reservation-modal-label">[% c.loc("Make reservation for") %] <i><span id="make-reservation-modal-for"></span></i></h3>
     </div>
 
     <div class="modal-body">
@@ -59,14 +59,14 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="control-group">
-                <label class="control-label" for="make-reservation-username">[% c.loc("word.username") %]</label>
+                <label class="control-label" for="make-reservation-username">[% c.loc("Username") %]</label>
                 <div class="controls">
                     <input type="text" id="make-reservation-username" name="username" />
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="make-reservation-password">[% c.loc("word.password") %]</label>
+                <label class="control-label" for="make-reservation-password">[% c.loc("Password") %]</label>
                 <div class="controls">
                     <input type="password" id="make-reservation-password" name="password" />
                 </div>
@@ -74,15 +74,15 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("word.cancel") %]</button>
-        <button id="make-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("public.reservation.make.submit.text") %]</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+        <button id="make-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Make reservation") %]</button>
     </div>
 </div>
 
 <div class="modal hide" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="cancel-reservation-modal-label">[% c.loc("public.reservation.cancel.title") %] <i><span id="cancel-reservation-modal-for"></span></i></h3>
+        <h3 id="cancel-reservation-modal-label">[% c.loc("Cancel reservation") %] <i><span id="cancel-reservation-modal-for"></span></i></h3>
     </div>
 
     <div class="modal-body">
@@ -90,7 +90,7 @@
             <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="control-group">
-                <label class="control-label" for="cancel-reservation-password">[% c.loc("word.password") %]</label>
+                <label class="control-label" for="cancel-reservation-password">[% c.loc("Password") %]</label>
                 <div class="controls">
                     <input type="password" id="cancel-reservation-password" name="password" />
                 </div>
@@ -98,8 +98,8 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("word.cancel") %]</button>
-        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("public.reservation.cancel.submit.text") %]</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Cancel reservation") %]</button>
     </div>
 </div>
 
@@ -121,21 +121,22 @@ $(document).ready(function() {
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             if ( aData[2] ) {
-                $("td:eq(1)", nRow).html( "[% c.loc("client.status.used") %]" );
+                var status;
+                $("td:eq(1)", nRow).html( "[% c.loc("In use") %]" );
             } else {
-                $("td:eq(1)", nRow).html( "[% c.loc("client.status.open") %]" );
+                $("td:eq(1)", nRow).html( "[% c.loc("Available") %]" );
             }
 
             if ( aData[3] ) {
-                $("td:eq(2)", nRow).html( aData[3] + " " + "[% c.loc("word.minute.plural") %]" );
+                $("td:eq(2)", nRow).html( aData[3] + " " + "[% c.loc("Minutes") %]" );
             }
 
             if ( Boolean( aData[4] ) ) {
                 if ( [% Settings.ReservationShowUsername %] ) {
-                    $("td:eq(3)", nRow).html( "[% c.loc("reservation.status.reservedby") %]" + " " + "<i>" + aData[4] + "</i>" );
+                    $("td:eq(3)", nRow).html( "[% c.loc("Reserved by") %]" + " " + "<i>" + aData[4] + "</i>" );
                 }
                 else {
-                    $("td:eq(3)", nRow).html( "[% c.loc("reservation.status.reserved") %]" );
+                    $("td:eq(3)", nRow).html( "[% c.loc("Reserved") %]" );
                 }
             }
         },
@@ -206,7 +207,7 @@ $(document).ready(function() {
 
             $("#make-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            alert("[% c.loc("public.js.message.reservation.reserved") %]");
+            alert("[% c.loc("This client is already reserved") %]");
         }
     });
 
@@ -240,75 +241,75 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     $("#make-reservation-modal").modal("hide");
-                    DisplayMessage( "success", "[% c.loc("public.js.message.reservation.make.success") %]" );
+                    DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );
                     ForceClientTableRefresh();
                 }
                 else if ( data.reason == "INVALID_USER" || data.reason == "INVALID_PASSWORD" )  {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.INVALID_LOGIN") %]" );
+                    DisplayMessage( "error", "[% c.loc("Username & password do not match.") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
                 else if ( data.reason == "NO_TIME" ) {
-                    DisplayMessage( "warning", "[% c.loc("You have no time remaining") %]" );
+                    DisplayMessage( "warning", "[% c.loc("You have no time remaining.") %]" );
                 } 
                 else if ( data.reason == "CLOSED" ) {
-                    DisplayMessage( "warning", "[% c.loc("This kiosk is closed for the day") %]" );
+                    DisplayMessage( "warning", "[% c.loc("This kiosk is closed for the day.") %]" );
                 } 
                 else if ( data.reason == "CLIENT_USER_ALREADY_RESERVED" ) {
-                    DisplayMessage( "warning", "[% c.loc("public.js.message.CLIENT_USER_ALREADY_RESERVED") %]" );
+                    DisplayMessage( "warning", "[% c.loc("You have already reserved this client.") %]" );
                 } 
                 else if ( data.reason == "USER_ALREADY_RESERVED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.USER_ALREADY_RESERVED") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have already reserved a client.") %]" );
                 } 
                 else if ( data.reason == "CLIENT_ALREADY_RESERVED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.CLIENT_ALREADY_RESERVED") %]" );
+                    DisplayMessage( "error", "[% c.loc("This client is already reserved.") %]" );
                 } 
                 else if ( data.reason == "FEE_LIMIT" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.FEE_LIMIT") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have excessive oustanding fees.") %]" );
                 } 
                 else if ( data.reason == "CHARGE_PRIVILEGES_DENIED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.CHARGE_PRIVILEGES_DENIED") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your checkout privileges have been denied.") %]" );
                 } 
                 else if ( data.reason == "RENEWAL_PRIVILEGES_DENIED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.RENEWAL_PRIVILEGES_DENIED") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your renewal privileges have been denied.") %]" );
                 } 
                 else if ( data.reason == "RECALL_PRIVILEGES_DENIED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.RECALL_PRIVILEGES_DENIED") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your recall privileges have been denied.") %]" );
                 } 
                 else if ( data.reason == "HOLD_PRIVILEGES_DENIED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.HOLD_PRIVILEGES_DENIED") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your hold privileges have been denied.") %]" );
                 } 
                 else if ( data.reason == "CARD_REPORTED_LOST" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.CARD_REPORTED_LOST") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your library card has been reported lost or stolen.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_ITEMS_CHARGED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_CHARGED") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have too many items checked out.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_ITEMS_OVERDUE" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_OVERDUE") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have too many overdue items.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_ITEMS_RENEWALS" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_RENEWALS") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have renewed too many items.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_CLAIMS_OF_ITEMS_RETURNED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_CLAIMS_OF_ITEMS_RETURNED") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have claimed returned for too many items.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_ITEMS_LOST" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_LOST") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have lost too many items.") %]" );
                 } 
                 else if ( data.reason == "EXCESSIVE_OUTSTANDING_FINES" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.EXCESSIVE_OUTSTANDING_FINES") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have excessive outstanding fines.") %]" );
                 } 
                 else if ( data.reason == "EXCESSIVE_OUTSTANDING_FEES" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.EXCESSIVE_OUTSTANDING_FEES") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have excessive outstanding fees.") %]" );
                 } 
                 else if ( data.reason == "RECALL_OVERDUE" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.RECALL_OVERDUE") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have an overdue item recall.") %]" );
                 } 
                 else if ( data.reason == "TOO_MANY_ITEMS_BILLED" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.TOO_MANY_ITEMS_BILLED") %]" );
+                    DisplayMessage( "error", "[% c.loc("You have been billed for too many items.") %]" );
                 } 
                 else if ( data.reason == "AGE_MISMATCH" ) {
-                    DisplayMessage( "error", "[% c.loc("You are not of the appropriate age to use this client") %]" );
+                    DisplayMessage( "error", "[% c.loc("You are not of the appropriate age to use this client.") %]" );
                 } 
                 else {
                     DisplayMessage( "error", data.reason );
@@ -334,7 +335,7 @@ $(document).ready(function() {
 
             $("#cancel-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            alert("[% c.loc("public.js.message.clientnotreserved") %]");
+            alert("[% c.loc("This client is not currently reserved.") %]");
         }
     });
 
@@ -361,14 +362,14 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     $("#cancel-reservation-modal").modal("hide");
-                    DisplayMessage( "success", "[% c.loc("public.js.message.reservation.cancel.success") %]" );
+                    DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
                     ForceClientTableRefresh();
                 }
                 else if ( data.reason == "UNKOWN" ) {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.reservation.cancel.error.unknown") %]" );
+                    DisplayMessage( "error", "[% c.loc("Your reservation cancelation failed for an unknown reason.") %]" );
                 } 
                 else  {
-                    DisplayMessage( "error", "[% c.loc("public.js.message.reservation.cancel.error.password") %]" );
+                    DisplayMessage( "error", "[% c.loc("Incorrect password.") %]" );
                     $("#client-table-row-toolbar-cancel-reservation").click();
                 }
 

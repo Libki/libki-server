@@ -155,7 +155,7 @@ sub _label_for {
     $label =~ s/_(.)/' ' . uc($1)/eg;
 
     # I18N Plugin
-    $label = $c->loc("breadcrumb.$label");
+    $label = $c->loc("$label");
     return !$c->config->{breadcrumbs}->{lowercase}
         ? ucfirst($label)
         : lc($label);

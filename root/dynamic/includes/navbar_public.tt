@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
             </a>
 
-            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("navbar.title") %]</a>
+            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("Libki Kiosk Management System") %]</a>
 
         </div>
     </div>

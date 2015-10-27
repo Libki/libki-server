@@ -1,4 +1,4 @@
-[% meta.title = c.loc("login.head.title") %]
+[% meta.title = c.loc("Log in") %]
 
 <div class="row">
 <div class="span5">&nbsp;</div>
@@ -7,24 +7,24 @@
 <form id="login-form" class="libki-login-form" method="post" class="form-horizontal" action="[% c.uri_for('/administration/login') %]">
     <fieldset>
 
-        <legend>[% c.loc("login.legend") %]</legend>
+        <legend>[% c.loc("Log in") %]</legend>
 
         <div class="control-group">
-            <label class="control-label" for="username">[% c.loc("word.username") %]</label>
+            <label class="control-label" for="username">[% c.loc("Username") %]</label>
             <div class="controls">
                 <input type="text" class="input-xlarge" id="username" name="username" />
             </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="password">[% c.loc("word.password") %]</label>
+            <label class="control-label" for="password">[% c.loc("Password") %]</label>
             <div class="controls">
                 <input type="password" class="input-xlarge" id="password" name="password" />
             </div>
         </div>
 
         <div class="form-actions">
-            <input type="submit" name="submitted" value="[% c.loc("login.button") %]" class="btn btn-primary" />
+            <input type="submit" name="submitted" value="[% c.loc("Log in") %]" class="btn btn-primary" />
         </div>
 
     </fieldset>

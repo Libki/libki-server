@@ -1,36 +1,36 @@
 [% USE LibkiDate %]
-[% meta.title = c.loc("admin.history.statistics.head.title") %]
+[% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
 <div class="row">
     <div class="span12">
 <form class="form-inline">
-    <label for="from">[% c.loc("search.from")%]: </label>
+    <label for="from">[% c.loc("From")%]: </label>
     <input type="text" class="datepicker input-small" name="from" value="[% LibkiDate.format(from) %]"/>
-    <label for="to">[% c.loc("search.to") %]: </label>
+    <label for="to">[% c.loc("To") %]: </label>
     <input type="text" class="datepicker input-small" name="to" value="[% LibkiDate.format(to) %]"/>
-    <button type="submit" class="btn">[% c.loc("search.limit") %]</button>
+    <button type="submit" class="btn">[% c.loc("Limit") %]</button>
 </form>
     </div>
 
     <div class="span12">
-        <caption>[% c.loc("admin.history.statistics.caption") %]</caption>
+        <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
         <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>[% c.loc("table.head.date") %]</th>
+                    <th>[% c.loc("Date") %]</th>
                     [% SET location_totals = {} %]
                     [% FOREACH b IN by_location_columns %]
                         [% SET location_totals.$b = '0' %]
                         <th>
                             [% IF b == 'XXX__UNDEFINED__' %]
-                                <i>[% c.loc("admin.history.statistics.nolocationset") %]</i>
+                                <i>[% c.loc("No location set") %]</i>
                             [% ELSE %]
                                 [% b %]
                             [% END %]
                         </th>
                     [% END %]
-                    <th>[% c.loc("admin.history.statistics.totalbydate") %]</th>
+                    <th>[% c.loc("Total by date") %]</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th>[% c.loc("admin.history.statistics.totalbylocation") %]</th>
+                    <th>[% c.loc("Total by location") %]</th>
                     [% FOREACH key IN by_location_columns %]
                         <th>[% location_totals.$key %]</th>
                     [% END %]

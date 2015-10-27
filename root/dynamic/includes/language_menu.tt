@@ -1,7 +1,7 @@
 <div class="nav-collapse">
     <ul class="nav">
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% c.loc("word.language") %]<b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% c.loc("Language") %]<b class="caret"></b></a>
             <ul class="dropdown-menu">
                 [% FOREACH lang IN c.installed_languages.keys %]
                     <li [% IF c.language.match(lang) %]class="active"[% END %]>

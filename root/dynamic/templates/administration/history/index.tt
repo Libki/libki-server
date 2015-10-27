@@ -1,14 +1,14 @@
-[% meta.title = c.loc('admin.history.header.title') %]
+[% meta.title = c.loc('Administration / History') %]
 [% SET active_class = 'administration__history' %]
 
 <div class="row">
     <div class="span12">
         <table id="history-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
-                <th>[% c.loc("table.head.username") %]</th>
-                <th>[% c.loc("table.head.client") %]</th>
-                <th>[% c.loc("table.head.action") %]</th>
-                <th>[% c.loc("table.head.datetime") %]</th>
+                <th>[% c.loc("Username") %]</th>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("Action") %]</th>
+                <th>[% c.loc("Timestamp") %]</th>
             </thead>
         </table>
     </div>

@@ -55,16 +55,16 @@
             if ( !title ) {
                 switch( type ) {
                     case 'block':
-                        title = "[% c.loc("js.message.title.alert") %]";
+                        title = "[% c.loc("Alert!") %]";
                         break;
                     case 'error':
-                        title = "[% c.loc("js.message.title.error") %]";
+                        title = "[% c.loc("Error!") %]";
                         break;
                     case 'success':
-                        title = "[% c.loc("js.message.title.success") %]";
+                        title = "[% c.loc("Success!") %]";
                         break;
                     case 'info':
-                        title = "[% c.loc("js.message.title.info") %]";
+                        title = "[% c.loc("Info!") %]";
                         break;
                 }
             }

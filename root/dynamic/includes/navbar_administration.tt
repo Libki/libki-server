@@ -8,23 +8,23 @@
                 <span class="icon-bar"></span>
             </a>
 
-            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("navbar.title") %]</a>
+            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("Libki Kiosk Management System") %]</a>
 
             [% IF c.user_exists %]
                 <div class="nav-collapse">
                     <ul class="nav">
                         <li class="[% IF active_class.search('^administration__index') %] active [% END %]">
-                            <a href="[% c.uri_for('/administration/')  %]">[% c.loc("navbar.home") %]</a>
+                            <a href="[% c.uri_for('/administration/')  %]">[% c.loc("Home") %]</a>
                         </li>
 
                         <li class="dropdown [% IF active_class.search('^administration__history|^administration__settings') %] active [% END %]">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% c.loc("navbar.more") %]<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% c.loc("More") %]<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li [% IF active_class == 'administration__history' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')    %]">[% c.loc("navbar.history") %]</a></li>
-                                <li [% IF active_class == 'administration__history__statistics' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("navbar.statistics") %]</a></li>
-		                        <li class="[% IF active_class.search('^administration__hours') %] active [% END %]"><a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("navbar.hours") %]</a></li>
+                                <li [% IF active_class == 'administration__history' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')    %]">[% c.loc("History") %]</a></li>
+                                <li [% IF active_class == 'administration__history__statistics' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("Statistics") %]</a></li>
+		                        <li class="[% IF active_class.search('^administration__hours') %] active [% END %]"><a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("Closing hours") %]</a></li>
                                 [% IF c.check_user_roles('superadmin') %]
-                                    <li [% IF active_class == 'administration__settings' %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings') %]">[% c.loc("navbar.settings") %]</a></li>
+                                    <li [% IF active_class == 'administration__settings' %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings') %]">[% c.loc("Settings") %]</a></li>
                                 [% END %]
                             </ul>
                         </li>
@@ -38,7 +38,7 @@
                         <li class="divider-vertical"></li>
                         <li>
                             <a href="[% c.uri_for('/administration/logout') %]">
-                                <i class="icon-off"></i> [% c.loc("navbar.logout") %]
+                                <i class="icon-off"></i> [% c.loc("Log out") %]
                             </a>
                         </li>
                     </ul>

@@ -1,9 +1,9 @@
 [% USE DatePlugin = date( format = '%m/%d/%Y', locale = 'en_US' ) %]
 
-[% meta.title = c.loc('admin.hours.header.title') %]
+[% meta.title = c.loc('Administration / Closing hours') %]
 [% SET active_class = 'administration__hours' %]
 
-[% SET DaysOfWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %]
+[% SET DaysOfWeek = [c.loc('Monday'), c.loc('Tuesday'), c.loc('Wednesday'), c.loc('Thursday'), c.loc('Friday'), c.loc('Saturday'), c.loc('Sunday')] %]
 [% SET Hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] %]
 [% SET Minutes = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59'] %]
 
@@ -26,7 +26,7 @@
             <div class="tab-pane active" id="location_all">
                 [% FOREACH d IN DaysOfWeek %]
                     <div class="control-group">
-                        <label class="control-label" for="[% d %]">[% c.loc("updateform.$d") %]</label>
+                        <label class="control-label" for="[% d %]">[% c.loc("$d") %]</label>
                         <div class="controls">
                             <div class="">
                                 <select id="[% d %]-hour-all" name="[% d %]-hour-all" class="input-mini">
@@ -53,7 +53,7 @@
                 <div class="tab-pane" id="location_[% l.id %]">
                     [% FOREACH d IN DaysOfWeek %]
                         <div class="control-group">
-                            <label class="control-label" for="[% d %]">[% c.loc("updateform.$d") %]</label>
+                            <label class="control-label" for="[% d %]">[% c.loc("$d") %]</label>
                             <div class="controls">
                                 <div class="">
                                     <select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="input-mini">
@@ -79,8 +79,8 @@
 
         <div class="control-group">
             <div class="controls">
-                <button id="updater" type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("updateform.button") %]</button>
-                <span class="help-block">[% c.loc("updateform.helptext") %]</span>
+                <button id="updater" type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>
+                <span class="help-block">[% c.loc("Update hours for all locations.") %]</span>
             </div>
         </div>
     </fieldset>
@@ -96,7 +96,7 @@
                     <div class="controls">
                         <div class="input-append">
                             <input type="checkbox" name="delete" class="delete" value="[% date.id %]">
-                            [% c.loc("updateform.deletion") %]
+                            [% c.loc("Delete") %]
                         </div>
                     </div>
                 </div>
@@ -113,11 +113,11 @@
 
 <form id="addform" class="form-horizontal" action="[% c.uri_for('update_dates') %]" method="post">
     <fieldset>
-        <legend>[% c.loc("addform.legend") %]</legend>
+        <legend>[% c.loc("Add closing hours for specific dates") %]</legend>
         <div class="dateadd-wrapper">
             <div class="dateadd">
                 <div class="control-group">
-                    <label class="control-label" for="[% date.day %]">[% c.loc("addform.control.label") %]</label>
+                    <label class="control-label" for="[% date.day %]">[% c.loc("Date and time") %]</label>
                     <div class="controls">
                         <input name="date" type="text" class="date datepicker input-medium" placeholder="[% DatePlugin.format('00:00:00 12-12-1999') %]">
 
@@ -148,7 +148,7 @@
 
                 <div class="control-group">
                     <div class="controls">
-                        <button type="submit" class="btn"><i class="fa fa-plus-square"></i> [% c.loc("addform.addrow.button") %]</button>
+                        <button type="submit" class="btn"><i class="fa fa-plus-square"></i> [% c.loc("Add") %]</button>
                     </div>
                 </div>
             </div>
