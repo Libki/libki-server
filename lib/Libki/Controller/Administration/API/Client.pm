@@ -69,6 +69,52 @@ sub logout : Local : Args(1) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 logout
+
+=cut
+
+sub reservation : Local : Args(1) {
+    my ( $self, $c, $client_id ) = @_;
+
+    my $client = $c->model('DB::Client')->find($client_id);
+
+    my $action    = $c->request->params->{action}   || q{};
+    my $username  = $c->request->params->{username} || q{};
+
+    if ( $action eq 'reserve' ) {
+        my $user = $c->model('DB::User')->single( { username => $username } );
+
+        if ( $user ) {
+            if ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
+                $c->stash(
+                    'success' => 0,
+                    'reason'  => 'USER_ALREADY_RESERVED'
+                );
+            }
+            elsif ( $c->model('DB::Reservation')->create( { user_id => $user->id, client_id => $client_id } ) ) {
+                $c->stash( 'success' => 1 );
+            }
+            else {
+                $c->stash( 'success' => 0, 'reason' => 'UNKNOWN' );
+            }
+        } else {
+            $c->stash( 'success' => 0, 'reason' => 'USER_NOT_FOUND' );
+        }
+    } if ( $action eq 'cancel' ) {
+        my $reservation = $client->reservation;
+        my $success = $reservation->delete() ? 1 : 0;
+        $c->stash( success => $success );
+    } else {
+        my $reserved = 0;
+        if ( defined($client) && defined( $client->reservation ) ) {
+            $reserved = 1;
+        }
+
+        $c->stash( reserved => $reserved );
+    }
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
