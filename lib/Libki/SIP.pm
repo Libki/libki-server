@@ -166,7 +166,7 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verfies that password for user $username matches");
 
-    my $sip_fields = sip_message_to_hashref($data);
+    my $sip_fields = sip_message_to_hashref( $c, $data);
     $log->debug( "SIP FIELDS: " . Data::Dumper::Dumper($sip_fields) );
 
     my $birthdate = $sip_fields->{PB} || undef;
@@ -218,17 +218,19 @@ sub authenticate_via_sip {
         }
     }
 
-    return { success => 1, user => $user };
+    return { success => 1, user => $user, sip_fields => $sip_fields };
 
 }
 
 sub sip_message_to_hashref {
-    my ($data) = @_;
+    my ($c, $data) = @_;
+
+    my $log = $c->log();
 
     my @parts = split( /\|/, $data );
 
-    my $patron_status_field = shift(@parts);
-    $patron_status_field = substr( $patron_status_field, 2, 14 );
+    my $fixed_fields = shift(@parts);
+    my $patron_status_field = substr( $fixed_fields, 2, 14 );
     my $patron_status;
     $patron_status->{charge_privileges_denied} =
       substr( $patron_status_field, 0, 1 );
@@ -256,10 +258,13 @@ sub sip_message_to_hashref {
     $patron_status->{too_many_items_billed} =
       substr( $patron_status_field, 13, 1 );
 
+    my $hold_items_count = substr( $fixed_fields, 37, 4 );
+
     pop(@parts);
 
     my %fields = map { substr( $_, 0, 2 ) => substr( $_, 2 ) } @parts;
     $fields{patron_status} = $patron_status;
+    $fields{hold_items_count} = $hold_items_count;
 
     return \%fields;
 }

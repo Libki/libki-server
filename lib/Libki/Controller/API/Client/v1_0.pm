@@ -125,7 +125,7 @@ sub index : Path : Args(0) {
             $log->debug( __PACKAGE__ . " - username: $username, client_name: $client_name" );
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
-            my ( $success, $error ) = ( 1, undef );
+            my ( $success, $error, $sip_fields ) = ( 1, undef, undef );
             if ( $c->config->{SIP}->{enable} ) {
                 if (
                     !$user
@@ -138,6 +138,11 @@ sub index : Path : Args(0) {
                     $success = $ret->{success};
                     $error   = $ret->{error};
                     $user    = $ret->{user};
+
+                    $sip_fields = $ret->{sip_fields};
+                    if ( $sip_fields ) {
+                        $c->stash( hold_items_count => $sip_fields->{hold_items_count} );
+                    }
                 }
             }
 
