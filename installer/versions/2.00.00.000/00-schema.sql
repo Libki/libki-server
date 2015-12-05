@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS users (
   `password` varchar(255) NOT NULL,
   minutes int(11) NOT NULL DEFAULT '0',
   `status` varchar(255) NOT NULL,
-  notes text NOT NULL,
+  notes text NOT NULL DEFAULT '',
   message text CHARACTER SET utf8 NOT NULL,
   is_troublemaker enum('Yes','No') NOT NULL DEFAULT 'No',
   is_guest enum('Yes','No') NOT NULL DEFAULT 'No',
