@@ -23,6 +23,11 @@ Catalyst Controller.
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->stash(
+        CustomJsPublic =>
+          $c->model('DB::Setting')->find('CustomJsPublic')->value,
+    );
 }
 
 =head2 auto

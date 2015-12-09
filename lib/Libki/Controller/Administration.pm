@@ -34,6 +34,8 @@ sub index : Path : Args(0) {
     $c->stash(
         DefaultTimeAllowance =>
           $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
+        CustomJsAdministration =>
+          $c->model('DB::Setting')->find('CustomJsAdministration')->value,
         locations => \@locations,
     );
 }

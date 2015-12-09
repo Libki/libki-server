@@ -302,6 +302,26 @@
         </div>
     </fieldset>
 
+    <fieldset>
+        <legend>[% c.loc("Custom JavaScript") %]</legend>
+    
+        <div class="control-group">
+            <label class="control-label" for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
+            <div class="controls">
+                <textarea id="CustomJsAdministration" name="CustomJsAdministration" rows="5" cols="50">[% CustomJsAdministration %]</textarea>
+                <span class="help-inline">[% c.loc("Add custom JavaScript for the administration interface here.") %]</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="CustomJsPublic">[% c.loc("Public interface JavaScript") %]</label>
+            <div class="controls">
+                <textarea id="CustomJsPublic" name="CustomJsPublic" rows="5" cols="50">[% CustomJsPublic %]</textarea>
+                <span class="help-inline">[% c.loc("Add custom JavaScript for the public web interface here.") %]</span>
+            </div>
+        </div>
+    </fieldset>
+
     <div class="control-group">
         <div class="controls">
             <button type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>

@@ -96,6 +96,14 @@
             });
         [% END %]
     </script>
+
+    <script type="text/javascript">
+        [% IF interface == 'administration' %]
+            [% CustomJsAdministration %]
+        [% ELSE %]
+            [% CustomJsPublic %]
+        [% END %]
+    </script>
 </head>
 
 <body>
