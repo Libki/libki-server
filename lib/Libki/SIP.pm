@@ -218,6 +218,18 @@ sub authenticate_via_sip {
         }
     }
 
+    if ( my $deny_on = $c->config->{SIP}->{deny_on_field} ) {
+        my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
+
+        foreach my $d (@deny_on) {
+            my ( $field, $message ) = split( ':', $d );
+            if ( $sip_fields->{$field} ne 'Y' ) {
+                return { success => 0, error => $message, user => $user };
+            }
+        }
+
+    }
+
     return { success => 1, user => $user, sip_fields => $sip_fields };
 
 }
