@@ -1,0 +1,71 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          libki-INSTANCE
+# Required-Start:    mysql
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Libki at boot time
+# Description:       Enable Libki
+### END INIT INFO
+
+# Source function library.
+. /lib/lsb/init-functions
+
+export instance_name="INSTANCE"
+export port="4002"
+export workers="2"
+export home_dir="/home/libki-${instance_name}"
+export myapp="libki"
+export starman="${home_dir}/perl5/bin/starman"
+export myapp_path="${home_dir}/Libki"
+export pidfile="${home_dir}/libki-${instance_name}.pid"
+export errorlog="${home_dir}/libki_starman.log"
+export PERL5LIB="${home_dir}/perl5/lib/perl5/"
+
+start() {
+        echo -n $"Starting Starman: "
+        $starman -I${myapp_path}/lib --l :${port} --daemonize --workers ${workers} --pid ${pidfile} --error-log ${errorlog} ${myapp_path}/${myapp}.psgi
+        echo -n "$starman -I${myapp_path}/lib --l :${port} --daemonize --workers ${workers} --pid ${pidfile} --error-log ${errorlog} ${myapp_path}/${myapp}.psgi"
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ]
+        return $RETVAL
+}
+
+restart() {
+        echo -n $"Restarting Starman: "
+        export PID=`cat ${pidfile}`
+        kill -s USR2 $PID
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ]
+        return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping Starman: "
+        killproc -p ${pidfile} $starman
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && rm -f ${pidfile}
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  restart)
+        restart
+         ;;
+  stop)
+        stop
+        ;;
+  *)
+        echo $"Usage: starman {start|restart|stop}"
+        exit 1
+esac
+
+exit $RETVAL
