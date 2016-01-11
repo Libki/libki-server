@@ -14,7 +14,7 @@
 . /lib/lsb/init-functions
 
 export instance_name="INSTANCE"
-export port="4002"
+export port="4000"
 export workers="2"
 export home_dir="/home/libki-${instance_name}"
 export myapp="libki"
