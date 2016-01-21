@@ -22,6 +22,6 @@
     deny_on charge_privileges_denied    # You can set SIP2 patron status flags which will deny patrons the ability to log in
     deny_on recall_privileges_denied    # You can set as many or as few as you want. Delete these if you don't want to deny patrons.
     deny_on excessive_outstanding_fines # The full listing is defined in the SIP2 protocol specification
-    deny_on_field AB:This is the reason we are daying you  # You can require arbitrary SIP fields to have a value of Y for patrons to be allowed to log in.
-                                                           # The format of the setting is Field:Message
+    deny_on_field AB:This is the reason we are denying you  # You can require arbitrary SIP fields to have a value of Y for patrons to be allowed to log in.
+                                                            # The format of the setting is Field:Message
 </SIP>
