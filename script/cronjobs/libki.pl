@@ -63,8 +63,15 @@ while ( my $session = $session_rs->next() ) {
                     $minutes_to_add = $minutes_until_closing - $user->minutes;
                 }
 
+                # If adding this many minutes would exceed daily allotted, we need to reduce the minutes added
+                if ($user->minutes_allotment < $minutes_to_add) {
+                       # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
+                       $minutes_to_add = $user->minutes_allotment;
+                }
+
                 if ( $minutes_to_add > 0 ) {
                     $user->increase_minutes($minutes_to_add);
+                    $user->decrease_minutes_allotment($minutes_to_add);
                     $user->create_related(
                         'messages',
                         {
