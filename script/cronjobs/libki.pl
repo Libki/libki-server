@@ -29,9 +29,10 @@ my $session_rs     = $c->model('DB::Session');
 my $setting_rs     = $c->model('DB::Setting');
 my $reservation_rs = $c->model('DB::Reservation');
 
-my $AutomaticTimeExtensionAt     = $setting_rs->find('AutomaticTimeExtensionAt')->value;
-my $AutomaticTimeExtensionLength = $setting_rs->find('AutomaticTimeExtensionLength')->value;
-my $AutomaticTimeExtensionUnless = $setting_rs->find('AutomaticTimeExtensionUnless')->value;
+my $AutomaticTimeExtensionAt           = $setting_rs->find('AutomaticTimeExtensionAt')->value;
+my $AutomaticTimeExtensionLength       = $setting_rs->find('AutomaticTimeExtensionLength')->value;
+my $AutomaticTimeExtensionUnless       = $setting_rs->find('AutomaticTimeExtensionUnless')->value;
+my $AutomaticTimeExtensionUseAllotment = $setting_rs->find('AutomaticTimeExtensionUseAllotment')->value;
 
 ## Decrement time for logged in users.
 while ( my $session = $session_rs->next() ) {
@@ -64,14 +65,16 @@ while ( my $session = $session_rs->next() ) {
                 }
 
                 # If adding this many minutes would exceed daily allotted, we need to reduce the minutes added
-                if ($user->minutes_allotment < $minutes_to_add) {
-                       # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
-                       $minutes_to_add = $user->minutes_allotment;
+                if ( $AutomaticTimeExtensionUseAllotment eq 'yes' ) {
+                    if ($user->minutes_allotment < $minutes_to_add) {
+                        # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
+                        $minutes_to_add = $user->minutes_allotment;
+                    }
                 }
 
                 if ( $minutes_to_add > 0 ) {
                     $user->increase_minutes($minutes_to_add);
-                    $user->decrease_minutes_allotment($minutes_to_add);
+                    $user->decrease_minutes_allotment($minutes_to_add) if ( $AutomaticTimeExtensionUseAllotment eq 'yes' );
                     $user->create_related(
                         'messages',
                         {

@@ -150,12 +150,28 @@
                     <option value="this_reserved">[% c.loc("User's client is reserved") %]</option>
                     <option value="any_reserved">[% c.loc("Any client is reserved") %]</option>
                 </select>
-                <span class="help-inline">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved") %]</span>
+                <span class="help-inline">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved.") %]</span>
             </div>
         </div>
         <script type="text/javascript">
             $(document).ready(function() {
                 $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
+            });
+        </script>
+
+        <div class="control-group">
+            <label class="control-label" for="AutomaticTimeExtensionUseAllotment">[% c.loc("When extending time") %]</label>
+            <div class="controls">
+                <select id="AutomaticTimeExtensionUseAllotment" name="AutomaticTimeExtensionUseAllotment" />
+                    <option value="no">[% c.loc("Don't take minutes from daily allotment") %]</option>
+                    <option value="yes">[% c.loc("Take minutes from daily allotment") %]</option>
+                </select>
+                <span class="help-inline">[% c.loc('Control whether a user\'s time extension uses up minutes from the user\'s daily allotment, or if the minutes are "free".') %]</span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
             });
         </script>
     </fieldset>

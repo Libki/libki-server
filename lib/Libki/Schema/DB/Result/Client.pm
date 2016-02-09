@@ -186,7 +186,7 @@ sub can_user_use {
     my $c     = $params->{c};
 
     my $log = $c->log();
-    $log->debug("Client->can_user_user( $client, { user => $user, error => $error, c => $c }");
+    $log->debug("Client::can_user_user( $self, { user => $user, error => $error, c => $c }");
 
     unless ( $user ) {
         $error->{reason}  = 'NO_USER';
