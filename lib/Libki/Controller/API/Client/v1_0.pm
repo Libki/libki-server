@@ -182,7 +182,7 @@ sub index : Path : Args(0) {
                     elsif ( $user->minutes < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
-                    elsif ( !$client->can_user_use( { user => $user, error => $error } ) ) {
+                    elsif ( !$client->can_user_use( { user => $user, error => $error, c => $c } ) ) {
                         $c->stash( error => $error->{reason} );
                     }
                     else {

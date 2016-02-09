@@ -183,6 +183,10 @@ sub can_user_use {
 
     my $user  = $params->{user};
     my $error = $params->{error};
+    my $c     = $params->{c};
+
+    my $log = $c->log();
+    $log->debug("Client->can_user_user( $client, { user => $user, error => $error, c => $c }");
 
     unless ( $user ) {
         $error->{reason}  = 'NO_USER';
@@ -191,26 +195,30 @@ sub can_user_use {
 
     if ( my @age_limits = $self->client_age_limits() ) {
         my $age = $user->age();
+	$log->debug("User age: $age");
 
         foreach my $age_limit ( @age_limits ) {
             my $comparison = $age_limit->comparison();
             my $limit = $age_limit->age();
+            $log->debug("Age comparison: $comparison");
+            $log->debug("Age limit: $limit");
 
             my $bool;
             if ( $comparison eq 'eq' ) {
-                $bool = $age eq $limit;
+                $bool = $age == $limit;
             } elsif ( $comparison eq 'ne' ) {
-                $bool = $age ne $limit;
+                $bool = $age != $limit;
             } elsif ( $comparison eq 'gt' ) {
-                $bool = $age gt $limit;
+                $bool = $age > $limit;
             } elsif ( $comparison eq 'lt' ) {
-                $bool = $age lt $limit;
+                $bool = $age > $limit;
             } elsif ( $comparison eq 'ge' ) {
-                $bool = $age ge $limit;
+                $bool = $age >= $limit;
             } elsif ( $comparison eq 'le' ) {
-                $bool = $age le $limit;
+                $bool = $age <= $limit;
             }
 
+            $log->debug("$age $comparison $limit = $bool");
             unless ( $bool ) {
                 $error->{reason}     = 'AGE_MISMATCH';
                 $error->{comparison} = $comparison;
