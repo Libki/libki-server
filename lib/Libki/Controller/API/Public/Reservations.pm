@@ -69,7 +69,7 @@ sub create : Local : Args(0) {
         elsif ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
             $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
         }
-        elsif ( !$client->can_user_use( { user => $user, error => $error } ) ) {
+        elsif ( !$client->can_user_use( { user => $user, error => $error, c => $c } ) ) {
             $log->debug('User Cannot Use Client: ' . Data::Dumper::Dumper( $error ) );
             $c->stash( %$error );
         }

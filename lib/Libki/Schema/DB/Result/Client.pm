@@ -169,7 +169,7 @@ __PACKAGE__->might_have(
 
 =head2 can_user_use
 
-$client->can_user_use( { user => $user, error => $error } )
+$client->can_user_use( { user => $user, error => $error, c => $c } )
 
 Given a user, this method returns true if the user is allowed to use the
 given client.
