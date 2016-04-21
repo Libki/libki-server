@@ -568,7 +568,7 @@ msgid ""
 "logging in to to."
 msgstr ""
 "Reservation only. A patron must place a reservation for a client before "
-"logging in to to."
+"logging in to it."
 
 #: root/dynamic/templates/administration/settings/index.tt:82
 msgid "Reservation settings"
@@ -671,7 +671,7 @@ msgid ""
 "formatting."
 msgstr ""
 "The text in this field will be prepended to the guest password, for example "
-"<i>Password:</i>. This field is displayed in monosapce for ease of "
+"<i>Password:</i>. This field is displayed in monospace for ease of "
 "formatting."
 
 #: root/dynamic/templates/administration/settings/index.tt:272
@@ -681,7 +681,7 @@ msgid ""
 "formatting."
 msgstr ""
 "The text in this field will be prepended to the guest username, for example "
-"<i>Username:</i>. This field is displayed in monosapce for ease of "
+"<i>Username:</i>. This field is displayed in monospace for ease of "
 "formatting."
 
 #: root/dynamic/templates/administration/settings/index.tt:187
