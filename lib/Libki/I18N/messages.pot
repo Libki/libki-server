@@ -550,11 +550,11 @@ msgid "The size of the time window a patron has to log in to a client. If the pa
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:284
-msgid "The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monosapce for ease of formatting."
+msgid "The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:272
-msgid "The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monosapce for ease of formatting."
+msgid "The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:187 root/dynamic/templates/administration/settings/index.tt:224

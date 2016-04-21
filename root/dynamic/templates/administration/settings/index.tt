@@ -285,7 +285,7 @@
                     <input type="text" class="input-xxlarge" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
                 </div>
                 <span class="help-inline">
-                    [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monosapce for ease of formatting.") %]
+                    [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting.") %]
                 </span>
             </div>
         </div>
@@ -297,7 +297,7 @@
                     <input type="text" class="input-xxlarge" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
                 </div>
                 <span class="help-inline">
-                    [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monosapce for ease of formatting.") %]
+                    [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting.") %]
                 </span>
             </div>
         </div>
