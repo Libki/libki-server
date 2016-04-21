@@ -544,7 +544,7 @@ msgstr ""
 #: root/dynamic/templates/administration/settings/index.tt:64
 msgid ""
 "Reservation only. A patron must place a reservation for a client before "
-"logging in to to."
+"logging in to it."
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:82

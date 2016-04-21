@@ -61,7 +61,7 @@
 
                 <label class="radio">
                     <input type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
-                    [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to to.") %]
+                    [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
                 </label>
 
                 <label class="radio">
