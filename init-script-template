@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          libki-INSTANCE
+# Provides:          libki
 # Required-Start:    mysql
 # Required-Stop:
 # Default-Start:     2 3 4 5
@@ -13,21 +13,52 @@
 # Source function library.
 . /lib/lsb/init-functions
 
-export instance_name="INSTANCE"
-export port="4000"
-export workers="2"
-export home_dir="/home/libki-${instance_name}"
-export myapp="libki"
-export starman="${home_dir}/perl5/bin/starman"
-export myapp_path="${home_dir}/Libki"
-export pidfile="${home_dir}/libki-${instance_name}.pid"
-export errorlog="${home_dir}/libki_starman.log"
-export PERL5LIB="${home_dir}/perl5/lib/perl5/"
+HANDLER="gazelle" # gazelle or starman
+#HANDLER="starman"
+
+PORT="3000"
+
+WORKERS="2"
+REQUESTS="50000"
+
+HOME_DIR="/home/libki"
+MYAPP="libki"
+MYAPP_PATH="$HOME_DIR/Libki"
+PIDFILE="$HOME_DIR/libki.pid"
+ERRORLOG="$HOME_DIR/libki_server.log"
+PERL5LIB="$HOME_DIR/perl5/lib/perl5/"
+export PERL5LIB="$PERL5LIB"
+
+START_SERVER="/usr/local/bin/start_server"
+STARMAN="${home_dir}/perl5/bin/starman"
+PLACKUP="/usr/local/bin/plackup"
+
+PSGI_FILE="$MYAPP_PATH/$MYAPP.psgi"
+
+DAEMON="/usr/local/bin/start_server"
+DAEMON_OPTS="--daemonize --port $PORT --pid-file=$PIDFILE --log-file $ERRORLOG -- "
+
+STARMAN_OPTS="$STARMAN -I $MYAPP_PATH/lib -I $PERL5LIB --max-requests $REQUESTS --workers $WORKERS $PSGI_FILE"
+GAZELLE_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Gazelle --workers $WORKERS --max-reqs-per-child $REQUESTS -E production -a $PSGI_FILE"
+
+if [ $HANDLER == 'starman' ]
+        then
+                HANDLER_OPTS=$STARMAN_OPTS
+elif [ $HANDLER == 'gazelle' ]
+        then
+                HANDLER_OPTS=$GAZELLE_OPTS
+else
+        echo -n "Unkown handler!"
+        exit
+fi
+
+START_LIBKI="$DAEMON $DAEMON_OPTS $HANDLER_OPTS"
 
 start() {
-        echo -n $"Starting Starman: "
-        $starman -I${myapp_path}/lib --l :${port} --daemonize --workers ${workers} --pid ${pidfile} --error-log ${errorlog} ${myapp_path}/${myapp}.psgi
-        echo -n "$starman -I${myapp_path}/lib --l :${port} --daemonize --workers ${workers} --pid ${pidfile} --error-log ${errorlog} ${myapp_path}/${myapp}.psgi"
+        echo -n "Starting Libki..."
+        $START_LIKBI
+        echo -n "$START_LIBKI"
+
         RETVAL=$?
         echo
         [ $RETVAL = 0 ]
@@ -36,17 +67,14 @@ start() {
 
 restart() {
         echo -n $"Restarting Starman: "
-        export PID=`cat ${pidfile}`
-        kill -s USR2 $PID
-        RETVAL=$?
-        echo
-        [ $RETVAL = 0 ]
-        return $RETVAL
+        stop
+        start
 }
 
 stop() {
-        echo -n $"Stopping Starman: "
-        killproc -p ${pidfile} $starman
+        echo -n $"Stopping Libki: "
+        killproc -p $PIDFILE $STARMAN
+        killproc -p $PIDFILE $START_SERVER
         RETVAL=$?
         echo
         [ $RETVAL = 0 ] && rm -f ${pidfile}
@@ -64,7 +92,7 @@ case "$1" in
         stop
         ;;
   *)
-        echo $"Usage: starman {start|restart|stop}"
+        echo $"Usage: libki {start|restart|stop}"
         exit 1
 esac
 
