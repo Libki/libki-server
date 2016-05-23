@@ -70,16 +70,17 @@ start() {
 
 restart() {
         echo -n "Restarting Libki... "
-        stop
-        start
+        eval $DAEMON --restart $DAEMON_OPTS
 }
 
 stop() {
         echo -n "Stopping Libki... "
+        eval $DAEMON --stop $DAEMON_OPTS
+}
+
+kill() {
+        echo -n "Stopping Libki... "
         killproc -p $PIDFILE $START_SERVER
-        RETVAL=$?
-        echo
-        [ $RETVAL = 0 ] && rm -f ${pidfile}
 }
 
 # See how we were called.
@@ -94,7 +95,7 @@ case "$1" in
         stop
         ;;
   *)
-        echo $"Usage: libki {start|restart|stop}"
+        echo $"Usage: libki {start|restart|stop|kill}"
         exit 1
 esac
 
