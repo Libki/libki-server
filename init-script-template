@@ -13,8 +13,8 @@
 # Source function library.
 . /lib/lsb/init-functions
 
-HANDLER="gazelle" # gazelle or starman
-#HANDLER="starman"
+#HANDLER="gazelle" # gazelle or starman
+HANDLER="starman"
 
 PORT="3000"
 
@@ -25,20 +25,22 @@ HOME_DIR="/home/libki"
 MYAPP="libki"
 MYAPP_PATH="$HOME_DIR/Libki"
 PIDFILE="$HOME_DIR/libki.pid"
+STATUSFILE="$HOME_DIR/libki.status"
 ERRORLOG="$HOME_DIR/libki_server.log"
 PERL5LIB="$HOME_DIR/perl5/lib/perl5/"
 export PERL5LIB="$PERL5LIB"
 
 START_SERVER="/usr/local/bin/start_server"
-STARMAN="${home_dir}/perl5/bin/starman"
+STARMAN="$HOME_DIR/perl5/bin/starman"
 PLACKUP="/usr/local/bin/plackup"
 
 PSGI_FILE="$MYAPP_PATH/$MYAPP.psgi"
 
 DAEMON="/usr/local/bin/start_server"
-DAEMON_OPTS="--daemonize --port $PORT --pid-file=$PIDFILE --log-file $ERRORLOG -- "
+DAEMON_OPTS="--daemonize --port $PORT --pid-file $PIDFILE --status-file $STATUSFILE --log-file $ERRORLOG -- "
 
-STARMAN_OPTS="$STARMAN -I $MYAPP_PATH/lib -I $PERL5LIB --max-requests $REQUESTS --workers $WORKERS $PSGI_FILE"
+#STARMAN_OPTS="$STARMAN -I $MYAPP_PATH/lib -I $PERL5LIB --max-requests $REQUESTS --workers $WORKERS $PSGI_FILE"
+STARMAN_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Starman --workers $WORKERS --max-requests $REQUESTS -E production -a $PSGI_FILE"
 GAZELLE_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Gazelle --workers $WORKERS --max-reqs-per-child $REQUESTS -E production -a $PSGI_FILE"
 
 if [ $HANDLER == 'starman' ]
@@ -55,25 +57,25 @@ fi
 START_LIBKI="$DAEMON $DAEMON_OPTS $HANDLER_OPTS"
 
 start() {
-        echo -n "Starting Libki..."
-        $START_LIKBI
+        echo -n "Starting Libki... "
+
+        eval $START_LIBKI
+        RETVAL=$?
+
         echo -n "$START_LIBKI"
 
-        RETVAL=$?
-        echo
-        [ $RETVAL = 0 ]
+        echo [ $RETVAL = 0 ]
         return $RETVAL
 }
 
 restart() {
-        echo -n $"Restarting Starman: "
+        echo -n "Restarting Libki... "
         stop
         start
 }
 
 stop() {
-        echo -n $"Stopping Libki: "
-        killproc -p $PIDFILE $STARMAN
+        echo -n "Stopping Libki... "
         killproc -p $PIDFILE $START_SERVER
         RETVAL=$?
         echo
