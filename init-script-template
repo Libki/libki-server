@@ -23,23 +23,22 @@ REQUESTS="50000"
 
 HOME_DIR="/home/libki"
 MYAPP="libki"
-MYAPP_PATH="$HOME_DIR/Libki"
+MYAPP_PATH="$HOME_DIR/libki-server"
 PIDFILE="$HOME_DIR/libki.pid"
 STATUSFILE="$HOME_DIR/libki.status"
 ERRORLOG="$HOME_DIR/libki_server.log"
 PERL5LIB="$HOME_DIR/perl5/lib/perl5/"
 export PERL5LIB="$PERL5LIB"
 
-START_SERVER="/usr/local/bin/start_server"
+START_SERVER="$HOME_DIR/perl5/bin/start_server"
 STARMAN="$HOME_DIR/perl5/bin/starman"
-PLACKUP="/usr/local/bin/plackup"
+PLACKUP="$HOME_DIR/perl5/bin/plackup"
+DAEMON="$HOME_DIR/perl5/bin/start_server"
 
 PSGI_FILE="$MYAPP_PATH/$MYAPP.psgi"
 
-DAEMON="/usr/local/bin/start_server"
 DAEMON_OPTS="--daemonize --port $PORT --pid-file $PIDFILE --status-file $STATUSFILE --log-file $ERRORLOG -- "
 
-#STARMAN_OPTS="$STARMAN -I $MYAPP_PATH/lib -I $PERL5LIB --max-requests $REQUESTS --workers $WORKERS $PSGI_FILE"
 STARMAN_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Starman --workers $WORKERS --max-requests $REQUESTS -E production -a $PSGI_FILE"
 GAZELLE_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Gazelle --workers $WORKERS --max-reqs-per-child $REQUESTS -E production -a $PSGI_FILE"
 
