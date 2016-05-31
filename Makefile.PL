@@ -17,7 +17,9 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Action::RenderView';
 
+requires 'Net::Server::SS::PreFork';
 requires 'CatalystX::Script::Server::Starman';
+requires 'Gazelle';
 
 requires 'Catalyst::Controller::REST';
 
