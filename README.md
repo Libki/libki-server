@@ -22,7 +22,7 @@ sudo adduser libki
 sudo apt-get install curl perl git make build-essential 
 ```
 
-### Downlaod and install Libki and needed Perl modules
+### Download and install Libki and needed Perl modules
 
 We will use local::lib for our installation, this means that all the Perl modules we need will be installed for the 'libki' user and will not affect any Debian installed Perl modules!
 
