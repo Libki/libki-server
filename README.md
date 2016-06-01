@@ -192,6 +192,6 @@ links 127.0.0.1:3000
 
 If this works, then you'll want to check your Apache error logs for the failure reason. If it does not work, you'll want to check the Libki server error log instead. It can be found at /home/libki/libki_server.log if you've followed this tutorial closely.
 
-Authors:
+### Documentation Authors
 * Kyle M Hall kyle@kylehall.info
 * Christopher Vella, Commissioned by Calyx
