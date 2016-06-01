@@ -52,6 +52,7 @@ perl Makefile.PL
 make install
 ```
 ### Install and configure MySQL for Libki
+* Switch back to your admin account ( i.e. the one you created the libki user with ) to set up your database.
 * Install the mysql-server Debian package
 ```bash
 sudo apt-get install mysql-server
@@ -65,10 +66,11 @@ GRANT ALL PRIVILEGES ON libki.* TO 'libki'@'localhost';
 FLUSH PRIVILEGES;
 exit
 ```
+* Now switch back to the 'libki' user again for the following steps.
 * Copy of the example config file and edit it
 ```bash
-sudo cp libki_local.conf.example libki_local.conf
-sudo nano libki_local.conf
+cp libki_local.conf.example libki_local.conf
+nano libki_local.conf
 ```
 Change the database name, user and password to what you previously have specified. Enable or disable SIP by changing the parity bit.
 * Run the database installer/updater
