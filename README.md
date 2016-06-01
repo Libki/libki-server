@@ -194,4 +194,4 @@ If this works, then you'll want to check your Apache error logs for the failure 
 
 ### Documentation Authors
 * Kyle M Hall kyle@kylehall.info
-* Christopher Vella, Commissioned by Calyx
+* Christopher Vella chris@calyx.net.au
