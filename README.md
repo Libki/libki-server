@@ -19,7 +19,7 @@ sudo adduser libki
 ### Install needed packages
 
 ```bash
-sudo apt-get install curl perl git make build-essential 
+sudo apt-get install curl perl git make build-essential unzip
 ```
 
 ### Download and install Libki and needed Perl modules
