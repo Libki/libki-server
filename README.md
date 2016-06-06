@@ -43,7 +43,7 @@ cd libki-server
 ````
 * Install Libki's Perl dependencies from CPAN
 ```bash
-perl cpanm -n --installdeps .
+cpanm -n --installdeps .
 ```
 
 ### Install and configure MySQL for Libki
