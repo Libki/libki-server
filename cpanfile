@@ -14,7 +14,6 @@ requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::StatusMessage';
-requires 'Catalyst::Plugin::Breadcrumbs';
 requires 'Catalyst::Plugin::StatusMessage';
 requires 'Catalyst::Plugin::I18N';
 requires 'Catalyst::Runtime' => '5.90011';
