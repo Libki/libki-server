@@ -33,11 +33,6 @@ curl -L http://cpanmin.us | perl - -l ~/perl5 App::cpanminus local::lib
 eval `perl -I ~/perl5/lib/perl5 -Mlocal::lib=~/perl5`
 echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >> ~/.bashrc
 ```
-* Install Module::Install
-```bash
-cpanm Module::Install
-cpanm Module::Install::Catalyst
-````
 * Clone the Libki server git repository
 ```bash
 git clone https://github.com/Libki/libki-server.git
@@ -46,11 +41,11 @@ git clone https://github.com/Libki/libki-server.git
 ```bash
 cd libki-server
 ````
-* Run the makefile script
+* Install Libki's Perl dependencies from CPAN
 ```bash
-perl Makefile.PL
-make install
+cpanm -n --installdeps .
 ```
+
 ### Install and configure MySQL for Libki
 * Switch back to your admin account ( i.e. the one you created the libki user with ) to set up your database.
 * Install the mysql-server Debian package
