@@ -149,6 +149,8 @@ Add in the following lines:
 The script libki.pl is run every minute and decrements logged in user's time among other tasks.
 The second script, libki_nightly.pl, is run once per night to reset each user's allotted time for the day as well as other cleanup tasks.
 
+Note, the Libki log file needs to be writable by both root and the libki user. If the libki user cannot write to it, the cron scripts will fail to run correctly and the client timers will never count down!
+
 * Set up automatic restarter
 If you wish to have the Libki server restart itself in the case it dies for some reason, we can add an automatic restarter to the root user’s crontab
 ```bash
