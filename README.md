@@ -27,6 +27,9 @@ sudo apt-get install curl perl git make build-essential unzip
 We will use local::lib for our installation, this means that all the Perl modules we need will be installed for the 'libki' user and will not affect any Debian installed Perl modules!
 
 * Log in as that user
+```bash
+su libki
+```
 * Install cpanminus and local::lib
 ```bash
 curl -L http://cpanmin.us | perl - -l ~/perl5 App::cpanminus local::lib
