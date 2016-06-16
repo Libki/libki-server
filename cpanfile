@@ -23,6 +23,7 @@ requires 'Config::General';
 requires 'Config::JFDI';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
+requires 'DBD::mysql';
 requires 'DBIx::Class::TimeStamp';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::Numeric';
