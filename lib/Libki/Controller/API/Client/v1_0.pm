@@ -5,6 +5,7 @@ use namespace::autoclean;
 BEGIN { extends 'Catalyst::Controller'; }
 
 use Libki::SIP qw( authenticate_via_sip );
+use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
 
 use DateTime::Format::MySQL;
@@ -143,6 +144,23 @@ sub index : Path : Args(0) {
                     if ( $sip_fields ) {
                         $c->stash( hold_items_count => $sip_fields->{hold_items_count} );
                     }
+                }
+            }
+
+            ## If LDAP is enabled, try LDAP, unless we have a guest or staff account
+            if ( $c->config->{LDAP}->{enable} ) {
+                $log->debug( __PACKAGE__ . " attempting LDAP authentication" );
+                if (
+                    !$user
+                    || (   $user
+                        && $user->is_guest() eq 'No'
+                        && !$c->check_any_user_role( $user, qw/admin superadmin/ ) )
+                  )
+                {
+                    my $ret = Libki::LDAP::authenticate_via_ldap( $c, $user, $username, $password );
+                    $success = $ret->{success};
+                    $error   = $ret->{error};
+                    $user    = $ret->{user};
                 }
             }
 
