@@ -1,0 +1,2 @@
+* * * * * root /usr/local/bin/perl /libki/script/cronjobs/libki.pl
+# decrease the minutes
