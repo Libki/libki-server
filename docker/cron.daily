@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/local/bin/perl /libki/script/cronjobs/libki_nightly.pl && printf "$(date +"%Y-%m-%d %H:%M:%S")\tCRON libki_nightly.pl\n" >> /libki/libki.log
+

@@ -1,0 +1,27 @@
+---
+version: '2'
+services:
+  mysql:
+    container_name: libki_mysql
+    environment:
+      - MYSQL_PASSWORD=libkidb
+      - MYSQL_USER=libkidb
+      - MYSQL_DATABASE=libki
+      - MYSQL_ROOT_PASSWORD=rootdb
+    image: mysql
+    ports:
+      - '3306'
+    volumes:
+      - /var/libki/mysql:/var/lib/mysql
+  libki:
+    build: ./
+    container_name: libki
+    depends_on:
+      - mysql
+    environment:
+      - LIBKI_USERNAME=admin
+      - LIBKI_PASSWORD=libkiadmin
+    ports:
+      - '8080:3000'
+    volumes:
+      - .:/libki
