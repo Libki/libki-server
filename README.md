@@ -146,10 +146,22 @@ Add in the following lines:
 * * * * * perl ~/libki-server/script/cronjobs/libki.pl
 0 0 * * * perl ~/script/cronjobs/libki_nightly.pl
 ```
-The script libki.pl is run every minute and decrements logged in user's time among other tasks.
-The second script, libki_nightly.pl, is run once per night to reset each user's allotted time for the day as well as other cleanup tasks.
+On _Ubuntu 16.04_ I had to provide full paths to everything because _cron_ has a restricted environment:
+```
+* * * * * /usr/bin/perl -I /home/libki/perl5/lib/perl5 /home/libki/libki-server/script/cronjobs/libki.pl > /home/libki/libki-crontab-minute.log 2>&1
+0 0 * * * /usr/bin/perl -I /home/libki/perl5/lib/perl5 /home/libki/libki-server/script/cronjobs/libki_nightly.pl > /home/libki/libki-crontab-day.log 2>&1
+```
+NOTE: The "_> /home/libki/libki-crontab-minute.log 2>&1_" is to redirect all output to file in the libki home directory so that I could see why it wasn't working. I figured it made sense to leave that in there for future troubleshooting. You can remove it if you don't want that.
+
+The script libki.pl is run every minute and decrements logged in user's time among other tasks. The second script, libki_nightly.pl, is run once per night to reset each user's allotted time for the day as well as other cleanup tasks.
 
 Note, the Libki log file needs to be writable by both root and the libki user. If the libki user cannot write to it, the cron scripts will fail to run correctly and the client timers will never count down!
+```bash
+touch ~/libki_server.log
+chown libki:root ~/libki_server.log
+chmod 664 ~/libki_server.log
+```
+This creates an empty log file, sets the owner and group, then sets the correct permissions on the file.
 
 * Set up automatic restarter
 If you wish to have the Libki server restart itself in the case it dies for some reason, we can add an automatic restarter to the root user’s crontab
