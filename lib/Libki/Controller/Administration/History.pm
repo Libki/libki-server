@@ -73,14 +73,14 @@ sub statistics : Local : Args(0) {
     my $results;
     my $columns;
     foreach my $b (@by_location) {
-        my %columns = decode($enc,$b->get_columns);
+        my %columns = $enc,$b->get_columns;
         $columns{'location'} = "XXX__UNDEFINED__"
           unless ( defined( $columns{'location'} ) );
         $results->{ $columns{'year'} . '-'
               . sprintf( "%02d", $columns{'month'} ) . '-'
               . sprintf( "%02d", $columns{'day'} ) }->{ $columns{'location'} } =
           $columns{'count'};
-        $columns->{ $columns{'location'} } = 1;
+        $columns->{ decode($enc,$columns{'location'}) } = 1;
     }
     my @columns = sort keys %$columns;
     $c->stash(
