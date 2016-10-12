@@ -68,6 +68,7 @@ sub statistics : Local : Args(0) {
 
     my $results;
     my $columns;
+
     foreach my $b (@by_location) {
         my %columns = $b->get_columns;
         $columns{'location'} = "XXX__UNDEFINED__"

@@ -1,4 +1,5 @@
 [% USE LibkiDate %]
+
 [% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
