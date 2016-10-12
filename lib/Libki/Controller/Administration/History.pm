@@ -2,6 +2,8 @@ package Libki::Controller::Administration::History;
 use Moose;
 use namespace::autoclean;
 
+use Encode qw(decode encode);
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -65,12 +67,14 @@ sub statistics : Local : Args(0) {
             ],
         }
     );
+    
+    my $enc = 'UTF-8';
 
     my $results;
     my $columns;
 
     foreach my $b (@by_location) {
-        my %columns = $b->get_columns;
+        my %columns = $enc,$b->get_columns;
         $columns{'location'} = "XXX__UNDEFINED__"
           unless ( defined( $columns{'location'} ) );
         $results->{ $columns{'year'} . '-'
