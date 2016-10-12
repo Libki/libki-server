@@ -80,7 +80,7 @@ sub statistics : Local : Args(0) {
               . sprintf( "%02d", $columns{'month'} ) . '-'
               . sprintf( "%02d", $columns{'day'} ) }->{ $columns{'location'} } =
           $columns{'count'};
-        $columns->{ decode($enc,$columns{'location'}) } = 1;
+        $columns->{ $columns{'location'} } = 1;
     }
     my @columns = sort keys %$columns;
     $c->stash(
