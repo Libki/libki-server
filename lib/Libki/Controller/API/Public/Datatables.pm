@@ -79,12 +79,12 @@ sub clients : Local Args(0) {
     my @results;
     foreach my $c (@clients) {
 
-	my $enc = 'UTF-8';
+	my $enc = 'utf-8';
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
         $r->{'0'}        = decode($enc,decode($enc,$c->name));
-        $r->{'1'}        = decode($enc,$c->location);
+        $r->{'1'}        = decode($enc,decode($enc,$c->location));
         $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'} = defined( $c->session ) ? $c->session->user->minutes : undef;
         $r->{'4'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
