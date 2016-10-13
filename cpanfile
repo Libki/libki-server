@@ -28,6 +28,7 @@ requires 'DBIx::Class::TimeStamp';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::Numeric';
 requires 'DBIx::Class::Cursor::Cached';
+requires 'Encode';
 requires 'File::Find::Rule';
 requires 'File::Slurp';
 requires 'Gazelle';
