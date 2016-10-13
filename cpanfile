@@ -44,3 +44,4 @@ requires 'Server::Starter';
 requires 'Socket';
 requires 'SQL::Script';
 requires 'String::Random';
+requires 'Template::Plugin::UTF8Decode';
