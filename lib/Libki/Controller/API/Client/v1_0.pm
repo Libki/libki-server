@@ -32,13 +32,17 @@ sub index : Path : Args(0) {
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
     my $now = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $year + 1900, $mon + 1, $mday, $hour, $min, $sec );
 
+    my $enc = 'UTF-8';
+
     my $log = $c->log();
 
     my $action = $c->request->params->{'action'};
 
     if ( $action eq 'register_node' ) {
-        my $node_name = $c->request->params->{'node_name'};
-        my $location  = $c->request->params->{'location'};
+
+	my $node_name = $c->request->params->{'node_name'};
+	my $location  = $c->request->params->{'location'};
+
 
         $c->model('DB::Location')->update_or_create(
             {

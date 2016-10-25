@@ -1,6 +1,6 @@
 [% meta.title = c.loc("Administration") %]
 [% SET active_class = 'administration__index' %]
-
+[% USE UTF8Decode %]
 <ul class="nav nav-tabs" id="primary-tabs">
     <li class="active">
         <a id="user-tab-label" data-toggle="tab" href="#users-tab">[% c.loc("Users") %]</a>
@@ -60,7 +60,7 @@
       </li>
       [% FOREACH location IN locations %]
           <li>
-              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location %]</a>
+              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
           </li>
       [% END %]
     </ul>

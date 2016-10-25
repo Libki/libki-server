@@ -5,6 +5,8 @@ use String::Random qw(random_string);
 
 use namespace::autoclean;
 
+use Encode qw(decode encode);
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -28,6 +30,8 @@ sub get : Local : Args(1) {
 
     my $user = $c->model('DB::User')->find($id);
 
+    my $enc = 'UTF-8';
+
     my $roles = $user->roles;
     my @roles;
     while ( my $role = $roles->next() ) {
@@ -37,10 +41,10 @@ sub get : Local : Args(1) {
     $c->stash(
         {
             'id'              => $user->id,
-            'username'        => $user->username,
+            'username'        => decode($enc,$user->username),
             'minutes'         => $user->minutes,
             'status'          => $user->status,
-            'notes'           => $user->notes,
+            'notes'           => decode($enc,$user->notes),
             'is_troublemaker' => $user->is_troublemaker,
             'roles'           => \@roles,
         }
