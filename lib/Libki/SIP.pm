@@ -222,9 +222,16 @@ sub authenticate_via_sip {
         my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
 
         foreach my $d (@deny_on) {
-            my ( $field, $message ) = split( ':', $d );
-            if ( $sip_fields->{$field} ne 'Y' ) {
-                return { success => 0, error => $message, user => $user };
+            my ( $field, $message, $value ) = split( ':', $d );
+
+            if ( $value ) {
+                if ( $sip_fields->{$field} eq $value ) {
+                    return { success => 0, error => $message, user => $user };
+                }
+            } else {
+                if ( $sip_fields->{$field} ne 'Y' ) {
+                    return { success => 0, error => $message, user => $user };
+                }
             }
         }
 
