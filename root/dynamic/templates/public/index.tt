@@ -182,8 +182,8 @@ $(document).ready(function() {
                 { "bVisible": false, "aTargets": [ 4 ] },
             [% END %]
         ],
-        "aaSortingFixed": [[ 0, "asc" ]],
-        "aaSorting": [[ 1, "asc" ]],
+        "aaSortingFixed": [[ 1, "asc" ]],
+        "aaSorting": [[ 0, "asc" ]],
     } );
 
     $("#client-table-row-toolbar-make-reservation").click(function(){
