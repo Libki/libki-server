@@ -313,7 +313,7 @@
                     <input type="text" class="input-xxlarge" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
                 </div>
                 <span class="help-inline">[% c.loc("Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning.") %]</span>
-                <span class="help-inline">[% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?member=</i> will link to the Koha ILS's search function for the given username.") %]</span>
+                <span class="help-inline">[% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username.") %]</span>
             </div>
         </div>
     </fieldset>
