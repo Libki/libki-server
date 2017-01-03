@@ -124,8 +124,8 @@ $reservation_rs->search(
 )->delete();
 
 ## Refill session minutes from allotted minutes for users not logged in to a client
-my $default_time_allowance         = $setting_rs->find('DefaultTimeAllowance')->value;
 my $default_session_time_allowance = $setting_rs->find('DefaultSessionTimeAllowance')->value;
+my $default_guest_session_time_allowance = $setting_rs->find('DefaultGuestSessionTimeAllowance')->value;
 
 my $users_rs = $c->model('DB::User')->search(
     {
@@ -136,7 +136,9 @@ my $users_rs = $c->model('DB::User')->search(
 
 while ( my $user = $users_rs->next() ) {
     unless ( $user->session() ) {
-        while ($user->minutes() < $default_session_time_allowance
+        my $allowance = $user->is_guest eq 'Yes' ? $default_guest_session_time_allowance : $default_session_time_allowance;
+
+        while ($user->minutes() < $allowance
             && $user->minutes_allotment() > 0 )
         {
             $user->decrease_minutes_allotment(1);
