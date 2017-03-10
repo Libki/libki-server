@@ -1,0 +1,8 @@
+---
+- name: Ensure libki_local.conf exists and is configured for each account
+  template: src=templates/libki-proxy.j2 dest=/etc/apache2/sites-available/{{ item.name }}
+
+- file:
+    src: '/etc/apache2/sites-available/{{ item.name }}'
+    dest: '/etc/apache2/sites-enabled/{{ item.name }}'
+    state: link

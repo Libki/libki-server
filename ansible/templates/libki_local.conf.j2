@@ -1,0 +1,32 @@
+<Model::DB>
+    traits Caching
+    <connect_info>
+        dsn   dbi:mysql:libki_{{ account.name }}
+        user  libki_{{ account.name }}
+        password "{{ account.password }}"
+        auto_savepoint 1
+        quote_names 1
+    </connect_info>
+</Model::DB>
+{% if account.sip.enable %}
+<SIP>
+    enable {{ account.sip.enable }}
+    host {{ account.sip.host }} 
+    port {{ account.sip.port }}
+    location {{ account.sip.location }}
+    username {{ account.sip.username }}
+    password {{ account.sip.password }}
+    terminator {{ account.sip.terminator }}
+    require_sip_auth {{ account.sip.require_sip_auth }}
+    enable_split_messages {{ account.sip.enable_split_messages }}
+    {% if account.sip.fee_limit is defined %}
+      fee_limit {{ account.sip.fee_limit }}  # Can be either a fee amount, or a SIP2 field that defines the fee limit ( e.g. CC ), delete for no fee limit
+    {% endif %}
+    {% for value in deny_on %}
+      deny_on {{ value }}
+    {% endfor %}
+    {% for key, value in deny_on_field %}
+      deny_on_field {{ key }}:{{ value }}
+    {% endfor %}
+</SIP>
+{% endif %}

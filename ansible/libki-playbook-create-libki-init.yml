@@ -1,0 +1,9 @@
+---
+- name: Ensure libki init script exists and is configured for each account
+  template: src=templates/init-script-template.j2 dest=/etc/init.d/libki-{{ item.name }}
+
+- name: Ensure libki init script is excutable
+  file: mode=0755 path=/etc/init.d/libki-{{ item.name }}
+
+- name: Ensure update-rc.d has been run for each instance
+  command: update-rc.d libki-{{ item.name }} defaults

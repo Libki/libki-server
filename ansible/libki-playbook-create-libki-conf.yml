@@ -1,0 +1,3 @@
+---
+- name: Ensure libki_local.conf exists and is configured for each account
+  template: src=templates/libki_local.conf.j2 dest=/home/{{ item.name }}/libki-server/libki_local.conf

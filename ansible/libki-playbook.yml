@@ -1,0 +1,128 @@
+---
+- hosts: all
+
+  vars_files:
+    - vars.yml
+
+  become: true
+  become_user: root
+
+  pre_tasks:
+    - name: Update apt cache if needed.
+      apt: update_cache=yes cache_valid_time=3600
+
+  tasks:
+   - name: Install needed Debian packages
+     apt: name={{ item }} state=present
+     with_items:
+       - apache2
+       - curl
+       - git
+       - make
+       - build-essential
+       - unzip
+       - perl
+       - cpanminus
+       - python-mysqldb
+
+   - name: Install Perl modules via CPAN
+     cpanm: name={{ item }}
+     with_items:
+       - namespace::autoclean
+       - Archive::Zip
+       - Catalyst::Action::RenderView
+       - Catalyst::Authentication::Realm::SimpleDB
+       - Catalyst::Controller::REST
+       - Catalyst::Helper::View::JSON
+       - Catalyst::Plugin::ConfigLoader
+       - Catalyst::Plugin::Static::Simple
+       - Catalyst::Plugin::StackTrace
+       - Catalyst::Plugin::Authentication
+       - Catalyst::Plugin::Authorization::Roles
+       - Catalyst::Plugin::Session
+       - Catalyst::Plugin::Session::Store::File
+       - Catalyst::Plugin::Session::State::Cookie
+       - Catalyst::Plugin::StatusMessage
+       - Catalyst::Plugin::StatusMessage
+       - Catalyst::Plugin::I18N
+       - Catalyst::Runtime
+       - Catalyst::View::TT
+       - CatalystX::Script::Server::Starman
+       - Config::General
+       - Config::JFDI
+       - DateTime
+       - DateTime::Format::DateParse
+       - DBD::mysql
+       - DBIx::Class::TimeStamp
+       - DBIx::Class::EncodedColumn
+       - DBIx::Class::Numeric
+       - DBIx::Class::Cursor::Cached
+       - Encode
+       - File::Find::Rule
+       - File::Slurp
+       - Gazelle
+       - IO::Socket::INET
+       - Log::Log4perl::Catalyst
+       - Modern::Perl
+       - Moose
+       - MooseX::NonMoose
+       - Net::Server::SS::PreFork
+       - Perl6::Junction
+       - Plack
+       - Plack::Handler::Gazelle
+       - Server::Starter
+       - Socket
+       - SQL::Script
+       - String::Random
+       - Template::Plugin::UTF8Decode
+
+   - name: Enable Apache proxy module 
+     apache2_module: name=proxy state=present
+     notify: Restart Apache
+
+   - name: Create user accounts
+     user: name={{ item.name }} state=present
+     with_items: "{{ accounts }}"
+
+   - name: Stash the custom per instance changes needed, otherwise git command will fail
+     shell: git reset --hard
+        chdir=/home/{{ item.name }}/libki-server
+     with_items: "{{ accounts }}"
+     ignore_errors: yes
+
+   - name: Clone libki repo for each users
+     git: repo=https://github.com/Libki/libki-server.git dest=/home/{{ item.name }}/libki-server update=yes version={{ item.version }}
+     with_items: "{{ accounts }}"
+
+   - name: Ensure databases exist
+     mysql_db: name=libki_{{ item.name }} state=present login_user={{ database_admin.login_user }} login_password={{ database_admin.login_password }}
+     with_items: "{{ accounts }}"
+
+   - name: Ensure database users exist with proper permissions
+     mysql_user: name=libki_{{ item.name }} password={{ item.password }} priv='libki_{{ item.name }}.*:ALL' update_password=always state=present login_user={{ database_admin.login_user }} login_password={{ database_admin.login_password }}
+     with_items: "{{ accounts }}"
+
+   - name: Ensure libki_local.conf exists and is configured for each account
+     include: libki-playbook-create-libki-conf.yml account={{ item }}
+     with_items: "{{ accounts }}" 
+
+   - name: Ensure libki init script exists and is configured for each account
+     include: libki-playbook-create-libki-init.yml account={{ item }}
+     with_items: "{{ accounts }}" 
+
+   - name: Ensure libki apache proxy configuration file exists and is configured for each account
+     include: libki-playbook-create-apache-proxy-conf.yml account={{ item }}
+     with_items: "{{ accounts }}" 
+     notify: Restart Apache
+
+   - name: Rewrite the logfile path to the home directory
+     replace: dest=/home/{{ item.name }}/libki-server/log4perl.conf regexp='/var/log/libki.log' replace='/home/{{ item.name }}/libki.log'
+     with_items: "{{ accounts }}" 
+
+   - name: Install or update database schema
+     command: /home/{{ item.name }}/libki-server/installer/update_db.pl
+     with_items: "{{ accounts }}" 
+
+  handlers:
+    - name: Restart Apache
+      service: name=apache2 state=restarted

@@ -1,0 +1,23 @@
+---
+database_admin:
+  login_user: DB_ADMIN
+  login_password: DB_ADMIN_PASSWORD
+
+accounts:
+   - description: Libki Instance 1
+     name: libki_1
+     version: master
+     port: 3001
+     server_address: libki1.libki.example.com
+     password: eJuLs5Q6kUaXikXwoxsadfs3234sdf
+     sip:
+       enable: 0
+
+   - description: Libki Instance 2
+     name: libki_2
+     version: master
+     port: 3002
+     server_address: libki2.libki.example.com
+     password: eJuLs5Q6kUaXikXwoxsadfs3234sdf
+     sip:
+       enable: 0

@@ -1,0 +1,101 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          libki-{{ account.name }}
+# Required-Start:    mysql
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Libki at boot time
+# Description:       Enable Libki
+### END INIT INFO
+
+# Source function library.
+. /lib/lsb/init-functions
+
+HANDLER="gazelle" # gazelle or starman
+#HANDLER="starman"
+
+PORT="{{ account.port }}"
+
+WORKERS="2"
+REQUESTS="5000"
+
+HOME_DIR="/home/{{ account.name }}"
+MYAPP="libki"
+MYAPP_PATH="$HOME_DIR/libki-server"
+PIDFILE="$HOME_DIR/libki.pid"
+STATUSFILE="$HOME_DIR/libki.status"
+ERRORLOG="$HOME_DIR/libki_server.log"
+#PERL5LIB="$HOME_DIR/perl5/lib/perl5/"
+#export PERL5LIB="$PERL5LIB"
+
+START_SERVER="start_server"
+STARMAN="starman"
+PLACKUP="plackup"
+DAEMON="start_server"
+
+PSGI_FILE="$MYAPP_PATH/$MYAPP.psgi"
+
+DAEMON_OPTS="--daemonize --pid-file $PIDFILE --status-file $STATUSFILE --log-file $ERRORLOG -- "
+
+STARMAN_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Starman --workers $WORKERS --max-requests $REQUESTS --port $PORT -E production -a $PSGI_FILE"
+GAZELLE_OPTS="$PLACKUP -I $MYAPP_PATH/lib -I $PERL5LIB -s Gazelle --workers $WORKERS --max-reqs-per-child $REQUESTS --port $PORT -E production -a $PSGI_FILE"
+
+if [ $HANDLER == 'starman' ]
+        then
+                HANDLER_OPTS=$STARMAN_OPTS
+elif [ $HANDLER == 'gazelle' ]
+        then
+                HANDLER_OPTS=$GAZELLE_OPTS
+else
+        echo -n "Unkown handler!"
+        exit
+fi
+
+START_LIBKI="$DAEMON $DAEMON_OPTS $HANDLER_OPTS"
+
+start() {
+        echo -n "Starting Libki... "
+
+        eval $START_LIBKI
+        RETVAL=$?
+
+        echo -n "$START_LIBKI"
+
+        echo [ $RETVAL = 0 ]
+        return $RETVAL
+}
+
+restart() {
+        echo -n "Restarting Libki... "
+        eval $DAEMON --restart $DAEMON_OPTS
+}
+
+stop() {
+        echo -n "Stopping Libki... "
+        eval $DAEMON --stop $DAEMON_OPTS
+}
+
+kill() {
+        echo -n "Stopping Libki... "
+        killproc -p $PIDFILE $START_SERVER
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  restart)
+        restart
+         ;;
+  stop)
+        stop
+        ;;
+  *)
+        echo $"Usage: libki {start|restart|stop|kill}"
+        exit 1
+esac
+
+exit $RETVAL
