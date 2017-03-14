@@ -3,3 +3,6 @@ libki.pid
 libki.status
 libki_local.conf
 libki_server.log
+ansible/vars.yml
+ansible/ansible.cfg
+ansible/hosts
