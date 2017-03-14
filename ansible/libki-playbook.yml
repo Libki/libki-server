@@ -7,6 +7,8 @@
   become: true
   become_user: root
 
+  gather_facts: false
+
   pre_tasks:
     - name: Update apt cache if needed.
       apt: update_cache=yes cache_valid_time=3600
