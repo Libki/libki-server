@@ -105,15 +105,15 @@
      with_items: "{{ accounts }}"
 
    - name: Ensure libki_local.conf exists and is configured for each account
-     include: libki-playbook-create-libki-conf.yml account={{ item }}
+     include: playbooks/libki-playbook-create-libki-conf.yml account={{ item }}
      with_items: "{{ accounts }}" 
 
    - name: Ensure libki init script exists and is configured for each account
-     include: libki-playbook-create-libki-init.yml account={{ item }}
+     include: playbooks/libki-playbook-create-libki-init.yml account={{ item }}
      with_items: "{{ accounts }}" 
 
    - name: Ensure libki apache proxy configuration file exists and is configured for each account
-     include: libki-playbook-create-apache-proxy-conf.yml account={{ item }}
+     include: playbooks/libki-playbook-create-apache-proxy-conf.yml account={{ item }}
      with_items: "{{ accounts }}" 
      notify: Restart Apache
 
@@ -123,6 +123,10 @@
 
    - name: Install or update database schema
      command: /home/{{ item.name }}/libki-server/installer/update_db.pl
+     with_items: "{{ accounts }}" 
+
+   - name: Restart Libki
+     command: /etc/init.d/libki-{{ item.name }} restart
      with_items: "{{ accounts }}" 
 
   handlers:
