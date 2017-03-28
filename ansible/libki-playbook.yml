@@ -78,6 +78,12 @@
        - String::Random
        - Template::Plugin::UTF8Decode
 
+   - name: Ensure /etc/apache2/sites-enabled/000-default.conf doesn't exist
+     file:
+       path: /etc/apache2/sites-enabled/000-default.conf
+       state: absent
+     notify: Restart Apache
+
    - name: Enable Apache proxy module 
      apache2_module: name=proxy state=present
      notify: Restart Apache

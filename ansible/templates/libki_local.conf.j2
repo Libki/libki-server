@@ -19,14 +19,23 @@
     terminator {{ account.sip.terminator }}
     require_sip_auth {{ account.sip.require_sip_auth }}
     enable_split_messages {{ account.sip.enable_split_messages }}
+
     {% if account.sip.fee_limit is defined %}
       fee_limit {{ account.sip.fee_limit }}  # Can be either a fee amount, or a SIP2 field that defines the fee limit ( e.g. CC ), delete for no fee limit
     {% endif %}
-    {% for value in deny_on %}
-      deny_on {{ value }}
-    {% endfor %}
-    {% for key, value in deny_on_field %}
-      deny_on_field {{ key }}:{{ value }}
-    {% endfor %}
+
+    {% if account.sip.deny_on is defined %}
+      {% for value in account.sip.deny_on %}
+        deny_on {{ value }}
+      {% endfor %}
+    {% endif %}
+
+    {% if account.sip.deny_on_field is defined %}
+      {% for key, value in deny_on_field %}
+        deny_on_field {{ key }}:{{ value }}
+      {% endfor %}
+    {% endif %}
+
 </SIP>
+
 {% endif %}
