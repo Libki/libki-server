@@ -36,23 +36,30 @@ my $schema = Libki::Schema::DB->connect($connect_info)
 
 my $user_rs = $schema->resultset('User');
 
-my $user = $user_rs->create(
-    {
-        username          => $opt->username,
-        password          => $opt->password,
-        minutes_allotment => $opt->minutes
-          || $schema->resultset('Setting')->find('DefaultTimeAllowance')
-          ->value(),
-        status          => 'enabled',
-        is_troublemaker => 'No',
-    }
-);
+my $user = $user_rs->find( { username => $opt->username } );
 
+if ($user) {
+    $user->set_column( 'password', $opt->password );
+    $user->update();
+}
+else {
+    $user = $user_rs->create(
+        {
+            username          => $opt->username,
+            password          => $opt->password,
+            minutes_allotment => $opt->minutes
+              || $schema->resultset('Setting')->find('DefaultTimeAllowance')
+              ->value(),
+            status          => 'enabled',
+            is_troublemaker => 'No',
+        }
+    );
+}
 if ( $opt->superadmin ) {
     my $role =
       $schema->resultset('Role')->search( { role => 'superadmin' } )->single();
 
-    $schema->resultset('UserRole')->create(
+    $schema->resultset('UserRole')->update_or_create(
         {
             role_id => $role->id,
             user_id => $user->id,
@@ -64,7 +71,7 @@ if ( $opt->admin || $opt->superadmin ) {
     my $role =
       $schema->resultset('Role')->search( { role => 'admin' } )->single();
 
-    $schema->resultset('UserRole')->create(
+    $schema->resultset('UserRole')->update_or_create(
         {
             role_id => $role->id,
             user_id => $user->id,
