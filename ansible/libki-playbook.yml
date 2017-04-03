@@ -143,6 +143,29 @@
      include: playbooks/libki-playbook-create-users.yml account={{ item }}
      with_items: "{{ accounts }}" 
 
+   - cron:
+      name: "SHELL"
+      env: yes
+      value: /bin/bash
+     become: true
+     become_user: "{{item.name}}"
+     with_items: "{{ accounts }}" 
+
+   - cron:
+      name: "Libki Minutes Cron"
+      job: "perl /home/{{ item.name}}/libki-server/script/cronjobs/libki.pl"
+     become: true
+     become_user: "{{item.name}}"
+     with_items: "{{ accounts }}" 
+
+   - cron:
+      name: "Libki Nightly Cron"
+      job: "perl /home/{{ item.name}}/libki-server/script/cronjobs/libki_nightly.pl"
+      special_time: daily
+     become: true
+     become_user: "{{item.name}}"
+     with_items: "{{ accounts }}" 
+
   handlers:
     - name: Restart Apache
       service: name=apache2 state=restarted
