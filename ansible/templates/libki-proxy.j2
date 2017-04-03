@@ -1,13 +1,6 @@
 <VirtualHost *:80>
     ServerName {{ account.server_address }}
 
-    DocumentRoot /home/{{ account.name}}/libki-server
-
-    <Proxy *>
-        Order deny,allow
-        Allow from allow
-    </Proxy>
-
     ProxyPass        / http://localhost:{{ account.port }}/ retry=0
     ProxyPassReverse / http://localhost:{{ account.port }}/ retry=0
 </VirtualHost>

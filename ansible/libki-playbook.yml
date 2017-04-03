@@ -88,6 +88,10 @@
      apache2_module: name=proxy state=present
      notify: Restart Apache
 
+   - name: Enable Apache proxy http module 
+     apache2_module: name=proxy_http state=present
+     notify: Restart Apache
+
    - name: Create user accounts
      user: name={{ item.name }} state=present
      with_items: "{{ accounts }}"
@@ -133,6 +137,10 @@
 
    - name: Restart Libki
      command: /etc/init.d/libki-{{ item.name }} restart
+     with_items: "{{ accounts }}" 
+
+   - name: Ensure specified Libki users are created
+     include: playbooks/libki-playbook-create-users.yml account={{ item }}
      with_items: "{{ accounts }}" 
 
   handlers:

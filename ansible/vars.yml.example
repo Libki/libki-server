@@ -12,6 +12,9 @@ accounts:
      password: eJuLs5Q6kUaXikXwoxsadfs3234sdf
      sip:
        enable: 0
+     users:
+       - username: support
+         password: itsasecret 
 
    - description: Libki Instance 2
      name: libki_2
@@ -21,3 +24,14 @@ accounts:
      password: eJuLs5Q6kUaXikXwoxsadfs3234sdf
      sip:
        enable: 0
+       host: libki2.example.com
+       port: 6001
+       location: LIBKI
+       username: sip2_username
+       password: itsasecret
+       terminator: CR
+       require_sip_auth: 1
+       enable_split_messages: 0
+     users:
+       - username: support
+         password: itsasecret 

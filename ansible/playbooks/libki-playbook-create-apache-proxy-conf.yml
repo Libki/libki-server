@@ -3,6 +3,6 @@
   template: src=templates/libki-proxy.j2 dest=/etc/apache2/sites-available/{{ item.name }}
 
 - file:
-    src: '/etc/apache2/sites-available/{{ item.name }}'
-    dest: '/etc/apache2/sites-enabled/{{ item.name }}'
+    src: '/etc/apache2/sites-available/{{ item.name }}.conf'
+    dest: '/etc/apache2/sites-enabled/{{ item.name }}.conf'
     state: link
