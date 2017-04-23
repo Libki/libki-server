@@ -38,6 +38,7 @@ requires 'Modern::Perl';
 requires 'Moose';
 requires 'MooseX::NonMoose';
 requires 'Net::Server::SS::PreFork';
+requires 'Net::LDAP';
 requires 'Perl6::Junction';
 requires 'Plack';
 requires 'Plack::Handler::Gazelle';

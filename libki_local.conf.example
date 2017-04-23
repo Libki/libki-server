@@ -2,7 +2,7 @@
     traits Caching
     <connect_info>
         dsn   dbi:mysql:libki
-        user   USERNAME
+        user   libki
         password "PASSWORD"
         auto_savepoint 1
         quote_names 1
