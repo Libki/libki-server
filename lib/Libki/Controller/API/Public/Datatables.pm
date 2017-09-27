@@ -27,11 +27,13 @@ Public Datatables API for Libki clients
 sub clients : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     # We need to map the table columns to field names for ordering
     my @columns = qw/ me.name me.location session.status user.minutes /;
 
     # Set up filters
-    my $filter = {};
+    my $filter = { instance => $instance};
 
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
@@ -58,7 +60,7 @@ sub clients : Local Args(0) {
         );
     }
 
-    my $total_records = $c->model('DB::Client')->count;
+    my $total_records = $c->model('DB::Client')->search({ instance => $instance })->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::Client')->count($filter);

@@ -23,6 +23,8 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $username  = $c->request->params->{'username'};
     my $password  = $c->request->params->{'password'};
     my $client_id = $c->request->params->{'id'};
@@ -30,7 +32,7 @@ sub create : Local : Args(0) {
     my $log = $c->log();
     $log->debug("Creating reservation for $username / $client_id");
 
-    my $user = $c->model('DB::User')->single( { username => $username } );
+    my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
@@ -85,7 +87,7 @@ sub create : Local : Args(0) {
             $c->stash( %$error );
         }
         else {
-            if ( $c->model('DB::Reservation')->create( { user_id => $user->id(), client_id => $client_id } ) ) {
+            if ( $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id(), client_id => $client_id } ) ) {
                 $c->stash( 'success' => 1 );
             }
             else {

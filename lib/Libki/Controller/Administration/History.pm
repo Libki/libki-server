@@ -27,6 +27,8 @@ sub index : Path : Args(0) {
 sub statistics : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $from = $c->request->params->{'from'};
     my $to   = $c->request->params->{'to'};
 
@@ -44,9 +46,10 @@ sub statistics : Local : Args(0) {
     $to .= " 23:59:59";
     my @by_location = $c->model('DB::Statistic')->search(
         {
-            'when' =>
+            instance => $instance,
+            when =>
               { '>=' => $from, '<=' => $to, },
-            'action' => 'LOGIN',
+            action => 'LOGIN',
         },
         {
             select => [

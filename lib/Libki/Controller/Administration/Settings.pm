@@ -33,7 +33,9 @@ sub auto : Private {
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $settings = $c->model('DB::Setting')->search();
+    my $instance = $c->request->headers->{'libki-instance'};
+
+    my $settings = $c->model('DB::Setting')->search({ instance => $instance });
     
     while ( my $s = $settings->next() ) {
         $c->stash( $s->name => $s->value );
@@ -47,10 +49,15 @@ sub index :Path :Args(0) {
 sub update :Local :Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     foreach my $setting ( keys %{$c->request->params} ) {
         $c->model('DB::Setting')->update_or_create(
-            'name'  => $setting,
-            'value' => $c->request->params->{ $setting },
+            {
+                instance => $instance,
+                name     => $setting,
+                value    => $c->request->params->{ $setting },
+            }
         );
     }
     

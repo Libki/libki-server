@@ -1,7 +1,7 @@
 log4perl.rootLogger			= DEBUG, LOGFILE, SCREEN
 
 log4perl.appender.LOGFILE		= Log::Log4perl::Appender::File
-log4perl.appender.LOGFILE.filename	= /home/libki/libki.log
+log4perl.appender.LOGFILE.filename	= /home/demo/libki.log
 log4perl.appender.LOGFILE.mode		= append
 log4perl.appender.LOGFILE.layout	= PatternLayout
 log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] [libki] [%p] %m%n

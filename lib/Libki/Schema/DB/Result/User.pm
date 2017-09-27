@@ -49,6 +49,12 @@ __PACKAGE__->table("users");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -113,6 +119,8 @@ __PACKAGE__->table("users");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
@@ -159,9 +167,11 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
 
-=head2 C<username>
+=head2 C<unique_username>
 
 =over 4
+
+=item * L</instance>
 
 =item * L</username>
 
@@ -169,7 +179,7 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("username", ["username"]);
+__PACKAGE__->add_unique_constraint("unique_username", ["instance", "username"]);
 
 =head1 RELATIONS
 
@@ -244,8 +254,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-24 10:29:36
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wU0j57gx6S2NdvGRemG8qw
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yNSUVdqlwF5FVEWnRZw57w
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 

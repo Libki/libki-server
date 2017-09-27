@@ -36,16 +36,18 @@ sub auto : Private {
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     # Get the list of locations
-    my @locations = $c->model('DB::Location')->all();
+    my @locations = $c->model('DB::Location')->search({ instance => $instance });
 
     # Get the list of days of the week
-    my @days = $c->model('DB::ClosingHour')->search( { date => undef } );
+    my @days = $c->model('DB::ClosingHour')->search( { instance => $instance,  date => undef } );
     my $days;
     map { $days->{ $_->location() ? $_->location()->id() : q{all} }->{ $_->day() } = $_ } @days;
 
     # Get the list of specific dates
-    my @dates = $c->model('DB::ClosingHour')->search( { day => undef }, { order_by => { -asc => 'date' } } );
+    my @dates = $c->model('DB::ClosingHour')->search( { instance => $instance, day => undef }, { order_by => { -asc => 'date' } } );
 
     $c->stash(
         locations => \@locations,
@@ -62,9 +64,11 @@ sub index : Path : Args(0) {
 sub update_days : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $params = $c->request->params;
 
-    my @locations = $c->model('DB::Location')->all();
+    my @locations = $c->model('DB::Location')->search({ instance => $instance });
 
     my $rs = $c->model('DB::ClosingHour');
 
@@ -74,15 +78,15 @@ sub update_days : Local : Args(0) {
         my $minute = $params->{"$day-minute-all"};
 
         if ( $hour && $minute ) {
-            if ( my $d = $rs->single( { location => undef, day => $day } ) ) {
+            if ( my $d = $rs->single( { instance => $instance, location => undef, day => $day } ) ) {
                 $d->update( { location => undef, day => $day, closing_time => "$hour:$minute" } );
             }
             else {
-                $rs->create( { location => undef, day => $day, closing_time => "$hour:$minute" } );
+                $rs->create( { instance => $instance, location => undef, day => $day, closing_time => "$hour:$minute" } );
             }
         }
         else {
-            if ( my $d = $rs->single( { location => undef, day => $day } ) ) {
+            if ( my $d = $rs->single( { instance => $instance, location => undef, day => $day } ) ) {
                 $d->delete();
             }
         }
@@ -97,15 +101,15 @@ sub update_days : Local : Args(0) {
             my $minute = $params->{"$day-minute-$location_id"};
 
             if ( $hour && $minute ) {
-                if ( my $d = $rs->single( { location => $location_id, day => $day } ) ) {
+                if ( my $d = $rs->single( { instance => $instance, location => $location_id, day => $day } ) ) {
                     $d->update( { location => $location_id, day => $day, closing_time => "$hour:$minute" } );
                 }
                 else {
-                    $rs->create( { location => $location_id, day => $day, closing_time => "$hour:$minute" } );
+                    $rs->create( { instance => $instance, location => $location_id, day => $day, closing_time => "$hour:$minute" } );
                 }
             }
             else {
-                if ( my $d = $rs->single( { location => $location_id, day => $day } ) ) {
+                if ( my $d = $rs->single( { instance => $instance, location => $location_id, day => $day } ) ) {
                     $d->delete();
                 }
             }
@@ -118,6 +122,8 @@ sub update_days : Local : Args(0) {
 
 sub update_dates : Local : Args(0) {
     my ( $self, $c ) = @_;
+
+    my $instance = $c->request->headers->{'libki-instance'};
 
     my $params = $c->request->params;
 
@@ -135,6 +141,7 @@ sub update_dates : Local : Args(0) {
 
         $rs->create(
             { 
+                instance     => $instance,
                 date         => $date,
                 closing_time => $time,
                 location     => $location,

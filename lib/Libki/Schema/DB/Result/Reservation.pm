@@ -49,6 +49,12 @@ __PACKAGE__->table("reservations");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -76,6 +82,8 @@ __PACKAGE__->table("reservations");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "client_id",
@@ -161,8 +169,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-02-14 09:35:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4xUOU5jN/iFj+YsIRwbY7w
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:xE+wPbDo1yiHXLAGZpP4tw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

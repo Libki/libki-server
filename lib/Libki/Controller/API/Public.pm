@@ -30,6 +30,8 @@ returns JSON hash containing the username as a key value pair
 sub client : Local : Args(1) {
     my ( $self, $c, $name ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $username = $c->request->params->{'username'};
     my $password = $c->request->params->{'password'};
 
@@ -41,7 +43,7 @@ sub client : Local : Args(1) {
         && $c->check_user_roles(qw/admin/) )
     {
 
-        my $client = $c->model('DB::Client')->single( { name => $name } );
+        my $client = $c->model('DB::Client')->single( { instance => $instance, name => $name } );
 
         if ($client) {
             my $session = $client->session();
@@ -53,6 +55,7 @@ sub client : Local : Args(1) {
                 $c->stash(
                     username   => $user->username(),
                     clientname => decode('UTF-8',$client->name()),
+                    instance   => $instance,
                 );
                 $c->log()->debug( "API::Public::client returning ( username => " . $user->username() . ", clientname => " . $client->name() . " )" );
 

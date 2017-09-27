@@ -60,12 +60,14 @@ sub get : Local : Args(1) {
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $params = $c->request->params;
 
     my $username = $params->{'username'};
     my $password = $params->{'password'};
     my $minutes  = $params->{'minutes'}
-      || $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+      || $c->model('DB::Setting')->find( { instance => $instance, name => 'DefaultTimeAllowance' } )->value;
 
     $minutes = 0 if ( $minutes < 0 );
 
@@ -73,6 +75,7 @@ sub create : Local : Args(0) {
 
     my $user = $c->model('DB::User')->create(
         {
+            instance          => $instance,
             username          => $username,
             password          => $password,
             minutes_allotment => $minutes,
@@ -93,10 +96,12 @@ sub create : Local : Args(0) {
 sub create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $params = $c->request->params;
 
     my $current_guest_number_setting =
-      $c->model('DB::Setting')->find('CurrentGuestNumber');
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
     my $current_guest_number = $current_guest_number_setting->value + 1;
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update();
@@ -107,12 +112,13 @@ sub create_guest : Local : Args(0) {
     my $username = $prefix . $current_guest_number;
     my $password =
       random_string("nnnn");    #TODO: Make the pattern a system setting
-    my $minutes = $c->model('DB::Setting')->find('DefaultGuestSessionTimeAllowance')->value;
+    my $minutes = $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultGuestSessionTimeAllowance' })->value;
 
     my $success = 0;
 
     my $user = $c->model('DB::User')->create(
         {
+            instance          => $instance,
             username          => $username,
             password          => $password,
             minutes_allotment => $minutes,
@@ -139,6 +145,8 @@ sub create_guest : Local : Args(0) {
 sub batch_create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $params = $c->request->params;
 
     my $prefix_setting = $c->model('DB::Setting')->find('GuestPassPrefix');
@@ -147,17 +155,17 @@ sub batch_create_guest : Local : Args(0) {
     my $success = 0;
 
     my $guest_count =
-      $c->model('DB::Setting')->find('GuestBatchCount')->value();
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'GuestBatchCount' })->value();
     my $batch_guest_pass_username_label =
-      $c->model('DB::Setting')->find('BatchGuestPassUsernameLabel')->value();
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'BatchGuestPassUsernameLabel' })->value();
     my $batch_guest_pass_password_label =
-      $c->model('DB::Setting')->find('BatchGuestPassPasswordLabel')->value();
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'BatchGuestPassPasswordLabel' })->value();
     my $minutes =
-      $c->model('DB::Setting')->find('DefaultGuestSessionTimeAllowance')->value();
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultGuestSessionTimeAllowance' })->value();
     my $guest_pass_file =
-      $c->model('DB::Setting')->find('GuestPassFile')->value();
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'GuestPassFile' })->value();
     my $current_guest_number_setting =
-      $c->model('DB::Setting')->find('CurrentGuestNumber');
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
 
     my $current_guest_number = $current_guest_number_setting->value();
 
@@ -176,6 +184,7 @@ sub batch_create_guest : Local : Args(0) {
 
         my $user = $c->model('DB::User')->create(
             {
+                instance          => $instance,
                 username          => $username,
                 password          => $password,
                 minutes_allotment => $minutes,
@@ -287,8 +296,10 @@ sub delete : Local : Args(1) {
 sub is_username_unique : Local : Args(1) {
     my ( $self, $c, $username ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $count =
-      $c->model('DB::User')->search( { username => $username } )->count();
+      $c->model('DB::User')->search( { instance => $instance, username => $username } )->count();
 
     my $is_unique = ($count) ? 0 : 1;
 

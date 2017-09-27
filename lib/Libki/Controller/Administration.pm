@@ -25,8 +25,12 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my @locations = $c->model('DB::Client')->search(
-        {},
+        {
+            instance => $instance,
+        },
         {
             columns  => decode('UTF-8',[qw/location/]),
             distinct => 1
@@ -35,9 +39,9 @@ sub index : Path : Args(0) {
 
     $c->stash(
         DefaultTimeAllowance =>
-          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value,
+          $c->model('DB::Setting')->find( { instance => $instance, name => 'DefaultTimeAllowance' } )->value,
         CustomJsAdministration =>
-          $c->model('DB::Setting')->find('CustomJsAdministration')->value,
+          $c->model('DB::Setting')->find( { instance => $instance, name => 'CustomJsAdministration' } )->value,
         locations => \@locations,
     );
 }

@@ -49,6 +49,12 @@ __PACKAGE__->table("client_age_limits");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -75,6 +81,8 @@ __PACKAGE__->table("client_age_limits");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "client",
@@ -107,6 +115,8 @@ __PACKAGE__->set_primary_key("id");
 
 =over 4
 
+=item * L</instance>
+
 =item * L</client>
 
 =item * L</comparison>
@@ -117,7 +127,10 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("unique_age_limits", ["client", "comparison", "age"]);
+__PACKAGE__->add_unique_constraint(
+  "unique_age_limits",
+  ["instance", "client", "comparison", "age"],
+);
 
 =head1 RELATIONS
 
@@ -137,8 +150,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-25 09:28:01
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BA4Nh/4brKeHJSBM8pd6HQ
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9Gu0cOQ6wQNGXNEKLq43Pg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

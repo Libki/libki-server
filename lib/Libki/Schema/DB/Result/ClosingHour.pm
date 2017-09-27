@@ -49,6 +49,12 @@ __PACKAGE__->table("closing_hours");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -81,6 +87,8 @@ __PACKAGE__->table("closing_hours");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "location",
@@ -142,8 +150,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-07-13 08:57:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3ilBjYOeCXDzSH6xRlXu4g
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7aWbhhM0DZQupN8UQR6H5w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

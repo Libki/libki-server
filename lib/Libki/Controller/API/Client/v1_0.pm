@@ -30,8 +30,15 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
-    my $now = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $year + 1900, $mon + 1, $mday, $hour, $min, $sec );
+    my $instance = $c->request->headers->{'libki-instance'};
+
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
+      localtime(time);
+    my $now = sprintf(
+        "%04d-%02d-%02d %02d:%02d:%02d",
+        $year + 1900,
+        $mon + 1, $mday, $hour, $min, $sec
+    );
 
     my $enc = 'UTF-8';
 
@@ -41,18 +48,19 @@ sub index : Path : Args(0) {
 
     if ( $action eq 'register_node' ) {
 
-	my $node_name = $c->request->params->{'node_name'};
-	my $location  = $c->request->params->{'location'};
-
+        my $node_name = $c->request->params->{'node_name'};
+        my $location  = $c->request->params->{'location'};
 
         $c->model('DB::Location')->update_or_create(
             {
-                code => $location,
+                instance => $instance,
+                code     => $location,
             }
         ) if $location;
 
         my $client = $c->model('DB::Client')->update_or_create(
             {
+                instance        => $instance,
                 name            => $node_name,
                 location        => $location ? $location : undef,
                 last_registered => $now,
@@ -74,6 +82,7 @@ sub index : Path : Args(0) {
                 $log->debug("Age Limit Found: $comparison : $age");
                 $c->model('DB::ClientAgeLimit')->update_or_create(
                     {
+                        instance   => $instance,
                         client     => $client->id(),
                         comparison => $comparison,
                         age        => $age,
@@ -83,25 +92,33 @@ sub index : Path : Args(0) {
         }
 
         $c->stash(
-            registered              => !!$client,
-            ClientBehavior          => $c->stash->{'Settings'}->{'ClientBehavior'},
-            ReservationShowUsername => $c->stash->{'Settings'}->{'ReservationShowUsername'},
+            registered     => !!$client,
+            ClientBehavior => $c->stash->{'Settings'}->{'ClientBehavior'},
+            ReservationShowUsername =>
+              $c->stash->{'Settings'}->{'ReservationShowUsername'},
 
             BannerTopURL    => $c->stash->{'Settings'}->{'BannerTopURL'},
             BannerTopWidth  => $c->stash->{'Settings'}->{'BannerTopWidth'},
             BannerTopHeight => $c->stash->{'Settings'}->{'BannerTopHeight'},
 
-            BannerBottomURL    => $c->stash->{'Settings'}->{'BannerBottomURL'},
-            BannerBottomWidth  => $c->stash->{'Settings'}->{'BannerBottomWidth'},
-            BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
+            BannerBottomURL   => $c->stash->{'Settings'}->{'BannerBottomURL'},
+            BannerBottomWidth => $c->stash->{'Settings'}->{'BannerBottomWidth'},
+            BannerBottomHeight =>
+              $c->stash->{'Settings'}->{'BannerBottomHeight'},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
         my $client_name  = $c->request->params->{'node'};
         my $reserved_for = $c->request->params->{'reserved_for'};
 
-        my $reservation =
-          $c->model('DB::Reservation')->search( {}, { 'username' => $reserved_for, 'name' => $client_name } )->next();
+        my $reservation = $c->model('DB::Reservation')->search(
+            {},
+            {
+                instance => $instance,
+                username => $reserved_for,
+                name     => $client_name
+            }
+        )->next();
 
         if ($reservation) {
             unless ( $reservation->expiration() ) {
@@ -109,7 +126,8 @@ sub index : Path : Args(0) {
                     DateTime::Format::MySQL->format_datetime(
                         DateTime->now( time_zone => 'local' )->add_duration(
                             DateTime::Duration->new(
-                                minutes => $c->stash->{'Settings'}->{'ReservationTimeout'}
+                                minutes => $c->stash->{'Settings'}
+                                  ->{'ReservationTimeout'}
                             )
                         )
                     )
@@ -124,10 +142,12 @@ sub index : Path : Args(0) {
         my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
 
-        my $user = $c->model('DB::User')->single( { username => $username } );
+        my $user = $c->model('DB::User')
+          ->single( { instance => $instance, username => $username } );
 
         if ( $action eq 'login' ) {
-            $log->debug( __PACKAGE__ . " - username: $username, client_name: $client_name" );
+            $log->debug( __PACKAGE__
+                  . " - username: $username, client_name: $client_name" );
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
             my ( $success, $error, $sip_fields ) = ( 1, undef, undef );
@@ -136,17 +156,22 @@ sub index : Path : Args(0) {
                     !$user
                     || (   $user
                         && $user->is_guest() eq 'No'
-                        && !$c->check_any_user_role( $user, qw/admin superadmin/ ) )
+                        && !$c->check_any_user_role( $user,
+                            qw/admin superadmin/ ) )
                   )
                 {
-                    my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
+                    my $ret =
+                      Libki::SIP::authenticate_via_sip( $c, $user, $username,
+                        $password );
                     $success = $ret->{success};
                     $error   = $ret->{error};
                     $user    = $ret->{user};
 
                     $sip_fields = $ret->{sip_fields};
-                    if ( $sip_fields ) {
-                        $c->stash( hold_items_count => $sip_fields->{hold_items_count} );
+                    if ($sip_fields) {
+                        $c->stash(
+                            hold_items_count => $sip_fields->{hold_items_count}
+                        );
                     }
                 }
             }
@@ -158,10 +183,13 @@ sub index : Path : Args(0) {
                     !$user
                     || (   $user
                         && $user->is_guest() eq 'No'
-                        && !$c->check_any_user_role( $user, qw/admin superadmin/ ) )
+                        && !$c->check_any_user_role( $user,
+                            qw/admin superadmin/ ) )
                   )
                 {
-                    my $ret = Libki::LDAP::authenticate_via_ldap( $c, $user, $username, $password );
+                    my $ret =
+                      Libki::LDAP::authenticate_via_ldap( $c, $user, $username,
+                        $password );
                     $success = $ret->{success};
                     $error   = $ret->{error};
                     $user    = $ret->{user};
@@ -179,7 +207,9 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+                    my $minutes_until_closing =
+                      Libki::Hours::minutes_until_closing( $c,
+                        $client_location );
                     if ( defined($minutes_until_closing)
                         && $minutes_until_closing < $user->minutes )
                     {
@@ -187,12 +217,16 @@ sub index : Path : Args(0) {
                         $user->update();
                     }
 
-                    my $client = $c->model('DB::Client')->single( { name => $client_name } );
+                    my $client =
+                      $c->model('DB::Client')
+                      ->single(
+                        { instance => $instance, name => $client_name } );
 
                     $c->stash( units => $user->minutes );
 
                     my $error = {};    # Must be initialized as a hashref
-                    if ( $minutes_until_closing && $minutes_until_closing <= 0 ) {
+                    if ( $minutes_until_closing && $minutes_until_closing <= 0 )
+                    {
                         $c->stash( error => 'CLOSED' );
                     }
                     elsif ( $user->session ) {
@@ -204,17 +238,31 @@ sub index : Path : Args(0) {
                     elsif ( $user->minutes < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
-                    elsif ( !$client->can_user_use( { user => $user, error => $error, c => $c } ) ) {
+                    elsif (
+                        !$client->can_user_use(
+                            { user => $user, error => $error, c => $c }
+                        )
+                      )
+                    {
                         $c->stash( error => $error->{reason} );
                     }
                     else {
-                        my $client = $c->model('DB::Client')->search( { name => $client_name } )->next();
+                        my $client =
+                          $c->model('DB::Client')
+                          ->search(
+                            { instance => $instance, name => $client_name } )
+                          ->next();
 
                         if ($client) {
                             my $reservation = $client->reservation;
 
-                            if (   !$reservation
-                                && !( $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ) )
+                            if (
+                                !$reservation
+                                && !(
+                                    $c->stash->{'Settings'}->{'ClientBehavior'}
+                                    =~ 'FCFS'
+                                )
+                              )
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
                             }
@@ -225,6 +273,7 @@ sub index : Path : Args(0) {
 
                                 my $session = $c->model('DB::Session')->create(
                                     {
+                                        instance  => $instance,
                                         user_id   => $user->id,
                                         client_id => $client->id,
                                         status    => 'active'
@@ -233,6 +282,7 @@ sub index : Path : Args(0) {
                                 $c->stash( authenticated => $session && 1 );
                                 $c->model('DB::Statistic')->create(
                                     {
+                                        instance        => $instance,
                                         username        => $username,
                                         client_name     => $client_name,
                                         client_location => $client_location,
@@ -272,7 +322,10 @@ sub index : Path : Args(0) {
             }
 
             my @messages = $user->messages()->get_column('content')->all();
-            map { $c->log()->info( "Sent message for " . $user->username() . " : $_" ) } @messages;
+            map {
+                $c->log()
+                  ->info( "Sent message for " . $user->username() . " : $_" )
+            } @messages;
             $c->stash(
                 messages => \@messages,
                 units    => $user->minutes,
@@ -288,6 +341,7 @@ sub index : Path : Args(0) {
 
             $c->model('DB::Statistic')->create(
                 {
+                    instance    => $instance,
                     username    => $username,
                     client_name => $client_name,
                     action      => 'LOGOUT',

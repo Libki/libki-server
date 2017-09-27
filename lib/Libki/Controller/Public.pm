@@ -24,9 +24,11 @@ Catalyst Controller.
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     $c->stash(
         CustomJsPublic =>
-          $c->model('DB::Setting')->find('CustomJsPublic')->value,
+          $c->model('DB::Setting')->find({ instance => $instance, name => 'CustomJsPublic' })->value,
     );
 }
 
@@ -42,8 +44,12 @@ Check if there is an authorized user and, if not, forward to login page
 sub auto : Private {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my @locations = $c->model('DB::Client')->search(
-        {},
+        {
+            instance => $instance,
+        },
         {
             columns  => [qw/location/],
             distinct => 1

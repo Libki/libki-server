@@ -5,6 +5,8 @@ use Net::LDAP;
 sub authenticate_via_ldap {
     my ( $c, $user, $username, $password ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $log = $c->log();
 
     my $adminDn           = $c->config->{LDAP}->{adminDn};
@@ -40,10 +42,11 @@ sub authenticate_via_ldap {
     }
     else {          ## User authenticated and does not exist in Libki
         my $minutes =
-          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
 
         $user = $c->model('DB::User')->create(
             {
+                instance          => $instance,
                 username          => $username,
                 password          => $password,
                 minutes_allotment => $minutes,

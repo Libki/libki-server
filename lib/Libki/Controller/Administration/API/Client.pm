@@ -22,6 +22,7 @@ Catalyst Controller.
 
 sub modify_time : Local : Args(0) {
     my ( $self, $c ) = @_;
+
     my $success = 0;
 
     my $client_id = $c->request->params->{'id'};
@@ -78,11 +79,13 @@ sub reservation : Local : Args(1) {
 
     my $client = $c->model('DB::Client')->find($client_id);
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $action    = $c->request->params->{action}   || q{};
     my $username  = $c->request->params->{username} || q{};
 
     if ( $action eq 'reserve' ) {
-        my $user = $c->model('DB::User')->single( { username => $username } );
+        my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
 
         if ( $user ) {
             if ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
@@ -91,7 +94,7 @@ sub reservation : Local : Args(1) {
                     'reason'  => 'USER_ALREADY_RESERVED'
                 );
             }
-            elsif ( $c->model('DB::Reservation')->create( { user_id => $user->id, client_id => $client_id } ) ) {
+            elsif ( $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id, client_id => $client_id } ) ) {
                 $c->stash( 'success' => 1 );
             }
             else {

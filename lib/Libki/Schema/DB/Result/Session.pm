@@ -49,6 +49,12 @@ __PACKAGE__->table("sessions");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 client_id
 
   data_type: 'integer'
@@ -71,6 +77,8 @@ __PACKAGE__->table("sessions");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "client_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "user_id",
@@ -157,8 +165,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-19 10:01:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bfbH+01xSeTueZ27einH5g
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Hd8f9F0qfsZNWxWtYOKObA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

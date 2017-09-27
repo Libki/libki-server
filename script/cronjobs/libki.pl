@@ -19,7 +19,8 @@ use Libki::Hours;
 my $config = Config::ZOMG->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
 );
-my $c = Libki->new( { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new(
+    { database_file => $config->{'Model::DB'}{args}{database_file} } );
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
@@ -30,32 +31,74 @@ my $session_rs     = $c->model('DB::Session');
 my $setting_rs     = $c->model('DB::Setting');
 my $reservation_rs = $c->model('DB::Reservation');
 
-my $AutomaticTimeExtensionAt           = $setting_rs->find('AutomaticTimeExtensionAt')->value;
-my $AutomaticTimeExtensionLength       = $setting_rs->find('AutomaticTimeExtensionLength')->value;
-my $AutomaticTimeExtensionUnless       = $setting_rs->find('AutomaticTimeExtensionUnless')->value;
-my $AutomaticTimeExtensionUseAllotment = $setting_rs->find('AutomaticTimeExtensionUseAllotment')->value;
+my $AutomaticTimeExtensionAt           = {};
+my $AutomaticTimeExtensionLength       = {};
+my $AutomaticTimeExtensionUnless       = {};
+my $AutomaticTimeExtensionUseAllotment = {};
 
 ## Decrement time for logged in users.
 while ( my $session = $session_rs->next() ) {
-    my $user = $session->user;
+    my $user     = $session->user;
+    my $instance = $user->instance;
+
     if ( $user->minutes() > 0 ) {
         ## Decrement the number of minutes but don't commit to db yet
         $user->decrease_minutes(1);
 
+        unless ( exists $AutomaticTimeExtensionAt->{$instance} ) {
+            my $setting = $setting_rs->find(
+                {
+                    instance => $instance,
+                    name     => 'AutomaticTimeExtensionAt'
+                }
+            );
+            $AutomaticTimeExtensionAt->{$instance} = $setting ? $setting->value : undef;
+        }
+        unless ( exists $AutomaticTimeExtensionLength->{$instance} ) {
+            my $setting = $setting_rs->find(
+                {
+                    instance => $instance,
+                    name     => 'AutomaticTimeExtensionLength'
+                }
+            );
+            $AutomaticTimeExtensionLength->{$instance} = $setting ? $setting->value : undef;
+        }
+        unless ( exists $AutomaticTimeExtensionUnless->{$instance} ) {
+            my $setting = $setting_rs->find(
+                {
+                    instance => $instance,
+                    name     => 'AutomaticTimeExtensionUnless'
+                }
+            );
+            $AutomaticTimeExtensionUnless->{$instance} = $setting ? $setting->value : undef;
+        }
+        unless ( exists $AutomaticTimeExtensionUseAllotment->{$instance} ) {
+            my $setting = $setting_rs->find(
+                {
+                    instance => $instance,
+                    name     => 'AutomaticTimeExtensionUseAllotment'
+                }
+            );
+            $AutomaticTimeExtensionUseAllotment->{$instance} = $setting ? $setting->value : undef;
+        }
+
         ## Check to see if user qualifies for an automatic time extension
-        if (   $AutomaticTimeExtensionAt
-            && $user->minutes() < $AutomaticTimeExtensionAt )
+        if (   $AutomaticTimeExtensionAt->{$instance}
+            && $user->minutes() < $AutomaticTimeExtensionAt->{$instance} )
         {
             my $count =
-                $AutomaticTimeExtensionUnless eq 'any_reserved'
-              ? $reservation_rs->count()
-              : $reservation_rs->search( { client_id => $session->client_id } )->count();
+                $AutomaticTimeExtensionUnless->{$instance} eq 'any_reserved'
+              ? $reservation_rs->search( { instance => $instance } )->count()
+              : $reservation_rs->search(
+                { instance => $instance, client_id => $session->client_id } )
+              ->count();
 
             unless ($count) {
-                my $minutes_to_add = $AutomaticTimeExtensionLength;
+                my $minutes_to_add = $AutomaticTimeExtensionLength->{$instance};
 
                 # If we are nearing closing time, we need to only add minutes up to the cloasing time
-                my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $session->client->location );
+                #FIXME: cache each instance/location combo so we don't look this up repeatdly
+                my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $session->client->location, $instance );
 
                 # If adding this many minutes would go past closing time, we need to reduce the minutes added
                 if ( defined($minutes_until_closing)
@@ -66,8 +109,10 @@ while ( my $session = $session_rs->next() ) {
                 }
 
                 # If adding this many minutes would exceed daily allotted, we need to reduce the minutes added
-                if ( $AutomaticTimeExtensionUseAllotment eq 'yes' ) {
-                    if ($user->minutes_allotment < $minutes_to_add) {
+                if ( $AutomaticTimeExtensionUseAllotment->{$instance} eq 'yes' )
+                {
+                    if ( $user->minutes_allotment < $minutes_to_add ) {
+
                         # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
                         $minutes_to_add = $user->minutes_allotment;
                     }
@@ -75,21 +120,25 @@ while ( my $session = $session_rs->next() ) {
 
                 if ( $minutes_to_add > 0 ) {
                     $user->increase_minutes($minutes_to_add);
-                    $user->decrease_minutes_allotment($minutes_to_add) if ( $AutomaticTimeExtensionUseAllotment eq 'yes' );
+
+                    $user->decrease_minutes_allotment($minutes_to_add)
+                      if ( $AutomaticTimeExtensionUseAllotment->{$instance} eq 'yes' );
+
                     $user->create_related(
                         'messages',
                         {
-                            content => $c->loc(
-                                "Your session time has been automatically extended by [_1] minutes.",
-                                $minutes_to_add
-                            ),
+                            instance => $instance,
+                            content  => $c->loc("Your session time has been automatically extended by [_1] minutes.",
+                                                "Your session time has been automatically extended by [_1] minutes.",
+                                                $minutes_to_add
+                                         ),
                         }
                     );
                 }
             }
         }
 
-        ## Now it we can store the change
+        ## Now we can store the changes
         $user->update();
     }
     else {
@@ -98,10 +147,11 @@ while ( my $session = $session_rs->next() ) {
         ## we need to clean if out.
         $c->model('DB::Statistic')->create(
             {
+                instance    => $instance,
                 username    => $user->username(),
                 client_name => $session->client->name(),
                 action      => 'SESSION_DELETED',
-                when        => DateTime::Format::MySQL->format_datetime( DateTime->now() ),
+                when => DateTime::Format::MySQL->format_datetime( DateTime->now() ),
             }
         );
 
@@ -110,34 +160,58 @@ while ( my $session = $session_rs->next() ) {
 }
 
 ## Delete clients that haven't updated recently
-my $post_crash_timeout = $setting_rs->find('PostCrashTimeout')->value;
+my @post_crash_timeouts = $setting_rs->search( { name => 'PostCrashTimeout' } );
 
-my $timestamp = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => 'local' )
-      ->subtract_duration( DateTime::Duration->new( minutes => $post_crash_timeout ) ) );
+foreach my $pct (@post_crash_timeouts) {
+    my $timestamp = DateTime::Format::MySQL->format_datetime(
+        DateTime->now( time_zone => 'local' )->subtract_duration(
+            DateTime::Duration->new( minutes => $pct->value )
+        )
+    );
 
-$c->model('DB::Client')->search( { last_registered => { '<', $timestamp } } )->delete();
+    $c->model('DB::Client')
+      ->search( { instance => $pct->instance, last_registered => { '<', $timestamp } } )
+      ->delete();
+}
 
 ## Clear out any expired reservations
+#FIXME We need to deal with timezones at some point
 $reservation_rs->search(
     {
-        'expiration' => { '<', DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => 'local' ) ) }
+        'expiration' => {
+            '<',
+            DateTime::Format::MySQL->format_datetime(
+                DateTime->now( time_zone => 'local' )
+            )
+        }
     }
 )->delete();
 
 ## Refill session minutes from allotted minutes for users not logged in to a client
-my $default_session_time_allowance = $setting_rs->find('DefaultSessionTimeAllowance')->value;
-my $default_guest_session_time_allowance = $setting_rs->find('DefaultGuestSessionTimeAllowance')->value;
+my @default_session_time_allowances = $setting_rs->search( { name => 'DefaultSessionTimeAllowance' } );
+my $default_session_time_allowances = { map { $_->instance => $_->value } @default_session_time_allowances };
 
-my $users_rs = $c->model('DB::User')->search(
-    {
-        minutes           => { '<' => $default_session_time_allowance },
-        minutes_allotment => { '>' => 0 }
-    }
-);
+my @default_guest_session_time_allowances = $setting_rs->search( { name => 'DefaultGuestSessionTimeAllowance' } );
+my $default_guest_session_time_allowances = { map { $_->instance => $_->value } @default_guest_session_time_allowances };
 
-while ( my $user = $users_rs->next() ) {
+my @users;
+foreach my $dsta (@default_session_time_allowances) {
+    my @these_users = $c->model('DB::User')->search(
+        {
+            minutes           => { '<' => $dsta->value },
+            minutes_allotment => { '>' => 0 }
+        }
+    );
+
+    push( @users, @these_users );
+}
+
+foreach my $user (@users) {
     unless ( $user->session() ) {
-        my $allowance = $user->is_guest eq 'Yes' ? $default_guest_session_time_allowance : $default_session_time_allowance;
+        my $allowance =
+            $user->is_guest eq 'Yes'
+          ? $default_guest_session_time_allowances->{ $user->instance }
+          : $default_session_time_allowances->{ $user->instance };
 
         while ($user->minutes() < $allowance
             && $user->minutes_allotment() > 0 )

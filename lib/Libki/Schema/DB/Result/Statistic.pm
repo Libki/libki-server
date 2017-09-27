@@ -49,6 +49,12 @@ __PACKAGE__->table("statistics");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -88,6 +94,8 @@ __PACKAGE__->table("statistics");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
@@ -119,8 +127,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-19 10:01:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:M1d0ovX6E3tY76dBKkym3Q
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fOYGghUZEeSRkT7RJZUeWg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

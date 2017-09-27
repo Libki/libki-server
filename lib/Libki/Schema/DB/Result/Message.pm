@@ -49,6 +49,12 @@ __PACKAGE__->table("messages");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -69,6 +75,8 @@ __PACKAGE__->table("messages");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", is_nullable => 1, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "user_id",
@@ -107,8 +115,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-05-26 04:36:24
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TNATamQ7Sk6RluID+4IW+w
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tIwNa1zc9E3w19hYt5c+ng
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

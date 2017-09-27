@@ -21,6 +21,8 @@ Catalyst Controller.
 sub users : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     # We need to map the table columns to field names for ordering
     my @columns = qw/me.username me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
@@ -28,6 +30,7 @@ sub users : Local Args(0) {
     my $filter;
     if ($search_term) {
         $filter = {
+            'me.instance' => $instance,
             -or => [
                 'me.username' => { 'like', "%$search_term%" },
                 'me.notes'    => { 'like', "%$search_term%" },
@@ -50,7 +53,7 @@ sub users : Local Args(0) {
     # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
     # in this case, we'd only want the count of notes affecting the specific item,
     # not *all* items
-    my $total_records = $c->model('DB::User')->count;
+    my $total_records = $c->model('DB::User')->search({ instance => $instance })->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::User')->count($filter);
@@ -99,12 +102,14 @@ sub users : Local Args(0) {
 sub clients : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     # We need to map the table columns to field names for ordering
     my @columns =
       qw/ me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
 
     # Set up filters
-    my $filter = {};
+    my $filter = { instance => $instance };
 
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
@@ -136,7 +141,7 @@ sub clients : Local Args(0) {
     # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
     # in this case, we'd only want the count of notes affecting the specific item,
     # not *all* items
-    my $total_records = $c->model('DB::Client')->count;
+    my $total_records = $c->model('DB::Client')->search({ instance => $instance })->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::Client')
@@ -187,6 +192,8 @@ sub clients : Local Args(0) {
 sub statistics : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     # We need to map the table columns to field names for ordering
     my @columns = ( 'me.username', 'me.client_name', 'me.action', 'me.when' );
 
@@ -214,7 +221,7 @@ sub statistics : Local Args(0) {
         );
     }
 
-    my $total_records = $c->model('DB::Statistic')->count;
+    my $total_records = $c->model('DB::Statistic')->search({ instance => $instance })->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::Statistic')->count($filter);

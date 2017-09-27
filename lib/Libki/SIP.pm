@@ -8,6 +8,8 @@ use Data::Dumper;
 sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
 
+    my $instance = $c->request->headers->{'libki-instance'};
+
     my $log = $c->log();
 
     my $host             = $c->config->{SIP}->{host};
@@ -152,7 +154,7 @@ sub authenticate_via_sip {
         ## In this case, we don't want the now deleted user to be
         ## able to log into Libki, so let's attempt to delete that
         ## username before we try to authenticate.
-        $c->model('DB::User')->search( { username => $username } )->delete();
+        $c->model('DB::User')->search( { instance => $instance,  username => $username } )->delete();
         return { success => 0, error => 'INVALID_USER', user => $user };
     }
 
@@ -182,10 +184,11 @@ sub authenticate_via_sip {
     }
     else {          ## User authenticated and does not exits in Libki
         my $minutes =
-          $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
+          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
 
         $user = $c->model('DB::User')->create(
             {
+                instance          => $instance,
                 username          => $username,
                 password          => $password,
                 minutes_allotment => $minutes,

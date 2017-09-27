@@ -49,6 +49,13 @@ __PACKAGE__->table("settings");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 0
+  size: 32
+
 =head2 name
 
   data_type: 'varchar'
@@ -64,6 +71,8 @@ __PACKAGE__->table("settings");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "name",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "value",
@@ -74,17 +83,19 @@ __PACKAGE__->add_columns(
 
 =over 4
 
+=item * L</instance>
+
 =item * L</name>
 
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("name");
+__PACKAGE__->set_primary_key("instance", "name");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-10-19 13:54:24
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vwhwnMGz1X3zuFY1D3Cb+g
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-09-27 10:02:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9NS63C254HOHrEFUI5YF/A
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
