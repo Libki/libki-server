@@ -134,6 +134,7 @@
    - name: Install or update database schema
      command: /home/{{ item.name }}/libki-server/installer/update_db.pl
      with_items: "{{ accounts }}" 
+     ignore_errors: yes #FIXME
 
    - name: Restart Libki
      command: /etc/init.d/libki-{{ item.name }} restart
