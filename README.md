@@ -18,6 +18,7 @@ Please, make [pull requests](https://help.github.com/articles/about-pull-request
 git clone https://github.com/Libki/libki-server.git
 cd libki-server/
 cp libki_local.conf.example libki_local.conf
+cp log4perl.conf.example log4perl.conf
 patch <docker/libki_local.conf.patch
 docker-compose up -d
 docker-compose exec libki perl /libki/installer/update_db.pl
@@ -194,6 +195,15 @@ nano libki_local.conf
 Change the password to what you got from the Mysql setup script. 
 
 Enable or disable SIP by changing the parity bit. It's disabled by default, and if you're not connecting it to an ILS (integrated library system such as Koha) there's no need to change this.
+
+* Set up logger
+
+```bash
+cp log4perl.conf.example log4perl.conf
+nano log4perl.conf
+```
+
+Point the logger to the log file you'd like to use, and make sure it's writable.
 
 * Run the database installer/updater
 
