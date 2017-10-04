@@ -25,6 +25,17 @@
                 <span class="help-inline">[% c.loc("Amount of time a user is given per session.") %]</span>
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label" for="DefaultGuestSessionTimeAllowance">[% c.loc("Default guest time allowance per session") %]</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" class="input-mini" id="DefaultGuestSessionTimeAllowance" name="DefaultGuestSessionTimeAllowance" value="[% DefaultGuestSessionTimeAllowance %]">
+                    <span class="add-on">[% c.loc("Minutes") %]</span>
+                </div>
+                <span class="help-inline">[% c.loc("Amount of time a registered user is given per session.") %]</span>
+             </div>
+         </div>
     
         <div class="control-group">
             <label class="control-label" for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
