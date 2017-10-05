@@ -52,7 +52,8 @@ __PACKAGE__->table("sessions");
 =head2 instance
 
   data_type: 'varchar'
-  is_nullable: 1
+  default_value: (empty string)
+  is_nullable: 0
   size: 32
 
 =head2 client_id
@@ -78,7 +79,7 @@ __PACKAGE__->table("sessions");
 
 __PACKAGE__->add_columns(
   "instance",
-  { data_type => "varchar", is_nullable => 1, size => 32 },
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "client_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "user_id",
@@ -165,8 +166,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Hd8f9F0qfsZNWxWtYOKObA
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lrVgE6CR0VCtkUzBweBAHw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

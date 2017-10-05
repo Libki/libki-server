@@ -13,7 +13,8 @@ use Libki::Schema::DB;
 
 my ( $opt, $usage ) = describe_options(
     '%c %o',
-    [ 'username|u=s', "the username for this user, required" ],
+    [ 'instance|i=s', "the instance for the user to exist on", { default => q{} } ],
+    [ 'username|u=s', "the username for this user, required", { required => 1 } ],
     [ 'password|p=s', "the password for this user" ],
     [ 'minutes|m=s',  "number of minutes for this user" ],
     [ 'admin|a',      "makes the user an admin" ],
@@ -35,25 +36,28 @@ my $schema = Libki::Schema::DB->connect($connect_info)
 
 my $user_rs = $schema->resultset('User');
 
-my $user = $user_rs->find( { username => $opt->username } );
+my $user = $user_rs->search( { instance => $opt->instance, username => $opt->username } )->next();
 
 if ($user) {
     $user->set_column( 'password', $opt->password );
     $user->update();
 }
 else {
+    my $default_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $opt->instance, name => 'DefaultTimeAllowance' });
+    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
+
     $user = $user_rs->create(
         {
+            instance          => $opt->instance,
             username          => $opt->username,
             password          => $opt->password,
-            minutes_allotment => $opt->minutes
-              || $schema->resultset('Setting')->find('DefaultTimeAllowance')
-              ->value(),
+            minutes_allotment => $opt->minutes || $default_time_allowance,
             status          => 'enabled',
             is_troublemaker => 'No',
         }
     );
 }
+
 if ( $opt->superadmin ) {
     my $role =
       $schema->resultset('Role')->search( { role => 'superadmin' } )->single();

@@ -52,7 +52,8 @@ __PACKAGE__->table("statistics");
 =head2 instance
 
   data_type: 'varchar'
-  is_nullable: 1
+  default_value: (empty string)
+  is_nullable: 0
   size: 32
 
 =head2 id
@@ -95,7 +96,7 @@ __PACKAGE__->table("statistics");
 
 __PACKAGE__->add_columns(
   "instance",
-  { data_type => "varchar", is_nullable => 1, size => 32 },
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
@@ -127,8 +128,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fOYGghUZEeSRkT7RJZUeWg
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FF26L0thae4p+2ERhuv9iw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

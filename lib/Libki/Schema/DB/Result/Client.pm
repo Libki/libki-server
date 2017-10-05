@@ -52,7 +52,8 @@ __PACKAGE__->table("clients");
 =head2 instance
 
   data_type: 'varchar'
-  is_nullable: 1
+  default_value: (empty string)
+  is_nullable: 0
   size: 32
 
 =head2 id
@@ -83,7 +84,7 @@ __PACKAGE__->table("clients");
 
 __PACKAGE__->add_columns(
   "instance",
-  { data_type => "varchar", is_nullable => 1, size => 32 },
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "name",
@@ -174,8 +175,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yMsPvwZxYzjpzGVvRqb22A
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lDCwU3/d1csL6XPhCk92dw
 
 =head2 can_user_use
 

@@ -52,7 +52,8 @@ __PACKAGE__->table("users");
 =head2 instance
 
   data_type: 'varchar'
-  is_nullable: 1
+  default_value: (empty string)
+  is_nullable: 0
   size: 32
 
 =head2 id
@@ -120,7 +121,7 @@ __PACKAGE__->table("users");
 
 __PACKAGE__->add_columns(
   "instance",
-  { data_type => "varchar", is_nullable => 1, size => 32 },
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
@@ -254,8 +255,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-03 10:50:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yNSUVdqlwF5FVEWnRZw57w
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Dd9QeIGJ+b7aVDWhmTjrCQ
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
@@ -297,10 +298,14 @@ sub insert {
     my ( $self, @args ) = @_;
 
     my $schema = $self->result_source->schema;
-    my $default_time_allowance =
-      $schema->resultset('Setting')->find('DefaultTimeAllowance')->value;
-    my $default_session_time_allowance =
-      $schema->resultset('Setting')->find('DefaultSessionTimeAllowance')->value;
+
+    my $default_time_allowance_setting =
+      $schema->resultset('Setting')->find({ instance => $self->instance, name => 'DefaultTimeAllowance' });
+    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
+
+    my $default_session_time_allowance_setting =
+      $schema->resultset('Setting')->find({ instance => $self->instance, name => 'DefaultSessionTimeAllowance' });
+    my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : 0;
 
     $self->minutes(0) unless $self->minutes();
 
