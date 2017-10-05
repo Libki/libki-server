@@ -15,6 +15,8 @@ sub authenticate_via_sip {
     my $timeout          = $c->config->{SIP}->{timout} || 15;
     my $require_sip_auth = $c->config->{SIP}->{require_sip_auth}
       // 1;    # Default to requiring authentication if setting doesn't exist
+
+    $log->debug("SIP SERVER: $host:$port");
     $log->debug("require_sip_auth: $require_sip_auth");
 
     my $transaction_date = timestamp();
