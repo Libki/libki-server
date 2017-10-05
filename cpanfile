@@ -47,3 +47,6 @@ requires 'Socket';
 requires 'SQL::Script';
 requires 'String::Random';
 requires 'Template::Plugin::UTF8Decode';
+requires 'LWP::Simple';
+requires 'Getopt::Long';
+requires 'Getopt::Long::Descriptive';

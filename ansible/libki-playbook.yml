@@ -77,6 +77,9 @@
        - SQL::Script
        - String::Random
        - Template::Plugin::UTF8Decode
+       - LWP::Simple
+       - Getopt::Long
+       - Getopt::Long::Descriptive
 
    - name: Ensure /etc/apache2/sites-enabled/000-default.conf doesn't exist
      file:
