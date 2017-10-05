@@ -15,7 +15,7 @@ the return value will be a negative number of minutes *since* closing.
 sub minutes_until_closing {
     my ($c, $location_code, $instance) = @_;
 
-    $instance ||= $c->request->headers->{'libki-instance'};
+    $instance ||= $c->instance;
 
     my $now = DateTime->now( time_zone => $ENV{TZ} );
 

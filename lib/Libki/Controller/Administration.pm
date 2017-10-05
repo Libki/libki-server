@@ -25,7 +25,7 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my @locations = $c->model('DB::Client')->search(
         {

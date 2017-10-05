@@ -30,7 +30,7 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
       localtime(time);

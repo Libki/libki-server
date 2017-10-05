@@ -16,7 +16,7 @@ sub setting {
         $name = $params;
     }
 
-    $instance ||= $c->request->headers->{'libki-instance'};
+    $instance ||= $c->instance;
 
     my $setting = $c->model('DB::Setting')->find( { instance => $instance, name => $name } );
 

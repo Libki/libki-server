@@ -8,7 +8,7 @@ use Data::Dumper;
 sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $log = $c->log();
 

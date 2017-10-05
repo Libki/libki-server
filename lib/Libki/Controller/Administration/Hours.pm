@@ -36,7 +36,7 @@ sub auto : Private {
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     # Get the list of locations
     my @locations = $c->model('DB::Location')->search({ instance => $instance });
@@ -64,7 +64,7 @@ sub index : Path : Args(0) {
 sub update_days : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $params = $c->request->params;
 
@@ -123,7 +123,7 @@ sub update_days : Local : Args(0) {
 sub update_dates : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $params = $c->request->params;
 

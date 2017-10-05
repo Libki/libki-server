@@ -30,7 +30,7 @@ returns JSON hash containing the username as a key value pair
 sub client : Local : Args(1) {
     my ( $self, $c, $name ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $username = $c->request->params->{'username'};
     my $password = $c->request->params->{'password'};

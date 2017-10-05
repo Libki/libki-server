@@ -27,7 +27,7 @@ sub index : Path : Args(0) {
 sub statistics : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $from = $c->request->params->{'from'};
     my $to   = $c->request->params->{'to'};

@@ -23,7 +23,7 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $username  = $c->request->params->{'username'};
     my $password  = $c->request->params->{'password'};

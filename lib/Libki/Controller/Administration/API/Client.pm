@@ -79,7 +79,7 @@ sub reservation : Local : Args(1) {
 
     my $client = $c->model('DB::Client')->find($client_id);
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $action    = $c->request->params->{action}   || q{};
     my $username  = $c->request->params->{username} || q{};

@@ -5,7 +5,7 @@ use Net::LDAP;
 sub authenticate_via_ldap {
     my ( $c, $user, $username, $password ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my $log = $c->log();
 

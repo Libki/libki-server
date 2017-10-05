@@ -65,7 +65,7 @@ Stash all the system settings
 sub auto : Private {
     my ( $self, $c ) = @_;
 
-    my $instance = $c->request->headers->{'libki-instance'};
+    my $instance = $c->instance;
 
     my @settings = $c->model('DB::Setting')->search({ instance => $instance });
     my %s = map { $_->name() => $_->value() } @settings;
