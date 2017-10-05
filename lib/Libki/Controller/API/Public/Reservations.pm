@@ -28,13 +28,13 @@ sub create : Local : Args(0) {
     my $client_id = $c->request->params->{'id'};
 
     my $log = $c->log();
+    $log->debug("Creating reservation for $username / $client_id");
 
     my $user = $c->model('DB::User')->single( { username => $username } );
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
-    #unless ( $user && $user->is_guest eq 'Yes' ) {
-    unless ( $user && $user->is_guest ) {
+    unless ( $user && $user->is_guest eq 'Yes' ) {
         if ( $c->config->{SIP}->{enable} ) {
             $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
             my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
@@ -51,6 +51,8 @@ sub create : Local : Args(0) {
             $details    = $ret->{details};
             $user       = $ret->{user};
         }
+    } else {
+        $log->debug("User $username is a guest, not trying external authentication");
     }
 
     if (
