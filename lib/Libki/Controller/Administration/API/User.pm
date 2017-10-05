@@ -66,8 +66,7 @@ sub create : Local : Args(0) {
 
     my $username = $params->{'username'};
     my $password = $params->{'password'};
-    my $minutes  = $params->{'minutes'}
-      || $c->model('DB::Setting')->find( { instance => $instance, name => 'DefaultTimeAllowance' } )->value;
+    my $minutes  = $params->{'minutes'} || $c->setting('DefaultTimeAllowance');
 
     $minutes = 0 if ( $minutes < 0 );
 
@@ -100,8 +99,7 @@ sub create_guest : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $current_guest_number_setting =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_create({ instance => $instance, name => 'CurrentGuestNumber' });
     my $current_guest_number = $current_guest_number_setting->value + 1;
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update();
@@ -112,7 +110,7 @@ sub create_guest : Local : Args(0) {
     my $username = $prefix . $current_guest_number;
     my $password =
       random_string("nnnn");    #TODO: Make the pattern a system setting
-    my $minutes = $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultGuestSessionTimeAllowance' })->value;
+    my $minutes = $c->setting('DefaultGuestSessionTimeAllowance');
 
     my $success = 0;
 
@@ -154,19 +152,14 @@ sub batch_create_guest : Local : Args(0) {
 
     my $success = 0;
 
-    my $guest_count =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'GuestBatchCount' })->value();
-    my $batch_guest_pass_username_label =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'BatchGuestPassUsernameLabel' })->value();
-    my $batch_guest_pass_password_label =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'BatchGuestPassPasswordLabel' })->value();
-    my $minutes =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultGuestSessionTimeAllowance' })->value();
-    my $guest_pass_file =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'GuestPassFile' })->value();
+    my $guest_count = $c->setting('GuestBatchCount');
+    my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
+    my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
+    my $minutes = $c->setting('DefaultGuestSessionTimeAllowance');
+    my $guest_pass_file = $c->setting('GuestPassFile');
+
     my $current_guest_number_setting =
       $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-
     my $current_guest_number = $current_guest_number_setting->value();
 
     $current_guest_number++;

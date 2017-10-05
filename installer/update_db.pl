@@ -72,7 +72,13 @@ foreach my $version_dir (@version_dirs) {
         }
     }
     
-    $schema->resultset('Setting')->update_or_create({ instance => undef, 'name' => 'Version', 'value' => $version });
+    $schema->storage->dbh_do(
+      sub {
+        my ($storage, $dbh, $version) = @_;
+        $dbh->do("REPLACE INTO settings ( name, value ) VALUES ( ?, ? )", undef, 'Version', $version );
+      },
+      $version
+    );
 }
 
 =head1 AUTHOR

@@ -38,6 +38,7 @@ use Catalyst qw/
   StatusMessage
   
   Breadcrumbs
+  LibkiSetting
 
   I18N
   /;

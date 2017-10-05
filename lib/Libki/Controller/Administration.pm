@@ -38,10 +38,8 @@ sub index : Path : Args(0) {
     )->get_column('location')->all();
 
     $c->stash(
-        DefaultTimeAllowance =>
-          $c->model('DB::Setting')->find( { instance => $instance, name => 'DefaultTimeAllowance' } )->value,
-        CustomJsAdministration =>
-          $c->model('DB::Setting')->find( { instance => $instance, name => 'CustomJsAdministration' } )->value,
+        DefaultTimeAllowance => $c->setting('DefaultTimeAllowance'),
+        CustomJsAdministration => $c->setting('CustomJsAdministration'),
         locations => \@locations,
     );
 }
