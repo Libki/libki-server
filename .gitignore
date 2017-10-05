@@ -1,3 +1,4 @@
+log4perl.conf
 libki.log
 libki.pid
 libki.status
