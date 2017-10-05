@@ -118,6 +118,10 @@
      include: playbooks/libki-playbook-create-libki-conf.yml account={{ item }}
      with_items: "{{ accounts }}" 
 
+   - name: Ensure log4perl.conf exists and is configured for each account
+     include: playbooks/libki-playbook-create-log4perl-conf.yml account={{ item }}
+     with_items: "{{ accounts }}" 
+
    - name: Ensure libki init script exists and is configured for each account
      include: playbooks/libki-playbook-create-libki-init.yml account={{ item }}
      with_items: "{{ accounts }}" 
@@ -126,10 +130,6 @@
      include: playbooks/libki-playbook-create-apache-proxy-conf.yml account={{ item }}
      with_items: "{{ accounts }}" 
      notify: Restart Apache
-
-   - name: Rewrite the logfile path to the home directory
-     replace: dest=/home/{{ item.name }}/libki-server/log4perl.conf regexp='/var/log/libki.log' replace='/home/{{ item.name }}/libki.log'
-     with_items: "{{ accounts }}" 
 
    - name: Install or update database schema
      command: /home/{{ item.name }}/libki-server/installer/update_db.pl

@@ -1,0 +1,10 @@
+---
+- name: Ensure libki_local.conf exists and is configured for each account
+  command: script/administration/create_user.pl -u {{ user.username }} -p {{ user.password }} -m 9999 -a -s
+  args:
+    chdir: "/home/{{ account.name }}/libki-server"
+  become: true
+  become_user: "{{ account.name }}"
+  with_items: "{{ account.users }}" 
+  loop_control:
+    loop_var: user
