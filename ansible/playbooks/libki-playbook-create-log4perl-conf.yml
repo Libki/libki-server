@@ -1,0 +1,11 @@
+---
+- name: Ensure log4perl.conf exists and is configured for each account
+  template: src=templates/log4perl.conf.j2 dest=/home/{{ item.name }}/libki-server/log4perl.conf
+- name: Ensure the log file itself exists and is writable
+  file:
+    path: "/home/{{ account.name }}/libki.log"
+    owner: "{{ account.name }}"
+    group: "{{ account.name }}"
+    mode: 0644
+    state: touch
+
