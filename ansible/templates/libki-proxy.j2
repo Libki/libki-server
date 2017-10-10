@@ -1,7 +1,7 @@
 <VirtualHost *:80>
     ServerName {{ account.server_address }}
 
-    RequestHeader set libki-instance "{{ account.name }}""
+    RequestHeader set libki-instance "{{ account.name }}"
 
     ProxyPass        / http://localhost:{{ account.port }}/ retry=0
     ProxyPassReverse / http://localhost:{{ account.port }}/ retry=0
