@@ -39,10 +39,9 @@ my $user_rs = $c->model('DB::User');
 while ( my $user = $user_rs->next() ) {
     my $instance = $user->instance;
 
-    my $user_minutes_allotment = $default_time_allowances->{$instance};
-    my $user_minutes = min( $user_minutes_allotment->{$instance}, $default_session_time_allowances->{$instance} );
+    my $user_minutes = min( $default_time_allowances->{$instance}, $default_session_time_allowances->{$instance} );
 
-    $user->minutes_allotment( $user_minutes_allotment->{$instance} );
+    $user->minutes_allotment( $default_time_allowances->{$instance} );
     $user->minutes($user_minutes);
     $user->status('disabled') if ( $user->is_troublemaker eq 'Yes' );
     $user->update();
