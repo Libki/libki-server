@@ -32,7 +32,7 @@ use Catalyst qw/
   Authorization::Roles
 
   Session
-  Session::Store::File
+  Session::Store::DBIC
   Session::State::Cookie
 
   StatusMessage
@@ -63,6 +63,13 @@ __PACKAGE__->config(
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
     enable_catalyst_header                      => 1,   # Send X-Catalyst header
+);
+
+__PACKAGE__->config(
+    'Plugin::Session' => {
+        dbic_class => 'DB::LoginSession',
+        expires    => 3600,
+    },
 );
 
 __PACKAGE__->config(

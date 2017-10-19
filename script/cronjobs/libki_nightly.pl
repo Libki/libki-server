@@ -59,6 +59,7 @@ foreach my $drd (@data_retention_days) {
 }
 
 ## Clear out expired sessions
+## TODO: Should we delete sessions with no expiration periodically?
 $c->delete_expired_sessions();
 
 =head1 AUTHOR

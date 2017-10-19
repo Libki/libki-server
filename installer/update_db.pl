@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use Modern::Perl;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -33,7 +32,7 @@ my $schema_version = $schema->schema_version();
 
 my $db_version;
 try {
-    $db_version = $schema->resultset('Setting')->find('Version')->value;
+    $db_version = $schema->resultset('Setting')->search( { name => 'Version' } )->next->value;
 }
 catch {
     $db_version = '00.00.00.000';

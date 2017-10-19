@@ -42,7 +42,7 @@
        - Catalyst::Plugin::Authentication
        - Catalyst::Plugin::Authorization::Roles
        - Catalyst::Plugin::Session
-       - Catalyst::Plugin::Session::Store::File
+       - Catalyst::Plugin::Session::Store::DBIC
        - Catalyst::Plugin::Session::State::Cookie
        - Catalyst::Plugin::StatusMessage
        - Catalyst::Plugin::StatusMessage
