@@ -31,6 +31,7 @@ sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
+    my $config = $c->config->{instances}->{$instance} || $c->config;
 
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
       localtime(time);
@@ -151,7 +152,7 @@ sub index : Path : Args(0) {
 
             ## If SIP is enabled, try SIP first, unless we have a guest or staff account
             my ( $success, $error, $sip_fields ) = ( 1, undef, undef );
-            if ( $c->config->{SIP}->{enable} ) {
+            if ( $config->{SIP}->{enable} ) {
                 if (
                     !$user
                     || (   $user
@@ -177,7 +178,7 @@ sub index : Path : Args(0) {
             }
 
             ## If LDAP is enabled, try LDAP, unless we have a guest or staff account
-            if ( $c->config->{LDAP}->{enable} ) {
+            if ( $config->{LDAP}->{enable} ) {
                 $log->debug( __PACKAGE__ . " attempting LDAP authentication" );
                 if (
                     !$user

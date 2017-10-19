@@ -9,13 +9,14 @@ sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
 
     my $instance = $c->instance;
+    my $config = $c->config->{instances}->{$instance} || $c->config;
 
     my $log = $c->log();
 
-    my $host             = $c->config->{SIP}->{host};
-    my $port             = $c->config->{SIP}->{port};
-    my $timeout          = $c->config->{SIP}->{timout} || 15;
-    my $require_sip_auth = $c->config->{SIP}->{require_sip_auth}
+    my $host             = $config->{SIP}->{host};
+    my $port             = $config->{SIP}->{port};
+    my $timeout          = $config->{SIP}->{timout} || 15;
+    my $require_sip_auth = $config->{SIP}->{require_sip_auth}
       // 1;    # Default to requiring authentication if setting doesn't exist
 
     $log->debug("SIP SERVER: $host:$port");
@@ -24,11 +25,11 @@ sub authenticate_via_sip {
     my $transaction_date = timestamp();
 
     my $terminator;
-    $terminator = chr(0x0a) if $c->config->{SIP}->{terminator} eq "NL";
-    $terminator = $CR       if $c->config->{SIP}->{terminator} eq "CR";
-    $terminator = $CRLF     if $c->config->{SIP}->{terminator} eq "CRLF";
+    $terminator = chr(0x0a) if $config->{SIP}->{terminator} eq "NL";
+    $terminator = $CR       if $config->{SIP}->{terminator} eq "CR";
+    $terminator = $CRLF     if $config->{SIP}->{terminator} eq "CRLF";
     $terminator ||= chr(0x0d);    ## Default to CR
-    $log->debug( "TERMINATOR: " . $c->config->{SIP}->{terminator} );
+    $log->debug( "TERMINATOR: " . $config->{SIP}->{terminator} );
 
     my $socket = IO::Socket::INET->new(
         PeerAddr => $host,
@@ -39,16 +40,16 @@ sub authenticate_via_sip {
     ) or $log->fatal("ERROR in Socket Creation : $!\n");
 
     ## Set location to empty string if not set
-    $c->config->{SIP}->{location} // q{};
+    $config->{SIP}->{location} //= q{};
 
     my $data;
     my $patron_status_request;
 
     if ($require_sip_auth) {
         my $string = "9300";
-        $string .= "CN" . $c->config->{SIP}->{username} . "|";
-        $string .= "CO" . $c->config->{SIP}->{password} . "|";
-        $string .= "CP" . $c->config->{SIP}->{location} . "|";
+        $string .= "CN" . $config->{SIP}->{username} . "|";
+        $string .= "CO" . $config->{SIP}->{password} . "|";
+        $string .= "CP" . $config->{SIP}->{location} . "|";
 
         my $str_93 = checksum($string);
         $str_93 = $string . $str_93 . $terminator;
@@ -59,7 +60,7 @@ sub authenticate_via_sip {
         $socket->recv( $response, 1024 );
         chomp $response;
 
-        if ( $c->config->{SIP}->{enable_split_messages} ) {
+        if ( $config->{SIP}->{enable_split_messages} ) {
             $socket->recv( $split, 1024 );
             chomp $split;
             $response .= $split;
@@ -80,7 +81,7 @@ sub authenticate_via_sip {
             $socket->recv( $response, 1024 );
             chomp $response;
 
-            if ( $c->config->{SIP}->{enable_split_messages} ) {
+            if ( $config->{SIP}->{enable_split_messages} ) {
                 $socket->recv( $split, 1024 );
                 chomp $split;
                 $response .= $split;
@@ -92,7 +93,7 @@ sub authenticate_via_sip {
                 my ( $chk, $end ) = split /\|AY/, $response;
                 $chk .= "|AY";
                 my $run_num = substr( $end, 0, 1 );
-                $patron_status_request = talk63( $c->config->{SIP}->{location},
+                $patron_status_request = talk63( $config->{SIP}->{location},
                     $username, $password, $run_num )
                   . $terminator;
             }
@@ -120,7 +121,7 @@ sub authenticate_via_sip {
         $socket->recv( $response, 1024 );
         chomp $response;
 
-        if ( $c->config->{SIP}->{enable_split_messages} ) {
+        if ( $config->{SIP}->{enable_split_messages} ) {
             $socket->recv( $split, 1024 );
             chomp $split;
             $response .= $split;
@@ -132,7 +133,7 @@ sub authenticate_via_sip {
             my ( $chk, $end ) = split /\|AY/, $response;
             $chk .= "|AY";
             my $run_num = substr( $end, 0, 1 );
-            $patron_status_request = talk63( $c->config->{SIP}->{location},
+            $patron_status_request = talk63( $config->{SIP}->{location},
                 $username, $password, $run_num )
               . $terminator;
         }
@@ -143,7 +144,7 @@ sub authenticate_via_sip {
     $socket->recv( $data, 1024 );
     $log->debug("READ: $data");
 
-    if ( $c->config->{SIP}->{enable_split_messages} ) {
+    if ( $config->{SIP}->{enable_split_messages} ) {
         $socket->recv( $split, 1024 );
         chomp $split;
         $data .= $split;
@@ -198,7 +199,7 @@ sub authenticate_via_sip {
         );
     }
 
-    if ( my $deny_on = $c->config->{SIP}->{deny_on} ) {
+    if ( my $deny_on = $config->{SIP}->{deny_on} ) {
         my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
 
         foreach my $d (@deny_on) {
@@ -208,7 +209,7 @@ sub authenticate_via_sip {
         }
 
         # If the fee limit is a SIP2 field, use that field as the fee limit
-        if ( my $fee_limit = $c->config->{SIP}->{fee_limit} ) {
+        if ( my $fee_limit = $config->{SIP}->{fee_limit} ) {
             $fee_limit = $sip_fields->{$fee_limit}
               if ( $fee_limit =~ /[A-Z][A-Z]/ );
 
@@ -223,7 +224,7 @@ sub authenticate_via_sip {
         }
     }
 
-    if ( my $deny_on = $c->config->{SIP}->{deny_on_field} ) {
+    if ( my $deny_on = $config->{SIP}->{deny_on_field} ) {
         my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
 
         foreach my $d (@deny_on) {

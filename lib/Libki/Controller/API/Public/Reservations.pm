@@ -24,6 +24,7 @@ sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
+    my $config = $c->config->{instances}->{$instance} || $c->config;
 
     my $username  = $c->request->params->{'username'};
     my $password  = $c->request->params->{'password'};
@@ -37,7 +38,7 @@ sub create : Local : Args(0) {
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
     unless ( $user && $user->is_guest eq 'Yes' ) {
-        if ( $c->config->{SIP}->{enable} ) {
+        if ( $config->{SIP}->{enable} ) {
             $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
             my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
             $success    = $ret->{success};
@@ -45,7 +46,7 @@ sub create : Local : Args(0) {
             $details    = $ret->{details};
             $user       = $ret->{user};
         }
-        elsif ( $c->config->{LDAP}->{enable} ) {
+        elsif ( $config->{LDAP}->{enable} ) {
             $log->debug("Calling Libki::LDAP::authenticate_via_ldap( $c, $user, $username, $password )");
             my $ret = Libki::LDAP::authenticate_via_ldap( $c, $user, $username, $password );
             $success    = $ret->{success};

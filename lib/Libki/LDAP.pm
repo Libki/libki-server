@@ -6,18 +6,18 @@ sub authenticate_via_ldap {
     my ( $c, $user, $username, $password ) = @_;
 
     my $instance = $c->instance;
+    my $config = $c->config->{instances}->{$instance} || $c->config;
 
     my $log = $c->log();
 
-    my $adminDn           = $c->config->{LDAP}->{adminDn};
-    my $adminPwd          = $c->config->{LDAP}->{adminPwd};
-    my $searchBase        = $c->config->{LDAP}->{searchBase};
-    my $host              = $c->config->{LDAP}->{host};
-    my $port              = $c->config->{LDAP}->{port};
-    my $ldaps             = $c->config->{LDAP}->{ldaps};
-    my $ldaps             = $c->config->{LDAP}->{ldaps};
-    my $match_attribute   = $c->config->{LDAP}->{match_attribute};
-    my $require_ldap_auth = $c->config->{LDAP}->{require_ldap_auth}
+    my $adminDn           = $config->{LDAP}->{adminDn};
+    my $adminPwd          = $config->{LDAP}->{adminPwd};
+    my $searchBase        = $config->{LDAP}->{searchBase};
+    my $host              = $config->{LDAP}->{host};
+    my $port              = $config->{LDAP}->{port};
+    my $ldaps             = $config->{LDAP}->{ldaps};
+    my $match_attribute   = $config->{LDAP}->{match_attribute};
+    my $require_ldap_auth = $config->{LDAP}->{require_ldap_auth}
       // 1;    # Default to requiring authentication if setting doesn't exist
 
     my $data;
@@ -55,7 +55,7 @@ sub authenticate_via_ldap {
         );
     }
 
-    if ( my $deny_on = $c->config->{LDAP}->{deny_on} ) {
+    if ( my $deny_on = $config->{LDAP}->{deny_on} ) {
         my @deny_on = ref($deny_on) eq "ARRAY" ? @$deny_on : $deny_on;
 
         foreach my $d (@deny_on) {
