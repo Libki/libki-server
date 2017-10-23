@@ -74,7 +74,7 @@ sub clients : Local Args(0) {
             ? $c->request->param('iDisplayLength')
             : undef,
             offset   => $c->request->param('iDisplayStart'),
-            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
+    #       prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
         }
     );
 

@@ -144,6 +144,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 print_files
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::PrintFile>
+
+=cut
+
+__PACKAGE__->has_many(
+  "print_files",
+  "Libki::Schema::DB::Result::PrintFile",
+  { "foreign.client_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 reservation
 
 Type: might_have
@@ -175,8 +190,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lDCwU3/d1csL6XPhCk92dw
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-23 05:54:02
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NaCOX9ibm8QXCGWk8vCRSw
 
 =head2 can_user_use
 

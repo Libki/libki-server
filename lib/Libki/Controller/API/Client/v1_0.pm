@@ -1,4 +1,5 @@
 package Libki::Controller::API::Client::v1_0;
+
 use Moose;
 use namespace::autoclean;
 
@@ -8,6 +9,7 @@ use Libki::SIP qw( authenticate_via_sip );
 use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
 
+use Data::Printer;
 use DateTime::Format::MySQL;
 use DateTime;
 
@@ -40,8 +42,6 @@ sub index : Path : Args(0) {
         $year + 1900,
         $mon + 1, $mday, $hour, $min, $sec
     );
-
-    my $enc = 'UTF-8';
 
     my $log = $c->log();
 
@@ -353,7 +353,45 @@ sub index : Path : Args(0) {
     }
 
     delete( $c->stash->{'Settings'} );
+    $c->forward( $c->view('JSON') );
+}
 
+sub print : Path('print') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+    my $config   = $c->config->{instances}->{$instance} || $c->config;
+    my $log      = $c->log();
+
+    my $client_name = $c->request->params->{'node'};
+
+    my $client = $c->model('DB::Client')
+      ->single( { instance => $instance, name => $client_name } );
+
+    if ($client) {
+        my $print_file = $c->req->upload('print_file');
+        $c->model('DB::PrintFile')->create(
+            {
+                filename     => $print_file->filename,
+                content_type => $print_file->type,
+                data         => $print_file->decoded_slurp,
+                client_name  => $client_name,
+                client_id    => $client->id,
+            }
+        );
+
+        $c->stash( success => 1 );
+    }
+    else {
+
+        $c->stash(
+            success => 0,
+            error   => 'CLIENT NOT FOUND',
+            client  => "$instance/$client_name"
+        );
+    }
+
+    delete( $c->stash->{'Settings'} );
     $c->forward( $c->view('JSON') );
 }
 
