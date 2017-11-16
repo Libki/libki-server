@@ -37,6 +37,8 @@ sub users : Local Args(0) {
                 'me.notes'    => { 'like', "%$search_term%" },
             ]
         };
+    } else {
+      $filter = { 'me.instance' => $instance };
     }
 
     # Sorting options
