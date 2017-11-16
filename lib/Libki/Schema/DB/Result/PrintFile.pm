@@ -62,6 +62,12 @@ __PACKAGE__->table("print_files");
   is_auto_increment: 1
   is_nullable: 0
 
+=head2 printer
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 255
+
 =head2 filename
 
   data_type: 'text'
@@ -90,6 +96,18 @@ __PACKAGE__->table("print_files");
   is_nullable: 0
   size: 255
 
+=head2 user_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 username
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 255
+
 =head2 created_id
 
   data_type: 'datetime'
@@ -104,6 +122,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "printer",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
   "filename",
   { data_type => "text", is_nullable => 0 },
   "content_type",
@@ -113,6 +133,10 @@ __PACKAGE__->add_columns(
   "client_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "client_name",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
+  "user_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "username",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "created_id",
   {
@@ -157,9 +181,29 @@ __PACKAGE__->belongs_to(
   },
 );
 
+=head2 user
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 04:46:36
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SQSy+hLOO1rijNepRCRDuA
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::User>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "user",
+  "Libki::Schema::DB::Result::User",
+  { id => "user_id" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "SET NULL",
+    on_update     => "CASCADE",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 05:36:36
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vkyVIR0cc+tvWC9PQ6hQVQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
