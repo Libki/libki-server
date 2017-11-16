@@ -49,6 +49,13 @@ __PACKAGE__->table("print_files");
 
 =head1 ACCESSORS
 
+=head2 instance
+
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 0
+  size: 32
+
 =head2 id
 
   data_type: 'integer'
@@ -93,6 +100,8 @@ __PACKAGE__->table("print_files");
 =cut
 
 __PACKAGE__->add_columns(
+  "instance",
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "filename",
@@ -149,8 +158,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 04:43:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:18NJjIsM5RqR3J2ym1kntQ
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 04:46:36
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SQSy+hLOO1rijNepRCRDuA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

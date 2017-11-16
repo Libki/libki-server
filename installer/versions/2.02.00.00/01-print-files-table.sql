@@ -1,4 +1,5 @@
 CREATE TABLE `print_files` (
+  `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` text NOT NULL,
   `content_type` varchar(255) DEFAULT NULL,
