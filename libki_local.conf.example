@@ -8,6 +8,7 @@
         quote_names 1
     </connect_info>
 </Model::DB>
+
 <SIP>
     enable 0
     host ils.mylibrary.org
@@ -25,3 +26,21 @@
     deny_on_field AB:This is the reason we are denying you  # You can require arbitrary SIP fields to have a value of Y for patrons to be allowed to log in.
                                                             # The format of the setting is Field:Message
 </SIP>
+
+<printers>
+    <printer monochrome>
+        type google_cloud_printer
+        google_cloud_id c4322eb8-5b5b-2783-1953-8f1245296895
+        <ticket>
+            color {"type": "STANDARD_MONOCHROME"}
+        </ticket>
+    </printer>
+
+    <printer color>
+        type google_cloud_printer
+        google_cloud_id c4322eb8-5b5b-2783-1953-8f1245296895
+        <ticket>
+            color {"type": "STANDARD_COLOR"}
+        </ticket>
+    </printer>
+</printers>

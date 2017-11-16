@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
-use strict;
-use warnings;
+use Modern::Perl;
 
 use Config::ZOMG;
 use Getopt::Long::Descriptive;

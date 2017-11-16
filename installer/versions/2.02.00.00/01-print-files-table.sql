@@ -1,3 +1,5 @@
+ALTER TABLE `settings` MODIFY COLUMN `value` text NOT NULL;
+
 CREATE TABLE `print_files` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -64,9 +64,8 @@ __PACKAGE__->table("settings");
 
 =head2 value
 
-  data_type: 'varchar'
+  data_type: 'text'
   is_nullable: 0
-  size: 255
 
 =cut
 
@@ -76,7 +75,7 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "value",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -94,8 +93,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("instance", "name");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-09-27 10:02:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9NS63C254HOHrEFUI5YF/A
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 06:45:10
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KFpGd1tFvAbzCVD93swNxA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
