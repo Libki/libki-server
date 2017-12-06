@@ -101,7 +101,10 @@ sub create_guest : Local : Args(0) {
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update();
 
-    my $username = "guest" . $current_guest_number;
+    my $prefix_setting = $c->model('DB::Setting')->find('GuestPassPrefix');
+    my $prefix = $prefix_setting && $prefix_setting->value ? $prefix_setting->value : 'guest';
+
+    my $username = $prefix . $current_guest_number;
     my $password =
       random_string("nnnn");    #TODO: Make the pattern a system setting
     my $minutes = $c->model('DB::Setting')->find('DefaultTimeAllowance')->value;
@@ -138,6 +141,9 @@ sub batch_create_guest : Local : Args(0) {
 
     my $params = $c->request->params;
 
+    my $prefix_setting = $c->model('DB::Setting')->find('GuestPassPrefix');
+    my $prefix = $prefix_setting && $prefix_setting->value ? $prefix_setting->value : 'guest';
+
     my $success = 0;
 
     my $guest_count =
@@ -164,7 +170,7 @@ sub batch_create_guest : Local : Args(0) {
     for ( my $i = 0 ; $i < $guest_count ; $i++ ) {
 
         $current_guest_number = $current_guest_number + 1;
-        my $username = "guest" . $current_guest_number;
+        my $username = $prefix . $current_guest_number;
         my $password =
           random_string("nnnn");    #TODO: Make the pattern a system setting
 
