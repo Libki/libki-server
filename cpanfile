@@ -56,3 +56,4 @@ requires 'String::Random';
 requires 'Storable';
 requires 'Template::Plugin::UTF8Decode';
 requires 'Term::Prompt';
+requires 'PDF::API2';
