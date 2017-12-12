@@ -214,6 +214,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 print_jobs
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::PrintJob>
+
+=cut
+
+__PACKAGE__->has_many(
+  "print_jobs",
+  "Libki::Schema::DB::Result::PrintJob",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 reservation
 
 Type: might_have
@@ -270,8 +285,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 05:36:36
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:o1N9kSAIER3Z+8S768QE5g
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-12-12 08:29:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:swZ+XLtR6G6k0fROgtLFKQ
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 

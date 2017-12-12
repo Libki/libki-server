@@ -12,6 +12,7 @@ use Libki::Hours qw( minutes_until_closing );
 use Data::Printer;
 use DateTime::Format::MySQL;
 use DateTime;
+use PDF::API2;
 
 =head1 NAME
 
@@ -364,8 +365,8 @@ sub print : Path('print') : Args(0) {
     my $log      = $c->log();
 
     my $client_name = $c->request->params->{'client_name'};
-    my $username = $c->request->params->{'username'};
-    my $printer = $c->request->params->{'printer'};
+    my $username    = $c->request->params->{'username'};
+    my $printer_id  = $c->request->params->{'printer'};
 
     my $client = $c->model('DB::Client')
       ->single( { instance => $instance, name => $client_name } );
@@ -373,18 +374,40 @@ sub print : Path('print') : Args(0) {
     my $user = $c->model('DB::User')
       ->single( { instance => $instance, username => $username } );
 
-    if ($client && $user) {
+    if ( $client && $user ) {
         my $print_file = $c->req->upload('print_file');
-        $c->model('DB::PrintFile')->create(
+        my $pdf_string = $print_file->decoded_slurp;
+        my $pdf        = PDF::API2->open_scalar($pdf_string);
+        my $pages      = $pdf->pages();
+
+        my $conf          = $c->config->{instances}->{$instance} || $c->config;
+        my $printers_conf = $conf->{printers};
+        my $printers      = $printers_conf->{printer};
+        my $printer       = $printers->{$printer_id};
+
+        my $print_file = $c->model('DB::PrintFile')->create(
             {
+                instance     => $instance,
                 filename     => $print_file->filename,
                 content_type => $print_file->type,
-                data         => $print_file->decoded_slurp,
-                printer      => $printer,
+                data         => $pdf_string,
+                pages        => $pages,
                 client_id    => $client->id,
                 client_name  => $client_name,
                 user_id      => $user->id,
-                username     => $username, 
+                username     => $username,
+            }
+        );
+
+        my $print_job = $c->model('DB::PrintJob')->create(
+            {
+                instance      => $instance,
+                type          => $printer->{type},
+                status        => 'Pending',
+                data          => undef,
+                printer       => $printer_id,
+                user_id       => $user->id,
+                print_file_id => $print_file->id,
             }
         );
 

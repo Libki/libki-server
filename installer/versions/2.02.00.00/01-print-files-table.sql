@@ -24,6 +24,7 @@ CREATE TABLE `print_jobs` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL, 
+  `status` varchar(255) NOT NULL, 
   `data` TEXT DEFAULT NULL,
   `printer` varchar(255) NOT NULL,
   `user_id` int(11) DEFAULT NULL,

@@ -62,12 +62,6 @@ __PACKAGE__->table("print_files");
   is_auto_increment: 1
   is_nullable: 0
 
-=head2 printer
-
-  data_type: 'varchar'
-  is_nullable: 0
-  size: 255
-
 =head2 filename
 
   data_type: 'text'
@@ -82,6 +76,11 @@ __PACKAGE__->table("print_files");
 =head2 data
 
   data_type: 'blob'
+  is_nullable: 1
+
+=head2 pages
+
+  data_type: 'integer'
   is_nullable: 1
 
 =head2 client_id
@@ -115,6 +114,13 @@ __PACKAGE__->table("print_files");
   default_value: 'CURRENT_TIMESTAMP'
   is_nullable: 0
 
+=head2 updated_on
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  default_value: 'CURRENT_TIMESTAMP'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -122,14 +128,14 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "printer",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
   "filename",
   { data_type => "text", is_nullable => 0 },
   "content_type",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "data",
   { data_type => "blob", is_nullable => 1 },
+  "pages",
+  { data_type => "integer", is_nullable => 1 },
   "client_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "client_name",
@@ -139,6 +145,13 @@ __PACKAGE__->add_columns(
   "username",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "created_id",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    default_value => "CURRENT_TIMESTAMP",
+    is_nullable => 0,
+  },
+  "updated_on",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
@@ -181,6 +194,21 @@ __PACKAGE__->belongs_to(
   },
 );
 
+=head2 print_jobs
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::PrintJob>
+
+=cut
+
+__PACKAGE__->has_many(
+  "print_jobs",
+  "Libki::Schema::DB::Result::PrintJob",
+  { "foreign.print_file_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 user
 
 Type: belongs_to
@@ -202,8 +230,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 05:36:36
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vkyVIR0cc+tvWC9PQ6hQVQ
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-12-12 08:29:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hD2oMAHSV9HoBH48/DW+rg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
