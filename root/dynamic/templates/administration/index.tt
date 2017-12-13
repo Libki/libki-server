@@ -147,7 +147,7 @@
 
         <div id="print-table-row-toolbar" class="table-row-toolbar btn-group">
             <button id="print-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiReleasePrint( window.selected_id )"><i class="icon-print icon-white"></i> [% c.loc("Print") %]</button>
-            <button id="print-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiCancelPrint( window.selected_id )"><i class="icon-ban icon-white"></i> [% c.loc("Cancel") %]</button>
+            <button id="print-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiCancelPrint( window.selected_id )"><i class="fa fa-ban"></i> [% c.loc("Cancel") %]</button>
         </div>
   </div>
 </div>
