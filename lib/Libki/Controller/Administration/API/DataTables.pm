@@ -25,20 +25,22 @@ sub users : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my @columns =
+      qw( me.username me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status );
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
     if ($search_term) {
         $filter = {
             'me.instance' => $instance,
-            -or => [
+            -or           => [
                 'me.username' => { 'like', "%$search_term%" },
                 'me.notes'    => { 'like', "%$search_term%" },
             ]
         };
-    } else {
-      $filter = { 'me.instance' => $instance };
+    }
+    else {
+        $filter = { 'me.instance' => $instance };
     }
 
     # Sorting options
@@ -47,16 +49,19 @@ sub users : Local Args(0) {
         push(
             @sorting,
             {
-                '-' . $c->request->param("sSortDir_$i") => $columns[ $c->request->param("iSortCol_$i") ]
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
             }
         );
     }
 
-    # May need editing with a filter if the table contains records for other items
-    # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
-    # in this case, we'd only want the count of notes affecting the specific item,
-    # not *all* items
-    my $total_records = $c->model('DB::User')->search({ instance => $instance })->count;
+  # May need editing with a filter if the table contains records for other items
+  # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
+  # in this case, we'd only want the count of notes affecting the specific item,
+  # not *all* items
+    my $total_records =
+      $c->model('DB::User')->search( { instance => $instance } )->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::User')->count($filter);
@@ -66,7 +71,9 @@ sub users : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => ( $c->request->param('iDisplayLength') > 0 ) ? $c->request->param('iDisplayLength') : undef,
+            rows     => ( $c->request->param('iDisplayLength') > 0 )
+            ? $c->request->param('iDisplayLength')
+            : undef,
             offset   => $c->request->param('iDisplayStart'),
             prefetch => { session => 'client' },
         }
@@ -75,18 +82,21 @@ sub users : Local Args(0) {
     my @results;
     foreach my $u (@users) {
 
-	my $enc = 'UTF-8';
+        my $enc = 'UTF-8';
 
         my $r;
         $r->{'DT_RowId'} = $u->id;
-        $r->{'0'}        = decode($enc,$u->username);
-	$r->{'1'}        = $u->minutes_allotment;
+        $r->{'0'}        = decode( $enc, $u->username );
+        $r->{'1'}        = $u->minutes_allotment;
         $r->{'2'}        = $u->minutes;
         $r->{'3'}        = $u->status;
-        $r->{'4'}        = decode($enc,$u->notes);
+        $r->{'4'}        = decode( $enc, $u->notes );
         $r->{'5'}        = $u->is_troublemaker;
-        $r->{'6'}        = defined( $u->session ) ? decode($enc,decode($enc,$u->session->client->name)) : undef;
-        $r->{'7'}        = defined( $u->session ) ? $u->session->status : undef;
+        $r->{'6'} =
+          defined( $u->session )
+          ? decode( $enc, decode( $enc, $u->session->client->name ) )
+          : undef;
+        $r->{'7'} = defined( $u->session ) ? $u->session->status : undef;
 
         push( @results, $r );
     }
@@ -109,7 +119,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
+      qw( me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker );
 
     # Set up filters
     my $filter = { instance => $instance };
@@ -120,8 +130,6 @@ sub clients : Local Args(0) {
             'me.name'       => { 'like', "%$search_term%" },
             'me.location'   => { 'like', "%$search_term%" },
             'user.username' => { 'like', "%$search_term%" },
-
-            #'user.notes'    => { 'like', "%$search_term%" },
         ];
     }
 
@@ -135,20 +143,28 @@ sub clients : Local Args(0) {
         push(
             @sorting,
             {
-                '-' . $c->request->param("sSortDir_$i") => $columns[ $c->request->param("iSortCol_$i") ]
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
             }
         );
     }
 
-    # May need editing with a filter if the table contains records for other items
-    # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
-    # in this case, we'd only want the count of notes affecting the specific item,
-    # not *all* items
-    my $total_records = $c->model('DB::Client')->search({ instance => $instance })->count;
+  # May need editing with a filter if the table contains records for other items
+  # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
+  # in this case, we'd only want the count of notes affecting the specific item,
+  # not *all* items
+    my $total_records =
+      $c->model('DB::Client')->search( { instance => $instance } )->count;
 
     # In case of pagination, we need to know how many records match in total
-    my $count = $c->model('DB::Client')
-      ->count( $filter, { prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ] } );
+    my $count = $c->model('DB::Client')->count(
+        $filter,
+        {
+            prefetch =>
+              [ { 'session' => 'user' }, { 'reservation' => 'user' }, ]
+        }
+    );
 
     # Do the search, including any required sorting and pagination.
     my @clients = $c->model('DB::Client')->search(
@@ -157,6 +173,7 @@ sub clients : Local Args(0) {
             order_by => \@sorting,
             rows     => $c->request->param('iDisplayLength'),
             offset   => $c->request->param('iDisplayStart'),
+
 #            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
         }
     );
@@ -164,20 +181,31 @@ sub clients : Local Args(0) {
     my @results;
     foreach my $c (@clients) {
 
-	my $enc = 'UTF-8';	
+        my $enc = 'UTF-8';
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'}        = decode($enc,decode($enc,$c->name));
-        $r->{'1'}        = decode($enc,decode($enc,$c->location));
+        $r->{'0'}        = decode( $enc, decode( $enc, $c->name ) );
+        $r->{'1'}        = decode( $enc, decode( $enc, $c->location ) );
         $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'}        = defined( $c->session ) ? decode($enc,$c->session->user->username) : undef;
-        $r->{'4'}        = defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'5'}        = defined( $c->session ) ? $c->session->user->minutes : undef;
-        $r->{'6'}        = defined( $c->session ) ? $c->session->user->status : undef;
-        $r->{'7'}        = defined( $c->session ) ? decode($enc,$c->session->user->notes) : undef;
-        $r->{'8'}        = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'9'}        = defined( $c->reservation ) ? decode($enc,$c->reservation->user->username) : undef;
+        $r->{'3'} =
+          defined( $c->session )
+          ? decode( $enc, $c->session->user->username )
+          : undef;
+        $r->{'4'} =
+          defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
+        $r->{'5'} = defined( $c->session ) ? $c->session->user->minutes : undef;
+        $r->{'6'} = defined( $c->session ) ? $c->session->user->status  : undef;
+        $r->{'7'} =
+          defined( $c->session )
+          ? decode( $enc, $c->session->user->notes )
+          : undef;
+        $r->{'8'} =
+          defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
+        $r->{'9'} =
+          defined( $c->reservation )
+          ? decode( $enc, $c->reservation->user->username )
+          : undef;
         push( @results, $r );
     }
 
@@ -219,12 +247,15 @@ sub statistics : Local Args(0) {
         push(
             @sorting,
             {
-                '-' . $c->request->param("sSortDir_$i") => $columns[ $c->request->param("iSortCol_$i") ]
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
             }
         );
     }
 
-    my $total_records = $c->model('DB::Statistic')->search({ instance => $instance })->count;
+    my $total_records =
+      $c->model('DB::Statistic')->search( { instance => $instance } )->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::Statistic')->count($filter);
@@ -242,15 +273,111 @@ sub statistics : Local Args(0) {
     my @results;
     foreach my $s (@stats) {
 
-	my $enc = 'UTF-8';
+        my $enc = 'UTF-8';
 
         my $r;
         $r->{'DT_RowId'} = $s->id;
-        $r->{'0'}        = decode($enc,$s->username);
-        $r->{'1'}        = decode($enc,decode($enc,$s->client_name));
+        $r->{'0'}        = decode( $enc, $s->username );
+        $r->{'1'}        = decode( $enc, decode( $enc, $s->client_name ) );
         $r->{'2'}        = $s->action;
         $r->{'3'}        = $s->when->strftime('%m/%d/%Y %I:%M %p');
 
+        push( @results, $r );
+    }
+
+    $c->stash(
+        {
+            'iTotalRecords'        => $total_records,
+            'iTotalDisplayRecords' => $count,
+            'sEcho'                => $c->request->param('sEcho') || undef,
+            'aaData'               => \@results,
+        }
+    );
+    $c->forward( $c->view('JSON') );
+}
+
+sub prints : Local Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    # We need to map the table columns to field names for ordering
+    my @columns =
+      qw( me.type me.status me.printer print_file.filename print_file.pages print_file.client_name print_file.username );
+
+    # Set up filters
+    my $filter;
+    my $search_term = $c->request->param("sSearch");
+    if ($search_term) {
+        $filter->{-or} = [
+            'me.type'                 => { 'like', "%$search_term%" },
+            'me.status'               => { 'like', "%$search_term%" },
+            'me.printer'              => { 'like', "%$search_term%" },
+            'print_file.filename'    => { 'like', "%$search_term%" },
+            'print_file.pages'       => { 'like', "%$search_term%" },
+            'print_file.client_name' => { 'like', "%$search_term%" },
+            'print_file.username'    => { 'like', "%$search_term%" },
+        ];
+    }
+    else {
+        $filter = { 'me.instance' => $instance };
+    }
+
+    #    if ( $c->request->param("location_filter") ) {
+    #        $filter->{'location'} = $c->request->param("location_filter");
+    #    }
+
+    # Sorting options
+    my @sorting;
+    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+        push(
+            @sorting,
+            {
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
+            }
+        );
+    }
+
+  # May need editing with a filter if the table contains records for other items
+  # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
+  # in this case, we'd only want the count of notes affecting the specific item,
+  # not *all* items
+    my $total_records =
+      $c->model('DB::PrintJob')->search( { instance => $instance } )->count;
+
+    # In case of pagination, we need to know how many records match in total
+    my $count = $c->model('DB::PrintJob')
+      ->count( $filter, { prefetch => [ { 'print_file' => 'user' } ] } );
+
+    # Do the search, including any required sorting and pagination.
+    my @prints = $c->model('DB::PrintJob')->search(
+        $filter,
+        {
+            order_by => \@sorting,
+            rows     => ( $c->request->param('iDisplayLength') > 0 )
+            ? $c->request->param('iDisplayLength')
+            : undef,
+            offset => $c->request->param('iDisplayStart') || 0,
+            prefetch => [ { 'print_file' => 'user' }, ],
+        }
+    );
+
+    my @results;
+    foreach my $p (@prints) {
+
+        my $enc = 'UTF-8';
+
+        my $r;
+        $r->{'DT_RowId'} = $p->id;
+        $r->{'0'}        = $p->type;
+        $r->{'1'}        = $p->status;
+        $r->{'2'}        = $p->printer;
+        $r->{'3'}        = $p->print_file->filename;
+        $r->{'4'}        = $p->print_file->pages;
+        $r->{'5'}        = $p->print_file->client_name;
+        $r->{'6'}        = $p->print_file->username;
         push( @results, $r );
     }
 

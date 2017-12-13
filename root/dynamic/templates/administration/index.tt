@@ -8,6 +8,9 @@
     <li>
         <a id="client-tab-label" data-toggle="tab" href="#clients-tab">[% c.loc("Clients") %]</a>
     </li>
+    <li>
+        <a id="client-tab-label" data-toggle="tab" href="#prints-tab">[% c.loc("Prints") %]</a>
+    </li>
 </ul>
 
 
@@ -100,6 +103,54 @@
             <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="icon-off icon-white"></i> [% c.loc("Log out") %]</button>
         </div>
   </div>
+
+  <div class="tab-pane" id="prints-tab">
+    <ul class="nav nav-pills" id="primary-tabs">
+      <li>
+          <a>[% c.loc("Location") %]: </a>
+      </li>
+      <li class="active">
+          <a data-toggle="tab" href="#" onclick="PrintTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+      </li>
+      [% FOREACH location IN locations %]
+          <li>
+              <a data-toggle="tab" href="#" onclick="PrintTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+          </li>
+      [% END %]
+    </ul>
+
+        <table id="print-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <thead>
+                <th>[% c.loc("Type") %]</th>
+                <th>[% c.loc("Status") %]</th>
+                <th>[% c.loc("Printer") %]</th>
+                <th>[% c.loc("File name") %]</th>
+                <th>[% c.loc("Pages") %]</th>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("User") %]</th>
+            </thead>
+        </table> 
+
+        <div id="print-table-toolbar" class="table-toolbar float-right btn-group">
+            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> [% c.loc("New user") %]</i></a>
+            [% END %]
+            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="icon-user icon-white"></i></a>
+            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="icon-user icon-white"></i></a>
+        </div>
+
+        <div id="print-table-refresh" class="table-toolbar input-prepend">
+            <span id="print-table-refresh-label" class="add-on">Refresh</span>
+            <button id="print-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
+            <span id="print-table-refresh-counter" class="add-on">30</span>
+        </div>
+
+        <div id="print-table-row-toolbar" class="table-row-toolbar btn-group">
+            <button id="print-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiReleasePrint( window.selected_id )"><i class="icon-print icon-white"></i> [% c.loc("Print") %]</button>
+            <button id="print-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiCancelPrint( window.selected_id )"><i class="icon-ban icon-white"></i> [% c.loc("Cancel") %]</button>
+        </div>
+  </div>
+</div>
 </div>
 
 <div class="modal hide" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="new-user-modal-label" aria-hidden="true">
@@ -427,6 +478,29 @@ $(document).ready(function() {
         // Set the class for the selected row
         $(event.target.parentNode).addClass('row_selected');
     });
+
+    // Initalize the Users table as a datatable
+    pTable = $('#print-table').dataTable( {
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "bProcessing": true,  // Indicate when the table is processing data
+        "bServerSide": true,  // Indicate that the datatable gets data from a
+                              // HTTP GET request
+        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/prints') %]",  // The actual URL to call for data
+        "sPaginationType": "bootstrap",
+        "fnDrawCallback": function(oSettings, json) {
+            AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
+        },
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            [% IF Settings.ThirdPartyURL %]
+                $('td:eq(0)', nRow).html( `<a href="#" onclick="postForm('[% Settings.ThirdPartyURL %]', { quicksearch: 1,  searchmember: '${aData[0]}' })">${aData[0]}</a>` );
+            [% END %]
+        },
+        "fnInitComplete": function(){
+            $('#print-table-toolbar').prependTo($('#print-table_filter'));
+            $('#print-table-refresh').prependTo($('#print-table_length'));
+        }
+    } );
 
     /*********** Page Wide Actions ***********/
     // Set up the 'new user' button
@@ -855,6 +929,16 @@ function ForceClientTableRefresh() {
 
 function ForceUserTableRefresh() {
      $("#user-table").dataTable().fnDraw(true);
+}
+
+function PrintTableUpdateLocationFilter( location ) {
+    window.location_filter = location;
+    ForcePrintTableRefresh();
+}
+
+function ForcePrintTableRefresh() {
+     $("#print-table").dataTable().fnDraw(true);
+     $('#print-table-refresh-counter').text( '30' );
 }
 
 function postForm(url, fields) {
