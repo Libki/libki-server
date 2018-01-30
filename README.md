@@ -135,7 +135,7 @@ adduser libki
 ### Install needed packages
 
 ```bash
-apt-get install curl perl git make build-essential unzip mysql-server pwgen -y
+apt-get install curl perl git make build-essential unzip mysql-server pwgen ntp -y
 ```
 
 ### Download and install Libki and needed Perl modules
