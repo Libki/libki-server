@@ -1,1 +1,0 @@
-* * * * * root sh /var/libki/app/docker/ensure_running.sh >/dev/null 2>&1
