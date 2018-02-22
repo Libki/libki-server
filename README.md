@@ -114,7 +114,7 @@ sudo chown root:root /etc/cron.d/backup_libki
 
 ## Manual Installation
 
-This guide is tested on Debian Jessie (8.7).
+This guide is tested on Debian Stretch (9.3) and Ubuntu Server 16.04.3.
 
 ### Login as root
 
@@ -134,8 +134,15 @@ adduser libki
 
 ### Install needed packages
 
+First, update and upgrade your server.
 ```bash
-apt-get install curl perl git make build-essential unzip mysql-server pwgen ntp -y
+apt-get update
+apt-get upgrade
+```
+
+Then, we'll install the needed packages.
+```bash
+apt-get install curl perl git make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev -y
 ```
 
 ### Download and install Libki and needed Perl modules
