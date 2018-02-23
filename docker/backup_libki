@@ -1,1 +1,0 @@
-0 12 * * * root cd /var/libki/app && docker-compose exec mysql sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" libki' > /var/libki/$(date +"%Y%m%d%H%M%S").sql
