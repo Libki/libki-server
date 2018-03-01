@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Env;
-use Config::JFDI;
+use Config::ZOMG;
 use DateTime::Format::MySQL;
 use DateTime;
 
@@ -14,9 +14,8 @@ use lib "$FindBin::Bin/../../lib";
 use Libki;
 use Libki::Hours;
 
-my $config = Config::JFDI->new(
+my $config = Config::ZOMG->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
-    no_06_warning => 1
 );
 my $c = Libki->new( { database_file => $config->{'Model::DB'}{args}{database_file} } );
 

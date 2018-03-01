@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Config::JFDI;
+use Config::ZOMG;
 use Getopt::Long::Descriptive;
 
 use FindBin;
@@ -24,11 +24,10 @@ my ( $opt, $usage ) = describe_options(
 
 print( $usage->text ), exit unless ( $opt->username );
 
-my $config = Config::JFDI->new(
+my $config = Config::ZOMG->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
-    no_06_warning => 1
 );
-my $config_hash  = $config->get();
+my $config_hash  = $config->load();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
 my $schema = Libki::Schema::DB->connect($connect_info)

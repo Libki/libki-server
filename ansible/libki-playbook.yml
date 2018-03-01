@@ -51,7 +51,7 @@
        - Catalyst::View::TT
        - CatalystX::Script::Server::Starman
        - Config::General
-       - Config::JFDI
+       - Config::ZOMG
        - DateTime
        - DateTime::Format::DateParse
        - DBD::mysql
