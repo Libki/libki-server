@@ -11,7 +11,7 @@ Please, make [pull requests](https://help.github.com/articles/about-pull-request
 
 ## Manual Installation
 
-This guide is tested on Debian Stretch (9.3) and Ubuntu Server 16.04.3.
+This guide is tested on Debian Jessie (8.10).
 
 ### Login as root
 
@@ -39,7 +39,7 @@ apt-get upgrade
 
 Then, we'll install the needed packages.
 ```bash
-apt-get install curl perl git make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev -y
+apt-get install curl perl git make build-essential unzip mysql-server pwgen ntp -y
 ```
 
 ### Download and install Libki and needed Perl modules
