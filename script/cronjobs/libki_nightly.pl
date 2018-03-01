@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use lib '/home/libki/perl5/lib/perl5';
+
 use Modern::Perl;
 
 use Config::ZOMG;
