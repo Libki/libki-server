@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use lib '/home/libki/perl5/lib/perl5';
+
 use Env;
 use Config::JFDI;
 use DateTime::Format::MySQL;
