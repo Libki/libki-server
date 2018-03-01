@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib '/home/libki/perl5/lib/perl5';
+use lib '$ENV{HOME}/perl5/lib/perl5';
 
 use Env;
 use Config::ZOMG;
