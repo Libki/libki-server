@@ -8,7 +8,7 @@ use lib "$FindBin::Bin/../lib";
 
 use Pod::Usage;
 use Getopt::Long;
-use Config::JFDI;
+use Config::ZOMG;
 use File::Find::Rule;
 use File::Basename;
 use File::Slurp;
@@ -18,11 +18,10 @@ use Try::Tiny;
 
 use Libki::Schema::DB;
 
-my $config = Config::JFDI->new(
+my $config = Config::ZOMG->new(
     file          => "$FindBin::Bin/../libki_local.conf",
-    no_06_warning => 1
 );
-my $config_hash  = $config->get();
+my $config_hash  = $config->load();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
 my $schema = Libki::Schema::DB->connect($connect_info)
