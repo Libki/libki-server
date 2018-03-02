@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use lib '$ENV{HOME}/perl5/lib/perl5';
+
 use Env;
 use Config::ZOMG;
 use DateTime::Format::MySQL;
