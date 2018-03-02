@@ -20,7 +20,7 @@ requires 'Catalyst::Runtime' => '5.90011';
 requires 'Catalyst::View::TT';
 requires 'CatalystX::Script::Server::Starman';
 requires 'Config::General';
-requires 'Config::JFDI';
+requires 'Config::ZOMG';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 requires 'DBD::mysql';

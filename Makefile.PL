@@ -66,7 +66,7 @@ requires 'String::Random';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 
-requires 'Config::JFDI';
+requires 'Config::ZOMG';
 
 requires 'File::Slurp';
 

@@ -2,7 +2,7 @@
 
 use Modern::Perl;
 
-use Config::JFDI;
+use Config::ZOMG;
 use List::Util qw(max min);
 use DateTime;
 use DateTime::Format::MySQL;
@@ -12,11 +12,10 @@ use lib "$FindBin::Bin/../../lib";
 
 use Libki;
 
-my $config = Config::JFDI->new(
+my $config = Config::ZOMG->new(
     file          => "$FindBin::Bin/../../libki_local.conf",
-    no_06_warning => 1
 );
-my $config_hash  = $config->get();
+my $config_hash  = $config->load();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
 
 my $c = Libki->new(
