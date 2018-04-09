@@ -386,6 +386,8 @@ $(document).ready(function() {
     // Refresh the client table automatically, as its date will go stale quickly
     clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
 
+    printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
+
     // Set up the manual refresh buttons for each table
     $('#client-table-refresh-button').click( function(){ ForceClientTableRefresh() });
     $('#user-table-refresh-button').click( function(){ ForceUserTableRefresh() });
@@ -929,6 +931,16 @@ function ForceClientTableRefresh() {
 
 function ForceUserTableRefresh() {
      $("#user-table").dataTable().fnDraw(true);
+}
+
+function HandlePrintTableRefreshCounter() {
+    var countdown = parseInt( $('#print-table-refresh-counter').text() ) - 1;
+
+    if ( countdown ) {
+        $('#print-table-refresh-counter').text( countdown );
+    } else {
+        ForcePrintTableRefresh();
+    }
 }
 
 function PrintTableUpdateLocationFilter( location ) {
