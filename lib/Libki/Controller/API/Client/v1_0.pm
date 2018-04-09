@@ -385,7 +385,7 @@ sub print : Path('print') : Args(0) {
         my $printers      = $printers_conf->{printer};
         my $printer       = $printers->{$printer_id};
 
-        my $print_file = $c->model('DB::PrintFile')->create(
+        $print_file = $c->model('DB::PrintFile')->create(
             {
                 instance     => $instance,
                 filename     => $print_file->filename,

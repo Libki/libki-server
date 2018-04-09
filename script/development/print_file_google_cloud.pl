@@ -41,6 +41,7 @@ my $c = Libki->new(
 my $instance      = $opt->instance;
 my $printer_id    = $opt->printer;
 my $print_file_id = $opt->file_id;
+my $verbose       = $opt->verbose;
 
 my $print_file = $c->model('DB::PrintFile')->find($print_file_id);
 unless ($print_file) {
@@ -62,6 +63,9 @@ if ( $printer->{type} = 'google_cloud_printer' ) {
 
     my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
     my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
+
+    say "Client ID: $client_id"         if $verbose;
+    say "Client Secret: $client_secret" if $verbose;
 
     my $oauth2 = Net::Google::DataAPI::Auth::OAuth2->new(
         client_id     => $client_id,
@@ -116,8 +120,8 @@ if ( $printer->{type} = 'google_cloud_printer' ) {
 
     $resp = $token->profile->request_auth( $token, $request );
 
-    print Data::Dumper::Dumper($resp);
-
+    my $json = JSON::from_json( $resp->decoded_content );
+    say Data::Dumper::Dumper( $json );
 }
 
 =head1 AUTHOR

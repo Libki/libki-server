@@ -146,8 +146,9 @@
         </div>
 
         <div id="print-table-row-toolbar" class="table-row-toolbar btn-group">
-            <button id="print-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiReleasePrint( window.selected_id )"><i class="icon-print icon-white"></i> [% c.loc("Print") %]</button>
-            <button id="print-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiCancelPrint( window.selected_id )"><i class="fa fa-ban"></i> [% c.loc("Cancel") %]</button>
+            <button id="print-table-row-toolbar-release" class="btn btn-primary" onclick="LibkiReleasePrint( window.selected_id )"><i class="icon-print icon-white"></i> [% c.loc("Print") %]</button>
+            <button id="print-table-row-toolbar-view   " class="btn btn-info"    onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"><i class="icon-download icon-white"></i> [% c.loc("View") %]</button>
+            <button id="print-table-row-toolbar-logout"  class="btn btn-danger"  onclick="LibkiCancelPrint( window.selected_id )"><i class="fa fa-ban"></i> [% c.loc("Cancel") %]</button>
         </div>
   </div>
 </div>
@@ -383,14 +384,14 @@
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
-    // Refresh the client table automatically, as its date will go stale quickly
-    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
-
-    printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
+    // Refresh the client and print jobs tables automatically, as its date will go stale quickly
+//    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
+//    printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
 
     // Set up the manual refresh buttons for each table
     $('#client-table-refresh-button').click( function(){ ForceClientTableRefresh() });
     $('#user-table-refresh-button').click( function(){ ForceUserTableRefresh() });
+    $('#print-table-refresh-button').click( function(){ ForcePrintTableRefresh() });
 
     // When we switch tabs, refresh the new tab automatically
     $('#user-tab-label').click( function(){ ForceUserTableRefresh() });
@@ -877,7 +878,7 @@ function LibkiToggleReservation( id ) {
     $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id, function() {})
      .success(function(data, textStatus, jqXHR) { 
 
-      if ( data.reserved ) { // cancel reseervation
+      if ( data.reserved ) { // cancel reservation
 
           if ( confirm("[% c.loc("Are you sure you want to cancel the reservation for this client?") %]") ) {
             $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', function() {})
@@ -951,6 +952,32 @@ function PrintTableUpdateLocationFilter( location ) {
 function ForcePrintTableRefresh() {
      $("#print-table").dataTable().fnDraw(true);
      $('#print-table-refresh-counter').text( '30' );
+}
+
+function LibkiReleasePrint( print_job_id ) {
+    console.log( `LibkiReleasePrint( ${print_job_id} )` );
+    $.getJSON('[% c.uri_for("api/printjob/release") %]', { id: print_job_id }, function(data) {
+        console.log(data);
+        if ( data.success ) {
+            alert( data.message );
+            ForcePrintTableRefresh();
+        } else {
+            alert( 'Failed to release print job: ' + data.error );
+        }
+    });
+}
+
+function LibkiCancelPrint( print_job_id ) {
+    if ( confirm('Are you sure you want to cancel this print job?')){
+        $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: print_job_id }, function(data) {
+            if ( data.success ) {
+                alert('Print job has been canceled');
+                ForcePrintTableRefresh();
+            } else {
+                alert('Failed to cancel print job');
+            }
+        });
+    }
 }
 
 function postForm(url, fields) {

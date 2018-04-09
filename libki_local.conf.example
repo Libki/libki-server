@@ -28,9 +28,14 @@
 </SIP>
 
 <printers>
+    <google_cloud_print>
+        client_id 938561285477-libc5aj9loflo5i2lcuuonj9ggqb37uc.apps.googleusercontent.com
+        client_secret jDjNevvk-PS4_LldF42jIXe3
+    </google_cloud_print>
+
     <printer monochrome>
         type google_cloud_printer
-        google_cloud_id c4322eb8-5b5b-2783-1953-8f1245296895
+        google_cloud_id c7233eb8-3b3b-9534-6343-8f9375632134
         <ticket>
             color {"type": "STANDARD_MONOCHROME"}
         </ticket>
@@ -38,7 +43,7 @@
 
     <printer color>
         type google_cloud_printer
-        google_cloud_id c4322eb8-5b5b-2783-1953-8f1245296895
+        google_cloud_id c7233eb8-3b3b-9534-6343-8f9375632134
         <ticket>
             color {"type": "STANDARD_COLOR"}
         </ticket>
