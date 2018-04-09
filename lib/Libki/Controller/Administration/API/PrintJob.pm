@@ -26,43 +26,43 @@ Catalyst Controller.
 
 =cut
 
-sub cancel  : Local : Args(0) {
+sub cancel : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
-    
-    my $print_job = $c->model('DB::PrintJob')->find({ id => $id, instance => $instance });
 
-    if ( $print_job ) {
-        $print_job->set_column('status', 'Canceled');
+    my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
+
+    if ($print_job) {
+        $print_job->set_column( 'status', 'Canceled' );
         my $success = $print_job->update() ? 1 : 0;
         $c->stash( success => $success );
-    } else {
+    }
+    else {
         $c->stash( success => 0, error => 'PRINT_JOB_NOT_FOUND' );
     }
 
     $c->forward( $c->view('JSON') );
 }
 
-sub release  : Local : Args(0) {
+sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
-    warn "RELEASE($id)";
 
-    my $print_job = $c->model('DB::PrintJob')->find({ id => $id, instance => $instance });
+    my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
 
-    if ( $print_job ) {
+    if ($print_job) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
-        if ( $print_file ) {
-            my $conf = $c->config->{instances}->{$instance} || $c->config;
+        if ($print_file) {
+            my $conf          = $c->config->{instances}->{$instance} || $c->config;
             my $printers_conf = $conf->{printers};
             my $printers      = $printers_conf->{printer};
             my $printer       = $printers->{ $print_job->printer };
 
-            if  ($printer) {
+            if ($printer) {
                 my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
                 my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
 
@@ -102,44 +102,51 @@ sub release  : Local : Args(0) {
 
                 my $ticket_conf = $printer->{ticket};
                 foreach my $key ( keys %$ticket_conf ) {
-                    my $data = from_json( $ticket_conf->{ $key } );
-                    $ticket->{print}->{ $key } = $data;
+                    my $data = from_json( $ticket_conf->{$key} );
+                    $ticket->{print}->{$key} = $data;
                 }
 
-                my $ticket_json = to_json( $ticket );
+                my $ticket_json = to_json($ticket);
 
                 my $request = POST 'https://www.google.com/cloudprint/submit',
-                  Content_Type => 'form-data',
-                  Content      => [
+                    Content_Type => 'form-data',
+                    Content      => [
                     printerid => $printer->{google_cloud_id},
                     content   => [ undef, $filename, Content => $content ],
                     title     => $filename,
                     ticket    => $ticket_json,
-                  ];
+                    ];
 
                 my $response = $token->profile->request_auth( $token, $request );
 
                 my $json = JSON::from_json( $response->decoded_content );
 
-                $print_job->set_column('data',   to_json($json));    # Re-encode to clean up syntax
-                $print_job->set_column('status', 'Printing');
+                $print_job->set_column( 'data',   to_json($json) );   # Re-encode to clean up syntax
+                $print_job->set_column( 'status', 'Printing' );
                 $print_job->update();
 
                 $c->stash( success => 1, message => $json->{message} );
-            } else {
+            }
+            else {
                 $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
             }
-        } else {
-            $c->stash( success => 0, error => 'Print File Not Found', id => $print_job->print_file_id );
         }
-    } else {
+        else {
+            $c->stash(
+                success => 0,
+                error   => 'Print File Not Found',
+                id      => $print_job->print_file_id
+            );
+        }
+    }
+    else {
         $c->stash( success => 0, error => 'Print Job Not Found', id => $id );
     }
 
     $c->forward( $c->view('JSON') );
 }
 
-sub view  : Local : Args(0) {
+sub view : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
@@ -147,19 +154,21 @@ sub view  : Local : Args(0) {
 
     my $print_job = $c->model('DB::PrintJob')->find($id);
 
-    if ( $print_job ) {
+    if ($print_job) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
-        if ( $print_file ) {
+        if ($print_file) {
             my $filename = $print_file->filename;
 
             $c->response->body( $print_file->data );
             $c->response->content_type('application/pdf');
-            $c->response->header('Content-Disposition', "inline; filename=$filename");
-        } else {
+            $c->response->header( 'Content-Disposition', "inline; filename=$filename" );
+        }
+        else {
             $c->stash( success => 0, error => 'PRINT_FILE_NOT_FOUND' );
             $c->forward( $c->view('JSON') );
         }
-    } else {
+    }
+    else {
         $c->stash( success => 0, error => 'PRINT_JOB_NOT_FOUND' );
         $c->forward( $c->view('JSON') );
     }
