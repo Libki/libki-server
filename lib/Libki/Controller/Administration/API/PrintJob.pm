@@ -52,7 +52,6 @@ sub cancel : Local : Args(0) {
 
 sub google_cloud_authenticate : Private : Args(0) {
     my ( $self, $c ) = @_;
-
     my $instance = $c->instance;
 
     my $conf = $c->config->{instances}->{$instance} || $c->config;
@@ -99,12 +98,11 @@ sub google_cloud_authenticate : Private : Args(0) {
 
 sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
+    my $instance = $c->instance;
 
     $self->google_cloud_authenticate($c);
     my $token = $c->stash->{google_cloud_print_token};
     delete $c->stash->{google_cloud_print_token};
-
-    my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
 
@@ -143,10 +141,11 @@ sub release : Local : Args(0) {
 
                 my $response = $token->profile->request_auth( $token, $request );
 
-                my $json = JSON::from_json( $response->decoded_content );
+                my $json      = JSON::from_json( $response->decoded_content );
+                my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
 
-                $print_job->set_column( 'data',   to_json($json) );   # Re-encode to clean up syntax
-                $print_job->set_column( 'status', 'Queued' );
+                $print_job->data($json);    # Data method takes a hashref
+                $print_job->status($job_state);
                 $print_job->update();
 
                 $c->stash( success => 1, message => $json->{message} );
@@ -168,6 +167,37 @@ sub release : Local : Args(0) {
     }
 
     $c->forward( $c->view('JSON') );
+}
+
+=head2 release
+
+=cut
+
+sub update : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    my $instance = $c->instance;
+
+    $self->google_cloud_authenticate($c);
+    my $token = $c->stash->{google_cloud_print_token};
+    delete $c->stash->{google_cloud_print_token};
+
+    my $id = $c->request->params->{id};
+
+    my $print_job = $c->model('DB::PrintJob')->find($id);
+
+    my $id = $print_job->data->{job}->{id};
+
+    my $request = POST 'https://www.google.com/cloudprint/job',
+        Content_Type => 'form-data',
+        Content      => [ jobid => $id, ];
+
+    my $response = $token->profile->request_auth( $token, $request );
+
+    my $json      = JSON::from_json( $response->decoded_content );
+    my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
+    $print_job->data($json);    # Data method takes a hashref
+    $print_job->status($job_state);
+    $print_job->update();
 }
 
 sub view : Local : Args(0) {

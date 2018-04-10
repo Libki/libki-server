@@ -204,7 +204,13 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-12-12 08:29:57
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:m9fd/i3yrU521Ikq2OdpJQ
 
+__PACKAGE__->load_components('InflateColumn::Serializer');
+__PACKAGE__->add_columns(
+    'data' => {
+        'data_type'        => 'text',
+        'serializer_class' => 'JSON'
+    }
+);
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;
