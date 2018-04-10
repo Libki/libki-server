@@ -22,7 +22,7 @@ Catalyst Controller.
 
 =cut
 
-=head2 modify_time
+=head2 cancel
 
 =cut
 
@@ -46,8 +46,64 @@ sub cancel : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 google_cloud_authenticate
+
+=cut
+
+sub google_cloud_authenticate : Private : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    my $conf = $c->config->{instances}->{$instance} || $c->config;
+    my $printers_conf = $conf->{printers};
+
+    my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
+    my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
+
+    my $oauth2 = Net::Google::DataAPI::Auth::OAuth2->new(
+        client_id     => $client_id,
+        client_secret => $client_secret,
+        scope         => ['https://www.googleapis.com/auth/cloudprint'],
+    );
+
+    my $stored_token = $c->model('DB::Setting')->single(
+        {
+            instance => $instance,
+            name     => 'google_cloud_print_session',
+        }
+    );
+
+    my $saved_session = thaw( $stored_token->value );
+
+    my $token = Net::OAuth2::AccessToken->session_thaw(
+        $saved_session,
+        auto_refresh => 1,
+        profile      => $oauth2->oauth2_webserver,
+    );
+    $oauth2->access_token($token);
+
+    my $oa = $oauth2->oauth2_client;
+
+    my $r = $token->get('https://www.google.com/cloudprint/search');
+
+    my $auth_response = $token->profile->request_auth( $token,
+        GET => 'https://www.google.com/cloudprint/search' );
+
+    $c->stash->{google_cloud_print_token} = $token;
+}
+
+=head2 release
+
+=cut
+
 sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
+
+    $self->google_cloud_authenticate($c);
+    my $token = $c->stash->{google_cloud_print_token};
+    delete $c->stash->{google_cloud_print_token};
+
     my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
@@ -63,38 +119,6 @@ sub release : Local : Args(0) {
             my $printer       = $printers->{ $print_job->printer };
 
             if ($printer) {
-                my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
-                my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
-
-                my $oauth2 = Net::Google::DataAPI::Auth::OAuth2->new(
-                    client_id     => $client_id,
-                    client_secret => $client_secret,
-                    scope         => ['https://www.googleapis.com/auth/cloudprint'],
-                );
-
-                my $stored_token = $c->model('DB::Setting')->single(
-                    {
-                        instance => $instance,
-                        name     => 'google_cloud_print_session',
-                    }
-                );
-
-                my $saved_session = thaw( $stored_token->value );
-
-                my $token = Net::OAuth2::AccessToken->session_thaw(
-                    $saved_session,
-                    auto_refresh => 1,
-                    profile      => $oauth2->oauth2_webserver,
-                );
-                $oauth2->access_token($token);
-
-                my $oa = $oauth2->oauth2_client;
-
-                my $r = $token->get('https://www.google.com/cloudprint/search');
-
-                my $auth_response = $token->profile->request_auth( $token,
-                    GET => 'https://www.google.com/cloudprint/search' );
-
                 my $filename = $print_file->filename;
                 my $content  = $print_file->data;
 
@@ -122,7 +146,7 @@ sub release : Local : Args(0) {
                 my $json = JSON::from_json( $response->decoded_content );
 
                 $print_job->set_column( 'data',   to_json($json) );   # Re-encode to clean up syntax
-                $print_job->set_column( 'status', 'Printing' );
+                $print_job->set_column( 'status', 'Queued' );
                 $print_job->update();
 
                 $c->stash( success => 1, message => $json->{message} );
