@@ -181,9 +181,9 @@ sub update : Local : Args(0) {
     my $token = $c->stash->{google_cloud_print_token};
     delete $c->stash->{google_cloud_print_token};
 
-    my $id = $c->request->params->{id};
+    my $print_job_id = $c->request->params->{id};
 
-    my $print_job = $c->model('DB::PrintJob')->find($id);
+    my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
 
     my $id = $print_job->data->{job}->{id};
 
@@ -193,11 +193,15 @@ sub update : Local : Args(0) {
 
     my $response = $token->profile->request_auth( $token, $request );
 
-    my $json      = JSON::from_json( $response->decoded_content );
-    my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
-    $print_job->data($json);    # Data method takes a hashref
+    my $data      = JSON::from_json( $response->decoded_content );
+    my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
+    $print_job->data($data);    # Data method takes a hashref
     $print_job->status($job_state);
     $print_job->update();
+
+    delete $c->stash->{Settings};
+    $c->stash->{data} = $data;
+    $c->forward( $c->view('JSON') );
 }
 
 sub view : Local : Args(0) {
