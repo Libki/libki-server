@@ -21,6 +21,7 @@ requires 'Catalyst::View::TT';
 requires 'CatalystX::Script::Server::Starman';
 requires 'Config::General';
 requires 'Config::ZOMG';
+requires 'Data::Printer';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 requires 'DBD::mysql';

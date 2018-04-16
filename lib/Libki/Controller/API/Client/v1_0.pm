@@ -9,7 +9,6 @@ use Libki::SIP qw( authenticate_via_sip );
 use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
 
-use Data::Printer;
 use DateTime::Format::MySQL;
 use DateTime;
 use PDF::API2;
