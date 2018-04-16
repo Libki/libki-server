@@ -104,6 +104,11 @@ __PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.co
 # Handle warnings from Perl as fatal log messages
 $SIG{__WARN__} = sub { __PACKAGE__->log->fatal(@_); };
 
+# These envinronment variables will be overwritten by matching ones in the config files if they are set
+__PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn}      = $ENV{LIBKI_DSN};
+__PACKAGE__->config->{'Model::DB'}->{connect_info}->{user}     = $ENV{LIBKI_USER};
+__PACKAGE__->config->{'Model::DB'}->{connect_info}->{password} = $ENV{LIBKI_PASSWORD};
+
 # Start the application
 __PACKAGE__->setup();
 
