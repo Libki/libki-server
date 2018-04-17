@@ -341,6 +341,18 @@
     </fieldset>
 
     <fieldset>
+        <legend>[% c.loc("Printer configuration") %]</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="PrinterConfiguration">[% c.loc("Printer configuration") %]</label>
+            <div class="controls">
+                <textarea id="PrinterConfiguration" name="PrinterConfiguration" rows="10" cols="300">[% PrinterConfiguration %]</textarea>
+                <span class="help-inline">[% c.loc("Define printer configuration in YAML format.") %]</span>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
         <legend>[% c.loc("Custom JavaScript") %]</legend>
     
         <div class="control-group">

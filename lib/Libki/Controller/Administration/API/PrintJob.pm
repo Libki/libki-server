@@ -2,11 +2,12 @@ package Libki::Controller::Administration::API::PrintJob;
 use Moose;
 use namespace::autoclean;
 
-use JSON qw( to_json from_json );
-use Storable qw( thaw );
 use HTTP::Request::Common;
-use Net::OAuth2::AccessToken;
+use JSON qw( to_json from_json );
 use Net::Google::DataAPI::Auth::OAuth2;
+use Net::OAuth2::AccessToken;
+use Storable qw( thaw );
+use YAML::XS;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -46,6 +47,18 @@ sub cancel : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 get_printer_configuration
+
+=cut
+
+sub get_printer_configuration : Private : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $yaml = $c->setting('PrinterConfiguration');
+    my $config = YAML::XS::Load( $yaml );
+    return $config;
+}
+
 =head2 google_cloud_authenticate
 
 =cut
@@ -54,8 +67,7 @@ sub google_cloud_authenticate : Private : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
-    my $conf = $c->config->{instances}->{$instance} || $c->config;
-    my $printers_conf = $conf->{printers};
+    my $printers_conf = $self->get_printer_configuration( $c );
 
     my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
     my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
@@ -111,9 +123,8 @@ sub release : Local : Args(0) {
     if ($print_job) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
         if ($print_file) {
-            my $conf          = $c->config->{instances}->{$instance} || $c->config;
-            my $printers_conf = $conf->{printers};
-            my $printers      = $printers_conf->{printer};
+            my $printers_conf = $self->get_printer_configuration( $c );
+            my $printers      = $printers_conf->{printers};
             my $printer       = $printers->{ $print_job->printer };
 
             if ($printer) {
@@ -124,7 +135,7 @@ sub release : Local : Args(0) {
 
                 my $ticket_conf = $printer->{ticket};
                 foreach my $key ( keys %$ticket_conf ) {
-                    my $data = from_json( $ticket_conf->{$key} );
+                    my $data = $ticket_conf->{$key};
                     $ticket->{print}->{$key} = $data;
                 }
 

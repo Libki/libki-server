@@ -60,3 +60,4 @@ requires 'Storable';
 requires 'String::Random';
 requires 'Template::Plugin::UTF8Decode';
 requires 'Term::Prompt';
+requires 'YAML::XS';
