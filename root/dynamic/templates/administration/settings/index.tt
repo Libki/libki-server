@@ -353,6 +353,18 @@
     </fieldset>
 
     <fieldset>
+        <legend>[% c.loc("SIP configuration") %]</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
+            <div class="controls">
+                <textarea id="SIPConfiguration" name="SIPConfiguration" rows="10" cols="300">[% SIPConfiguration %]</textarea>
+                <span class="help-inline">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</span>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
         <legend>[% c.loc("Custom JavaScript") %]</legend>
     
         <div class="control-group">

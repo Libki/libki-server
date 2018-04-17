@@ -11,6 +11,11 @@ sub authenticate_via_sip {
     my $instance = $c->instance;
     my $config = $c->config->{instances}->{$instance} || $c->config;
 
+    unless ($config) {
+        my $yaml = $c->setting('SIPConfiguration');
+        $config = YAML::XS::Load($yaml) if $yaml;
+    }
+
     my $log = $c->log();
 
     my $host             = $config->{SIP}->{host};
