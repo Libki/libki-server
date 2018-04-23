@@ -1,4 +1,4 @@
-<div id="primary-navbar" class="navbar navbar-fixed-top">
+<div id="libki-primary-navbar" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
             [% INCLUDE language_menu.tt %]

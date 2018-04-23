@@ -24,9 +24,14 @@ sub setting {
 }
 
 sub instance {
-    my ( $c ) = @_;
+    my ($c) = @_;
 
-    return $c->request->headers->{'libki-instance'} || $ENV{LIBKI_INSTANCE} || q{};
+    my $header = $c->request->headers->{'libki-instance'} || q{};
+    my $env = $ENV{LIBKI_INSTANCE} || q{};
+
+    my $instance = $header || $env || q{};
+
+    return $instance;
 }
 
 1;

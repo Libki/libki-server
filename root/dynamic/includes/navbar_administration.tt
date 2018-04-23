@@ -1,50 +1,41 @@
-<div id="primary-navbar" class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            [% INCLUDE language_menu.tt %]
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
+<nav id="libki-primary-navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    [% INCLUDE language_menu.tt %]
+    <div class="container">
+        <a class="navbar-brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" /> [% c.loc("Libki Kiosk Management System") %]</a>
 
-            <a class="brand" href="[% c.uri_for('/') %]"><img src="[% c.uri_for('/static/images/logo-small.png') %]" />[% c.loc("Libki Kiosk Management System") %]</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
 
-            [% IF c.user_exists %]
-                <div class="nav-collapse">
-                    <ul class="nav">
-                        <li class="[% IF active_class.search('^administration__index') %] active [% END %]">
-                            <a href="[% c.uri_for('/administration/')  %]">[% c.loc("Home") %]</a>
-                        </li>
+            <li class="nav-item [% IF active_class.search('^administration__index') %] active [% END %]">
+                <a class="nav-link" href="[% c.uri_for('/administration/') %]"><i class="fas fa-home"></i> [% c.loc("Home") %]</a>
+            </li>
 
-                        <li class="dropdown [% IF active_class.search('^administration__history|^administration__settings') %] active [% END %]">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% c.loc("More") %]<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li [% IF active_class == 'administration__history' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history')    %]">[% c.loc("History") %]</a></li>
-                                <li [% IF active_class == 'administration__history__statistics' %] class="active" [% END %]><a href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("Statistics") %]</a></li>
-		                        <li class="[% IF active_class.search('^administration__hours') %] active [% END %]"><a href="[% c.uri_for('/administration/hours')  %]">[% c.loc("Closing hours") %]</a></li>
-                                [% IF c.check_user_roles('superadmin') %]
-                                    <li [% IF active_class == 'administration__settings' %] class="active" [% END %]><a href="[% c.uri_for('/administration/settings') %]">[% c.loc("Settings") %]</a></li>
-                                [% END %]
-                            </ul>
-                        </li>
-                    </ul>
+            <li class="nav-item dropdown [% IF active_class.search('^administration__history|^administration__settings') %] active [% END %]">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarMoreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    [% c.loc("More") %]
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarMoreDropdown">
+                    <a class="dropdown-item [% IF active_class == 'administration__history' %]active[% END %]" href="[% c.uri_for('/administration/history') %]">[% c.loc("History") %]</a>
+                    <a class="dropdown-item [% IF active_class == 'administration__history__statistics' %]active[% END %]" href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("Statistics") %]</a>
+                    <a class="dropdown-item [% IF active_class.search('^administration__hours') %] active [% END %]" href="[% c.uri_for('/administration/hours') %]">[% c.loc("Closing hours") %]</a>
+                    [% IF c.check_user_roles('superadmin') %]
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item [% IF active_class == 'administration__settings' %]active[% END %]" href="[% c.uri_for('/administration/settings') %]">[% c.loc("Settings") %]</a>
+                    [% END %]
+                </div>
+            </li>
+        </ul>
 
-                    <ul class="nav pull-right">
-                        <li class="divider-vertical"></li>
-                        <li>
-                            <a href="#"><i class="icon-user"></i> [% c.user.username %]</a>
-                        </li>
-                        <li class="divider-vertical"></li>
-                        <li>
-                            <a href="[% c.uri_for('/administration/logout') %]">
-                                <i class="icon-off"></i> [% c.loc("Log out") %]
-                            </a>
-                        </li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            [% END %]
+        [% IF c.user_exists %]
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-user"></i> [% c.user.username %]</a>
+                </li>
 
-        </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="[% c.uri_for('/administration/logout') %]"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</a>
+                </li>
+            </ul>
+        [% END %]
     </div>
-</div>
+</nav>

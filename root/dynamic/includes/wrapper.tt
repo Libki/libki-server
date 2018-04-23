@@ -29,7 +29,7 @@
                 .position({
                     "my": "center top",
                     "at": "center bottom",
-                    "of": $("#primary-navbar")
+                    "of": $("#libki-primary-navbar")
                 })
                .hide();
 
@@ -44,19 +44,24 @@
     <script type="text/javascript">
         // $type = block, error, or success
         function DisplayMessage( type, message, title ) {
+            let alert_class;
             if ( !title ) {
                 switch( type ) {
                     case 'block':
-                        title = "[% c.loc("Alert!") %]";
+                        title = "[% c.loc("Alert:") %]";
+                        alert_class = 'warning';
                         break;
                     case 'error':
-                        title = "[% c.loc("Error!") %]";
+                        title = "[% c.loc("Error:") %]";
+                        alert_class = 'danger';
                         break;
                     case 'success':
-                        title = "[% c.loc("Success!") %]";
+                        title = "[% c.loc("Success:") %]";
+                        alert_class = 'success';
                         break;
                     case 'info':
-                        title = "[% c.loc("Info!") %]";
+                        title = "[% c.loc("Info:") %]";
+                        alert_class = 'info';
                         break;
                 }
             }
@@ -66,8 +71,10 @@
 
             $('#alert-message')
                 .stop()
-                .removeClass('alert-block alert-error alert-success')
-                .addClass('alert-' + type)
+                .removeClass(function (index, className) {
+                    return (className.match (/(^|\s)alert-\S+/g) || []).join(' ');
+                })
+                .addClass('alert-' + alert_class)
                 .hide()
                 .slideDown('slow')
                 .delay( 5 * 1000 )
@@ -99,7 +106,6 @@
 </head>
 
 <body>
-
     [% IF interface == 'administration' %]
         [% INCLUDE navbar_administration.tt %]
     [% ELSE %]
@@ -108,8 +114,8 @@
 
     [% INCLUDE breadcrumbs.tt %]
 
+    <!-- FIXME - Update to Bootstrap 4 -->
     <div id="container-fluid">
-
         [%# Status and error messages %]
         <div class="row">
             <div class="span12">

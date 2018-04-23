@@ -1,3 +1,8 @@
+/* Force scrollbars to avoid horizontal centering jumps */
+html {
+  overflow-y: scroll;
+}
+
 .row {
     margin-left: auto;
     margin-right: auto;
@@ -42,9 +47,39 @@ form .required {
 
 /* 'Group' headers for grouping results in DataTables */
 td.group {
-	background-color: #d1cfd0 !important;
-	border-bottom: 2px solid #A19B9E;
-	border-top: 2px solid #A19B9E;
-        text-align: left;
-        font-weight: bold;
+    background-color: #d1cfd0 !important;
+    border-bottom: 2px solid #A19B9E;
+    border-top: 2px solid #A19B9E;
+    text-align: left;
+    font-weight: bold;
+}
+
+#breadcrumbs {
+    padding-top: 0px;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+}
+
+.dataTables_wrapper div.row:first-of-type {
+    margin-top: 15px;
+}
+
+.dataTables_wrapper div.row:last-of-type {
+    margin-top: 40px;
+}
+
+.dataTables_filter {
+    margin-left: 15px;
+}
+
+.libki-refresh-counter {
+    width: 3em;
+}
+
+table {
+    width: 100% !important;
+}
+
+#alert-message {
+    z-index: 9999;
 }

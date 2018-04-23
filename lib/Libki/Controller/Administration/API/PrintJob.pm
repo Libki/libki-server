@@ -180,7 +180,7 @@ sub release : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
-=head2 release
+=head2 update
 
 =cut
 
@@ -196,22 +196,30 @@ sub update : Local : Args(0) {
 
     my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
 
-    my $id = $print_job->data->{job}->{id};
+    if ($print_job) {
+        my $id = $print_job->data->{job}->{id};
 
-    my $request = POST 'https://www.google.com/cloudprint/job',
-        Content_Type => 'form-data',
-        Content      => [ jobid => $id, ];
+        my $request = POST 'https://www.google.com/cloudprint/job',
+            Content_Type => 'form-data',
+            Content      => [ jobid => $id, ];
 
-    my $response = $token->profile->request_auth( $token, $request );
+        my $response = $token->profile->request_auth( $token, $request );
 
-    my $data      = JSON::from_json( $response->decoded_content );
-    my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
-    $print_job->data($data);    # Data method takes a hashref
-    $print_job->status($job_state);
-    $print_job->update();
+        my $data      = JSON::from_json( $response->decoded_content );
+        my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
+        $print_job->data($data);    # Data method takes a hashref
+        $print_job->status($job_state);
+        $print_job->update();
+
+        $c->stash->{data}    = $data;
+        $c->stash->{success} = 1;
+    }
+    else {
+        $c->stash->{success} = 0;
+        $c->stash->{error}   = 'Print Job Not Found';
+    }
 
     delete $c->stash->{Settings};
-    $c->stash->{data} = $data;
     $c->forward( $c->view('JSON') );
 }
 

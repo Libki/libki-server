@@ -1,21 +1,47 @@
 [% meta.title = c.loc("Administration") %]
 [% SET active_class = 'administration__index' %]
 [% USE UTF8Decode %]
-<ul class="nav nav-tabs" id="primary-tabs">
-    <li class="active">
-        <a id="user-tab-label" data-toggle="tab" href="#users-tab">[% c.loc("Users") %]</a>
-    </li>
-    <li>
-        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">[% c.loc("Clients") %]</a>
-    </li>
-    <li>
-        <a id="client-tab-label" data-toggle="tab" href="#prints-tab">[% c.loc("Prints") %]</a>
-    </li>
+
+<ul class="nav nav-tabs" id="primaryTabs" role="tablist">
+  <li class="nav-item">
+      <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> Users</a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> Clients</a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link" id="prints-tab" data-toggle="tab" href="#prints" role="tab" aria-controls="prints" aria-selected="false"><i class="fas fa-print"></i> Prints</a>
+  </li>
 </ul>
+<div class="tab-content" id="primaryTabsContent">
+  <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
 
+	<nav class="navbar navbar-expand-lg navbar-light bg-none justify-content-between">
+        <ul class="navbar-nav mr-auto"></ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="Table actions">
+                    <div id="user-table-refresh" class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                        </div>
+                        <a href="#"id="user-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                    </div>
+                </div>
+            </li>
+			&nbsp; <!-- FIXME: Use CSS -->
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="New user actions">
+                    [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                        <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                    [% END %]
+                    <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                    <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                </div>
+            </li>
+        </ul>
+	</nav>
 
-<div class="tab-content">
-  <div class="tab-pane active" id="users-tab">
         <table id="user-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>[% c.loc("Username") %]</th>
@@ -29,44 +55,64 @@
             </thead>
         </table> 
 
-        <div id="user-table-toolbar" class="table-toolbar float-right btn-group">
-            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> [% c.loc("New user") %]</i></a>
-            [% END %]
-            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="icon-user icon-white"></i></a>
-            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="icon-user icon-white"></i></a>
-        </div>
-
-        <div id="user-table-refresh" class="table-toolbar input-prepend">
-            <span id="user-table-refresh-label" class="add-on">[% c.loc("Refresh") %]</span>
-            <button id="user-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
-            <!-- <span id="user-table-refresh-counter" class="add-on">30</span> -->
-        </div>
-
-        <div id="user-table-row-toolbar" class="table-row-toolbar btn-group">
-            <button id="user-table-row-toolbar-edit" class="btn btn-inverse"><i class="icon-edit icon-white"></i> [% c.loc("Edit") %]</button>
-            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                <button id="user-table-row-toolbar-password" class="btn btn-primary"><i class="icon-retweet icon-white"></i> [% c.loc("Password") %]</button>
-            [% END %]
-            <button id="user-table-row-toolbar-troublemaker" class="btn btn-warning"><i class="icon-warning-sign icon-white"></i> [% c.loc("Troublemaker") %]</button>
-            <button id="user-table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="icon-trash icon-white"></i> [% c.loc("Delete") %]</button>
+        <div id="user-table-row-toolbar" class="table-row-toolbar" role="toolbar">
+            <div class="btn-group" role="group">
+                <button id="user-table-row-toolbar-edit" class="btn btn-secondary"><i class="fas fa-edit"></i> [% c.loc("Edit") %]</button>
+                [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                    <button id="user-table-row-toolbar-password" class="btn btn-primary"><i class="fas fa-unlock"></i> [% c.loc("Password") %]</button>
+                [% END %]
+                <button id="user-table-row-toolbar-troublemaker" class="btn btn-dark"><i class="fas fa-exclamation-triangle"></i> [% c.loc("Troublemaker") %]</button>
+                <button id="user-table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="fas fa-trash-alt"></i> [% c.loc("Delete") %]</button>
+            </div>
         </div>
   </div>
+  <div class="tab-pane fade" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 
-  <div class="tab-pane" id="clients-tab">
-    <ul class="nav nav-pills" id="primary-tabs">
-      <li>
-          <a>[% c.loc("Location") %]: </a>
-      </li>
-      <li class="active">
-          <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
-      </li>
-      [% FOREACH location IN locations %]
-          <li>
-              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+	<nav class="navbar navbar-expand-lg navbar-light bg-none">
+        <ul class="nav nav-pills" id="primary-tabs">
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
           </li>
-      [% END %]
-    </ul>
+          <li class="nav-item">
+              <a class="nav-link active" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+          </li>
+          [% FOREACH location IN locations %]
+              <li class="nav-item">
+                  <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+              </li>
+          [% END %]
+        </ul>
+
+        <ul class="navbar-nav mr-auto"></ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="Table actions">
+                    <div id="client-table-refresh" class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                        </div>
+                        <a href="#" id="client-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                        <div class="input-group-append">
+                            <span class="input-group-text libki-refresh-counter" id="client-table-refresh-counter">30</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+			&nbsp; <!-- FIXME: Use CSS -->
+
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="New user actions">
+                    [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                        <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                    [% END %]
+                    <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                    <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                </div>
+            </li>
+        </ul>
+	</nav>
 
         <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
@@ -83,41 +129,61 @@
             </thead>
         </table> 
 
-        <div id="client-table-toolbar" class="table-toolbar float-right btn-group">
-            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> [% c.loc("New user") %]</i></a>
-            [% END %]
-            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="icon-user icon-white"></i></a>
-            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="icon-user icon-white"></i></a>
-        </div>
-
-        <div id="client-table-refresh" class="table-toolbar input-prepend">
-            <span id="client-table-refresh-label" class="add-on">Refresh</span>
-            <button id="client-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
-            <span id="client-table-refresh-counter" class="add-on">30</span>
-        </div>
-
-        <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
-            <button id="client-table-row-toolbar-time" class="btn btn-inverse"><i class="icon-time icon-white"></i> [% c.loc("Modify time") %]</button>
-            <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="icon-tag icon-white"></i> [% c.loc("Reserve") %]</button>
-            <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="icon-off icon-white"></i> [% c.loc("Log out") %]</button>
+        <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
+            <div class="btn-group" role="group">
+                <button id="client-table-row-toolbar-time" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+                <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+            </div>
         </div>
   </div>
 
-  <div class="tab-pane" id="prints-tab">
-    <ul class="nav nav-pills" id="primary-tabs">
-      <li>
-          <a>[% c.loc("Location") %]: </a>
-      </li>
-      <li class="active">
-          <a data-toggle="tab" href="#" onclick="PrintTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
-      </li>
-      [% FOREACH location IN locations %]
-          <li>
-              <a data-toggle="tab" href="#" onclick="PrintTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+  <div class="tab-pane fade" id="prints" role="tabpanel" aria-labelledby="prints-tab">
+	<nav class="navbar navbar-expand-lg navbar-light bg-none">
+        <ul class="nav nav-pills" id="primary-tabs">
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
           </li>
-      [% END %]
-    </ul>
+          <li class="nav-item">
+              <a class="nav-link active" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+          </li>
+          [% FOREACH location IN locations %]
+              <li class="nav-item">
+                  <a class="nav-link" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+              </li>
+          [% END %]
+        </ul>
+
+        <ul class="navbar-nav mr-auto"></ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="Table actions">
+                    <div id="print-table-refresh" class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                        </div>
+                        <a href="#" id="print-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                        <div class="input-group-append">
+                            <span class="input-group-text libki-refresh-counter" id="print-table-refresh-counter">30</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+			&nbsp; <!-- FIXME: Use CSS -->
+
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="New user actions">
+                    [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                        <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                    [% END %]
+                    <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                    <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                </div>
+            </li>
+        </ul>
+	</nav>
 
         <table id="print-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
@@ -131,267 +197,359 @@
             </thead>
         </table> 
 
-        <div id="print-table-toolbar" class="table-toolbar float-right btn-group">
-            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                <a href="#" class="new-user-button btn btn-info"><i class="icon-plus icon-white"></i> [% c.loc("New user") %]</i></a>
-            [% END %]
-            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="icon-user icon-white"></i></a>
-            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="icon-user icon-white"></i></a>
-        </div>
+        <div id="print-table-row-toolbar" class="table-row-toolbar" role="toolbar">
+            <div class="btn-group" role="group">
+                <button
+                    id="print-table-row-toolbar-release"
+                    class="btn btn-primary"
+                    onclick="LibkiReleasePrint( window.selected_id )"
+                >
+                    <i class="fas fa-print"></i> [% c.loc("Print") %]
+                </button>
 
-        <div id="print-table-refresh" class="table-toolbar input-prepend">
-            <span id="print-table-refresh-label" class="add-on">Refresh</span>
-            <button id="print-table-refresh-button" class="btn" type="button"><i class="icon-refresh"></i></button>
-            <span id="print-table-refresh-counter" class="add-on">30</span>
-        </div>
+                <button
+                    id="print-table-row-toolbar-refresh"
+                    class="btn btn-secondary"
+                    onclick="LibkiRefreshPrint( window.selected_id )"
+                >
+                    <i class="fas fa-sync"></i> [% c.loc("Refresh") %]
+                </button>
 
-        <div id="print-table-row-toolbar" class="table-row-toolbar btn-group">
-            <button id="print-table-row-toolbar-release" class="btn btn-primary" onclick="LibkiReleasePrint( window.selected_id )"><i class="icon-print icon-white"></i> [% c.loc("Print") %]</button>
-            <button id="print-table-row-toolbar-view   " class="btn btn-info"    onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"><i class="icon-download icon-white"></i> [% c.loc("View") %]</button>
-            <button id="print-table-row-toolbar-logout"  class="btn btn-danger"  onclick="LibkiCancelPrint( window.selected_id )"><i class="fa fa-ban"></i> [% c.loc("Cancel") %]</button>
+                <button
+                    id="print-table-row-toolbar-view"
+                    class="btn btn-info"
+                    onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"
+                >
+                    <i class="fas fa-download"></i> [% c.loc("View") %]
+                </button>
+
+                <button
+                    id="print-table-row-toolbar-logout"
+                    class="btn btn-danger"
+                    onclick="LibkiCancelPrint( window.selected_id )"
+                >
+                    <i class="fa fa-ban"></i> [% c.loc("Cancel") %]
+                </button>
+            </div>
         </div>
   </div>
 </div>
-</div>
 
-<div class="modal hide" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="new-user-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="new-user-modal-label">[% c.loc("New user") %]</h3>
-    </div>
-    <div class="modal-body">
-        <form id="new-user-modal-form">
-            <div class="control-group">
-                <label>[% c.loc("Username") %]</label>
-                <input id="new-user-modal-form-username" name="username" type="text" placeholder="[% c.loc("Username") %]">
-                <span class="help-block">[% c.loc("Username must be unique.") %]</span>
+<div class="modal fade" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="new-user-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="new-user-modal-label"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="new-user-modal-form" novalidate>
+            <div class="form-group">
+                <label for="new-user-modal-form-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="new-user-modal-form-username" name="username" placeholder="[% c.loc("Username") %]" required>
+                <small class="form-text text-muted">[% c.loc("Username must be unique.") %]</small>
+                <div class="valid-feedback">
+                    [% c.loc("Username is unique") %]
+                </div>
+                <div class="invalid-feedback">
+                    [% c.loc("Username already used") %]
+                </div>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Password") %]</label>
-                <input id="new-user-modal-form-password" name="password" type="password" placeholder="[% c.loc("Password") %]">
-                <input id="new-user-modal-form-password-confirm" name="password-confirm" type="password" placeholder="[% c.loc("Confirm password") %]">
-                <span class="help-block">[% c.loc("Password fields must match.") %]</span>
+            <div class="form-group">
+                <label for="new-user-modal-form-password">[% c.loc("Password") %]</label>
+                <input type="password" class="form-control" id="new-user-modal-form-password" name="password" placeholder="[% c.loc("Password") %]" required>
+                <br/>
+                <input type="password" class="form-control" id="new-user-modal-form-password-confirm" name="password-confirm" placeholder="[% c.loc("Confirm password") %]" required>
+                <small class="form-text text-muted">[% c.loc("Password fields must match.") %]</small>
+                <div class="valid-feedback">
+                    [% c.loc("Passwords match") %]
+                </div>
+                <div class="invalid-feedback">
+                    [% c.loc("Passwords do not match") %]
+                </div>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Minutes") %]</label>
-                <input id="new-user-modal-form-minutes" name="minutes" class="input-mini" type="text" placeholder="[% DefaultTimeAllowance %]">
-                <span class="help-block">[% c.loc("Leave unmodified for default amount of time.") %]</span>
+            <div class="form-group">
+                <label for="new-user-modal-form-minutes">[% c.loc("Minutes") %]</label>
+                <input type="text" class="form-control form-control-sm" id="new-user-modal-form-minutes" name="minutes" type="text" placeholder="[% DefaultTimeAllowance %]">
+                <small class="form-text text-muted">[% c.loc("Leave unmodified for default amount of time.") %]</small>
+                <div class="invalid-feedback">
+                    [% c.loc("Is not a whole number") %]
+                </div>
             </div>
         </form>
-    </div>
-    <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
         <button id="new-user-modal-form-submit" class="btn btn-primary">[% c.loc("Create user") %]</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal hide" id="new-guest-modal" tabindex="-1" role="dialog" aria-labelledby="new-guest-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="new-guest-modal-label">[% c.loc("New guest user created.") %]</h3>
-    </div>
-    <div class="modal-body">
+<div class="modal fade" id="new-guest-modal" tabindex="-1" role="dialog" aria-labelledby="new-guest-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newGuestModelLabel"><i class="fas fa-user"></i> [% c.loc("New guest user created") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="new-guest-modal-form">
-            <div class="control-group">
-                <label>[% c.loc("Username") %]</label>
-                <span id="new-guest-modal-form-username" class="input-xlarge uneditable-input"></span>
+            <div class="form-group">
+                <label for="new-guest-modal-form-username">[% c.loc("Username") %]</label>
+                <input id="new-guest-modal-form-username" class="form-control" readonly></input>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Password") %]</label>
-                <span id="new-guest-modal-form-password" class="input-medium uneditable-input"></span>
+            <div class="form-group">
+                <label for="new-guest-modal-form-password">[% c.loc("Password") %]</label>
+                <input id="new-guest-modal-form-password" class="form-control" readonly></input>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Minutes") %]</label>
-                <span id="new-guest-modal-form-minutes" class="input-small uneditable-input"></span>
+            <div class="form-group">
+                <label for="new-guest-modal-form-minutes">[% c.loc("Minutes") %]</label>
+                <input id="new-guest-modal-form-minutes" class="form-control" readonly></input>
             </div>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">[% c.loc("Dismiss") %]</button>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Dismiss") %]</button>
-    </div>
+  </div>
 </div>
 
-<div class="modal hide" id="multi-guest-modal" tabindex="-1" role="dialog" aria-labelledby="multi-guest-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="multi-guest-modal-label">[% c.loc("New guest batch created") %]</h3>
-    </div>
-    <div class="modal-body">
+<div class="modal fade" id="multi-guest-modal" tabindex="-1" role="dialog" aria-labelledby="multi-guest-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-users"></i> [% c.loc("New guest batch created") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="multi-guest-modal-form">
-            <div class="control-group">
-                <label>[% c.loc("Highest guest account created") %]</label>
-                <span id="multi-guest-modal-form-highest" class="input-xlarge uneditable-input"></span>
+            <div class="form-group">
+                <label for="multi-guest-modal-form-highest">[% c.loc("Highest guest account created") %]</label>
+                <input id="multi-guest-modal-form-highest" class="form-control" readonly></input>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Number of accounts created") %]</label>
-                <span id="multi-guest-modal-form-number" class="input-medium uneditable-input"></span>
+            <div class="form-group" readonly>
+                <label for="multi-guest-modal-form-number">[% c.loc("Number of accounts created") %]</label>
+                <input id="multi-guest-modal-form-number" class="form-control" readonly></input>
             </div>
 
-            <div class="control-group">
-                <label>[% c.loc("Minutes") %]</label>
-                <span id="multi-guest-modal-form-minutes" class="input-small uneditable-input"></span>
+            <div class="form-group" readonly>
+                <label for="multi-guest-modal-form-minutes">[% c.loc("Minutes") %]</label>
+                <input id="multi-guest-modal-form-minutes" class="form-control" readonly></input>
             </div>
 
-            <a href="#" id="multi-guest-modal-form-print" class="btn"><i class="icon-print"></i> [% c.loc("View & print guest pass file") %]</a>
+            <a href="#" id="multi-guest-modal-form-print" class="btn btn-secondary"><i class="icon-print"></i> [% c.loc("View & print guest pass file") %]</a>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">[% c.loc("Dismiss") %]</button>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Dismiss") %]</button>
-    </div>
+  </div>
 </div>
 
-<div class="modal hide" id="edit-user-modal" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="edit-user-modal-label">Edit user</h3>
+<div class="modal fade" id="edit-user-modal" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="edit-user-modal-label">
+            <i class="fas fa-edit"></i> [% c.loc("Edit user") %]
+          </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
 
-        <ul class="nav nav-tabs" id="edit-user-modal-tabs">
-            <li class="active">
-                <a data-toggle="tab" href="#edit-user-modal-form-tab-details">[% c.loc("Details") %]</a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#edit-user-modal-form-tab-roles">[% c.loc("Roles") %]</a>
-            </li>
-        </ul>
-
-    </div>
-    <div class="modal-body">
+      <div class="modal-body">
         <form id="edit-user-modal-form">
-
+            <ul class="nav nav-tabs" id="edit-user-modal-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="edit-user-details-tab" data-toggle="tab" href="#edit-user-details" role="tab" aria-controls="edit-user-details" aria-selected="true">[% c.loc("Details") %]</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="edit-user-roles-tab" data-toggle="tab" href="#edit-user-roles" role="tab" aria-controls="edit-user-roles" aria-selected="false">[% c.loc("Roles") %]</a>
+                  </li>
+            </ul>
+                    
             <div class="tab-content">
+              <div class="tab-pane active" id="edit-user-details" role="tabpanel" aria-labelledby="edit-user-details-tab">
+                <input id="edit-user-modal-form-id" name="id" type="hidden" />
 
-                <div class="tab-pane active" id="edit-user-modal-form-tab-details">
-                    <input id="edit-user-modal-form-id" name="id" type="hidden" />
-
-                    <div class="control-group">
-                        <label>[% c.loc("Username") %]</label>
-                        <input id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" disabled>
-                        <span class="help-block">[% c.loc("Username must be unique.") %]</span>
-                    </div>
-
-                    <div class="control-group">
-                        <label>[% c.loc("Minutes") %]</label>
-                        <input id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
-                        <span class="help-block">[% c.loc("Leave unmodified for default amount of time.") %]</span>
-                    </div>
-
-                    <div class="control-group">
-                        <label>[% c.loc("Status") %]</label>
-                        <select id="edit-user-modal-form-status" name="status">
-                            <option value="enabled">[% c.loc("Enabled") %]</option>
-                            <option value="disabled">[% c.loc("Disabled") %]</option>
-                        </select>
-                    </div>
-
-                    <div class="control-group">
-                        <label>[% c.loc("Notes") %]</label>
-                        <textarea id="edit-user-modal-form-notes" name="notes"></textarea>
-                    </div>
-                </div> 
-
-                <div class="tab-pane active" id="edit-user-modal-form-tab-roles">
-                    <label class="checkbox">
-                        <input id="edit-user-modal-form-roles-admin" name="roles" type="checkbox" value="admin">[% c.loc("Administrator") %]
-                    </label>
-
-                    <label class="checkbox">
-                        <input id="edit-user-modal-form-roles-superadmin" name="roles" type="checkbox" value="superadmin">[% c.loc("Super administrator") %]
-                    </label>
+                <div class="form-group">
+                    <label for="edit-user-modal-form-username">[% c.loc("Username") %]</label>
+                    <input class="form-control" id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" readonly>
+                    <small class="form-text text-muted">[% c.loc("Username may not be edited.") %]</small>
                 </div>
 
-            </div>
+                <div class="form-group">
+                    <label for="edit-user-modal-form-minutes">[% c.loc("Minutes") %]</label>
+                    <input class="form-control" id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
+                    <small class="form-text text-muted">[% c.loc("Leave unmodified for default amount of time.") %]</small>
+                </div>
 
+                <div class="form-group">
+                    <label for="edit-user-modal-form-status">[% c.loc("Status") %]</label>
+                    <select class="form-control" id="edit-user-modal-form-status" name="status">
+                        <option value="enabled">[% c.loc("Enabled") %]</option>
+                        <option value="disabled">[% c.loc("Disabled") %]</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-user-modal-form-notes">[% c.loc("Notes") %]</label>
+                    <textarea class="form-control" id="edit-user-modal-form-notes" name="notes"></textarea>
+                </div>
+              </div>
+
+              <div class="tab-pane" id="edit-user-roles" role="tabpanel" aria-labelledby="edit-user-roles-tab">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-admin" value="admin">
+                    <label class="form-check-label" for="edit-user-modal-form-roles-admin">[% c.loc("Administrator") %]</label>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-superadmin" value="superadmin">
+                    <label class="form-check-label" for="edit-user-modal-form-roles-superadmin">[% c.loc("Super administrator") %]</label>
+                </div>
+              </div>
+            </div>
         </form>
-    </div>
-    <div class="modal-footer">
+      </div>
+
+      <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
         <button id="edit-user-modal-form-submit" class="btn btn-primary">[% c.loc("Update user") %]</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal hide" id="modify-time-modal" tabindex="-1" role="dialog" aria-labelledby="modify-time-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="modify-time-modal-label">Modify time</h3>
-    </div>
-    <div class="modal-body">
-        <form id="modify-time-modal-form">
+<div class="modal fade" id="modify-time-modal" tabindex="-1" role="dialog" aria-labelledby="modify-time-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modify-time-modal-label"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="modify-time-modal-form" novalidate>
             <input id="modify-time-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label>[% c.loc("Minutes") %]</label>
-                <input id="modify-time-modal-form-minutes" name="minutes" class="input-mini" type="text">
-                <span class="help-block">[% c.loc("Add a + or - sign to increment or decrement the existing amount of time.") %]</span>
+            <div class="form-group">
+                <label for="modify-time-modal-form-minutes">[% c.loc("Minutes") %]</label>
+                <input type="text" class="form-control" id="modify-time-modal-form-minutes" name="minutes">
+                <small class="form-text text-muted">[% c.loc("Add a + or - sign to increment or decrement the existing amount of time.") %]</small>
+                <div class="invalid-feedback">
+                    The time entered is invalid
+                </div>
             </div>
         </form>
-    </div>
-    <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
         <button id="modify-time-modal-form-submit" class="btn btn-primary">[% c.loc("Update time") %]</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal hide" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="make-reservation-modal-label">Make reservation</h3>
-    </div>
-    <div class="modal-body">
+<div class="modal fade" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="make-reservation-modal-label"><i class="fas fa-tag"></i> [% c.loc("Make reservation") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="make-reservation-modal-form">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label>[% c.loc("Username") %]</label>
-                <input id="make-reservation-modal-form-username" name="username" class="input" type="text">
-                <span class="help-block">[% c.loc("Username of user to make reservation for.") %]</span>
+            <div class="form-group">
+                <label for="make-reservation-modal-form-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="make-reservation-modal-form-username" name="username">
+                <small class="form-text text-muted">[% c.loc("Username of user to make reservation for.") %]</small>
+                <div class="invalid-feedback">
+                    [% c.loc("Username is invalid") %]
+                </div>
             </div>
         </form>
-    </div>
-    <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
         <button id="make-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Make reservation") %]</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal hide" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="change-password-modal-label">[% c.loc("Change password") %]</h3>
-    </div>
-    <div class="modal-body">
+<div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="change-password-modal-label"><i class="fas fa-unlock"></i> [% c.loc("Change password") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="change-password-modal-form">
             <input id="change-password-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label>[% c.loc("Password") %]</label>
-                <input id="change-password-modal-form-password" name="password" type="password" placeholder="[% c.loc("Password") %]">
-                <input id="change-password-modal-form-password-confirm" name="password-confirm" type="password" placeholder="[% c.loc("Confirm password") %]">
-                <span class="help-block">[% c.loc("Password fields must match.") %]</span>
+            <div class="form-group">
+                <label for="change-password-modal-form-password">[% c.loc("Password") %]</label>
+                <input class="form-control" id="change-password-modal-form-password" name="password" type="password" placeholder="[% c.loc("Password") %]">
+            </div>
+            <div class="form-group">
+                <label for="change-password-modal-form-password-confirm">[% c.loc("Confirm password") %]</label>
+                <input class="form-control" id="change-password-modal-form-password-confirm" name="password-confirm" type="password" placeholder="[% c.loc("Confirm password") %]">
+                <small class="form-text text-muted">[% c.loc("Password fields must match.") %]</small>
             </div>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+        <button type="button" class="btn btn-primary" id="change-password-modal-form-submit">[% c.loc("Change password") %]</button>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
-        <button id="change-password-modal-form-submit" class="btn btn-primary">[% c.loc("Change password") %]</button>
-    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
     // Refresh the client and print jobs tables automatically, as its date will go stale quickly
-//    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
-//    printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
+    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
+    printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
 
     // Set up the manual refresh buttons for each table
-    $('#client-table-refresh-button').click( function(){ ForceClientTableRefresh() });
-    $('#user-table-refresh-button').click( function(){ ForceUserTableRefresh() });
-    $('#print-table-refresh-button').click( function(){ ForcePrintTableRefresh() });
+    $('#client-table-refresh-button').on( 'click', function() {
+        ForceClientTableRefresh();
+        return false; 
+    });
+    $('#user-table-refresh-button').on('click', function() {
+        ForceUserTableRefresh();
+        return false;
+    });
+    $('#print-table-refresh-button').on('click', function() {
+        ForcePrintTableRefresh();
+        return false;
+    });
 
     // When we switch tabs, refresh the new tab automatically
     $('#user-tab-label').click( function(){ ForceUserTableRefresh() });
@@ -404,7 +562,6 @@ $(document).ready(function() {
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
@@ -413,14 +570,9 @@ $(document).ready(function() {
             [% IF Settings.ThirdPartyURL %]
                 $('td:eq(0)', nRow).html( `<a href="#" onclick="postForm('[% Settings.ThirdPartyURL %]', { quicksearch: 1,  searchmember: '${aData[0]}' })">${aData[0]}</a>` );
             [% END %]
-        },
-        "fnInitComplete": function(){
-            $('#user-table-toolbar').prependTo($('#user-table_filter'));
-            $('#user-table-refresh').prependTo($('#user-table_length'));
         }
     } );
 
-     
     /* Add a click handler to the rows */
     $("#user-table tbody").click(function(event) {
         // Clear selection from any existing rows
@@ -438,7 +590,6 @@ $(document).ready(function() {
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/clients') %]",  // The actual URL to call for data
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
@@ -467,7 +618,6 @@ $(document).ready(function() {
     } );
 
     $('#client-table-toolbar').prependTo($('#client-table_filter'));
-    $('#client-table-refresh').prependTo($('#client-table_length'));
 
     /* Add a click handler to the rows */
     $("#client-table tbody").click(function(event) {
@@ -486,7 +636,6 @@ $(document).ready(function() {
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/prints') %]",  // The actual URL to call for data
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
@@ -498,7 +647,6 @@ $(document).ready(function() {
         },
         "fnInitComplete": function(){
             $('#print-table-toolbar').prependTo($('#print-table_filter'));
-            $('#print-table-refresh').prependTo($('#print-table_length'));
         }
     } );
 
@@ -509,52 +657,63 @@ $(document).ready(function() {
         $('#client-table-row-toolbar').hide();
 
         $('#new-user-modal-form-username').val('');
-        $('#new-user-modal-form-username').parent().removeClass('success warning error');
+        $('#new-user-modal-form-username').removeClass('is-valid is-invalid');
 
         $('#new-user-modal-form-password').val('');
         $('#new-user-modal-form-password-confirm').val('');
+        $('#new-user-modal-form-password').removeClass('is-valid is-invalid');
 
         $('#new-user-modal-form-minutes').val('')
+        $('#new-user-modal-form-minutes').removeClass('is-valid is-invalid');
 
         $('#new-user-modal-form-submit').removeAttr('disabled');
 
         $('#new-user-modal').modal();
-        $('#new-user-modal-form-username').focus();
-
     });
+    $('#new-user-modal').on('shown.bs.modal', function () {
+      $('#new-user-modal-form-username').trigger('focus')
+    })
 
     // When a username is entered in the new user form, we need to check it for uniqueness
-    $('#new-user-modal-form-username').blur(function(){
-        $.getJSON('[% c.uri_for("api/user/is_username_unique") %]/' + $(this).val(), function(data) {
+    $('#new-user-modal-form-username').blur( function(){ check_username_uniqueness( $(this) ) } );
+    function check_username_uniqueness( element, no_errors ) {
+        $.getJSON('[% c.uri_for("api/user/is_username_unique") %]/' + element.val(), function(data) {
             if ( parseInt( data.is_unique ) ) {
                 $('#new-user-modal-form-submit').removeAttr('disabled');
-                $('#new-user-modal-form-username').parent().removeClass('warning error');
-                $('#new-user-modal-form-username').parent().addClass('success');
+                $('#new-user-modal-form-username').removeClass('is-invalid');
+                $('#new-user-modal-form-username').addClass('is-valid');
+                no_errors = true;
             } else {
-                $('#new-user-modal-form-username').parent().removeClass('success error');
-                $('#new-user-modal-form-username').parent().addClass('warning');
+                $('#new-user-modal-form-username').removeClass('is-valid');
+                $('#new-user-modal-form-username').addClass('is-invalid');
                 $('#new-user-modal-form-submit').attr('disabled','disabled');
+                no_errors = false;
             }
         });
+    }
+
+    $('#new-user-modal-form-username').blur(function(){
+    
     });
 
     // Handle the new user form submission
     $('#new-user-modal-form-submit').click(function(){
-        $('#new-user-modal-form-username').parent().removeClass('success warning error');
-        $('#new-user-modal-form-password').parent().removeClass('success warning error');
+        $('#new-user-modal-form-username').removeClass('is-valid is-invalid');
+        $('#new-user-modal-form-password').removeClass('is-valid is-invalid');
 
         var no_errors = true;
+        check_username_uniqueness( $('#new-user-modal-form-username'), no_errors );
         if ( ! $('#new-user-modal-form-username').val() ) {
-            $('#new-user-modal-form-username').parent().addClass('error');
+            $('#new-user-modal-form-username').addClass('is-invalid');
             no_errors = false;
         }
         if ( $('#new-user-modal-form-password').val() != $('#new-user-modal-form-password-confirm').val() ) {
-            $('#new-user-modal-form-password').parent().addClass('error');
+            $('#new-user-modal-form-password').addClass('is-invalid');
             no_errors = false;
         }
         if ( $('#new-user-modal-form-minutes').val() ) {
             if ( isNaN( $('#new-user-modal-form-minutes').val() ) ) {
-                $('#new-user-modal-form-minutes').parent().addClass('error');
+                $('#new-user-modal-form-minutes').addClass('is-invalid');
                 no_errors = false;
             }
         }
@@ -566,10 +725,10 @@ $(document).ready(function() {
                 $('#new-user-modal').modal('hide');
 
                 if ( data.success ) {
-                    DisplayMessage( 'success', '[% c.loc("User created.") %]' );
+                    DisplayMessage( "success", "[% c.loc("User created.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( 'error', '[% c.loc("User not created.") %]' );
+                    DisplayMessage( "error", "[% c.loc("User not created.") %]" );
                 }
             });
         }
@@ -585,13 +744,13 @@ $(document).ready(function() {
                 $('#user-table-row-toolbar').hide();
                 $('#client-table-row-toolbar').hide();
 
-                $('#new-guest-modal-form-username').text( data.username );
-                $('#new-guest-modal-form-password').text( data.password );
-                $('#new-guest-modal-form-minutes').text( data.minutes );
+                $('#new-guest-modal-form-username').val( data.username );
+                $('#new-guest-modal-form-password').val( data.password );
+                $('#new-guest-modal-form-minutes').val( data.minutes );
 
                 $('#new-guest-modal').modal();
             } else {
-                DisplayMessage( 'error', "[% c.loc("Unable to create guest user.") %]" );
+                DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
             }
         });
     });
@@ -606,15 +765,15 @@ $(document).ready(function() {
                 $('#user-table-row-toolbar').hide();
                 $('#client-table-row-toolbar').hide();
 
-                $('#multi-guest-modal-form-highest').text( data.highest );
-                $('#multi-guest-modal-form-number').text( data.number );
-                $('#multi-guest-modal-form-minutes').text( data.minutes );
+                $('#multi-guest-modal-form-highest').val( data.highest );
+                $('#multi-guest-modal-form-number').val( data.number );
+                $('#multi-guest-modal-form-minutes').val( data.minutes );
 
                 guest_pass_file_contents = data.contents;
 
                 $('#multi-guest-modal').modal();
             } else {
-                DisplayMessage( 'error', "[% c.loc("Unable to create guest user.") %]" );
+                DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
             }
         });
     });
@@ -677,10 +836,10 @@ $(document).ready(function() {
                 $('#edit-user-modal').modal('hide');
 
                 if ( data.success ) {
-                    DisplayMessage( 'success', '[% c.loc("User updated.") %]' );
+                    DisplayMessage( "success", "[% c.loc("User updated.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( 'error', '[% c.loc("Unable to update user.") %]' );
+                    DisplayMessage( "error", "[% c.loc("Unable to update user.") %]" );
                 }
             });
         }
@@ -700,6 +859,9 @@ $(document).ready(function() {
 
         $('#change-password-modal').modal();
     });
+    $('#change-password-modal').on('shown.bs.modal', function () {
+        $('#change-password-modal-form-password').trigger('focus')
+    })
 
     $('#change-password-modal-form-submit').click(function(){
         $('#change-password-modal-form-id').val( window.selected_id );
@@ -718,10 +880,10 @@ $(document).ready(function() {
                 $('#change-password-modal').modal('hide');
 
                 if ( data.success ) {
-                    DisplayMessage( 'success', '[% c.loc("Password changed.") %]' );
+                    DisplayMessage( "success", "[% c.loc("Password changed.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( 'error', '[% c.loc("Unable to change password.") %]' );
+                    DisplayMessage( "error", "[% c.loc("Unable to change password.") %]" );
                 }
             });
         }
@@ -731,10 +893,10 @@ $(document).ready(function() {
     $('#user-table-row-toolbar-troublemaker').click(function(){
         $.getJSON('[% c.uri_for("api/user/toggle_troublemaker") %]/' + window.selected_id, function(data) {
             if ( parseInt( data.success ) ) {
-                    DisplayMessage( 'success', "[% c.loc("Troublemaker status switched.") %]" );
+                    DisplayMessage( "success", "[% c.loc("Troublemaker status switched.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
             } else {
-                    DisplayMessage( 'error', "[% c.loc("Unable to switch troublemaker status.") %]" );
+                    DisplayMessage( "error", "[% c.loc("Unable to switch troublemaker status.") %]" );
             }
         });
     });
@@ -753,7 +915,7 @@ $(document).ready(function() {
         }
 
         if ( errors ) {
-            $('#modify-time-modal-form-minutes').parent().addClass('error');
+            $('#modify-time-modal-form-minutes').addClass('is-invalid');
         } else {
             $('#modify-time-modal-form-submit').attr('disabled','disabled');
 
@@ -761,10 +923,10 @@ $(document).ready(function() {
                 $('#modify-time-modal').modal('hide');
 
                 if ( data.success ) {
-                    DisplayMessage( 'success', "[% c.loc("User's time updated.") %]" );
+                    DisplayMessage( "success", "[% c.loc("User's time updated.") %]" );
                     ForceClientTableRefresh();
                 } else {
-                    DisplayMessage( 'error', "[% c.loc("Unable to update user's time.") %]" );
+                    DisplayMessage( "error", "[% c.loc("Unable to update user's time.") %]" );
                 }
             });
         }
@@ -779,23 +941,28 @@ $(document).ready(function() {
 
     /* Make reservation */
     $('#make-reservation-modal-form-submit').click(function(){
-        var id = $('#make-reservation-modal-form-id').val();
-        $.post('[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=reserve', $('#make-reservation-modal-form').serialize(), function(data) {
-            $('#make-reservation-modal').modal('hide');
+        let username = $('#make-reservation-modal-form-username').val();
+        if ( username ) {
+            let id = $('#make-reservation-modal-form-id').val();
+            $.post('[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=reserve', $('#make-reservation-modal-form').serialize(), function(data) {
+                $('#make-reservation-modal').modal('hide');
 
-            if ( data.success ) {
-                DisplayMessage( 'success', "[% c.loc("Reservation for user created.") %]" );
-                ForceClientTableRefresh();
-            } else {
-                 if ( data.reason == 'USER_ALREADY_RESERVED' ) {
-                     DisplayMessage( 'error', '[% c.loc("Unable to cancel reservation: User already has a reservation for a different client.") %]' );
-                 } else if ( data.reason == 'USER_NOT_FOUND' ) {
-                     DisplayMessage( 'error', '[% c.loc("Unable to cancel reservation: User not found.") %]' );
-                 } else {
-                     DisplayMessage( 'error', '[% c.loc("Unable to cancel reservation: Reason unknown.") %]' );
-                 }
-            }
-        });
+                if ( data.success ) {
+                    DisplayMessage( "success", "[% c.loc("Reservation for user created.") %]" );
+                    ForceClientTableRefresh();
+                } else {
+                     if ( data.reason == 'USER_ALREADY_RESERVED' ) {
+                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: User already has a reservation for a different client.") %]" );
+                     } else if ( data.reason == 'USER_NOT_FOUND' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to modify reservation: User not found.') %]" );
+                     } else {
+                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: Reason unknown.") %]" );
+                     }
+                }
+            });
+        } else {
+            $('#make-reservation-modal-form-username').addClass('is-invalid');
+        }
     });
 
     $("#make-reservation-modal-form-username").keypress(function(e){
@@ -811,13 +978,15 @@ $(document).ready(function() {
         $('#modify-time-modal-form-id').val( window.selected_id );
 
         $('#modify-time-modal-form-minutes').val('');
-        $('#modify-time-modal-form-minutes').parent().removeClass('success warning error');
+        $('#modify-time-modal-form-minutes').removeClass('is-valid is-invalid');
 
         $('#modify-time-modal').modal();
-        $('#modify-time-modal-form-minutes').focus();
 
-        $('#modify-time-modal-form-submit').removeAttr('disabled');
     });
+    $('#modify-time-modal').on('shown.bs.modal', function () {
+      $('#modify-time-modal-form-minutes').trigger('focus')
+      $('#modify-time-modal-form-submit').removeAttr('disabled');
+    })
 
 });
 
@@ -839,60 +1008,49 @@ function filter_woo() {
 
 function LibkiDeleteUser( id ) {
   if ( confirm("[% c.loc("Are you sure you want to delete this user?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/user/delete') %]' + '/' + id, function() {})
-     .success(function(data, textStatus, jqXHR) { 
+    $.getJSON( '[% c.uri_for('/administration/api/user/delete') %]' + '/' + id, function( data ) {
          if ( data.success ) {
-             DisplayMessage( 'success', '[% c.loc("User deleted.") %]' );
+             DisplayMessage( "success", "[% c.loc("User deleted.") %]" );
              // Refresh the table to remove the deleted row
              $("#user-table").dataTable().fnDraw(true);
          } else {
-             DisplayMessage( 'error', '[% c.loc("Unable to delete user.") %]' );
+             DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
          }
-     })
-     .error(function() { })
-     .complete(function() { });
+    });
   }
 }
 
 function LibkiLogOutClient( id ) {
   if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + id, function() {})
-     .success(function(data, textStatus, jqXHR) { 
+    $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + id, function(data) {
          if ( data.success ) {
-             DisplayMessage( 'success', '[% c.loc("Logged user out.") %]' );
+             DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
              // Refresh the table to remove the deleted row
              $("#client-table").dataTable().fnDraw(true);
          } else {
-             DisplayMessage( 'error', '[% c.loc("Unable to log user out.") %]' );
+             DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
          }
-     })
-     .error(function() { })
-     .complete(function() { });
+     });
   }
 }
 
 function LibkiToggleReservation( id ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id, function() {})
-     .success(function(data, textStatus, jqXHR) { 
-
-      if ( data.reserved ) { // cancel reservation
-
-          if ( confirm("[% c.loc("Are you sure you want to cancel the reservation for this client?") %]") ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', function() {})
-             .success(function(data, textStatus, jqXHR) { 
-                 if ( data.success ) {
-                     DisplayMessage( 'success', '[% c.loc("Reservation canceled.") %]' );
-                     // Refresh the table to remove the deleted row
-                     $("#client-table").dataTable().fnDraw(true);
-                 } else {
-                     DisplayMessage( 'error', '[% c.loc("Unable to cancel reservation.") %]' );
-                 }
-             })
-             .error(function() { })
-             .complete(function() { });
-          }
-
+    $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id, function(data) {
+        if ( data.reserved ) { // cancel reservation
+            if ( confirm("[% c.loc("Are you sure you want to cancel the reservation for this client?") %]") ) {
+                $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', function(data) {
+                    if ( data.success ) {
+                        DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
+                        // Refresh the table to remove the deleted row
+                        $("#client-table").dataTable().fnDraw(true);
+                    } else {
+                        DisplayMessage( "error", "[% c.loc("Unable to cancel reservation.") %]" );
+                    }
+                });
+            }
         } else { // create reservation
+            $('#make-reservation-modal-form-username').removeClass('is-invalid');
+
             $('#client-table-row-toolbar').hide();
 
             $('#make-reservation-modal-form-id').val( window.selected_id );
@@ -901,10 +1059,7 @@ function LibkiToggleReservation( id ) {
             $('#make-reservation-modal').modal();
             $('#make-reservation-modal-form-username').focus();
         }
-
-     })
-     .error(function() { })
-     .complete(function() { });
+    });
 }
 
 function HandleClientTableRefreshCounter() {
@@ -952,15 +1107,24 @@ function ForcePrintTableRefresh() {
 }
 
 function LibkiReleasePrint( print_job_id ) {
-    console.log( `LibkiReleasePrint( ${print_job_id} )` );
     $.getJSON('[% c.uri_for("api/printjob/release") %]', { id: print_job_id }, function(data) {
-        console.log(data);
         if ( data.success ) {
-            alert( data.message );
+            DisplayMessage( "success", data.message );
             ForcePrintTableRefresh();
         } else {
-            alert( 'Failed to release print job: ' + data.error );
+            DisplayMessage( "error", "[% c.loc("Failed to release print job: ") %]" + data.error );
         }
+    });
+}
+
+function LibkiRefreshPrint( print_job_id ) {
+    $.getJSON('[% c.uri_for("api/printjob/update") %]', { id: print_job_id }, function(data) {
+        if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("Print job refreshed") %]" );
+        } else {
+            DisplayMessage( "error", data.data );
+        }
+        ForcePrintTableRefresh();
     });
 }
 

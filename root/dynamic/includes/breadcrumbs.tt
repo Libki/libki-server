@@ -1,4 +1,4 @@
-<ul id="breadcrumbs" class="breadcrumb">
+<ul id="breadcrumbs" class="breadcrumb navbar navbar-expand-lg navbar-light bg-light">
     [% FOREACH item IN c.breadcrumbs %]
         [% IF loop.last %]
             <li class="active">
@@ -7,7 +7,7 @@
         [% ELSE %]
             <li>
                 <a href="[% c.uri_for(item.path) %]">[% item.label %]</a>
-                <span class="divider">/</span>
+                <span class="divider">/&nbsp;</span>
             </li>
         [% END %]
     [% END %]
