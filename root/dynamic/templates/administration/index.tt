@@ -406,7 +406,6 @@ $(document).ready(function() {
                               // HTTP GET request
         "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
-        "sPaginationType": "bootstrap",
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
         },
@@ -441,7 +440,6 @@ $(document).ready(function() {
                               // HTTP GET request
         "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/clients') %]",  // The actual URL to call for data
-        "sPaginationType": "bootstrap",
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
         },
@@ -490,7 +488,6 @@ $(document).ready(function() {
                               // HTTP GET request
         "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/prints') %]",  // The actual URL to call for data
-        "sPaginationType": "bootstrap",
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
         },

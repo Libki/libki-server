@@ -6,27 +6,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.7.2.min.js') %]"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="[% c.uri_for('/static/css/smoothness/jquery-ui-1.8.21.custom.css') %]" />
-    <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-ui-1.8.21.custom.min.js') %]"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" crossorigin="anonymous">
 
-    <script type="text/javascript" src="[% c.uri_for('/static/js/dynatree/jquery/jquery.cookie.js') %]"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="[% c.uri_for('/static/js/dynatree/src/skin/ui.dynatree.css') %]" />
-    <script type="text/javascript" src="[% c.uri_for('/static/js/dynatree/src/jquery.dynatree.js') %]"></script>
-
-    <script type="text/javascript" src="[% c.uri_for('/static/js/jquery.dataTables.js') %]"></script>
-
-    <link rel="stylesheet" href="[% c.uri_for('/static/tk/bootstrap/css/bootstrap.min.css') %]" />
-    <style>body { padding-top: 40px; /* to make the container go all the way to the bottom of the topbar */ }</style>
-    <link rel="stylesheet" href="[% c.uri_for('/static/tk/bootstrap/css/bootstrap-responsive.min.css') %]" />
-    <script type="text/javascript" src="[% c.uri_for('/static/tk/bootstrap/js/bootstrap.js') %]"></script>
-
-    <link rel="stylesheet" href="[% c.uri_for('/static/css/DT_bootstrap.css') %]" />
-    <script type="text/javascript" src="[% c.uri_for('/static/js/DT_bootstrap.js') %]"></script>
-
-    <link rel="stylesheet" href="[% c.uri_for('/static/css/font-awesome/css/font-awesome.min.css') %]" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
 
     <script type="text/javascript" src="[% c.uri_for('/static/js/main.js') %]"></script>
     <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
