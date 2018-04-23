@@ -104,8 +104,8 @@ sub create_guest : Local : Args(0) {
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update();
 
-    my $prefix_setting = $c->model('DB::Setting')->find('GuestPassPrefix');
-    my $prefix = $prefix_setting && $prefix_setting->value ? $prefix_setting->value : 'guest';
+    my $prefix_setting = $c->setting('GuestPassPrefix');
+    my $prefix = $prefix_setting || 'guest';
 
     my $username = $prefix . $current_guest_number;
     my $password =
@@ -147,8 +147,8 @@ sub batch_create_guest : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $prefix_setting = $c->model('DB::Setting')->find('GuestPassPrefix');
-    my $prefix = $prefix_setting && $prefix_setting->value ? $prefix_setting->value : 'guest';
+    my $prefix_setting = $c->setting('GuestPassPrefix');
+    my $prefix = $prefix_setting || 'guest';
 
     my $success = 0;
 
