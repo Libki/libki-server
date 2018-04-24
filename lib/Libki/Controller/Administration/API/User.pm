@@ -27,8 +27,9 @@ Catalyst Controller.
 
 sub get : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
+    my $instance = $c->instance;
 
-    my $user = $c->model('DB::User')->find($id);
+    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
     my $enc = 'UTF-8';
 
@@ -59,7 +60,6 @@ sub get : Local : Args(1) {
 
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
-
     my $instance = $c->instance;
 
     my $params = $c->request->params;
@@ -94,7 +94,6 @@ sub create : Local : Args(0) {
 
 sub create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
-
     my $instance = $c->instance;
 
     my $params = $c->request->params;
@@ -142,7 +141,6 @@ sub create_guest : Local : Args(0) {
 
 sub batch_create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
-
     my $instance = $c->instance;
 
     my $params = $c->request->params;
@@ -217,10 +215,12 @@ sub batch_create_guest : Local : Args(0) {
 
 sub update : Local : Args(0) {
     my ( $self, $c ) = @_;
+    my $instance = $c->instance;
+
     my $success = 0;
 
     my $id      = $c->request->params->{'id'};
-    my $minutes = $c->request->params->{'minutes'};
+    my $minutes = $c->request->params->{'minutes'} // 0;
     my $notes   = $c->request->params->{'notes'};
     my $status  = $c->request->params->{'status'};
     my @roles   = $c->request->params->{'roles'} || [];
@@ -231,7 +231,7 @@ sub update : Local : Args(0) {
 
     $minutes = 0 if ( $minutes < 0 );
 
-    my $user = $c->model('DB::User')->find($id);
+    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
     $user->set_column( 'minutes', $minutes );
     $user->set_column( 'notes',   $notes );
@@ -270,8 +270,9 @@ sub update : Local : Args(0) {
 
 sub delete : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
+    my $instance = $c->instance;
 
-    my $user    = $c->model('DB::User')->find($id);
+    my $user    = $c->model('DB::User')->find({ instance => $instance, id => $id });
     my $success = 0;
 
     if ( $user->delete() ) {
@@ -288,7 +289,6 @@ sub delete : Local : Args(1) {
 
 sub is_username_unique : Local : Args(1) {
     my ( $self, $c, $username ) = @_;
-
     my $instance = $c->instance;
 
     my $count =
@@ -309,9 +309,11 @@ sub is_username_unique : Local : Args(1) {
 
 sub toggle_troublemaker : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
+    my $instance = $c->instance;
+
     my $success = 0;
 
-    my $user = $c->model('DB::User')->find($id);
+    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
     my $is_troublemaker = ( $user->is_troublemaker eq 'Yes' ) ? 'No' : 'Yes';
 
@@ -331,12 +333,14 @@ sub toggle_troublemaker : Local : Args(1) {
 
 sub change_password : Local : Args(0) {
     my ( $self, $c ) = @_;
+    my $instance = $c->instance;
+
     my $success = 0;
 
     my $id       = $c->request->params->{'id'};
     my $password = $c->request->params->{'password'};
 
-    my $user = $c->model('DB::User')->find($id);
+    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
     $user->set_column( 'password', $password );
 
