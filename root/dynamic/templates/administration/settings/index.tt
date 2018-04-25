@@ -1,392 +1,391 @@
 [% meta.title = c.loc("Administration / Settings") %]
 [% SET active_class = 'administration__settings' %]
 
-<form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
-    <fieldset>
-        <legend>[% c.loc("Basic settings") %]</legend>
-        <div class="control-group">
-            <label class="control-label" for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("Amount of time a user is given daily.") %]</span>
-            </div>
-        </div>
+<div class="container">
+    <form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+        <fieldset>
+            <legend>[% c.loc("Basic settings") %]</legend>
 
-        <div class="control-group">
-            <label class="control-label" for="DefaultSessionTimeAllowance">[% c.loc("Default time allowance per session") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
+            <div class="form-group">
+                <label for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">[% c.loc("Amount of time a user is given per session.") %]</span>
+                <small class="form-text text-muted">[% c.loc("Amount of time a user is given daily.") %]</small>
             </div>
-        </div>
 
-        <div class="control-group">
-            <label class="control-label" for="DefaultGuestSessionTimeAllowance">[% c.loc("Default guest time allowance per session") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="DefaultGuestSessionTimeAllowance" name="DefaultGuestSessionTimeAllowance" value="[% DefaultGuestSessionTimeAllowance %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
+            <div class="form-group">
+                <label for="DefaultSessionTimeAllowance">[% c.loc("Default time allowance per session") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">[% c.loc("Amount of time a registered user is given per session.") %]</span>
+                <small class="form-text text-muted">[% c.loc("Amount of time a user is given per session.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="DefaultGuestSessionTimeAllowance">[% c.loc("Default guest time allowance per session") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="DefaultGuestSessionTimeAllowance" name="DefaultGuestSessionTimeAllowance" value="[% DefaultGuestSessionTimeAllowance %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
+                 </div>
+                 <small class="form-text text-muted">[% c.loc("Amount of time a registered user is given per session.") %]</small>
              </div>
-         </div>
-    
-        <div class="control-group">
-            <label class="control-label" for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="DataRetentionDays">[% c.loc("Data retention") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
-                    <span class="add-on">[% c.loc("Days") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</span>
-            </div>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("Client behavior") %]</legend>
-    
-        <div class="control-group">
-            <div class="controls">
-                <label class="radio">
-                    <input type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" checked>
-                    [% c.loc("First come, first served. A patron walks up to an open client and logs in.") %]
-                </label>
-
-                <label class="radio">
-                    <input type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
-                    [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
-                </label>
-
-                <label class="radio">
-                    <input type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES">
-                    [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
-                </label>
-            </div>
-        </div>
-    </fieldset>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var value = "[% ClientBehavior %]";
-            $("input[name=ClientBehavior][value=" + value + "]").prop('checked', true);
-        });
-    </script>
-
-    <fieldset>
-        <legend>[% c.loc("Reservation settings") %]</legend>
-    
-        <div class="control-group">
-            <label class="control-label" for="ReservationTimeout">[% c.loc("Reservation timeout") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</span>
-            </div>
-        </div>
-
-
-        <div class="control-group">
-            <label class="control-label" for="ReservationShowUsername">[% c.loc("Display usernames") %]</label>
-            <div class="controls">
-                <label class="checkbox">
-                    <input id="ReservationShowUsernameCheckbox" type="checkbox">
-                    <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
-                    [% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]
-                </label>
-            </div>
-        </div>
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
-
-                $("#ReservationShowUsernameCheckbox").change( function() {
-                    if ( $(this).attr('checked') == 'checked') {
-                        $("#ReservationShowUsername").val( 1 );
-                    } else {
-                        $("#ReservationShowUsername").val( 0 );
-                    }
-                });
-            });
-        </script>
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("Automatic time extension") %]</legend>
-        <div class="control-group">
-            <label class="control-label" for="AutomaticTimeExtensionLength">[% c.loc("Extension length") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="AutomaticTimeExtensionLength" name="AutomaticTimeExtensionLength" value="[% AutomaticTimeExtensionLength %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("Amount of time to automatically increase a user's session time by.") %]</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="AutomaticTimeExtensionAt">[% c.loc("Extend time at") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-mini" id="AutomaticTimeExtensionAt" name="AutomaticTimeExtensionAt" value="[% AutomaticTimeExtensionAt %]">
-                    <span class="add-on">[% c.loc("Minutes") %]</span>
-                </div>
-                <span class="help-inline">[% c.loc("Extend the session time when a user has less than this number of session minutes remaining.") %]</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="AutomaticTimeExtensionUnless">[% c.loc("Extend time unless") %]</label>
-            <div class="controls">
-                <select id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
-                    <option value="this_reserved">[% c.loc("User's client is reserved") %]</option>
-                    <option value="any_reserved">[% c.loc("Any client is reserved") %]</option>
-                </select>
-                <span class="help-inline">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved.") %]</span>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
-            });
-        </script>
-
-        <div class="control-group">
-            <label class="control-label" for="AutomaticTimeExtensionUseAllotment">[% c.loc("When extending time") %]</label>
-            <div class="controls">
-                <select id="AutomaticTimeExtensionUseAllotment" name="AutomaticTimeExtensionUseAllotment" />
-                    <option value="no">[% c.loc("Don't take minutes from daily allotment") %]</option>
-                    <option value="yes">[% c.loc("Take minutes from daily allotment") %]</option>
-                </select>
-                <span class="help-inline">[% c.loc('Control whether a user\'s time extension uses up minutes from the user\'s daily allotment, or if the minutes are "free".') %]</span>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
-            });
-        </script>
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("Client login banner settings") %]</legend>
-    
-        <fieldset>
-        <legend>[% c.loc("Top banner") %]</legend>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerTopURL">[% c.loc("Source URL") %]</label>
-                <div class="controls">
-                    <div class="input-prepend">
-                        <span class="add-on">http://</span>
-                        <input type="text" class="input-xxlarge" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
-                    </div>
-                    <span class="help-inline">[% c.loc("The URL for the source image or image service") %]</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerTopWidth">[% c.loc("Width") %]</label>
-                <div class="controls">
-                    <div class="input-append">
-                        <input type="text" class="input-mini" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
-                        <span class="add-on">[% c.loc("Pixels") %]</span>
-                    </div>
-                    <span class="help-inline">[% c.loc("The width of the source image or image service in pixels.") %]</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerTopHeight">[% c.loc("Height") %]</label>
-                <div class="controls">
-                    <div class="input-append">
-                        <input type="text" class="input-mini" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
-                        <span class="add-on">[% c.loc("Pixels") %]</span>
-                    </div>
-                    <span class="help-inline">[% c.loc("The height of the source image or image service in pixels.") %]</span>
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Bottom banner") %]</legend>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerBottomURL">[% c.loc("Source URL") %]</label>
-                <div class="controls">
-                    <div class="input-prepend">
-                        <span class="add-on">http://</span>
-                        <input type="text" class="input-xxlarge" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
-                    </div>
-                    <span class="help-inline">[% c.loc("The URL for the source image or image service.") %]</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerBottomWidth">[% c.loc("Width") %]</label>
-                <div class="controls">
-                    <div class="input-append">
-                        <input type="text" class="input-mini" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
-                        <span class="add-on">[% c.loc("Pixels") %]</span>
-                    </div>
-                    <span class="help-inline">[% c.loc("The width of the source image or image service in pixels.") %]</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="BannerBottomHeight">[% c.loc("Height") %]</label>
-                <div class="controls">
-                    <div class="input-append">
-                        <input type="text" class="input-mini" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
-                        <span class="add-on">[% c.loc("Pixels") %]</span>
-                    </div>
-                    <span class="help-inline">[% c.loc("The height of the source image or image service in pixels.") %]</span>
-                </div>
-            </div>
-        </fieldset>
         
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("Guest passes") %]</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-small" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">
+            <div class="form-group">
+                <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">[% c.loc("Prefix for guest passes, defaults to 'guest' if none is specified.") %]</span>
+                <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
             </div>
-        </div>
 
-        <div class="control-group">
-            <label class="control-label" for="GuestBatchCount">[% c.loc("Passes to create per batch") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-small" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
-                    <span class="add-on">[% c.loc("Passes") %]</span>
+            <div class="form-group">
+                <label for="DataRetentionDays">[% c.loc("Data retention") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Days") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">[% c.loc("The number of passes to create per batch.") %]</span>
+                <small class="form-text text-muted">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</small>
             </div>
-        </div>
+        </fieldset>
 
-        <div class="control-group">
-            <label class="control-label" for="GuestPassFile">[% c.loc("Batch file path") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-xxlarge" id="GuestPassFile" name="GuestPassFile" value="[% GuestPassFile %]">
+        <fieldset>
+            <legend>[% c.loc("Client behavior") %]</legend>
+        
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" checked>
+                    <label class="form-check-label" for="ClientBehaviorFCFS">
+                        [% c.loc("First come, first served. A patron walks up to an open client and logs in.") %]
+                    </label>
                 </div>
-                <span class="help-inline">[% c.loc("Optionally save batch guest passes to file on server. Path to the file you wish to create, for example <i>/mnt/share/guestpasses.txt</i>") %]</span>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
+                    <label class="form-check-label" for="ReservationOnly">
+                        [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES">
+                    <label class="form-check-label" for="ReservationOnly">
+                        [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
+                    </label>
+                </div>
             </div>
-        </div>
+        </fieldset>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var value = "[% ClientBehavior %]";
+                $("input[name=ClientBehavior][value=" + value + "]").prop('checked', true);
+            });
+        </script>
 
-        <div class="control-group">
-            <label class="control-label" for="BatchGuestPassUsernameLabel">[% c.loc("Username label") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-xxlarge" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
+        <fieldset>
+            <legend>[% c.loc("Reservation settings") %]</legend>
+        
+            <div class="form-group">
+                <label for="ReservationTimeout">[% c.loc("Reservation timeout") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">
-                    [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting.") %]
-                </span>
+                <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
             </div>
-        </div>
 
-        <div class="control-group">
-            <label class="control-label" for="BatchGuestPassPasswordLabel">[% c.loc("Password label") %]</label>
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" class="input-xxlarge" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
+
+            <div class="form-group">
+                <input id="ReservationShowUsernameCheckbox" type="checkbox">
+                <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
+                <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
+                <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
+
+                    $("#ReservationShowUsernameCheckbox").change( function() {
+                        if ( $(this).attr('checked') == 'checked') {
+                            $("#ReservationShowUsername").val( 1 );
+                        } else {
+                            $("#ReservationShowUsername").val( 0 );
+                        }
+                    });
+                });
+            </script>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("Automatic time extension") %]</legend>
+
+            <div class="form-group">
+                <label for="AutomaticTimeExtensionLength">[% c.loc("Extension length") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="AutomaticTimeExtensionLength" name="AutomaticTimeExtensionLength" value="[% AutomaticTimeExtensionLength %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
                 </div>
-                <span class="help-inline">
+                <small class="form-text text-muted">[% c.loc("Amount of time to automatically increase a user's session time by.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="AutomaticTimeExtensionAt">[% c.loc("Extend time at") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="AutomaticTimeExtensionAt" name="AutomaticTimeExtensionAt" value="[% AutomaticTimeExtensionAt %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    </div>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Extend the session time when a user has less than this number of session minutes remaining.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="AutomaticTimeExtensionUnless">[% c.loc("Extend time unless") %]</label>
+                <div class="input-group">
+                    <select class="form-control" id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
+                        <option value="this_reserved">[% c.loc("User's client is reserved") %]</option>
+                        <option value="any_reserved">[% c.loc("Any client is reserved") %]</option>
+                    </select>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved.") %]</small>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
+                });
+            </script>
+
+            <div class="form-group">
+                <label for="AutomaticTimeExtensionUseAllotment">[% c.loc("When extending time") %]</label>
+                <div class="input-group">
+                    <select class="form-control" id="AutomaticTimeExtensionUseAllotment" name="AutomaticTimeExtensionUseAllotment" />
+                        <option value="no">[% c.loc("Don't take minutes from daily allotment") %]</option>
+                        <option value="yes">[% c.loc("Take minutes from daily allotment") %]</option>
+                    </select>
+                </div>
+                <small class="form-text text-muted">[% c.loc('Control whether a user\'s time extension uses up minutes from the user\'s daily allotment, or if the minutes are "free".') %]</small>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
+                });
+            </script>
+        </fieldset>
+
+        <fieldset>
+            <legend><strong>[% c.loc("Client login banner settings") %]</strong></legend>
+        
+            <fieldset>
+                <legend>[% c.loc("Top banner") %]</legend>
+
+                <div class="form-group">
+                    <label for="BannerTopURL">[% c.loc("Source URL") %]</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">http://</span>
+                        </div>
+                        <input type="text" class="form-control" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The URL for the source image or image service") %]</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="BannerTopWidth">[% c.loc("Width") %]</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
+                        <div class="input-group-append">
+                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="BannerTopHeight">[% c.loc("Height") %]</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
+                        <div class="input-group-append">
+                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>[% c.loc("Bottom banner") %]</legend>
+
+                <div class="form-group">
+                    <label for="BannerBottomURL">[% c.loc("Source URL") %]</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">http://</span>
+                        </div>
+                        <input type="text" class="form-control" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="BannerBottomWidth">[% c.loc("Width") %]</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
+                        <div class="input-group-append">
+                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="BannerBottomHeight">[% c.loc("Height") %]</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
+                        <div class="input-group-append">
+                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
+                </div>
+            </fieldset>
+            
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("Guest passes") %]</legend>
+
+            <div class="form-group">
+                <label for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">
+                </div>
+                <small class="form-text text-muted">[% c.loc("Prefix for guest passes, defaults to 'guest' if none is specified.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="GuestBatchCount">[% c.loc("Passes to create per batch") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Passes") %]</span>
+                    </div>
+                </div>
+                <small class="form-text text-muted">[% c.loc("The number of passes to create per batch.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="GuestPassFile">[% c.loc("Batch file path") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="GuestPassFile" name="GuestPassFile" value="[% GuestPassFile %]">
+                </div>
+                <small class="form-text text-muted">[% c.loc("Optionally save batch guest passes to file on server. Path to the file you wish to create, for example <i>/mnt/share/guestpasses.txt</i>") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="BatchGuestPassUsernameLabel">[% c.loc("Username label") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
+                </div>
+                    <small class="form-text text-muted">
+                        [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting.") %]
+                    </small>
+            </div>
+
+            <div class="form-group">
+                <label for="BatchGuestPassPasswordLabel">[% c.loc("Password label") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
+                </div>
+                <small class="form-text text-muted">
                     [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting.") %]
-                </span>
+                </small>
             </div>
-        </div>
-    </fieldset>
+        </fieldset>
 
-    <fieldset>
-        <legend>[% c.loc("Third party integration") %]</legend>
-    
-        <div class="control-group">
-            <label class="control-label" for="ThirdPartyURL">[% c.loc("URL") %]</label>
-            <div class="controls">
-                <div class="input-prepend">
-                    <input type="text" class="input-xxlarge" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
+        <fieldset>
+            <legend>[% c.loc("Third party integration") %]</legend>
+        
+            <div class="form-group">
+                <label for="ThirdPartyURL">[% c.loc("URL") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
                 </div>
-                <span class="help-inline">[% c.loc("Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning.") %]</span>
-                <span class="help-inline">[% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username.") %]</span>
+                <small class="form-text text-muted">
+                    [% c.loc("Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning.") %]
+                </small>
+                <small class="form-text text-muted">
+                    [% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username.") %]
+                </small>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("Print management") %]</legend>
+
+            <div class="form-group">
+                <label for="PrinterConfiguration">[% c.loc("Printer configuration") %]</label>
+                <div class="input-group">
+                    <textarea class="form-control" id="PrinterConfiguration" name="PrinterConfiguration" rows="15">[% PrinterConfiguration %]</textarea>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Define printer configuration in YAML format.") %]</small>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("ILS integration") %]</legend>
+
+            <div class="form-group">
+                <label for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
+                <div class="input-group">
+                    <textarea class="form-control" id="SIPConfiguration" name="SIPConfiguration" rows="15">[% SIPConfiguration %]</textarea>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</small>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("Custom JavaScript") %]</legend>
+        
+            <div class="form-group">
+                <label for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
+                <div class="input-group">
+                    <textarea class="form-control" id="CustomJsAdministration" name="CustomJsAdministration" rows="15">[% CustomJsAdministration %]</textarea>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the administration interface here.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="CustomJsPublic">[% c.loc("Public interface JavaScript") %]</label>
+                <div class="input-group">
+                    <textarea class="form-control" id="CustomJsPublic" name="CustomJsPublic" rows="15">[% CustomJsPublic %]</textarea>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the public web interface here.") %]</small>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <div class="input-group">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
             </div>
         </div>
-    </fieldset>
+    </form>
+<div class="container">
 
-    <fieldset>
-        <legend>[% c.loc("Printer configuration") %]</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="PrinterConfiguration">[% c.loc("Printer configuration") %]</label>
-            <div class="controls">
-                <textarea id="PrinterConfiguration" name="PrinterConfiguration" rows="10" cols="300">[% PrinterConfiguration %]</textarea>
-                <span class="help-inline">[% c.loc("Define printer configuration in YAML format.") %]</span>
-            </div>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("SIP configuration") %]</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
-            <div class="controls">
-                <textarea id="SIPConfiguration" name="SIPConfiguration" rows="10" cols="300">[% SIPConfiguration %]</textarea>
-                <span class="help-inline">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</span>
-            </div>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>[% c.loc("Custom JavaScript") %]</legend>
-    
-        <div class="control-group">
-            <label class="control-label" for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
-            <div class="controls">
-                <textarea id="CustomJsAdministration" name="CustomJsAdministration" rows="5" cols="50">[% CustomJsAdministration %]</textarea>
-                <span class="help-inline">[% c.loc("Add custom JavaScript for the administration interface here.") %]</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="CustomJsPublic">[% c.loc("Public interface JavaScript") %]</label>
-            <div class="controls">
-                <textarea id="CustomJsPublic" name="CustomJsPublic" rows="5" cols="50">[% CustomJsPublic %]</textarea>
-                <span class="help-inline">[% c.loc("Add custom JavaScript for the public web interface here.") %]</span>
-            </div>
-        </div>
-    </fieldset>
-
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>
-        </div>
-    </div>
-</form>
