@@ -1,108 +1,123 @@
 [% SET active_class = "public__index" %]
 [% USE UTF8Decode %]
 
-<!-- We don't need this for the time being, but may later
-<ul class="nav nav-tabs" id="primary-tabs">
-    <li class="active">
-        <a id="client-tab-label" data-toggle="tab" href="#clients-tab">[% c.loc("Clients") %]</a>
-    </li>
-</ul>
--->
-
-<div class="tab-content">
-  <div class="tab-pane active" id="clients-tab">
-        <ul class="nav nav-pills" id="primary-tabs">
-          <li>
-              <a>[% c.loc("Location") %]: </a>
+<nav class="navbar navbar-expand-lg navbar-light bg-none">
+    <ul class="nav nav-pills" id="primary-tabs">
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+      </li>
+      [% FOREACH location IN locations %]
+          <li class="nav-item">
+              <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
           </li>
-          <li class="active">
-              <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
-          </li>
-          [% FOREACH location IN locations %]
-              <li>
-                  <a data-toggle="tab" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
-              </li>
-          [% END %]
-        </ul>
+      [% END %]
+    </ul>
+</nav>
 
-        <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-            <thead>
-                <th>[% c.loc("Client") %]</th>
-                <th>[% c.loc("Location") %]</th>
-                <th>[% c.loc("Status") %]</th>
-                <th>[% c.loc("Time remaining") %]</th>
-                <th>[% c.loc("Reservation status") %]</th>
-            </thead>
-        </table> 
+<table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <th>[% c.loc("Client") %]</th>
+        <th>[% c.loc("Location") %]</th>
+        <th>[% c.loc("Status") %]</th>
+        <th>[% c.loc("Time remaining") %]</th>
+        <th>[% c.loc("Reservation status") %]</th>
+    </thead>
+</table> 
 
-        <div id="client-table-row-toolbar" class="table-row-toolbar btn-group">
-            [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                <button id="client-table-row-toolbar-make-reservation" class="btn btn-inverse">
-                    <i class="icon-plus-sign icon-white"></i> [% c.loc("Make reservation") %]
-                </button>
+<div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
+    <div class="btn-group" role="group">
+    [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
+        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary">
+            <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
+        </button>
 
-                <button id="client-table-row-toolbar-cancel-reservation" class="btn btn-danger">
-                    <i class="icon-minus-sign icon-white"></i> [% c.loc("Cancel reservation") %]
-                </button>
-            [% END %]
-        </div>
-  </div>
+        <button id="client-table-row-toolbar-cancel-reservation" class="btn btn-danger">
+            <i class="fas fa-minus-square"></i> [% c.loc("Cancel reservation") %]
+        </button>
+    [% END %]
+    </div>
 </div>
 
-<div class="modal hide" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="make-reservation-modal-label">[% c.loc("Make reservation for") %] <i><span id="make-reservation-modal-for"></span></i></h3>
-    </div>
-
-    <div class="modal-body">
+<div class="modal fade" id="make-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="make-reservation-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="make-reservation-modal-label"><i class="fas fa-tag"></i> [% c.loc("Make reservation for") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label class="control-label" for="make-reservation-username">[% c.loc("Username") %]</label>
-                <div class="controls">
-                    <input type="text" id="make-reservation-username" name="username" />
+            <div class="form-group">
+                <label for="make-reservation-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="make-reservation-username" name="username" />
+                <div class="invalid-feedback">
+                     [% c.loc("Username is required") %]
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="make-reservation-password">[% c.loc("Password") %]</label>
-                <div class="controls">
-                    <input type="password" id="make-reservation-password" name="password" />
+            <div class="form-group">
+                <label for="make-reservation-password">[% c.loc("Password") %]</label>
+                <input type="password" class="form-control" id="make-reservation-password" name="password" />
+                <div class="invalid-feedback">
+                     [% c.loc("Password is required") %]
                 </div>
             </div>
         </form>
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">[% c.loc("Cancel") %]</button>
         <button id="make-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Make reservation") %]</button>
+      </div>
     </div>
+  </div>
 </div>
+<script>
+    $('#make-reservation-modal').on('shown.bs.modal', function () {
+      $('#make-reservation-username').trigger('focus')
+    })
+</script>
 
-<div class="modal hide" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
-        <h3 id="cancel-reservation-modal-label">[% c.loc("Cancel reservation") %] <i><span id="cancel-reservation-modal-for"></span></i></h3>
-    </div>
-
-    <div class="modal-body">
+<div class="modal fade" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancel-reservation-modal-label"><i class="fas fa-minus-square"></i> [% c.loc("Cancel reservation") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form id="cancel-reservation-modal-form" class="form-horizontal">
             <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
 
-            <div class="control-group">
-                <label class="control-label" for="cancel-reservation-password">[% c.loc("Password") %]</label>
-                <div class="controls">
-                    <input type="password" id="cancel-reservation-password" name="password" />
+            <div class="form-group">
+                <label for="cancel-reservation-password">[% c.loc("Password") %]</label>
+                <input type="password" class="form-control" id="cancel-reservation-password" name="password" />
+                <div class="invalid-feedback">
+                     [% c.loc("Password is required") %]
                 </div>
             </div>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">[% c.loc("Cancel") %]</button>
+        <button id="cancel-reservation-modal-form-submit" class="btn btn-danger">[% c.loc("Cancel reservation") %]</button>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
-        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Cancel reservation") %]</button>
-    </div>
+  </div>
 </div>
+<script>
+    $('#cancel-reservation-modal').on('shown.bs.modal', function () {
+      $('#cancel-reservation-password').trigger('focus')
+    })
+</script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -114,9 +129,7 @@ $(document).ready(function() {
         "bProcessing": false,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'><'span6'p>>",
         "sAjaxSource": "[% c.uri_for("/api/public/datatables/clients") %]",  // The actual URL to call for data
-        "sPaginationType": "bootstrap",
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
         },
@@ -198,10 +211,10 @@ $(document).ready(function() {
             $("#make-reservation-modal-form-id").val( window.selected_id );
 
             $("#make-reservation-username").val("");
-            $("#make-reservation-username").parent().removeClass("success warning error");
+            $("#make-reservation-username").removeClass("is-invalid");
 
             $("#make-reservation-password").val("");
-            $("#make-reservation-password").parent().removeClass("success warning error");
+            $("#make-reservation-password").removeClass("is-invalid");
 
             $("#make-reservation-modal").modal();
             $("#make-reservation-username").focus();
@@ -220,18 +233,18 @@ $(document).ready(function() {
     });
     $("#make-reservation-modal-form-submit").click(function(){
         var errors = false;
-        $("#make-reservation-username").parent().parent().removeClass("error");
-        $("#make-reservation-password").parent().parent().removeClass("error");
+        $("#make-reservation-username").removeClass("is-invalid");
+        $("#make-reservation-password").removeClass("is-invalid");
 
         if ( ! $("#make-reservation-password").val() ) {
             errors = true;
-            $("#make-reservation-password").parent().parent().addClass("error");
+            $("#make-reservation-password").addClass("is-invalid");
             $("#make-reservation-password").focus();
         }
  
        if ( ! $("#make-reservation-username").val() ) {
             errors = true;
-            $("#make-reservation-username").parent().parent().addClass("error").focus();
+            $("#make-reservation-username").addClass("is-invalid");
             $("#make-reservation-username").focus();
         }
 
@@ -239,7 +252,6 @@ $(document).ready(function() {
             $("#make-reservation-modal-form-submit").attr("disabled","disabled");
 
             $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
-
                 if ( data.success ) {
                     $("#make-reservation-modal").modal("hide");
                     DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );
@@ -329,7 +341,7 @@ $(document).ready(function() {
             $("#cancel-reservation-modal-form-id").val( window.selected_id );
 
             $("#cancel-reservation-password").val("");
-            $("#cancel-reservation-password").parent().removeClass("success warning error");
+            $("#cancel-reservation-password").removeClass("is-invalid");
 
             $("#cancel-reservation-modal").modal();
             $("#cancel-reservation-password").focus();
@@ -348,11 +360,11 @@ $(document).ready(function() {
     });
     $("#cancel-reservation-modal-form-submit").click(function(){
         var errors = false;
-        $("#cancel-reservation-password").parent().parent().removeClass("error");
+        $("#cancel-reservation-password").removeClass("is-invalid");
 
         if ( ! $("#cancel-reservation-password").val() ) {
             errors = true;
-            $("#cancel-reservation-password").parent().parent().addClass("error");
+            $("#cancel-reservation-password").addClass("is-invalid");
             $("#cancel-reservation-password").focus();
         }
  
@@ -388,6 +400,7 @@ function ForceClientTableRefresh() {
 
 function ClientTableUpdateLocationFilter( location ) {
     window.location_filter = location;
+    $("#client-table-row-toolbar").hide();
     ForceClientTableRefresh();
 }
 

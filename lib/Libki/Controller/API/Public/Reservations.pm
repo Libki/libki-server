@@ -24,7 +24,13 @@ sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
+
     my $config = $c->config->{instances}->{$instance} || $c->config;
+
+    unless ( $config->{SIP} ) {
+        my $yaml = $c->setting('SIPConfiguration');
+        $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
+    }
 
     my $username  = $c->request->params->{'username'};
     my $password  = $c->request->params->{'password'};
@@ -97,7 +103,7 @@ sub create : Local : Args(0) {
         }
     }
     else {
-        $c->stash( 'success' => 0, 'reason' => $error_code, details => $details );
+        $c->stash( 'success' => 0, 'reason' => $error_code || 'INVALID_USER', details => $details );
     }
 
     $c->logout();
