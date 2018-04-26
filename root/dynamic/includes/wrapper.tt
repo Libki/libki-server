@@ -30,8 +30,7 @@
                     "my": "center top",
                     "at": "center bottom",
                     "of": $("#libki-primary-navbar")
-                })
-               .hide();
+                });
 
             if ($("[rel=tooltip]").length) {
                 $("[rel=tooltip]").tooltip();
@@ -119,7 +118,7 @@
         [%# Status and error messages %]
         <div class="row">
             <div class="span12">
-                    <div id="alert-message" class="alert alert-success libki-message">
+                    <div id="alert-message" class="alert alert-success libki-message" style="display: none">
                         <button class="close" onclick="$(this).parent().stop().slideUp('slow');"><i class="icon-remove"></i></button>
                         <strong><span id="alert-message-title"></span></strong> <span id="alert-message-content">[% success_message %]</span>
                     </div>
