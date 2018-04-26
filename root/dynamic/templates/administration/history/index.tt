@@ -1,32 +1,24 @@
 [% meta.title = c.loc('Administration / History') %]
 [% SET active_class = 'administration__history' %]
 
-<div class="row">
-    <div class="span12">
-        <table id="history-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-            <thead>
-                <th>[% c.loc("Username") %]</th>
-                <th>[% c.loc("Client") %]</th>
-                <th>[% c.loc("Action") %]</th>
-                <th>[% c.loc("Timestamp") %]</th>
-            </thead>
-        </table>
-    </div>
-</div>
+<table id="history-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <th>[% c.loc("Username") %]</th>
+        <th>[% c.loc("Client") %]</th>
+        <th>[% c.loc("Action") %]</th>
+        <th>[% c.loc("Timestamp") %]</th>
+    </thead>
+</table>
 
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Initialize Datatables ****/
-    // Initalize the Users table as a datatable
-    uTable = $('#history-table').dataTable( {
+    hTable = $('#history-table').dataTable( {
         [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sDom": "<'row'<'span6'l><'span6 float-right'f>r>t<'row'<'span6'i><'span6'p>>",
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/statistics') %]",
-        "sPaginationType": "bootstrap",
-        [% IF c.language.match('fr') %]"language": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json",[% END %]
     } );
 } );
 </script>

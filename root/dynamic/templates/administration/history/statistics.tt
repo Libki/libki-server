@@ -5,62 +5,80 @@
 [% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
-<div class="row">
-    <div class="span12">
-<form class="form-inline">
-    <label for="from">[% c.loc("From")%]: </label>
-    <input type="text" class="datepicker input-small" name="from" value="[% LibkiDate.format(from) %]"/>
-    <label for="to">[% c.loc("To") %]: </label>
-    <input type="text" class="datepicker input-small" name="to" value="[% LibkiDate.format(to) %]"/>
-    <button type="submit" class="btn">[% c.loc("Limit") %]</button>
-</form>
-    </div>
 
-    <div class="span12">
-        <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>[% c.loc("Date") %]</th>
-                    [% SET location_totals = {} %]
-                    [% FOREACH b IN by_location_columns %]
-                        [% SET location_totals.$b = '0' %]
-                        <th>
-                            [% IF b == 'XXX__UNDEFINED__' %]
-                                <i>[% c.loc("No location set") %]</i>
-                            [% ELSE %]
-                                [% b |utf8_decode | utf8_decode %]
-                            [% END %]
-                        </th>
+<p>
+    <form>
+      <div class="form-row align-items-center">
+        <div class="col-aufrom">
+          <label class="sr-only" for="inlineFormInputGroup">[% c.loc("From") %]</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text">[% c.loc("From") %]</div>
+            </div>
+            <input type="date" class="form-control" id="from" name="from" value="[% from.ymd %]">
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <label class="sr-only" for="inlineFormInputGroup">[% c.loc("To") %]</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text">[% c.loc("To") %]</div>
+            </div>
+            <input type="date" class="form-control" id="to" name="to" value="[% to.ymd %]">
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary mb-2">[% c.loc("Limit") %]</button>
+        </div>
+      </div>
+    </form>
+</p>
+
+<h5>Daily usage</h5>
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
+    <thead>
+        <tr>
+            <th>[% c.loc("Date") %]</th>
+            [% SET location_totals = {} %]
+            [% FOREACH b IN by_location_columns %]
+                [% SET location_totals.$b = '0' %]
+                <th>
+                    [% IF b == 'XXX__UNDEFINED__' %]
+                        <i>[% c.loc("No location set") %]</i>
+                    [% ELSE %]
+                        [% b |utf8_decode | utf8_decode %]
                     [% END %]
-                    <th>[% c.loc("Total by date") %]</th>
-                </tr>
-            </thead>
-            <tbody>
-                [% SET grand_total = 0 %]
-                [% FOREACH key IN by_location.keys.sort %]
-                    <tr>
-                        <td>[% LibkiDate.format(key) %]</td>
-                        [% SET date_total = 0 %]
-                        [% FOREACH b IN by_location_columns %]
-                            <td>[% by_location.$key.$b || '0' %]</td>
-                            [% SET date_total = date_total + by_location.$key.$b %]
-                            [% SET location_totals.$b = location_totals.$b + by_location.$key.$b %]
-                        [% END %]
-                        [% SET grand_total = grand_total + date_total %]
-                        <th>[% date_total %]</th>
-                    </tr>
+                </th>
+            [% END %]
+            <th>[% c.loc("Total by date") %]</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% SET grand_total = 0 %]
+        [% FOREACH key IN by_location.keys.sort %]
+            <tr>
+                <td>[% LibkiDate.format(key) %]</td>
+                [% SET date_total = 0 %]
+                [% FOREACH b IN by_location_columns %]
+                    <td>[% by_location.$key.$b || '0' %]</td>
+                    [% SET date_total = date_total + by_location.$key.$b %]
+                    [% SET location_totals.$b = location_totals.$b + by_location.$key.$b %]
                 [% END %]
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>[% c.loc("Total by location") %]</th>
-                    [% FOREACH key IN by_location_columns %]
-                        <th>[% location_totals.$key %]</th>
-                    [% END %]
-                    <th><i>[% grand_total %]</i></th>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
+                [% SET grand_total = grand_total + date_total %]
+                <th>[% date_total %]</th>
+            </tr>
+        [% END %]
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>[% c.loc("Total by location") %]</th>
+            [% FOREACH key IN by_location_columns %]
+                <th>[% location_totals.$key %]</th>
+            [% END %]
+            <th><i>[% grand_total %]</i></th>
+        </tr>
+    </tfoot>
+</table>

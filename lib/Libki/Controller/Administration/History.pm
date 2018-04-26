@@ -35,8 +35,11 @@ sub statistics : Local : Args(0) {
     $from ||= DateTime->today()->subtract( months => 1 )->ymd();
     $to ||= DateTime->today()->ymd();
 
-    $from = DateTime::Format::DateParse->parse_datetime($from)->ymd();
-    $to   = DateTime::Format::DateParse->parse_datetime($to)->ymd();
+    my $from_dt = DateTime::Format::DateParse->parse_datetime($from);
+    my $to_dt   = DateTime::Format::DateParse->parse_datetime($to);
+
+    $from = $from_dt->ymd();
+    $to   = $to_dt->ymd();
 
     if ( $from gt $to ) {
         ( $from, $to ) = ( $to, $from );
@@ -88,8 +91,8 @@ sub statistics : Local : Args(0) {
     $c->stash(
         'by_location'         => $results,
         'by_location_columns' => \@columns,
-        'from'                => $from,
-        'to'                  => $to,
+        'from'                => $from_dt,
+        'to'                  => $to_dt,
     );
 
 }
