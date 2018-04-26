@@ -7,148 +7,148 @@
 [% SET Hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] %]
 [% SET Minutes = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59'] %]
 
+<div class="container">
 <form id="updateform" class="form-horizontal" action="[% c.uri_for('update_days') %]" method="post">
     <fieldset>
         <legend>[% c.loc("Closing hours") %]</legend>
 
-        <ul class="nav nav-tabs" id="location-hours-tabs">
-            <li class="active">
-                <a href="#location_all" data-toggle="tab">[% c.loc("All locations") %]</a>
+        <ul class="nav nav-tabs" id="location-hours-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#location_all" id="location_all-tab" data-toggle="tab" role="tab" aria-controls="location_all" aria-selected="true">[% c.loc("All locations") %]</a>
             </li>
             [% FOREACH l IN locations %]
-                <li>
-                    <a href="#location_[% l.id %]" data-toggle="tab">[% l.code %]</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="#location_[% l.id %]" id="location_[% l.id %]-tab" data-toggle="tab" role="tab" aria-controls="location_[% l.id %]" aria-selected="false">[% l.code %]</a>
                 </li>
             [% END %]
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane active" id="location_all">
+            <div class="tab-pane fade show active" id="location_all" role="tabpanel" aria-labelledby="location_all-tab">
+                <p/>
                 [% FOREACH d IN DaysOfWeek %]
-                    <div class="control-group">
-                        <label class="control-label" for="[% d %]">[% c.loc("$d") %]</label>
-                        <div class="controls">
-                            <div class="">
-                                <select id="[% d %]-hour-all" name="[% d %]-hour-all" class="input-mini">
-                                    <option value=""></option>
-                                    [% FOREACH h IN Hours %]
-                                        <option value="[% h %]" [% IF h == days.all.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>[% h %]</option>
-                                    [% END %]
-                                </select>
-                                :
-                                <select id="[% d %]-minute-all" name="[% d %]-minute-all" class="input-mini">
-                                    <option value=""></option>
-                                    [% FOREACH m IN Minutes %]
-                                        <option value="[% m %]" [% IF m == days.all.$d.closing_time.substr(3,2) %] selected="selected" [% END %]>[% m %]</option>
-                                    [% END %]
-                                </select>
-                            </div>
-                        </div>
+                    <div class="form-group form-inline">
+                        <label for="[% d %]" style="width: 7em">[% c.loc("$d") %]</label>
+						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control" style="width: 3em">
+							<option value=""></option>
+							[% FOREACH h IN Hours %]
+								<option value="[% h %]" [% IF h == days.all.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>[% h %]</option>
+							[% END %]
+						</select>
+						&nbsp;
+						:
+						&nbsp;
+						<select id="[% d %]-minute-all" name="[% d %]-minute-all" class="form-control" style="width: 3em">
+							<option value=""></option>
+							[% FOREACH m IN Minutes %]
+								<option value="[% m %]" [% IF m == days.all.$d.closing_time.substr(3,2) %] selected="selected" [% END %]>[% m %]</option>
+							[% END %]
+						</select>
                     </div>
                 [% END %]
             </div>
 
             [% FOREACH l IN locations %]
                 [% SET location_id = l.id %]
-                <div class="tab-pane" id="location_[% l.id %]">
+                <div class="tab-pane fade" id="location_[% l.id %]" role="tabpanel" aria-labelledby="location_[% l.id %]-tab">
                     [% FOREACH d IN DaysOfWeek %]
-                        <div class="control-group">
-                            <label class="control-label" for="[% d %]">[% c.loc("$d") %]</label>
-                            <div class="controls">
-                                <div class="">
-                                    <select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="input-mini">
-                                        <option value=""></option>
-                                        [% FOREACH h IN Hours %]
-                                            <option value="[% h %]" [% IF h == days.$location_id.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>[% h %]</option>
-                                        [% END %]
-                                    </select>
-                                    :
-                                    <select id="[% d %]-minute-[% l.id %]" name="[% d %]-minute-[% l.id %]" class="input-mini">
-                                        <option value=""></option>
-                                        [% FOREACH m IN Minutes %]
-                                            <option value="[% m %]" [% IF m == days.$location_id.$d.closing_time.substr(3,2) %] selected="selected" [% END %]>[% m %]</option>
-                                        [% END %]
-                                    </select>
-                                </div>
-                            </div>
+                        <p/>
+                        <div class="form-group form-inline">
+                            <label for="[% d %]" style="width: 7em">[% c.loc("$d") %]</label>
+							<select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="form-control" style="width: 3em">
+								<option value=""></option>
+								[% FOREACH h IN Hours %]
+									<option value="[% h %]" [% IF h == days.$location_id.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>[% h %]</option>
+								[% END %]
+							</select>
+							&nbsp;
+							:
+							&nbsp;
+							<select id="[% d %]-minute-[% l.id %]" name="[% d %]-minute-[% l.id %]" class="form-control" style="width: 3em">
+								<option value=""></option>
+								[% FOREACH m IN Minutes %]
+									<option value="[% m %]" [% IF m == days.$location_id.$d.closing_time.substr(3,2) %] selected="selected" [% END %]>[% m %]</option>
+								[% END %]
+							</select>
                         </div>
                     [% END %]
                 </div>
             [% END %]
         </div>
 
-        <div class="control-group">
-            <div class="controls">
-                <button id="updater" type="submit" class="btn"><i class="fa fa-save"></i> [% c.loc("Update") %]</button>
-                <span class="help-block">[% c.loc("Update hours for all locations.") %]</span>
-            </div>
+        <div class="form-group">
+            <button id="updater" type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
+            <small class="form-text text-muted">[% c.loc("Update hours for all locations.") %]</small>
         </div>
     </fieldset>
 </form>
 
 [% IF dates.size %]
+    <hr/>
     <form id="updateform" class="form-horizontal" action="[% c.uri_for('delete_dates') %]" method="post">
         <fieldset>
             <legend>[% c.loc("Manage existing specific dates") %]</legend>
             [% FOREACH date IN dates %]
-                <div class="control-group">
-                    <label class="control-label" for="[% date.day %]">[% DatePlugin.format( date.date _ " 00:00:00" ) %] @ [% date.closing_time.substr(0,5) %] [% c.loc("for") %] [% date.location.code || c.loc("All locations") %]</label>
-                    <div class="controls">
-                        <div class="input-append">
-                            <input type="checkbox" name="delete" class="delete" value="[% date.id %]">
-                            [% c.loc("Delete") %]
-                        </div>
+                <div class="form-group form-inline">
+					<div class="form-check">
+                    	<input type="checkbox" name="delete" class="delete" value="[% date.id %]">
+                    	&nbsp;
+						<label class="form-check-label" for="[% date.day %]">
+							[% DatePlugin.format( date.date _ " 00:00:00" ) %]
+							@
+							[% date.closing_time.substr(0,5) %] [% c.loc("for") %] [% date.location.code || c.loc("All locations") %]
+						</label>
                     </div>
                 </div>
             [% END %]
 
-            <div class="control-group">
+            <div class="form-group">
                 <div class="controls">
-                    <button id="updater" type="submit" class="btn"><i class="fa fa-trash-o"></i> [% c.loc("Delete") %]</button>
+                    <button id="updater" type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> [% c.loc("Delete selected") %]</button>
                 </div>
             </div>
         </fieldset>
     </form>
 [% END %]
 
+<hr/>
 <form id="addform" class="form-horizontal" action="[% c.uri_for('update_dates') %]" method="post">
     <fieldset>
         <legend>[% c.loc("Add closing hours for specific dates") %]</legend>
         <div class="dateadd-wrapper">
             <div class="dateadd">
-                <div class="control-group">
-                    <label class="control-label" for="[% date.day %]">[% c.loc("Date and time") %]</label>
-                    <div class="controls">
-                        <input name="date" type="text" class="date datepicker input-medium" placeholder="[% DatePlugin.format('00:00:00 12-12-1999') %]">
-
-                        @
-
-                        <select id="hour" name="hour" class="input-mini">
-                            [% FOREACH h IN Hours %]
-                                <option value="[% h %]">[% h %]</option>
-                            [% END %]
-                        </select>
-                        :
-                        <select id="minute" name="minute" class="input-mini">
-                            [% FOREACH m IN Minutes %]
-                                <option value="[% m %]">[% m %]</option>
-                            [% END %]
-                        </select>
-
-                        for
-
-                        <select id="location" name="location">
-                            <option value="">[% c.loc("All locations") %]</option>
-                            [% FOREACH l IN locations %]
-                                <option value="[% l.id %]">[% l.code %]</option>
-                            [% END %]
-                        </select>
-                    </div>
+                <div class="form-group form-inline">
+                    <label for="[% date.day %]">[% c.loc("Date and time") %] &nbsp;</label>
+					<input name="date" type="text" class="date datepicker input-medium" placeholder="[% DatePlugin.format('00:00:00 12-12-1999') %]">
+					&nbsp;
+					@
+					&nbsp;
+					<select id="hour" name="hour" class="form-control">
+						[% FOREACH h IN Hours %]
+							<option value="[% h %]">[% h %]</option>
+						[% END %]
+					</select>
+					&nbsp;
+					:
+					&nbsp;
+					<select id="minute" name="minute" class="form-control">
+						[% FOREACH m IN Minutes %]
+							<option value="[% m %]">[% m %]</option>
+						[% END %]
+					</select>
+					&nbsp;
+					for
+					&nbsp;
+					<select id="location" name="location">
+						<option value="">[% c.loc("All locations") %]</option>
+						[% FOREACH l IN locations %]
+							<option value="[% l.id %]">[% l.code %]</option>
+						[% END %]
+					</select>
                 </div>
 
-                <div class="control-group">
-                    <div class="controls">
-                        <button type="submit" class="btn"><i class="fa fa-plus-square"></i> [% c.loc("Add") %]</button>
+                <div class="form-group">
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-plus-square"></i> [% c.loc("Add") %]</button>
                     </div>
                 </div>
             </div>
@@ -156,3 +156,4 @@
     
     </fieldset>
 </form>
+</div>
