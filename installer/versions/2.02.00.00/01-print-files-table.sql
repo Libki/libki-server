@@ -5,7 +5,7 @@ CREATE TABLE `print_files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` text NOT NULL,
   `content_type` varchar(255) DEFAULT NULL,
-  `data` blob,
+  `data` longblob,
   `pages` int(4) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
   `client_name` varchar(255) NOT NULL,
