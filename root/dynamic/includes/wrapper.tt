@@ -106,7 +106,9 @@
 
 <body>
     [% IF interface == 'administration' %]
-        [% INCLUDE navbar_administration.tt %]
+        [% IF c.user %]
+            [% INCLUDE navbar_administration.tt %]
+        [% END %]
     [% ELSE %]
         [% INCLUDE navbar_public.tt %]
     [% END %]
