@@ -29,6 +29,13 @@ my $config = Config::ZOMG->new(
 );
 my $config_hash  = $config->load();
 my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
+unless ( $connect_info ) {
+    $connect_info = {
+        dsn =>  $ENV{LIBKI_DB_DSN},
+        user => $ENV{LIBKI_DB_USER},
+        password => $ENV{LIBKI_DB_PASSWORD},
+    }
+}
 
 my $schema = Libki::Schema::DB->connect($connect_info)
   || die("Couldn't Connect to DB");
