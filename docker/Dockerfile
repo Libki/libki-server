@@ -44,6 +44,6 @@ RUN cpanm -n --installdeps .
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
 
-ENV PERL5LIB=/app/lib
+ENV PERL5LIB /app/lib
 
 CMD plackup -s Gazelle --port 3000 --max-reqs-per-child 50000 -E production -a /app/libki.psgi
