@@ -50,7 +50,7 @@ sub statistics : Local : Args(0) {
     my @by_location = $c->model('DB::Statistic')->search(
         {
             instance => $instance,
-            when =>
+            created_on =>
               { '>=' => $from, '<=' => $to, },
             action => 'LOGIN',
         },
@@ -58,15 +58,15 @@ sub statistics : Local : Args(0) {
             select => [
                 'client_location',
                 { 'COUNT' => '*' },
-                { 'DAY'   => 'when' },
-                { 'MONTH' => 'when' },
-                { 'YEAR'  => 'when' }
+                { 'DAY'   => 'created_on' },
+                { 'MONTH' => 'created_on' },
+                { 'YEAR'  => 'created_on' }
             ],
             as       => [ 'location', 'count', 'day', 'month', 'year', ],
             group_by => [
-                { 'DAY'   => 'when' },
-                { 'MONTH' => 'when' },
-                { 'YEAR'  => 'when' },
+                { 'DAY'   => 'created_on' },
+                { 'MONTH' => 'created_on' },
+                { 'YEAR'  => 'created_on' },
                 'client_location'
             ],
         }

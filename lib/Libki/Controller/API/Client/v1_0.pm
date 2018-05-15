@@ -288,7 +288,7 @@ sub index : Path : Args(0) {
                                         client_name     => $client_name,
                                         client_location => $client_location,
                                         action          => 'LOGIN',
-                                        when            => $now
+                                        created_on      => $now
                                     }
                                 );
                             }
@@ -346,7 +346,7 @@ sub index : Path : Args(0) {
                     username    => $username,
                     client_name => $client_name,
                     action      => 'LOGOUT',
-                    when        => $now
+                    created_on  => $now
                 }
             );
         }

@@ -86,7 +86,7 @@ __PACKAGE__->table("statistics");
   is_nullable: 1
   size: 255
 
-=head2 when
+=head2 created_on
 
   data_type: 'timestamp'
   datetime_undef_if_invalid: 1
@@ -107,7 +107,7 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "action",
   { data_type => "varchar", is_nullable => 1, size => 255 },
-  "when",
+  "created_on",
   {
     data_type => "timestamp",
     datetime_undef_if_invalid => 1,
@@ -128,8 +128,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FF26L0thae4p+2ERhuv9iw
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-05-15 03:42:56
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/CydYlqHzLUw2vLxUNo9oQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
