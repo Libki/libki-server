@@ -209,10 +209,18 @@
 
                 <button
                     id="print-table-row-toolbar-refresh"
-                    class="btn btn-secondary"
+                    class="btn btn-info"
                     onclick="LibkiRefreshPrint( window.selected_id )"
                 >
                     <i class="fas fa-sync"></i> [% c.loc("Refresh") %]
+                </button>
+
+                <button
+                    id="print-table-row-toolbar-download"
+                    class="btn btn-secondary"
+                    onclick="window.open('/administration/api/printjob/view?type=download&id=' + window.selected_id, '_blank' )"
+                >
+                    <i class="fas fa-download"></i> [% c.loc("Download") %]
                 </button>
 
                 <button
@@ -220,7 +228,7 @@
                     class="btn btn-info"
                     onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"
                 >
-                    <i class="fas fa-download"></i> [% c.loc("View") %]
+                    <i class="fas fa-eye"></i> [% c.loc("View") %]
                 </button>
 
                 <button

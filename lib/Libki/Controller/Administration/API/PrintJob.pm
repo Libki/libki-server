@@ -228,6 +228,7 @@ sub view : Local : Args(0) {
     my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
+    my $type = $c->request->params->{type} || 'view';
 
     my $print_job = $c->model('DB::PrintJob')->find($id);
 
@@ -237,8 +238,14 @@ sub view : Local : Args(0) {
             my $filename = $print_file->filename;
 
             $c->response->body( $print_file->data );
-            $c->response->content_type('application/pdf');
-            $c->response->header( 'Content-Disposition', "inline; filename=$filename" );
+
+            if ( $type eq 'view' ) {
+                $c->response->content_type('application/pdf');
+                $c->response->header( 'Content-Disposition', "inline; filename=$filename" );
+            } else {
+                $c->response->content_type('application/octet-stream');
+                $c->response->header( 'attachment', $filename );
+            }
         }
         else {
             $c->stash( success => 0, error => 'PRINT_FILE_NOT_FOUND' );
