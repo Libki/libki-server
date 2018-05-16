@@ -16,11 +16,7 @@ use lib "$FindBin::Bin/../../lib";
 use Libki;
 use Libki::Hours;
 
-my $config = Config::ZOMG->new(
-    file          => "$FindBin::Bin/../../libki_local.conf",
-);
-my $c = Libki->new(
-    { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new();
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {

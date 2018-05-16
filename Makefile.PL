@@ -66,8 +66,6 @@ requires 'String::Random';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 
-requires 'Config::ZOMG';
-
 requires 'File::Slurp';
 
 requires 'SQL::Script';

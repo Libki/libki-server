@@ -4,23 +4,13 @@ use lib '$ENV{HOME}/perl5/lib/perl5';
 
 use Modern::Perl;
 
-use Config::ZOMG;
 use List::Util qw(max min);
 use DateTime;
 use DateTime::Format::MySQL;
 
-use FindBin;
-use lib "$FindBin::Bin/../../lib";
-
 use Libki;
 
-my $config = Config::ZOMG->new(
-    file          => "$FindBin::Bin/../../libki_local.conf",
-);
-my $config_hash  = $config->load();
-my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
-
-my $c = Libki->new( { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new();
 
 my @default_time_allowances = $c->model('DB::Setting')->search( { name => 'DefaultTimeAllowance' } );
 my $default_time_allowances = { map { $_->instance => $_->value } @default_time_allowances };

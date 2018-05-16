@@ -21,7 +21,6 @@ requires 'Catalyst::Runtime' => '5.90011';
 requires 'Catalyst::View::TT';
 requires 'CatalystX::Script::Server::Starman';
 requires 'Config::General';
-requires 'Config::ZOMG';
 requires 'DBD::mysql';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::InflateColumn::Serializer';
