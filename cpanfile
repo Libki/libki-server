@@ -59,4 +59,5 @@ requires 'Storable';
 requires 'String::Random';
 requires 'Template::Plugin::UTF8Decode';
 requires 'Term::Prompt';
+requires 'Term::Size::Any';
 requires 'YAML::XS';
