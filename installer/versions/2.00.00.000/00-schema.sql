@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS clients (
   last_registered timestamp NULL DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table 'reservations'
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS sessions (
   PRIMARY KEY (client_id,user_id),
   UNIQUE KEY client_id (client_id),
   UNIQUE KEY user_id (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table 'settings'
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS settings (
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `value` varchar(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table 'statistics'
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS users (
   is_guest enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (id),
   UNIQUE KEY username (username)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table 'user_roles'
