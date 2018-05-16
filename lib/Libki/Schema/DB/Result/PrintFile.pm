@@ -75,7 +75,7 @@ __PACKAGE__->table("print_files");
 
 =head2 data
 
-  data_type: 'blob'
+  data_type: 'longblob'
   is_nullable: 1
 
 =head2 pages
@@ -133,7 +133,7 @@ __PACKAGE__->add_columns(
   "content_type",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "data",
-  { data_type => "blob", is_nullable => 1 },
+  { data_type => "longblob", is_nullable => 1 },
   "pages",
   { data_type => "integer", is_nullable => 1 },
   "client_id",
@@ -230,8 +230,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-12-12 08:29:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hD2oMAHSV9HoBH48/DW+rg
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-05-16 10:49:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bmgLNp40Ntuj3/AxH3UJhQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
