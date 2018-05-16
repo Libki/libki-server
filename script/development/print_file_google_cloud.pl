@@ -2,18 +2,13 @@
 
 use Modern::Perl;
 
-use Config::JFDI;
-use Term::Prompt;
-use Storable qw(thaw);
-use JSON;
 use Getopt::Long::Descriptive;
-
 use HTTP::Request::Common;
-use Net::OAuth2::AccessToken;
+use JSON;
 use Net::Google::DataAPI::Auth::OAuth2;
-
-use FindBin;
-use lib "$FindBin::Bin/../../lib";
+use Net::OAuth2::AccessToken;
+use Storable qw(thaw);
+use Term::Prompt;
 
 use Libki;
 
@@ -30,13 +25,7 @@ my ( $opt, $usage ) = describe_options(
     [ 'verbose|v', "print extra stuff" ],
 );
 
-my $config = Config::JFDI->new(
-    file          => "$FindBin::Bin/../../libki_local.conf",
-    no_06_warning => 1
-);
-
-my $c = Libki->new(
-    { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new();
 
 my $instance      = $opt->instance;
 my $printer_id    = $opt->printer;

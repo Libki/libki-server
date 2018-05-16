@@ -2,28 +2,20 @@
 
 use Modern::Perl;
 
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-
-use Pod::Usage;
-use Getopt::Long;
-use Config::ZOMG;
-use File::Find::Rule;
-use File::Basename;
-use File::Slurp;
 use Data::Dumper;
+use File::Basename;
+use File::Find::Rule;
+use File::Slurp;
+use Getopt::Long;
+use Pod::Usage;
 use SQL::Script;
 use Try::Tiny;
 
-use Libki::Schema::DB;
+use Libki;
 
-my $config = Config::ZOMG->new(
-    file          => "$FindBin::Bin/../libki_local.conf",
-);
-my $config_hash  = $config->load();
-my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
+my $c = Libki->new();
 
-my $schema = Libki::Schema::DB->connect($connect_info)
+my $schema = $c->model('DB::User')->result_source->schema
   || die("Couldn't Connect to DB");
 
 my $dbh = $schema->storage->dbh;

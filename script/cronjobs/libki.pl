@@ -1,17 +1,6 @@
 #!/usr/bin/perl
 
-use strict;
-use warnings;
-
-use lib '$ENV{HOME}/perl5/lib/perl5';
-
-use Env;
-use Config::ZOMG;
-use DateTime::Format::MySQL;
-use DateTime;
-
-use FindBin;
-use lib "$FindBin::Bin/../../lib";
+use Modern::Perl;
 
 use Libki;
 use Libki::Hours;

@@ -2,13 +2,9 @@
 
 use Modern::Perl;
 
-use Config::ZOMG;
 use Getopt::Long::Descriptive;
 
-use FindBin;
-use lib "$FindBin::Bin/../../lib";
-
-use Libki::Schema::DB;
+use Libki;
 
 my ( $opt, $usage ) = describe_options(
     '%c %o',
@@ -24,20 +20,8 @@ my ( $opt, $usage ) = describe_options(
 
 print( $usage->text ), exit unless ( $opt->username );
 
-my $config = Config::ZOMG->new(
-    file          => "$FindBin::Bin/../../libki_local.conf",
-);
-my $config_hash  = $config->load();
-my $connect_info = $config_hash->{'Model::DB'}->{'connect_info'};
-unless ( $connect_info ) {
-    $connect_info = {
-        dsn =>  $ENV{LIBKI_DB_DSN},
-        user => $ENV{LIBKI_DB_USER},
-        password => $ENV{LIBKI_DB_PASSWORD},
-    }
-}
-
-my $schema = Libki::Schema::DB->connect($connect_info)
+my $c = Libki->new();
+my $schema = $c->model('DB::User')->result_source->schema
   || die("Couldn't Connect to DB");
 
 my $user_rs = $schema->resultset('User');

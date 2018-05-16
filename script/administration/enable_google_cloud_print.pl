@@ -8,9 +8,6 @@ use Storable qw(freeze);
 use Getopt::Long::Descriptive;
 use Net::Google::DataAPI::Auth::OAuth2;
 
-use FindBin;
-use lib "$FindBin::Bin/../../lib";
-
 use Libki;
 
 my ( $opt, $usage ) = describe_options(
@@ -19,14 +16,7 @@ my ( $opt, $usage ) = describe_options(
     [],
     [ 'verbose|v', "print extra stuff" ],
 );
-
-my $config = Config::JFDI->new(
-    file          => "$FindBin::Bin/../../libki_local.conf",
-    no_06_warning => 1
-);
-
-my $c = Libki->new(
-    { database_file => $config->{'Model::DB'}{args}{database_file} } );
+my $c = Libki->new();
 
 my $instance = $opt->instance;
 
