@@ -49,11 +49,26 @@
                 </div>
                 <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
             </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>[% c.loc("Data retention") %]</legend>
 
             <div class="form-group">
-                <label for="DataRetentionDays">[% c.loc("Data retention") %]</label>
+                <label for="DataRetentionDays">[% c.loc("History retention") %]</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
+                    <div class="input-group-append">
+                        <span class="input-group-text">[% c.loc("Days") %]</span>
+                    </div>
+                </div>
+                <small class="form-text text-muted">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</small>
+            </div>
+
+            <div class="form-group">
+                <label for="InactiveUserRetentionDays">[% c.loc("Inactive user retention") %]</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="InactiveUserRetentionDays" name="InactiveUserRetentionDays" value="[% InactiveUserRetentionDays %]">
                     <div class="input-group-append">
                         <span class="input-group-text">[% c.loc("Days") %]</span>
                     </div>

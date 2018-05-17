@@ -44,7 +44,18 @@ foreach my $drd (@data_retention_days) {
         my $dt = DateTime->today();
         $dt->subtract( days => $drd->days );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
-        $c->model('DB::Statistic')->search( { instance => $drd->instance, 'when' => { '<' => $timestamp } } )->delete();
+        $c->model('DB::Statistic')->search( { instance => $drd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
+    }
+}
+
+## Clear out users that are past the retention length
+my @user_retention_days = $c->model('DB::Setting')->search( { name => 'InactiveUserRetentionDays' } );
+foreach my $urd (@user_retention_days) {
+    if ( $urd->value ) {
+        my $dt = DateTime->today();
+        $dt->subtract( days => $urd->days );
+        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+        $c->model('DB::User')->search( { instance => $urd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
     }
 }
 
