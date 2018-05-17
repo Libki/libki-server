@@ -67,21 +67,21 @@
         
             <div class="form-group">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" checked>
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" [% IF ClientBehavior == 'FCFS' %]checked[% END %]>
                     <label class="form-check-label" for="ClientBehaviorFCFS">
                         [% c.loc("First come, first served. A patron walks up to an open client and logs in.") %]
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="RES">
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="RES" [% IF ClientBehavior == 'RES' %]checked[% END %]>
                     <label class="form-check-label" for="ReservationOnly">
                         [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES">
+                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES" [% IF ClientBehavior == 'FCFS+RES' %]checked[% END %]>
                     <label class="form-check-label" for="ReservationOnly">
                         [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
                     </label>
