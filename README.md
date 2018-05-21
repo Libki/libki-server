@@ -52,6 +52,12 @@ We will use local::lib for our installation, this means that all the Perl module
 su - libki
 ```
 
+* Set up PERL5LIB
+
+```bash
+echo 'export PERL5LIB=$PERL5LIB:/home/libki/libki-server/lib' >> ~/.bashrc
+```
+
 * Clone the Libki server git repository
 
 ```bash
