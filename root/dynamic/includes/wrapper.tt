@@ -20,17 +20,14 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
 
+    <script src="https://cdn.rawgit.com/Libki/Hullabaloo/d4e6b08a/js/hullabaloo.min.js"></script>
+
     <script type="text/javascript" src="[% c.uri_for('/static/js/main.js') %]"></script>
     <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#alert-message')
-                .position({
-                    "my": "center top",
-                    "at": "center bottom",
-                    "of": $("#libki-primary-navbar")
-                });
+            $.hulla = new hullabaloo();
 
             if ($("[rel=tooltip]").length) {
                 $("[rel=tooltip]").tooltip();
@@ -43,41 +40,29 @@
     <script type="text/javascript">
         // $type = block, error, or success
         function DisplayMessage( type, message, title ) {
-            let alert_class;
-            if ( !title ) {
-                switch( type ) {
-                    case 'block':
-                        title = "[% c.loc("Alert:") %]";
-                        alert_class = 'warning';
-                        break;
-                    case 'error':
-                        title = "[% c.loc("Error:") %]";
-                        alert_class = 'danger';
-                        break;
-                    case 'success':
-                        title = "[% c.loc("Success:") %]";
-                        alert_class = 'success';
-                        break;
-                    case 'info':
-                        title = "[% c.loc("Info:") %]";
-                        alert_class = 'info';
-                        break;
-                }
+            let msg_class;
+            let msg_title;
+            switch( type ) {
+                case 'block':
+                    msg_title = "[% c.loc("Alert:") %]";
+                    msg_class = "warning";
+                    break;
+                case 'error':
+                    msg_title = "[% c.loc("Error:") %]";
+                    msg_class = "danger";
+                    break;
+                case 'success':
+                    msg_title = "[% c.loc("Success:") %]";
+                    msg_class = "success";
+                    break;
+                case 'info':
+                    msg_title = "[% c.loc("Info:") %]";
+                    msg_class = "info";
+                    break;
             }
 
-            $('#alert-message-title').html( title );
-            $('#alert-message-content').html( message );
-
-            $('#alert-message')
-                .stop()
-                .removeClass(function (index, className) {
-                    return (className.match (/(^|\s)alert-\S+/g) || []).join(' ');
-                })
-                .addClass('alert-' + alert_class)
-                .hide()
-                .slideDown('slow')
-                .delay( 5 * 1000 )
-                .slideUp('slow'); 
+            title = title || msg_title;
+            $.hulla.send(`<strong>${title}</strong> ${message}`, msg_class);
         };
 
         [% IF success_message %]
@@ -115,18 +100,7 @@
 
     [% INCLUDE breadcrumbs.tt %]
 
-    <!-- FIXME - Update to Bootstrap 4 -->
-    <div id="container-fluid">
-        [%# Status and error messages %]
-        <div class="row">
-            <div class="span12">
-                    <div id="alert-message" class="alert alert-success libki-message" style="display: none">
-                        <button class="close" onclick="$(this).parent().stop().slideUp('slow');"><i class="icon-remove"></i></button>
-                        <strong><span id="alert-message-title"></span></strong> <span id="alert-message-content">[% success_message %]</span>
-                    </div>
-            </div>
-        </div>
-
+    <div id="container">
         [%# This is where TT will stick all of your template's contents. -%]
         [% content %]
     </div><!-- /container -->

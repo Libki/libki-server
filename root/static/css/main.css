@@ -80,6 +80,6 @@ table {
     width: 100% !important;
 }
 
-#alert-message {
-    z-index: 9999;
+.hullabaloo {
+    width: 500px !important;
 }
