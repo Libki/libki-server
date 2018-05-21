@@ -2,7 +2,6 @@
 
 use Modern::Perl;
 
-use Config::JFDI;
 use Term::Prompt;
 use Storable qw(freeze);
 use Getopt::Long::Descriptive;
