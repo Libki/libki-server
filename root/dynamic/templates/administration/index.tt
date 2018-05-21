@@ -1140,10 +1140,10 @@ function LibkiCancelPrint( print_job_id ) {
     if ( confirm('Are you sure you want to cancel this print job?')){
         $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: print_job_id }, function(data) {
             if ( data.success ) {
-                alert('Print job has been canceled');
+                DisplayMessage( 'success', 'Print job has been canceled' );
                 ForcePrintTableRefresh();
             } else {
-                alert('Failed to cancel print job');
+                DisplayMessage( 'error', 'Failed to cancel print job');
             }
         });
     }

@@ -221,7 +221,7 @@ $(document).ready(function() {
 
             $("#make-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            alert("[% c.loc("This client is already reserved") %]");
+            DisplayMessage("error", "[% c.loc("This client is already reserved") %]");
         }
     });
 
@@ -348,7 +348,7 @@ $(document).ready(function() {
 
             $("#cancel-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            alert("[% c.loc("This client is not currently reserved.") %]");
+            DisplayMessage("error", "[% c.loc("This client is not currently reserved.") %]");
         }
     });
 
