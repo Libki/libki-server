@@ -6,6 +6,7 @@ use Data::Dumper;
 use File::Basename;
 use File::Find::Rule;
 use File::Slurp;
+use FindBin;
 use Getopt::Long;
 use Pod::Usage;
 use SQL::Script;
