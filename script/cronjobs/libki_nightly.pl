@@ -2,6 +2,9 @@
 
 use lib '$ENV{HOME}/perl5/lib/perl5';
 
+use FindBin;
+use lib "$FindBin::Bin/../../lib";
+
 use Modern::Perl;
 
 use List::Util qw(max min);
