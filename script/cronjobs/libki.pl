@@ -4,6 +4,9 @@ use Modern::Perl;
 
 use List::Util qw(min max);
 
+use FindBin;
+use lib "$FindBin::Bin/../../lib";
+
 use Libki;
 use Libki::Hours;
 
