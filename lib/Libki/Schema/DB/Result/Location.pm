@@ -66,7 +66,7 @@ __PACKAGE__->table("locations");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =cut
 
@@ -76,7 +76,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "code",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
 );
 
 =head1 PRIMARY KEY
@@ -125,8 +125,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oVZWpF3jmc/zM/FhLED9Ug
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-06-01 16:07:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MLlAWJSRL7nZAOIzcC21yA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

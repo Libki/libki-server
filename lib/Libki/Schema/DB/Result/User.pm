@@ -95,6 +95,7 @@ __PACKAGE__->table("users");
 =head2 notes
 
   data_type: 'text'
+  default_value: ''''
   is_nullable: 0
 
 =head2 is_troublemaker
@@ -117,6 +118,20 @@ __PACKAGE__->table("users");
   datetime_undef_if_invalid: 1
   is_nullable: 1
 
+=head2 created_on
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  default_value: 'current_timestamp()'
+  is_nullable: 0
+
+=head2 updated_on
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  default_value: 'current_timestamp()'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -135,7 +150,7 @@ __PACKAGE__->add_columns(
   "status",
   { data_type => "varchar", is_nullable => 0, size => 255 },
   "notes",
-  { data_type => "text", is_nullable => 0 },
+  { data_type => "text", default_value => "''", is_nullable => 0 },
   "is_troublemaker",
   {
     data_type => "enum",
@@ -152,6 +167,20 @@ __PACKAGE__->add_columns(
   },
   "birthdate",
   { data_type => "date", datetime_undef_if_invalid => 1, is_nullable => 1 },
+  "created_on",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    default_value => "current_timestamp()",
+    is_nullable => 0,
+  },
+  "updated_on",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    default_value => "current_timestamp()",
+    is_nullable => 0,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -285,8 +314,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-12-12 08:29:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:swZ+XLtR6G6k0fROgtLFKQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-06-01 16:07:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BMnKNgadIEazyy7BCqa2kw
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
