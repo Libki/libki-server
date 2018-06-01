@@ -1,0 +1,2 @@
+* * * * * perl -X /home/libki/libki-server/script/cronjobs/libki.pl
+0 0 * * * perl -X /home/libki/libki-server/script/cronjobs/libki_nightly.pl
