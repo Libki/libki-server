@@ -87,6 +87,10 @@
             [% CustomJsPublic %]
         [% END %]
     </script>
+    <script>
+        //Throws DataTables' warnings to console rather than alert().
+        $.fn.dataTable.ext.errMode = 'throw';
+    </script>
 </head>
 
 <body>
