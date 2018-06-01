@@ -84,8 +84,8 @@ done
 perl /home/libki/libki-server/script/administration/create_user.pl -u $ADMINUSERNAME -p $ADMINPASSWORD -s
 
 # Add the cronjobs
-cat libkicron | crontab -u libki -
-cat rootcron | crontab -
+cat installer/cron/libkicron | crontab -u libki -
+cat installer/cron/rootcron | crontab -
 
 
 # Set up the Libki service and ask user for what port to run it on
