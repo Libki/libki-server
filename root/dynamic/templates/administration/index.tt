@@ -358,7 +358,7 @@
                 <input id="multi-guest-modal-form-minutes" class="form-control" readonly></input>
             </div>
 
-            <a href="#" id="multi-guest-modal-form-print" class="btn btn-secondary"><i class="icon-print"></i> [% c.loc("View & print guest pass file") %]</a>
+            <a href="#" id="multi-guest-modal-form-print" class="btn btn-secondary"><i class="fa fa-print"></i> [% c.loc("View & print guest passes") %]</a>
         </form>
       </div>
       <div class="modal-footer">

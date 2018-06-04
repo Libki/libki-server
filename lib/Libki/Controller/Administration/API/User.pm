@@ -150,15 +150,14 @@ sub batch_create_guest : Local : Args(0) {
 
     my $success = 0;
 
-    my $guest_count = $c->setting('GuestBatchCount');
+    my $guest_count = $c->setting('GuestBatchCount') || 10;
     my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
     my $minutes = $c->setting('DefaultGuestSessionTimeAllowance');
-    my $guest_pass_file = $c->setting('GuestPassFile');
 
     my $current_guest_number_setting =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value();
+      $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value() || 1;
 
     $current_guest_number++;
 
@@ -190,10 +189,6 @@ sub batch_create_guest : Local : Args(0) {
 
         $success = $success + 1 if ($user);
     }
-
-    open( my $fh_guest, '>', $guest_pass_file );
-    print $fh_guest $file_contents;
-    close $fh_guest;
 
     $current_guest_number_setting->value($current_guest_number);
     $current_guest_number_setting->update();
