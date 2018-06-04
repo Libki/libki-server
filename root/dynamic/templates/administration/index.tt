@@ -4,17 +4,17 @@
 
 <ul class="nav nav-tabs" id="primaryTabs" role="tablist">
   <li class="nav-item">
-      <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> Users</a>
+      <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> Users</a>
   </li>
   <li class="nav-item">
-      <a class="nav-link" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> Clients</a>
+      <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> Clients</a>
   </li>
   <li class="nav-item">
       <a class="nav-link" id="prints-tab" data-toggle="tab" href="#prints" role="tab" aria-controls="prints" aria-selected="false"><i class="fas fa-print"></i> Prints</a>
   </li>
 </ul>
 <div class="tab-content" id="primaryTabsContent">
-  <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+  <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-none justify-content-between">
         <ul class="navbar-nav mr-auto"></ul>
@@ -66,7 +66,7 @@
             </div>
         </div>
   </div>
-  <div class="tab-pane fade" id="clients" role="tabpanel" aria-labelledby="clients-tab">
+  <div class="tab-pane fade show active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
         <ul class="nav nav-pills" id="primary-tabs">
