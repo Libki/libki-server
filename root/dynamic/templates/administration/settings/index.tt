@@ -307,14 +307,6 @@
             </div>
 
             <div class="form-group">
-                <label for="GuestPassFile">[% c.loc("Batch file path") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="GuestPassFile" name="GuestPassFile" value="[% GuestPassFile %]">
-                </div>
-                <small class="form-text text-muted">[% c.loc("Optionally save batch guest passes to file on server. Path to the file you wish to create, for example <i>/mnt/share/guestpasses.txt</i>") %]</small>
-            </div>
-
-            <div class="form-group">
                 <label for="BatchGuestPassUsernameLabel">[% c.loc("Username label") %]</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
