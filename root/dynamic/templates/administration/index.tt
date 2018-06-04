@@ -423,12 +423,12 @@
 
               <div class="tab-pane" id="edit-user-roles" role="tabpanel" aria-labelledby="edit-user-roles-tab">
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-admin" value="admin">
+                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-admin" value="admin" name="roles">
                     <label class="form-check-label" for="edit-user-modal-form-roles-admin">[% c.loc("Administrator") %]</label>
                 </div>
 
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-superadmin" value="superadmin">
+                    <input type="checkbox" class="form-check-input" id="edit-user-modal-form-roles-superadmin" value="superadmin" name="roles">
                     <label class="form-check-label" for="edit-user-modal-form-roles-superadmin">[% c.loc("Super administrator") %]</label>
                 </div>
               </div>
