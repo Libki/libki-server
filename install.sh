@@ -81,7 +81,9 @@ while true; do
   fi
 done
 
-perl /home/libki/libki-server/script/administration/create_user.pl -u $ADMINUSERNAME -p $ADMINPASSWORD -s
+echo "Creating your admin account..."
+
+perl /home/libki/libki-server/script/administration/create_user.pl -u $ADMINUSERNAME -p $ADMINPASSWORD -s > /dev/null 2>&1
 
 # Add the cronjobs
 cat installer/cron/libkicron | crontab -u libki -
