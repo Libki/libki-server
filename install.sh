@@ -10,7 +10,7 @@ USERPASS=$(pwgen -B 8 1)
 DBPASS=$(pwgen -B 8 1)
 
 # Add libki user
-useradd -m -p -s /bin/bash $(openssl passwd -1 $USERPASS) libki
+useradd -m -s /bin/bash -p $(openssl passwd -1 $USERPASS) libki
 
 # Copies the folder to /home/libki
 mkdir /home/libki/libki-server
