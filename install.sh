@@ -21,6 +21,8 @@ chown libki:libki /home/libki/libki-server -R
 cpanm -n Module::Install
 cpanm -n --installdeps .
 
+echo 'export PERL5LIB=$PERL5LIB:/home/libki/libki-server/lib' >> ~/.bashrc
+echo 'export PERL5LIB=$PERL5LIB:/home/libki/libki-server/lib' >> /home/libki/.bashrc
 export PERL5LIB=$PERL5LIB:/home/libki/libki-server/lib
 
 # Create log files, change ownership to libki
@@ -163,6 +165,10 @@ if [[ $PROXYCHECKER = "yes" ]]; then
   service apache2 start
 fi
 
+# Copies the backup and the restore programs to /usr/local/bin
+cp script/utilities/backup_db.sh /usr/local/bin/libki-backup
+cp script/utilities/restore_db.sh /usr/local/bin/libki-restore
+
 # Report all settings
 echo
 echo "Congratulations!"
@@ -185,3 +191,5 @@ echo "Your log files are located in /var/log/libki/"
 echo
 echo "Your server can be reached on the following address:"
 echo "$URL"
+
+exit 0
