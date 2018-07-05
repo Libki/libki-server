@@ -3,7 +3,34 @@
 # Update and install packages
 apt-get update
 apt-get upgrade -y
-apt-get install sudo openssl curl perl git make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
+
+is_deb_stretch=false
+is_ubuntu_bionic=false
+
+if [ -e /etc/os-release ]; then
+  source /etc/os-release
+  dist=$ID
+  code="${VERSION_CODENAME-$VERSION_ID}"
+  case "${dist}-${code}" in
+    ubuntu-bionic)
+      is_ubuntu_bionic=true
+      ;;
+    debian-9)
+      is_debian_stretch=true
+      ;;
+    *)
+      echo "ERROR: Distribution \"$PRETTY_NAME\" is not supported!" >&2
+      exit 1
+      ;;
+  esac
+fi
+
+# Install packages depending on Stretch or Bionic.
+if [ "is_debian_stretch" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus -y
+elif [ "is_ubuntu_bionic" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
+fi
 
 # Auto-created passwords
 USERPASS=$(pwgen -B 8 1)
@@ -83,6 +110,7 @@ while true; do
   fi
 done
 
+echo
 echo "Creating your admin account..."
 
 perl /home/libki/libki-server/script/administration/create_user.pl -u $ADMINUSERNAME -p $ADMINPASSWORD -s > /dev/null 2>&1
@@ -95,21 +123,11 @@ cat installer/cron/rootcron | crontab -
 # Set up the Libki service and ask user for what port to run it on
 cp /home/libki/libki-server/init-script-template /etc/init.d/libki
 
-while true; do
-  read -p "What port would you like to run Libki on? If you want to use a reverse proxy, this must be set to default. (Default is 3000) " -i "3000" -e PREFERREDPORT
-  [[ $PREFERREDPORT =~ ^[0-9]+$ ]] && break
-  echo
-  echo "Your port number must be a number."
-done
-
-sed -i "s/3000/$PREFERREDPORT/g" /etc/init.d/libki
-
-update-rc.d libki defaults
-
 echo
 
 # Reverse proxy setup
-echo "Would you like to set up a reverse proxy, so the Libki server can be accessed via a domain name rather than an IP adress? If you answer no, you will still be able to access the Libki server via the server's IP adress?"
+echo "Would you like to set up a reverse proxy, so the Libki server can be accessed via a domain name rather than an IP adress?"
+echo "If you answer no, you will still be able to access the Libki server via the server's IP adress?"
 
 select PROXYANSWER in "Yes" "No"; do
   case "$PROXYANSWER" in
@@ -138,6 +156,17 @@ select PROXYANSWER in "Yes" "No"; do
       URL="http://$DOMAINNAME/administration"
       ;;
     No )
+      # Set custom port if the user so desires
+      while true; do
+        read -p "What port would you like to run Libki on? " -i "3000" -e PREFERREDPORT
+        [[ $PREFERREDPORT =~ ^[0-9]+$ ]] && break
+        echo
+        echo "Your port number must be a number."
+      done
+
+      sed -i "s/3000/$PREFERREDPORT/g" /etc/init.d/libki
+
+      update-rc.d libki defaults
 
       # Get ip address from hostname
       hostname=$(hostname -I)
@@ -193,3 +222,4 @@ echo "Your server can be reached on the following address:"
 echo "$URL"
 
 exit 0
+
