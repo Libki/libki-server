@@ -26,9 +26,9 @@ if [ -e /etc/os-release ]; then
 fi
 
 # Install packages depending on Stretch or Bionic.
-if [ "is_debian_stretch" = true ]; then
+if [ "$is_debian_stretch" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus -y
-elif [ "is_ubuntu_bionic" = true ]; then
+elif [ "$is_ubuntu_bionic" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
 fi
 
