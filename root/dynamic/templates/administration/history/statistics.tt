@@ -36,7 +36,7 @@
     </form>
 </p>
 
-<h5>Daily usage</h5>
+<h5>[% c.loc("Daily usage") %]</h5>
 <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
     <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
     <thead>
