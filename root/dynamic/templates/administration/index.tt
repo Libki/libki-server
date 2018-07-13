@@ -4,13 +4,13 @@
 
 <ul class="nav nav-tabs" id="primaryTabs" role="tablist">
   <li class="nav-item">
-      <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> Users</a>
+      <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> [% c.loc("Users") %]</a>
   </li>
   <li class="nav-item">
-      <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> Clients</a>
+      <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> [% c.loc("Clients") %]</a>
   </li>
   <li class="nav-item">
-      <a class="nav-link" id="prints-tab" data-toggle="tab" href="#prints" role="tab" aria-controls="prints" aria-selected="false"><i class="fas fa-print"></i> Prints</a>
+      <a class="nav-link" id="prints-tab" data-toggle="tab" href="#prints" role="tab" aria-controls="prints" aria-selected="false"><i class="fas fa-print"></i> [% c.loc("Prints") %]</a>
   </li>
 </ul>
 <div class="tab-content" id="primaryTabsContent">
@@ -1128,7 +1128,7 @@ function LibkiReleasePrint( print_job_id ) {
 function LibkiRefreshPrint( print_job_id ) {
     $.getJSON('[% c.uri_for("api/printjob/update") %]', { id: print_job_id }, function(data) {
         if ( data.success ) {
-            DisplayMessage( "success", "[% c.loc("Print job refreshed") %]" );
+            DisplayMessage( "success", "[% c.loc("Print job refreshed.") %]" );
         } else {
             DisplayMessage( "error", data.data );
         }
@@ -1140,10 +1140,10 @@ function LibkiCancelPrint( print_job_id ) {
     if ( confirm('Are you sure you want to cancel this print job?')){
         $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: print_job_id }, function(data) {
             if ( data.success ) {
-                DisplayMessage( 'success', 'Print job has been canceled' );
+                DisplayMessage( 'success', 'Print job has been canceled.' );
                 ForcePrintTableRefresh();
             } else {
-                DisplayMessage( 'error', 'Failed to cancel print job');
+                DisplayMessage( 'error', 'Failed to cancel print job.');
             }
         });
     }
