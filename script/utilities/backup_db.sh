@@ -14,7 +14,7 @@ PASSWORD=${PASSLINE:18:-1}
 
 # Creates a temp config file to suppress warning messages
 {
-  echo "[client"]
+  echo "[client]"
   echo "user = libki"
   echo "password = $PASSWORD"
 } >> /home/libki/mysql_tmp.cnf
