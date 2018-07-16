@@ -137,7 +137,7 @@
 						[% END %]
 					</select>
 					&nbsp;
-					for
+					[% c.loc("for") %]
 					&nbsp;
 					<select id="location" name="location">
 						<option value="">[% c.loc("All locations") %]</option>

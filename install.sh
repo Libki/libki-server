@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Update and install packages
-apt-get update
-apt-get upgrade -y
-
 is_deb_stretch=false
 is_ubuntu_bionic=false
 
@@ -19,11 +15,16 @@ if [ -e /etc/os-release ]; then
       is_debian_stretch=true
       ;;
     *)
+      echo
       echo "ERROR: Distribution \"$PRETTY_NAME\" is not supported!" >&2
       exit 1
       ;;
   esac
 fi
+
+# Update and install packages
+apt-get update
+apt-get upgrade -y
 
 # Install packages depending on Stretch or Bionic.
 if [ "$is_debian_stretch" = true ]; then
@@ -82,6 +83,7 @@ perl /home/libki/libki-server/installer/update_db.pl
 
 # Create administrator user
 while true; do
+  echo
   read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME
 
   if [[ $ADMINUSERNAME = *[!\ ]* ]]; then
@@ -127,7 +129,7 @@ echo
 
 # Reverse proxy setup
 echo "Would you like to set up a reverse proxy, so the Libki server can be accessed via a domain name rather than an IP adress?"
-echo "If you answer no, you will still be able to access the Libki server via the server's IP adress?"
+echo "If you answer no, you will still be able to access the Libki server via the server's IP adress."
 
 select PROXYANSWER in "Yes" "No"; do
   case "$PROXYANSWER" in
@@ -222,4 +224,3 @@ echo "Your server can be reached on the following address:"
 echo "$URL"
 
 exit 0
-
