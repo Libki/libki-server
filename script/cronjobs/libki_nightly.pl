@@ -34,7 +34,11 @@ while ( my $user = $user_rs->next() ) {
 
     my $user_minutes = min( $default_time_allowances->{$instance}, $default_session_time_allowances->{$instance} );
 
-    $user->minutes_allotment( $default_time_allowances->{$instance} );
+    # Removes session minutes from daily allotment
+    my $user_minutes_allotment = $default_time_allowances->{$instance};
+    $user_minutes_allotment -= $user_minutes;
+
+    $user->minutes_allotment( $user_minutes_allotment );
     $user->minutes($user_minutes);
     $user->status('disabled') if ( $user->is_troublemaker eq 'Yes' );
     $user->update();
