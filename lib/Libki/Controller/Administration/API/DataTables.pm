@@ -122,7 +122,7 @@ sub clients : Local Args(0) {
       qw( me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker );
 
     # Set up filters
-    my $filter = { instance => $instance };
+    my $filter = { 'me.instance' => $instance };
 
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
@@ -161,8 +161,7 @@ sub clients : Local Args(0) {
     my $count = $c->model('DB::Client')->count(
         $filter,
         {
-            prefetch =>
-              [ { 'session' => 'user' }, { 'reservation' => 'user' }, ]
+            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
         }
     );
 
@@ -173,8 +172,7 @@ sub clients : Local Args(0) {
             order_by => \@sorting,
             rows     => $c->request->param('iDisplayLength'),
             offset   => $c->request->param('iDisplayStart'),
-
-#            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
+            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
         }
     );
 
