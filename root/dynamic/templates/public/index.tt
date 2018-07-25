@@ -11,7 +11,7 @@
       </li>
       [% FOREACH location IN locations %]
           <li class="nav-item">
-              <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('[% location %]');">[% location | utf8_decode | utf8_decode %]</a>
+              <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location | utf8_decode | utf8_decode %]</a>
           </li>
       [% END %]
     </ul>
