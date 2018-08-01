@@ -68,7 +68,7 @@ sub create : Local : Args(0) {
     my $password = $params->{'password'};
     my $minutes  = $params->{'minutes'} || $c->setting('DefaultTimeAllowance');
 
-    $minutes = 0 if ( $minutes < 0 );
+    $minutes = 0 unless ( $minutes > 0 );
 
     my $success = 0;
 
@@ -109,7 +109,13 @@ sub create_guest : Local : Args(0) {
     my $username = $prefix . $current_guest_number;
     my $password =
       random_string("nnnn");    #TODO: Make the pattern a system setting
-    my $minutes = $c->setting('DefaultGuestSessionTimeAllowance');
+
+    my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
+    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
+    $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
+    $minutes           = 0 unless ( $minutes > 0 );
+
+    $minutes_allotment = $minutes_allotment - $minutes;
 
     my $success = 0;
 
@@ -118,7 +124,8 @@ sub create_guest : Local : Args(0) {
             instance          => $instance,
             username          => $username,
             password          => $password,
-            minutes_allotment => $minutes,
+            minutes           => $minutes,
+            minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
         }
@@ -153,7 +160,13 @@ sub batch_create_guest : Local : Args(0) {
     my $guest_count = $c->setting('GuestBatchCount') || 10;
     my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
-    my $minutes = $c->setting('DefaultGuestSessionTimeAllowance');
+
+    my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
+    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
+    $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
+    $minutes           = 0 unless ( $minutes > 0 );
+
+    $minutes_allotment = $minutes_allotment - $minutes;
 
     my $current_guest_number_setting =
       $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
@@ -177,7 +190,8 @@ sub batch_create_guest : Local : Args(0) {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes,
+                minutes           => $minutes,
+                minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes'
             }

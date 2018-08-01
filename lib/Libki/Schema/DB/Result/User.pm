@@ -357,12 +357,15 @@ sub insert {
 
     my $schema = $self->result_source->schema;
 
+    my $default_time_allowance_setting_name = $self->is_guest eq 'Yes' ? 'DefaultGuestTimeAllowance' : 'DefaultTimeAllowance';
+    my $default_session_time_allowance_setting = $self->is_guest eq 'Yes' ? 'DefaultGuestSessionTimeAllowance' : 'DefaultSessionTimeAllowance';
+
     my $default_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => 'DefaultTimeAllowance' });
+      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
     my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
 
     my $default_session_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => 'DefaultSessionTimeAllowance' });
+      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_session_time_allowance_setting });
     my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : 0;
 
     $self->minutes(0) unless $self->minutes();
