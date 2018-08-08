@@ -1,29 +1,35 @@
 sudo: required
-services:
-  - docker
+
 env:
   global:
     - IMAGE_NAME=libki/libki-server
     - DOCKER_USERNAME=kylemhall
     # DOCKER_PASSWORD=...
 
-before_script:
-  - version="$TRAVIS_COMMIT"
-  - docker pull "$IMAGE_NAME" || true
+jobs:
+  include:
 
-script:
-  - docker build --pull -f docker/Dockerfile --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+    - stage: build docker image
+      services:
+        - docker
 
-after_script:
-  - docker images
+      before_script:
+        - version="$TRAVIS_COMMIT"
+        - docker pull "$IMAGE_NAME" || true
 
-before_deploy:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+      script:
+        - docker build --pull -f docker/Dockerfile --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
 
-deploy:
-  provider: script
-  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
-  on:
-    branch: master
+      after_script:
+        - docker images
+
+      before_deploy:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+        - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+
+      deploy:
+        provider: script
+        script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
+        on:
+          branch: master
