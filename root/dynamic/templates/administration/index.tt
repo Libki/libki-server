@@ -655,6 +655,15 @@ $(document).ready(function() {
                 $('td:eq(0)', nRow).html( `<a href="#" onclick="postForm('[% Settings.ThirdPartyURL %]', { quicksearch: 1,  searchmember: '${aData[0]}' })">${aData[0]}</a>` );
             [% END %]
         },
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+            if ( window.location_filter ) {
+                aoData.push( { "name": "location_filter", "value": window.location_filter } );
+            }
+
+            $.getJSON( sSource, aoData, function (json) { 
+                fnCallback(json)
+            } );
+        },
         "fnInitComplete": function(){
             $('#print-table-toolbar').prependTo($('#print-table_filter'));
         }

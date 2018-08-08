@@ -321,9 +321,9 @@ sub prints : Local Args(0) {
         $filter = { 'me.instance' => $instance };
     }
 
-    #    if ( $c->request->param("location_filter") ) {
-    #        $filter->{'location'} = $c->request->param("location_filter");
-    #    }
+    if ( $c->request->param("location_filter") ) {
+        $filter->{'print_file.client_location'} = $c->request->param("location_filter");
+    }
 
     # Sorting options
     my @sorting;

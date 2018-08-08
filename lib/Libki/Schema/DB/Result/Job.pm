@@ -90,14 +90,14 @@ __PACKAGE__->table("jobs");
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'current_timestamp()'
+  default_value: 'CURRENT_TIMESTAMP'
   is_nullable: 0
 
 =head2 updated_on
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'current_timestamp()'
+  default_value: 'CURRENT_TIMESTAMP'
   is_nullable: 0
 
 =cut
@@ -124,14 +124,14 @@ __PACKAGE__->add_columns(
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "current_timestamp()",
+    default_value => "CURRENT_TIMESTAMP",
     is_nullable => 0,
   },
   "updated_on",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "current_timestamp()",
+    default_value => "CURRENT_TIMESTAMP",
     is_nullable => 0,
   },
 );
@@ -149,8 +149,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-06-01 16:07:43
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:47+7Se05xJGxUcYR7cZabA
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-08-08 10:57:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ea7900l++Zv/v8+JNZREnQ
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(
