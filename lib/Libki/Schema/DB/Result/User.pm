@@ -121,14 +121,14 @@ __PACKAGE__->table("users");
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'current_timestamp()'
+  default_value: 'CURRENT_TIMESTAMP'
   is_nullable: 0
 
 =head2 updated_on
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'current_timestamp()'
+  default_value: 'CURRENT_TIMESTAMP'
   is_nullable: 0
 
 =cut
@@ -170,14 +170,14 @@ __PACKAGE__->add_columns(
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "current_timestamp()",
+    default_value => "CURRENT_TIMESTAMP",
     is_nullable => 0,
   },
   "updated_on",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "current_timestamp()",
+    default_value => "CURRENT_TIMESTAMP",
     is_nullable => 0,
   },
 );
@@ -313,8 +313,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-06-04 12:28:55
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dMUApacksPHWtwP6IkYgZw
+# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-08-08 10:57:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PONo/qy5TV+7bOd4PKerNw
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
@@ -358,14 +358,14 @@ sub insert {
     my $schema = $self->result_source->schema;
 
     my $default_time_allowance_setting_name = $self->is_guest eq 'Yes' ? 'DefaultGuestTimeAllowance' : 'DefaultTimeAllowance';
-    my $default_session_time_allowance_setting = $self->is_guest eq 'Yes' ? 'DefaultGuestSessionTimeAllowance' : 'DefaultSessionTimeAllowance';
+    my $default_session_time_allowance_setting_name = $self->is_guest eq 'Yes' ? 'DefaultGuestSessionTimeAllowance' : 'DefaultSessionTimeAllowance';
 
     my $default_time_allowance_setting =
       $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
     my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
 
     my $default_session_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_session_time_allowance_setting });
+      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_session_time_allowance_setting_name });
     my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : 0;
 
     $self->minutes(0) unless $self->minutes();

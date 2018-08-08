@@ -366,6 +366,7 @@ sub print : Path('print') : Args(0) {
     my $client_name = $c->request->params->{'client_name'};
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
+    my $location    = $c->request->params->{'location'};
 
     my $client = $c->model('DB::Client')
       ->single( { instance => $instance, name => $client_name } );
@@ -385,15 +386,16 @@ sub print : Path('print') : Args(0) {
 
         $print_file = $c->model('DB::PrintFile')->create(
             {
-                instance     => $instance,
-                filename     => $print_file->filename,
-                content_type => $print_file->type,
-                data         => $pdf_string,
-                pages        => $pages,
-                client_id    => $client->id,
-                client_name  => $client_name,
-                user_id      => $user->id,
-                username     => $username,
+                instance        => $instance,
+                filename        => $print_file->filename,
+                content_type    => $print_file->type,
+                data            => $pdf_string,
+                pages           => $pages,
+                client_id       => $client->id,
+                client_name     => $client_name,
+                client_location => $client->location,
+                user_id         => $user->id,
+                username        => $username,
             }
         );
 
