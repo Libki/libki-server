@@ -576,7 +576,9 @@ $(document).ready(function() {
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             [% IF Settings.ThirdPartyURL %]
-                $('td:eq(0)', nRow).html( `<a href="#" onclick="postForm('[% Settings.ThirdPartyURL %]', { quicksearch: 1,  searchmember: '${aData[0]}' })">${aData[0]}</a>` );
+                if ( aData[0] ) {
+                    $('td:eq(0)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[0] + '">' + aData[0] + '</b>' );
+                }
             [% END %]
         }
     } );
