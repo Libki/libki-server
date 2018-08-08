@@ -9,4 +9,4 @@ Please, make [pull requests](https://help.github.com/articles/about-pull-request
 
 ## Manual
 
-The Libki manual can be found at https://libki.gitbook.io/manual
+The Libki manual can be found at https://manual.libki.org
