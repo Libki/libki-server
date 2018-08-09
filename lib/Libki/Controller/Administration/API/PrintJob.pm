@@ -25,6 +25,8 @@ Catalyst Controller.
 
 =head2 cancel
 
+Endpoint to set a print job status to Canceled.
+
 =cut
 
 sub cancel : Local : Args(0) {
@@ -49,6 +51,8 @@ sub cancel : Local : Args(0) {
 
 =head2 get_printer_configuration
 
+Returns the printer configuration YAML as a Perl structure.
+
 =cut
 
 sub get_printer_configuration : Private : Args(0) {
@@ -60,6 +64,9 @@ sub get_printer_configuration : Private : Args(0) {
 }
 
 =head2 google_cloud_authenticate
+
+Authenticates the Libki server against the Google Cloud Print API.
+Stashes the API token in the stash with the key 'google_cloud_print_token'.
 
 =cut
 
@@ -105,6 +112,8 @@ sub google_cloud_authenticate : Private : Args(0) {
 }
 
 =head2 release
+
+Sends the given print job to the actual print management backend.
 
 =cut
 
@@ -182,6 +191,9 @@ sub release : Local : Args(0) {
 
 =head2 update
 
+Updates the status of a print job from the backend print management system.
+The JSON returned by the status request is stored in print_jobs.data.
+
 =cut
 
 sub update : Local : Args(0) {
@@ -222,6 +234,14 @@ sub update : Local : Args(0) {
     delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
+
+=head2 view
+
+Returns the PDF of a given print job.
+If the param 'type' is set to 'view', the content
+disposition will be so so the PDF loads in a web browser.
+
+=cut
 
 sub view : Local : Args(0) {
     my ( $self, $c ) = @_;

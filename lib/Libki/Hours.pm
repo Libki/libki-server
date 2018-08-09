@@ -5,14 +5,10 @@ use Modern::Perl;
 use DateTime::Format::MySQL;
 use DateTime;
 
-=over
-
-=item minutes_before_closing
+=head2 minutes_until_closing
 
 Returns the number of minutes before closing. If we are past the closing time,
 the return value will be a negative number of minutes *since* closing.
-
-=back
 
 =cut
 

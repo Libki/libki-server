@@ -18,6 +18,12 @@ Catalyst Controller.
 
 =head2 modify_time
 
+Client API that updates a user's session minutes.
+
+The param 'minutes' can be an integer to replace the existing minutes.
+If the number is prepended with a '+' or '-' the number will be added
+or subtracted from the existing session minutes respectively.
+
 =cut
 
 sub modify_time : Local : Args(0) {
@@ -52,6 +58,8 @@ sub modify_time : Local : Args(0) {
 
 =head2 logout
 
+Logs a user out and deletes the session for storage.
+
 =cut
 
 sub logout : Local : Args(1) {
@@ -70,7 +78,9 @@ sub logout : Local : Args(1) {
     $c->forward( $c->view('JSON') );
 }
 
-=head2 logout
+=head2 reservation
+
+Creates or cancels a reservation for the given client and user.
 
 =cut
 

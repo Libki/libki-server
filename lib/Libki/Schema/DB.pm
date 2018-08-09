@@ -16,6 +16,12 @@ __PACKAGE__->load_namespaces;
 
 our $VERSION = '2.00.05.000';
 
+=head2 ddl_filename
+
+Returns an sql update file for the given type, version, directory and previous version.
+
+=cut
+
 sub ddl_filename {
     my ( $self, $type, $version, $dir, $preversion ) = @_;
 

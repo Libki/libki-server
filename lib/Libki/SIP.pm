@@ -5,6 +5,13 @@ use IO::Socket::INET;
 use POSIX qw(strftime);
 use Data::Dumper;
 
+=head2 authenticate_via_sip
+
+Connects to an external SIP server with a given username and password.
+Returns a hashref with keys 'success' and 'ERROR' among other data.
+
+=cut
+
 sub authenticate_via_sip {
     my ( $c, $user, $username, $password ) = @_;
 
@@ -252,6 +259,12 @@ sub authenticate_via_sip {
 
 }
 
+=head2 sip_message_to_hashref
+
+Converts a raw SIP message into a more useful Perl structure.
+
+=cut
+
 sub sip_message_to_hashref {
     my ($c, $data) = @_;
 
@@ -299,10 +312,22 @@ sub sip_message_to_hashref {
     return \%fields;
 }
 
+=head2 timestamp
+
+Returns the current time in a format acceptable for SIP
+
+=cut
+
 sub timestamp {
     my $timestamp = strftime '%Y%m%d    %H%M%S', localtime;
     return $timestamp;
 }
+
+=head2 checksum
+
+Generates a SIP checksum for a given string
+
+=cut
 
 sub checksum {
     my $str     = shift;
@@ -320,6 +345,13 @@ sub checksum {
     $trail .= sprintf '%04.4X', $checksum;
     return $trail;
 }
+
+=head2 talk63
+
+Sends a 63 patron information request.
+Returns the raw message with checksum added.
+
+=cut
 
 sub talk63 {
     my ( $location, $userid, $pin, $run_num ) = @_;

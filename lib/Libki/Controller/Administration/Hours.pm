@@ -59,7 +59,9 @@ sub index : Path : Args(0) {
 
 }
 
-=head2 update
+=head2 update_days
+
+Updates the closing hours for an instance
 
 =cut
 
@@ -122,6 +124,12 @@ sub update_days : Local : Args(0) {
 
 }
 
+=head2 update_dates
+
+Adds specific date closing hours overrides
+
+=cut
+
 sub update_dates : Local : Args(0) {
     my ( $self, $c ) = @_;
 
@@ -154,6 +162,12 @@ sub update_dates : Local : Args(0) {
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
 
 }
+
+=head2 delete_dates
+
+Deletes specific date closing hour overrides
+
+=cut
 
 sub delete_dates : Local : Args(0) {
     my ( $self, $c ) = @_;

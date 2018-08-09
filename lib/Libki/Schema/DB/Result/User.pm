@@ -382,6 +382,14 @@ sub insert {
     return $self;
 }
 
+=head2 age
+
+Returns the age of the patron.
+The age is derived from the birthdate column in the users table.
+The birthdate column is currently only populated when using SIP for single-signon.
+
+=cut
+
 sub age {
     my ( $self ) = @_;
 
