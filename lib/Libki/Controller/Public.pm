@@ -27,8 +27,7 @@ sub index :Path :Args(0) {
     my $instance = $c->instance;
 
     $c->stash(
-        CustomJsPublic =>
-          $c->model('DB::Setting')->find({ instance => $instance, name => 'CustomJsPublic' })->value,
+        CustomJsPublic => $c->setting('CustomJsPublic'),
     );
 }
 
