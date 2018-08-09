@@ -60,4 +60,6 @@ requires 'String::Random';
 requires 'Template::Plugin::UTF8Decode';
 requires 'Term::Prompt';
 requires 'Term::Size::Any';
+requires 'Test::Pod';
+requires 'Test::Pod::Coverage';
 requires 'YAML::XS';

@@ -25,11 +25,42 @@ jobs:
 
       before_deploy:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
         - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
 
       deploy:
         provider: script
-        script: docker push "${IMAGE_NAME}:${version}" && docker push "${IMAGE_NAME}:latest" 
+        script: docker push "${IMAGE_NAME}:${version}"
+        on:
+          branch: master
+
+
+    - stage: test docker image
+      services:
+        - docker
+
+      before_script:
+        - version="$TRAVIS_COMMIT"
+        - docker pull "$IMAGE_NAME:${version}" || true
+
+      script:
+        - docker network create libki-net
+        - docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
+        - docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' --rm -d libki/libki-server:${version}
+        - sleep 5 # Wait a few seconds for mariadb to come up
+        - docker exec -t libki-test-server /app/installer/update_db.pl
+        - docker exec -t libki-test-server prove /app/t/01app.t
+        - docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
+        - docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
+
+      after_script:
+        - docker images
+
+      before_deploy:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker tag "$IMAGE_NAME:${version}" "${IMAGE_NAME}:latest"
+
+      deploy:
+        provider: script
+        script: docker push "${IMAGE_NAME}" 
         on:
           branch: master
