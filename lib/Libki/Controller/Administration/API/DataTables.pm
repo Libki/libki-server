@@ -13,9 +13,13 @@ Libki::Controller::Administration::API::DataTables - Catalyst Controller
 
 =head1 DESCRIPTION
 
-Catalyst Controller.
+Catalyst Controller for returning data in a format preferred by DataTables
 
 =head1 METHODS
+
+=head2 users
+
+Endpoint that returns DataTables JSON with data about users.
 
 =cut
 
@@ -111,6 +115,12 @@ sub users : Local Args(0) {
     );
     $c->forward( $c->view('JSON') );
 }
+
+=head2 clients
+
+Endpoint that returns DataTables JSON about clients registered with the server.
+
+=cut
 
 sub clients : Local Args(0) {
     my ( $self, $c ) = @_;
@@ -218,6 +228,12 @@ sub clients : Local Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 statistics
+
+Endpoint that returns DataTables JSON about the statistics table.
+
+=cut
+
 sub statistics : Local Args(0) {
     my ( $self, $c ) = @_;
 
@@ -293,6 +309,12 @@ sub statistics : Local Args(0) {
     );
     $c->forward( $c->view('JSON') );
 }
+
+=head2 prints
+
+Endpoint that returns DataTables JSON about print jobs and print file.
+
+=cut
 
 sub prints : Local Args(0) {
     my ( $self, $c ) = @_;

@@ -24,6 +24,12 @@ sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 }
 
+=head2 statistics
+
+Controller to format history as a table with totals.
+
+=cut
+
 sub statistics : Local : Args(0) {
     my ( $self, $c ) = @_;
 

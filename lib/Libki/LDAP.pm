@@ -2,6 +2,12 @@ package Libki::LDAP;
 
 use Net::LDAP;
 
+=head2 authenticate_via_ldap
+
+Authenticates a given username and password via LDAP.
+
+=cut
+
 sub authenticate_via_ldap {
     my ( $c, $user, $username, $password ) = @_;
 
@@ -69,6 +75,10 @@ sub authenticate_via_ldap {
 
 }
 
+=head2 getUserDn
+
+=cut
+
 sub getUserDn {
     my $ldap;
     my $guid = shift;
@@ -109,6 +119,10 @@ sub getUserDn {
     
     return $dn;
 }
+
+=head2 testGuid
+
+=cut
 
 sub testGuid {
     my $ldap;

@@ -27,6 +27,10 @@ Catalyst Controller.
 
 =head2 index
 
+This is the all-singing all-dancing client api.
+It does a lot, it does too much in fact.
+TODO: Replace this api with a new RESTful api with individual endpoints for each action
+
 =cut
 
 sub index : Path : Args(0) {
@@ -356,6 +360,12 @@ sub index : Path : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 print
+
+Client API method to send a print job to the server.
+
+=cut
+
 sub print : Path('print') : Args(0) {
     my ( $self, $c ) = @_;
 
@@ -427,6 +437,10 @@ sub print : Path('print') : Args(0) {
 }
 
 =head2 get_printer_configuration
+
+Returns the printer configuration from the database.
+The configuration is stored as YAML.
+This method returns the config YAML as Perl structure.
 
 =cut
 
