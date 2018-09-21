@@ -117,7 +117,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 var value = "[% ClientBehavior %]";
-                $("input[name=ClientBehavior][value=" + value + "]").prop('checked', true);
+                $("input[name=ClientBehavior][value='" + value + "']").prop('checked', true);
             });
         </script>
 
