@@ -26,7 +26,8 @@ RUN apt-get update -y \
        build-essential \
        perl \
        cpanminus \
-# DBD::mysql
+       libdbd-mysql-perl \
+# for DBD::mysql
        default-libmysqlclient-dev \
 # Net::Google::DataAPI::Auth::OAuth2
        libxml2-dev \
