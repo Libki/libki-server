@@ -9,9 +9,11 @@
   <li class="nav-item">
       <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> [% c.loc("Clients") %]</a>
   </li>
+  [% IF PrinterConfiguration %]
   <li class="nav-item">
       <a class="nav-link" id="prints-tab" data-toggle="tab" href="#prints" role="tab" aria-controls="prints" aria-selected="false"><i class="fas fa-print"></i> [% c.loc("Prints") %]</a>
   </li>
+  [% END %]
 </ul>
 <div class="tab-content" id="primaryTabsContent">
   <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">

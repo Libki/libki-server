@@ -38,9 +38,10 @@ sub index : Path : Args(0) {
     )->get_column('location')->all();
 
     $c->stash(
-        DefaultTimeAllowance => $c->setting('DefaultTimeAllowance'),
+        DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
-        locations => \@locations,
+        PrinterConfiguration   => $c->setting('PrinterConfiguration'),
+        locations              => \@locations,
     );
 }
 
