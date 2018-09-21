@@ -18,6 +18,8 @@ FROM debian:stretch-slim
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
+ENV LIBKI_SERVER_PORT 3000
+
 # Install needed packages
 RUN apt-get update -y \
     && apt-get -y install \
@@ -47,4 +49,4 @@ COPY docker/files/libki_local.conf /app/libki_local.conf
 
 ENV PERL5LIB /app/lib
 
-CMD plackup -s Gazelle --port 3000 --max-reqs-per-child 50000 -E production -a /app/libki.psgi
+CMD plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 -E production -a /app/libki.psgi
