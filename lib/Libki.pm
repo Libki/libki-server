@@ -3,6 +3,7 @@ use Moose;
 use namespace::autoclean;
 
 use Catalyst::Runtime 5.90011;
+use CatalystX::RoleApplicator;
 
 use DateTime;
 use DateTime::Format::DateParse;
@@ -45,6 +46,10 @@ use Catalyst qw/
 # add -Debug to this list for debugging purposes
 
 extends 'Catalyst';
+
+__PACKAGE__->apply_request_class_roles(qw/
+    Catalyst::TraitFor::Request::ProxyBase
+/);
 
 our $VERSION = '0.01';
 
