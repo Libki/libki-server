@@ -49,4 +49,4 @@ COPY docker/files/libki_local.conf /app/libki_local.conf
 
 ENV PERL5LIB /app/lib
 
-CMD plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 -E production -a /app/libki.psgi
+CMD ./installer/update_db.pl && plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 -E production -a /app/libki.psgi
