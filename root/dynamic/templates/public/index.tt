@@ -146,7 +146,7 @@ $(document).ready(function() {
             }
 
             if ( Boolean( aData[4] ) ) {
-                if ( [% Settings.ReservationShowUsername %] ) {
+                if ( [% Settings.ReservationShowUsername ? 1 : 0 %] ) {
                     $("td:eq(3)", nRow).html( "[% c.loc("Reserved by") %]" + " " + "<i>" + aData[4] + "</i>" );
                 }
                 else {
