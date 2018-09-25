@@ -98,7 +98,7 @@ sub create_guest : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_create({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number_setting = $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
     my $current_guest_number = $current_guest_number_setting->value + 1;
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update();
@@ -169,10 +169,8 @@ sub batch_create_guest : Local : Args(0) {
     $minutes_allotment = $minutes_allotment - $minutes;
 
     my $current_guest_number_setting =
-      $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value() || 1;
-
-    $current_guest_number++;
+      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value() + 1;
 
     my $file_contents = q{};
 
