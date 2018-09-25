@@ -911,7 +911,7 @@ msgstr "Till"
 
 #: root/dynamic/templates/administration/settings/index.tt:212
 msgid "Top banner"
-msgstr "Nedre banner"
+msgstr "Övre banner"
 
 #: root/dynamic/templates/administration/history/statistics.tt:56
 msgid "Total by date"
