@@ -14,7 +14,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM debian:stretch-slim
+# Start with the previous image for speed,
+# it has all the dependencies installed already
+#FROM debian:stretch-slim
+FROM libki/libki-server:latest
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
