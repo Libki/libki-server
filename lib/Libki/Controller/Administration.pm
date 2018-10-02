@@ -70,6 +70,9 @@ sub auto : Private {
     }
 
     if ( $c->user_exists ) {
+        if ( $c->user->instance ne $c->instance ) {
+            $c->response->body('Unauthorized!!');
+        }
         if ( $c->check_user_roles('admin') ) {
             return 1;
         }
