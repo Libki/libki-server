@@ -69,7 +69,8 @@ sub create : Local : Args(0) {
         && $c->authenticate(
             {
                 username => $username,
-                password => $password
+                password => $password,
+                instance => $instance,
             }
         )
       )
@@ -121,13 +122,16 @@ sub delete : Local : Args(0) {
     my $password  = $c->request->params->{'password'};
     my $client_id = $c->request->params->{'id'};
 
+    my $instance = $c->instance;
+
     my $user = $c->model('DB::Client')->find($client_id)->reservation->user;
 
     if (
         $c->authenticate(
             {
                 username => $user->username,
-                password => $password
+                password => $password,
+                instance => $instance,
             }
         )
       )

@@ -207,7 +207,8 @@ sub index : Path : Args(0) {
                     $c->authenticate(
                         {
                             username => $username,
-                            password => $password
+                            password => $password,
+                            instance => $instance,
                         }
                     )
                   )

@@ -39,7 +39,7 @@ sub client : Local : Args(1) {
 
     delete $c->stash->{Settings};
 
-    if (   $c->authenticate( { username => $username, password => $password } )
+    if (   $c->authenticate( { username => $username, password => $password, instance => $instance } )
         && $c->check_user_roles(qw/admin/) )
     {
 

@@ -30,6 +30,8 @@ sub index : Path : Args(0) {
     my $password  = $c->request->params->{password};
     my $submitted = $c->request->params->{submitted} || 0;
 
+    my $instance = $c->instance;
+
     # If the username and password values were found in form
     if ( $username && $password ) {
 
@@ -38,7 +40,8 @@ sub index : Path : Args(0) {
             $c->authenticate(
                 {
                     username => $username,
-                    password => $password
+                    password => $password,
+                    instance => $instance,
                 }
             )
           )
