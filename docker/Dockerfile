@@ -47,6 +47,9 @@ WORKDIR /app
 RUN cpanm -n Module::Install
 RUN cpanm -n --installdeps .
 
+# Comment out the deprecation warning, it cannot be supressed and is screwing things up
+RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /usr/local/share/perl/5.24.1/Any/Moose.pm
+
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
 
