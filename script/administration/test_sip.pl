@@ -23,12 +23,16 @@ print( $usage->text ), exit unless ( $opt->username );
 $ENV{LIBKI_INSTANCE} = $opt->instance || q{};
 
 my $c = Libki->new();
+my $schema = $c->model('DB::User')->result_source->schema
+  || die("Couldn't Connect to DB");
+
+my $user_rs = $schema->resultset('User');
 
 my $user = $user_rs->search( { instance => $opt->instance, username => $opt->username } )->next();
 
-my $r = Libki::SIP::authenticate_via_sip( $c, $user, $opt->username, $opt->password );
+my $r = Libki::SIP::authenticate_via_sip( $c, $user, $opt->username, $opt->password, 1 );
 
-print "Libki::SIP::authenticate_via_sip: " . Data::Dumper::Dumper( $r );
+say "Libki::SIP::authenticate_via_sip: " . Data::Dumper::Dumper( $r );
 
 =head1 AUTHOR
 

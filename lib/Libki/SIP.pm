@@ -4,6 +4,7 @@ use Socket qw(:crlf);
 use IO::Socket::INET;
 use POSIX qw(strftime);
 use Data::Dumper;
+use feature 'say';
 
 =head2 authenticate_via_sip
 
@@ -13,14 +14,14 @@ Returns a hashref with keys 'success' and 'ERROR' among other data.
 =cut
 
 sub authenticate_via_sip {
-    my ( $c, $user, $username, $password ) = @_;
+    my ( $c, $user, $username, $password, $test_mode ) = @_;
 
     my $instance = $c->instance;
     my $config = $c->config->{instances}->{$instance} || $c->config;
 
-    unless ($config) {
+    unless ($config->{SIP}) {
         my $yaml = $c->setting('SIPConfiguration');
-        $config = YAML::XS::Load($yaml) if $yaml;
+        $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
     }
 
     my $log = $c->log();
@@ -32,7 +33,9 @@ sub authenticate_via_sip {
       // 1;    # Default to requiring authentication if setting doesn't exist
 
     $log->debug("SIP SERVER: $host:$port");
+    say "SIP SERVER: $host:$port" if $test_mode;
     $log->debug("require_sip_auth: $require_sip_auth");
+    say "require_sip_auth: $require_sip_auth" if $test_mode;
 
     my $transaction_date = timestamp();
 
@@ -66,6 +69,7 @@ sub authenticate_via_sip {
         my $str_93 = checksum($string);
         $str_93 = $string . $str_93 . $terminator;
         $log->debug("SEND: $str_93");
+       say "SEND: $str_93" if $test_mode;
         $socket->send($str_93);
 
         my $response;
@@ -78,6 +82,7 @@ sub authenticate_via_sip {
             $response .= $split;
         }
         $log->debug("READ: $response");
+       say "READ: $response" if $test_mode;
 
         my $auth    = substr( $response, 2, 1 );
         my $run_num = substr( $response, 5, 1 );
@@ -87,6 +92,7 @@ sub authenticate_via_sip {
             my $final  = checksum( $string, $run_num );
             my $send99 = $string . $final . $terminator;
             $log->debug("SEND: $send99");
+           say "SEND: $send99" if $test_mode;
             $socket->send($send99);
 
             my ( $response, $split );
@@ -100,6 +106,7 @@ sub authenticate_via_sip {
             }
 
             $log->debug("READ: $response");
+           say "READ: $response" if $test_mode;
 
             if ( ( substr $response, 0, 3 ) eq '98Y' ) {
                 my ( $chk, $end ) = split /\|AY/, $response;
@@ -127,6 +134,7 @@ sub authenticate_via_sip {
         my $final   = checksum( $string, $run_num );
         my $send99  = $string . $final . $terminator;
         $log->debug("SEND: $send99");
+       say "SEND: $send99" if $test_mode;
         $socket->send($send99);
 
         my ( $response, $split );
@@ -140,6 +148,7 @@ sub authenticate_via_sip {
         }
 
         $log->debug("READ: $response");
+       say "READ: $response" if $test_mode;
 
         if ( ( substr $response, 0, 3 ) eq '98Y' ) {
             my ( $chk, $end ) = split /\|AY/, $response;
@@ -152,15 +161,18 @@ sub authenticate_via_sip {
     }
 
     $log->debug("SEND: $patron_status_request");
+    say "SEND: $patron_status_request" if $test_mode;
     $socket->send( $patron_status_request . $terminator );
     $socket->recv( $data, 1024 );
-    $log->debug("READ: $data");
 
     if ( $config->{SIP}->{enable_split_messages} ) {
         $socket->recv( $split, 1024 );
         chomp $split;
         $data .= $split;
     }
+
+    $log->debug("READ: $data");
+    say "READ: $data" if $test_mode;
 
     if ( CORE::index( $data, 'BLY' ) == -1 ) {
         ## This user may have existed in SIP, but is now deleted
