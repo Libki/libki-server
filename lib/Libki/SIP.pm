@@ -185,12 +185,14 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verifies $username exists");
 
-    if ( CORE::index( $data, 'CQY' ) == -1 ) {
-        return {
-            success => 0,
-            error   => 'INVALID_PASSWORD',
-            user    => $user
-        };
+    unless ( $config->{SIP}->{no_password_check} ) {
+        if ( CORE::index( $data, 'CQY' ) == -1 ) {
+            return {
+                success => 0,
+                error   => 'INVALID_PASSWORD',
+                user    => $user
+            };
+        }
     }
 
     $log->debug("ILS verfies that password for user $username matches");
