@@ -16,8 +16,8 @@
 
 # Start with the previous image for speed,
 # it has all the dependencies installed already
-#FROM debian:stretch-slim
-FROM libki/libki-server:latest
+#FROM libki/libki-server:latest
+FROM debian:stretch-slim
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
