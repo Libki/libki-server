@@ -64,4 +64,5 @@ requires 'Term::Prompt';
 requires 'Term::Size::Any';
 requires 'Test::Pod';
 requires 'Test::Pod::Coverage';
+requires 'Text::CSV';
 requires 'YAML::XS';
