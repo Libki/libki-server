@@ -49,9 +49,32 @@ my @data_retention_days = $c->model('DB::Setting')->search( { name => 'DataReten
 foreach my $drd (@data_retention_days) {
     if ( $drd->value ) {
         my $dt = DateTime->today();
-        $dt->subtract( days => $drd->days );
+        $dt->subtract( days => $drd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
         $c->model('DB::Statistic')->search( { instance => $drd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
+    }
+}
+
+## Anonymize statistics that are past the retention length
+my @data_anonymization_days = $c->model('DB::Setting')->search( { name => 'DataAnonymizationDays' } );
+foreach my $dad (@data_anonymization_days) {
+    if ( $dad->value ) {
+        my $dt = DateTime->today();
+        $dt->subtract( days => $dad->value );
+        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+        my $random_int = int(rand(1000000));
+        $c->model('DB::Statistic')->search(
+            {
+                instance     => $dad->instance,
+                'created_on' => { '<' => $timestamp },
+                anonymized   => 0,
+            }
+        )->update(
+            {
+                username   => \"MD5(CONCAT(username, $random_int))",
+                anonymized => 1,
+            }
+        );
     }
 }
 
@@ -60,7 +83,7 @@ my @user_retention_days = $c->model('DB::Setting')->search( { name => 'InactiveU
 foreach my $urd (@user_retention_days) {
     if ( $urd->value ) {
         my $dt = DateTime->today();
-        $dt->subtract( days => $urd->days );
+        $dt->subtract( days => $urd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
         $c->model('DB::User')->search( { instance => $urd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
     }
