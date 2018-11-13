@@ -95,7 +95,10 @@
                         <span class="input-group-text">[% c.loc("Days") %]</span>
                     </div>
                 </div>
-                <small class="form-text text-muted">[% c.loc("Length of time to retain user data of inactive users. If not set, data will be kept indefinitely.") %]</small>
+                <small class="form-text text-muted">
+                    [% c.loc("Length of time to retain user data of inactive users. If not set, data will be kept indefinitely.") %]
+                    [% c.loc("Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>") %]
+                </small>
             </div>
         </fieldset>
 
