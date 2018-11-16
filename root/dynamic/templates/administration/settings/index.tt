@@ -1,435 +1,475 @@
 [% meta.title = c.loc("Administration / Settings") %]
 [% SET active_class = 'administration__settings' %]
 
-<div class="container">
-    <form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
-        <fieldset>
-            <legend>[% c.loc("Basic settings") %]</legend>
+<form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+    <br/>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-basic-settings-tab" data-toggle="pill" href="#v-pills-basic-settings" role="tab" aria-controls="v-pills-basic-settings" aria-selected="true"> [% c.loc("Basic settings") %]</a>
+                    <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
+                    <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
+                    <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
+                    <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
+                    <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
+                    <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
+                    <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
+                    <a class="nav-link" id="v-pills-ils-integration-tab" data-toggle="pill" href="#v-pills-ils-integration" role="tab" aria-controls="v-pills-ils-integration" aria-selected="false">[% c.loc("ILS integration") %]</a>
+                    <a class="nav-link" id="v-pills-print-management-tab" data-toggle="pill" href="#v-pills-print-management" role="tab" aria-controls="v-pills-print-management" aria-selected="false">[% c.loc("Print management") %]</a>
+                    <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
+                </div>
+            </div>
 
-            <div class="form-group">
-                <label for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+            <div class="col-lg">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-basic-settings" role="tabpanel" aria-labelledby="v-pills-basic-settings-tab">
+                        <fieldset>
+                            <legend>[% c.loc("Basic settings") %]</legend>
+
+                            <div class="form-group">
+                                <label for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="DefaultTimeAllowance" name="DefaultTimeAllowance" value="[% DefaultTimeAllowance %]">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">[% c.loc("Amount of time a user is given daily.") %]</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="DefaultSessionTimeAllowance">[% c.loc("Default time allowance per session") %]</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">[% c.loc("Amount of time a user is given per session.") %]</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="DefaultGuestTimeAllowance">[% c.loc("Default guest time allowance per day") %]</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="DefaultGuestTimeAllowance" name="DefaultGuestTimeAllowance" value="[% DefaultGuestTimeAllowance %]">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given daily.") %]</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="DefaultGuestSessionTimeAllowance">[% c.loc("Default guest time allowance per session") %]</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="DefaultGuestSessionTimeAllowance" name="DefaultGuestSessionTimeAllowance" value="[% DefaultGuestSessionTimeAllowance %]">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                                    </div>
+                                 </div>
+                                 <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given per session.") %]</small>
+                             </div>
+                        
+                            <div class="form-group">
+                                <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
+                            </div>
+                        </fieldset>
                     </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Amount of time a user is given daily.") %]</small>
-            </div>
 
-            <div class="form-group">
-                <label for="DefaultSessionTimeAllowance">[% c.loc("Default time allowance per session") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DefaultSessionTimeAllowance" name="DefaultSessionTimeAllowance" value="[% DefaultSessionTimeAllowance %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+            <div class="tab-pane fade" id="v-pills-data-retention" role="tabpanel" aria-labelledby="v-pills-data-retention-tab">
+                <fieldset>
+                    <legend>[% c.loc("Data retention") %]</legend>
+
+                    <div class="form-group">
+                        <label for="DataAnonymizationDays">[% c.loc("History anonymization") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="DataAnonymizationDays" name="DataAnonymizationDays" value="[% DataAnonymizationDays %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Days") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Statistics and history for users older than this number of days will be automatically anonymized. If not set, data will never be anonymized.") %]</small>
                     </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Amount of time a user is given per session.") %]</small>
-            </div>
 
-            <div class="form-group">
-                <label for="DefaultGuestTimeAllowance">[% c.loc("Default guest time allowance per day") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DefaultGuestTimeAllowance" name="DefaultGuestTimeAllowance" value="[% DefaultGuestTimeAllowance %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    <div class="form-group">
+                        <label for="DataRetentionDays">[% c.loc("History retention") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Days") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</small>
                     </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given daily.") %]</small>
-            </div>
 
-            <div class="form-group">
-                <label for="DefaultGuestSessionTimeAllowance">[% c.loc("Default guest time allowance per session") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DefaultGuestSessionTimeAllowance" name="DefaultGuestSessionTimeAllowance" value="[% DefaultGuestSessionTimeAllowance %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                    <div class="form-group">
+                        <label for="InactiveUserRetentionDays">[% c.loc("Inactive user retention") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="InactiveUserRetentionDays" name="InactiveUserRetentionDays" value="[% InactiveUserRetentionDays %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Days") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            [% c.loc("Length of time to retain user data of inactive users. If not set, data will be kept indefinitely.") %]
+                            [% c.loc("Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>") %]
+                        </small>
                     </div>
-                 </div>
-                 <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given per session.") %]</small>
-             </div>
-        
-            <div class="form-group">
-                <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-client-behavior" role="tabpanel" aria-labelledby="v-pills-client-behavior-tab">
+                <fieldset>
+                    <legend>[% c.loc("Client behavior") %]</legend>
+                
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" [% IF ClientBehavior == 'FCFS' %]checked[% END %]>
+                            <label class="form-check-label" for="ClientBehaviorFCFS">
+                                [% c.loc("First come, first served. A patron walks up to an open client and logs in.") %]
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="RES" [% IF ClientBehavior == 'RES' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationOnly">
+                                [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES" [% IF ClientBehavior == 'FCFS+RES' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationOnly">
+                                [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Data retention") %]</legend>
-
-            <div class="form-group">
-                <label for="DataAnonymizationDays">[% c.loc("History anonymization") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DataAnonymizationDays" name="DataAnonymizationDays" value="[% DataAnonymizationDays %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Days") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Statistics and history for users older than this number of days will be automatically anonymized. If not set, data will never be anonymized.") %]</small>
-            </div>
-
-            <div class="form-group">
-                <label for="DataRetentionDays">[% c.loc("History retention") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="DataRetentionDays" name="DataRetentionDays" value="[% DataRetentionDays %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Days") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely.") %]</small>
-            </div>
-
-            <div class="form-group">
-                <label for="InactiveUserRetentionDays">[% c.loc("Inactive user retention") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="InactiveUserRetentionDays" name="InactiveUserRetentionDays" value="[% InactiveUserRetentionDays %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Days") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">
-                    [% c.loc("Length of time to retain user data of inactive users. If not set, data will be kept indefinitely.") %]
-                    [% c.loc("Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>") %]
-                </small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Client behavior") %]</legend>
-        
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" [% IF ClientBehavior == 'FCFS' %]checked[% END %]>
-                    <label class="form-check-label" for="ClientBehaviorFCFS">
-                        [% c.loc("First come, first served. A patron walks up to an open client and logs in.") %]
-                    </label>
-                </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="RES" [% IF ClientBehavior == 'RES' %]checked[% END %]>
-                    <label class="form-check-label" for="ReservationOnly">
-                        [% c.loc("Reservation only. A patron must place a reservation for a client before logging in to it.") %]
-                    </label>
-                </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES" [% IF ClientBehavior == 'FCFS+RES' %]checked[% END %]>
-                    <label class="form-check-label" for="ReservationOnly">
-                        [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var value = "[% ClientBehavior %]";
-                $("input[name=ClientBehavior][value='" + value + "']").prop('checked', true);
-            });
-        </script>
-
-        <fieldset>
-            <legend>[% c.loc("Reservation settings") %]</legend>
-        
-            <div class="form-group">
-                <label for="ReservationTimeout">[% c.loc("Reservation timeout") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
-            </div>
-
-
-            <div class="form-group">
-                <input id="ReservationShowUsernameCheckbox" type="checkbox">
-                <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
-                <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
-                <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
-            </div>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
-
-                    $("#ReservationShowUsernameCheckbox").change( function() {
-                        if ( $(this).attr('checked') == 'checked') {
-                            $("#ReservationShowUsername").val( 1 );
-                        } else {
-                            $("#ReservationShowUsername").val( 0 );
-                        }
+                </fieldset>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var value = "[% ClientBehavior %]";
+                        $("input[name=ClientBehavior][value='" + value + "']").prop('checked', true);
                     });
-                });
-            </script>
-
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Automatic time extension") %]</legend>
-
-            <div class="form-group">
-                <label for="AutomaticTimeExtensionLength">[% c.loc("Extension length") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="AutomaticTimeExtensionLength" name="AutomaticTimeExtensionLength" value="[% AutomaticTimeExtensionLength %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Amount of time to automatically increase a user's session time by.") %]</small>
+                </script>
             </div>
 
-            <div class="form-group">
-                <label for="AutomaticTimeExtensionAt">[% c.loc("Extend time at") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="AutomaticTimeExtensionAt" name="AutomaticTimeExtensionAt" value="[% AutomaticTimeExtensionAt %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
-                    </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Extend the session time when a user has less than this number of session minutes remaining.") %]</small>
-            </div>
-
-            <div class="form-group">
-                <label for="AutomaticTimeExtensionUnless">[% c.loc("Extend time unless") %]</label>
-                <div class="input-group">
-                    <select class="form-control" id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
-                        <option value="this_reserved">[% c.loc("User's client is reserved") %]</option>
-                        <option value="any_reserved">[% c.loc("Any client is reserved") %]</option>
-                    </select>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved.") %]</small>
-            </div>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
-                });
-            </script>
-
-            <div class="form-group">
-                <label for="AutomaticTimeExtensionUseAllotment">[% c.loc("When extending time") %]</label>
-                <div class="input-group">
-                    <select class="form-control" id="AutomaticTimeExtensionUseAllotment" name="AutomaticTimeExtensionUseAllotment" />
-                        <option value="no">[% c.loc("Don't take minutes from daily allotment") %]</option>
-                        <option value="yes">[% c.loc("Take minutes from daily allotment") %]</option>
-                    </select>
-                </div>
-                <small class="form-text text-muted">[% c.loc('Control whether a user\'s time extension uses up minutes from the user\'s daily allotment, or if the minutes are "free".') %]</small>
-            </div>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
-                });
-            </script>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Terms of service") %]</legend>
-
-            <div class="form-group">
-                <label for="TermsOfService">[% c.loc("Terms of service text") %]</label>
-                <div class="input-group">
-                    <textarea class="form-control" id="TermsOfService" name="TermsOfService" rows="10">[% TermsOfService %]</textarea>
-                </div>
-                <small class="form-text text-muted">[% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]</small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend><strong>[% c.loc("Client login banner settings") %]</strong></legend>
-        
-            <fieldset>
-                <legend>[% c.loc("Top banner") %]</legend>
-
-                <div class="form-group">
-                    <label for="BannerTopURL">[% c.loc("Source URL") %]</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">http://</span>
+            <div class="tab-pane fade" id="v-pills-reservation-settings" role="tabpanel" aria-labelledby="v-pills-reservation-settings-tab">
+                <fieldset>
+                    <legend>[% c.loc("Reservations") %]</legend>
+                
+                    <div class="form-group">
+                        <label for="ReservationTimeout">[% c.loc("Reservation timeout") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ReservationTimeout" name="ReservationTimeout" value="[% ReservationTimeout %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
                         </div>
-                        <input type="text" class="form-control" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
+                        <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
-                </div>
 
-                <div class="form-group">
-                    <label for="BannerTopWidth">[% c.loc("Width") %]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
-                        <div class="input-group-append">
-                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+
+                    <div class="form-group">
+                        <input id="ReservationShowUsernameCheckbox" type="checkbox">
+                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
+                        <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
+                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
+
+                            $("#ReservationShowUsernameCheckbox").change( function() {
+                                if ( $(this).attr('checked') == 'checked') {
+                                    $("#ReservationShowUsername").val( 1 );
+                                } else {
+                                    $("#ReservationShowUsername").val( 0 );
+                                }
+                            });
+                        });
+                    </script>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-automatic-time-extension" role="tabpanel" aria-labelledby="v-pills-automatic-time-extension-tab">
+                <fieldset>
+                    <legend>[% c.loc("Automatic time extension") %]</legend>
+
+                    <div class="form-group">
+                        <label for="AutomaticTimeExtensionLength">[% c.loc("Extension length") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="AutomaticTimeExtensionLength" name="AutomaticTimeExtensionLength" value="[% AutomaticTimeExtensionLength %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
                         </div>
+                        <small class="form-text text-muted">[% c.loc("Amount of time to automatically increase a user's session time by.") %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
-                </div>
 
-                <div class="form-group">
-                    <label for="BannerTopHeight">[% c.loc("Height") %]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
-                        <div class="input-group-append">
-                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                    <div class="form-group">
+                        <label for="AutomaticTimeExtensionAt">[% c.loc("Extend time at") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="AutomaticTimeExtensionAt" name="AutomaticTimeExtensionAt" value="[% AutomaticTimeExtensionAt %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
                         </div>
+                        <small class="form-text text-muted">[% c.loc("Extend the session time when a user has less than this number of session minutes remaining.") %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
-                </div>
-            </fieldset>
 
-            <fieldset>
-                <legend>[% c.loc("Bottom banner") %]</legend>
-
-                <div class="form-group">
-                    <label for="BannerBottomURL">[% c.loc("Source URL") %]</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">http://</span>
+                    <div class="form-group">
+                        <label for="AutomaticTimeExtensionUnless">[% c.loc("Extend time unless") %]</label>
+                        <div class="input-group">
+                            <select class="form-control" id="AutomaticTimeExtensionUnless" name="AutomaticTimeExtensionUnless" />
+                                <option value="this_reserved">[% c.loc("User's client is reserved") %]</option>
+                                <option value="any_reserved">[% c.loc("Any client is reserved") %]</option>
+                            </select>
                         </div>
-                        <input type="text" class="form-control" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
+                        <small class="form-text text-muted">[% c.loc("Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved.") %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
-                </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#AutomaticTimeExtensionUnless").val("[% AutomaticTimeExtensionUnless %]");
+                        });
+                    </script>
 
-                <div class="form-group">
-                    <label for="BannerBottomWidth">[% c.loc("Width") %]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
-                        <div class="input-group-append">
-                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                    <div class="form-group">
+                        <label for="AutomaticTimeExtensionUseAllotment">[% c.loc("When extending time") %]</label>
+                        <div class="input-group">
+                            <select class="form-control" id="AutomaticTimeExtensionUseAllotment" name="AutomaticTimeExtensionUseAllotment" />
+                                <option value="no">[% c.loc("Don't take minutes from daily allotment") %]</option>
+                                <option value="yes">[% c.loc("Take minutes from daily allotment") %]</option>
+                            </select>
                         </div>
+                        <small class="form-text text-muted">[% c.loc('Control whether a user\'s time extension uses up minutes from the user\'s daily allotment, or if the minutes are "free".') %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
-                </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
+                        });
+                    </script>
+                </fieldset>
+            </div>
 
-                <div class="form-group">
-                    <label for="BannerBottomHeight">[% c.loc("Height") %]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
-                        <div class="input-group-append">
-                            <span class="input-group-text">[% c.loc("Pixels") %]</span>
+            <div class="tab-pane fade" id="v-pills-terms-of-service" role="tabpanel" aria-labelledby="v-pills-terms-of-service-tab">
+                <fieldset>
+                    <legend>[% c.loc("Terms of service") %]</legend>
+
+                    <div class="form-group">
+                        <label for="TermsOfService">[% c.loc("Terms of service text") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="TermsOfService" name="TermsOfService" rows="10">[% TermsOfService %]</textarea>
                         </div>
+                        <small class="form-text text-muted">[% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]</small>
                     </div>
-                    <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
-                </div>
-            </fieldset>
-            
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Guest passes") %]</legend>
-
-            <div class="form-group">
-                <label for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">
-                </div>
-                <small class="form-text text-muted">[% c.loc("Prefix for guest passes, defaults to 'guest' if none is specified.") %]</small>
+                </fieldset>
             </div>
 
-            <div class="form-group">
-                <label for="GuestBatchCount">[% c.loc("Passes to create per batch") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
-                    <div class="input-group-append">
-                        <span class="input-group-text">[% c.loc("Passes") %]</span>
+            <div class="tab-pane fade" id="v-pills-client-login-banners" role="tabpanel" aria-labelledby="v-pills-client-login-banners-tab">
+                <fieldset>
+                    <legend><strong>[% c.loc("Client login banner settings") %]</strong></legend>
+                
+                    <fieldset>
+                        <legend>[% c.loc("Top banner") %]</legend>
+
+                        <div class="form-group">
+                            <label for="BannerTopURL">[% c.loc("Source URL") %]</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">http://</span>
+                                </div>
+                                <input type="text" class="form-control" id="BannerTopURL" name="BannerTopURL" value="[% BannerTopURL %]">
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="BannerTopWidth">[% c.loc("Width") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="BannerTopWidth" name="BannerTopWidth" value="[% BannerTopWidth %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="BannerTopHeight">[% c.loc("Height") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="BannerTopHeight" name="BannerTopHeight" value="[% BannerTopHeight %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>[% c.loc("Bottom banner") %]</legend>
+
+                        <div class="form-group">
+                            <label for="BannerBottomURL">[% c.loc("Source URL") %]</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">http://</span>
+                                </div>
+                                <input type="text" class="form-control" id="BannerBottomURL" name="BannerBottomURL" value="[% BannerBottomURL %]">
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="BannerBottomWidth">[% c.loc("Width") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="BannerBottomWidth" name="BannerBottomWidth" value="[% BannerBottomWidth %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="BannerBottomHeight">[% c.loc("Height") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="BannerBottomHeight" name="BannerBottomHeight" value="[% BannerBottomHeight %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
+                        </div>
+                    </fieldset>
+                    
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-guest-passes" role="tabpanel" aria-labelledby="v-pills-guest-passes-tab">
+                <fieldset>
+                    <legend>[% c.loc("Guest passes") %]</legend>
+
+                    <div class="form-group">
+                        <label for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Prefix for guest passes, defaults to 'guest' if none is specified.") %]</small>
                     </div>
-                </div>
-                <small class="form-text text-muted">[% c.loc("The number of passes to create per batch.") %]</small>
+
+                    <div class="form-group">
+                        <label for="GuestBatchCount">[% c.loc("Passes to create per batch") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="GuestBatchCount" name="GuestBatchCount" value="[% GuestBatchCount %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Passes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("The number of passes to create per batch.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="BatchGuestPassUsernameLabel">[% c.loc("Username label") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
+                        </div>
+                            <small class="form-text text-muted">
+                                [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting.") %]
+                            </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="BatchGuestPassPasswordLabel">[% c.loc("Password label") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
+                        </div>
+                        <small class="form-text text-muted">
+                            [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting.") %]
+                        </small>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-ils-integration" role="tabpanel" aria-labelledby="v-pills-ils-integration-tab">
+                <fieldset>
+                    <legend>[% c.loc("ILS integration") %]</legend>
+                
+                    <div class="form-group">
+                        <label for="ThirdPartyURL">[% c.loc("Patron hyperlinks") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
+                        </div>
+                        <small class="form-text text-muted">
+                            [% c.loc("Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning.") %]
+                        </small>
+                        <small class="form-text text-muted">
+                            [% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username.") %]
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="SIPConfiguration" name="SIPConfiguration" rows="15">[% SIPConfiguration %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</small>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-print-management" role="tabpanel" aria-labelledby="v-pills-print-management-tab">
+                <fieldset>
+                    <legend>[% c.loc("Print management") %]</legend>
+
+                    <div class="form-group">
+                        <label for="PrinterConfiguration">[% c.loc("Printer configuration") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="PrinterConfiguration" name="PrinterConfiguration" rows="15">[% PrinterConfiguration %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Define printer configuration in YAML format.") %]</small>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-custom-javascript" role="tabpanel" aria-labelledby="v-pills-custom-javascript-tab">
+                <fieldset>
+                    <legend>[% c.loc("Custom JavaScript") %]</legend>
+                
+                    <div class="form-group">
+                        <label for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="CustomJsAdministration" name="CustomJsAdministration" rows="15">[% CustomJsAdministration %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the administration interface here.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CustomJsPublic">[% c.loc("Public interface JavaScript") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="CustomJsPublic" name="CustomJsPublic" rows="15">[% CustomJsPublic %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the public web interface here.") %]</small>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="form-group">
-                <label for="BatchGuestPassUsernameLabel">[% c.loc("Username label") %]</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="BatchGuestPassUsernameLabel" name="BatchGuestPassUsernameLabel" value="[% BatchGuestPassUsernameLabel %]" style="font-family:monospace">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
                 </div>
-                    <small class="form-text text-muted">
-                        [% c.loc("The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting.") %]
-                    </small>
             </div>
 
-            <div class="form-group">
-                <label for="BatchGuestPassPasswordLabel">[% c.loc("Password label") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="BatchGuestPassPasswordLabel" name="BatchGuestPassPasswordLabel" value="[% BatchGuestPassPasswordLabel %]" style="font-family:monospace">
-                </div>
-                <small class="form-text text-muted">
-                    [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting.") %]
-                </small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Third party integration") %]</legend>
-        
-            <div class="form-group">
-                <label for="ThirdPartyURL">[% c.loc("URL") %]</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="ThirdPartyURL" name="ThirdPartyURL" value="[% ThirdPartyURL %]">
-                </div>
-                <small class="form-text text-muted">
-                    [% c.loc("Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning.") %]
-                </small>
-                <small class="form-text text-muted">
-                    [% c.loc("For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username.") %]
-                </small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Print management") %]</legend>
-
-            <div class="form-group">
-                <label for="PrinterConfiguration">[% c.loc("Printer configuration") %]</label>
-                <div class="input-group">
-                    <textarea class="form-control" id="PrinterConfiguration" name="PrinterConfiguration" rows="15">[% PrinterConfiguration %]</textarea>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Define printer configuration in YAML format.") %]</small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("ILS integration") %]</legend>
-
-            <div class="form-group">
-                <label for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
-                <div class="input-group">
-                    <textarea class="form-control" id="SIPConfiguration" name="SIPConfiguration" rows="15">[% SIPConfiguration %]</textarea>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</small>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>[% c.loc("Custom JavaScript") %]</legend>
-        
-            <div class="form-group">
-                <label for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
-                <div class="input-group">
-                    <textarea class="form-control" id="CustomJsAdministration" name="CustomJsAdministration" rows="15">[% CustomJsAdministration %]</textarea>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the administration interface here.") %]</small>
-            </div>
-
-            <div class="form-group">
-                <label for="CustomJsPublic">[% c.loc("Public interface JavaScript") %]</label>
-                <div class="input-group">
-                    <textarea class="form-control" id="CustomJsPublic" name="CustomJsPublic" rows="15">[% CustomJsPublic %]</textarea>
-                </div>
-                <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the public web interface here.") %]</small>
-            </div>
-        </fieldset>
-
-        <div class="form-group">
-            <div class="input-group">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
-            </div>
-        </div>
-    </form>
-<div class="container">
+            </div><!-- /div.col-lg -->
+        </div><!-- /div.row -->
+    </div><!-- /div.container-fluid -->
+</form>
 
