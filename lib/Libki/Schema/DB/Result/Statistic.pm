@@ -92,6 +92,18 @@ __PACKAGE__->table("statistics");
   datetime_undef_if_invalid: 1
   is_nullable: 1
 
+=head2 anonymized
+
+  data_type: 'tinyint'
+  default_value: 0
+  is_nullable: 1
+
+=head2 session_id
+
+  data_type: 'char'
+  is_nullable: 1
+  size: 72
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -113,6 +125,10 @@ __PACKAGE__->add_columns(
     datetime_undef_if_invalid => 1,
     is_nullable => 1,
   },
+  "anonymized",
+  { data_type => "tinyint", default_value => 0, is_nullable => 1 },
+  "session_id",
+  { data_type => "char", is_nullable => 1, size => 72 },
 );
 
 =head1 PRIMARY KEY
@@ -128,8 +144,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-05-15 03:42:56
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/CydYlqHzLUw2vLxUNo9oQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:xadXdVFgAKHRHOk6npS+pA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

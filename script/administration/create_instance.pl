@@ -49,7 +49,7 @@ my $defaults = {
 
 while ( my ( $name, $value ) = each %$defaults ) {
     say qq{Creating setting $name with default value '$value'} if $opt->verbose > 1;
-    $rs->create( { instance => $i, name => $name, value => $value } );
+    $rs->find_or_create( { instance => $i, name => $name, value => $value } );
 }
 
 =head1 AUTHOR

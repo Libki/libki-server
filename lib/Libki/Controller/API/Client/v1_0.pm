@@ -275,13 +275,15 @@ sub index : Path : Args(0) {
                                 || $reservation->user_id() == $user->id() )
                             {
                                 $reservation->delete() if $reservation;
+                                my $session_id = $c->sessionid;
 
                                 my $session = $c->model('DB::Session')->create(
                                     {
                                         instance  => $instance,
                                         user_id   => $user->id,
                                         client_id => $client->id,
-                                        status    => 'active'
+                                        status    => 'active',
+                                        session_id => $session_id,
                                     }
                                 );
                                 $c->stash( authenticated => $session && 1 );
@@ -292,7 +294,8 @@ sub index : Path : Args(0) {
                                         client_name     => $client_name,
                                         client_location => $client_location,
                                         action          => 'LOGIN',
-                                        created_on      => $now
+                                        created_on      => $now,
+                                        session_id      => $session_id,
                                     }
                                 );
                             }
@@ -340,17 +343,23 @@ sub index : Path : Args(0) {
 
         }
         elsif ( $action eq 'logout' ) {
+            my $session = $user->session;
+            my $session_id = $session->session_id;
+            my $location = $session->client->location;
+
             my $success = $user->session->delete();
             $success &&= 1;
             $c->stash( logged_out => $success );
 
             $c->model('DB::Statistic')->create(
                 {
-                    instance    => $instance,
-                    username    => $username,
-                    client_name => $client_name,
-                    action      => 'LOGOUT',
-                    created_on  => $now
+                    instance        => $instance,
+                    username        => $username,
+                    client_name     => $client_name,
+                    client_location => $client_location,
+                    action          => 'LOGOUT',
+                    created_on      => $now,
+                    session_id      => $session_id,
                 }
             );
         }

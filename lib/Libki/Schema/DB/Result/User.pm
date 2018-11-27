@@ -121,14 +121,14 @@ __PACKAGE__->table("users");
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'CURRENT_TIMESTAMP'
+  default_value: 'current_timestamp()'
   is_nullable: 0
 
 =head2 updated_on
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: 'CURRENT_TIMESTAMP'
+  default_value: 'current_timestamp()'
   is_nullable: 0
 
 =cut
@@ -170,14 +170,14 @@ __PACKAGE__->add_columns(
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "CURRENT_TIMESTAMP",
+    default_value => "current_timestamp()",
     is_nullable => 0,
   },
   "updated_on",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
-    default_value => "CURRENT_TIMESTAMP",
+    default_value => "current_timestamp()",
     is_nullable => 0,
   },
 );
@@ -313,8 +313,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2018-08-08 10:57:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PONo/qy5TV+7bOd4PKerNw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/lMNlEHAtTWfeCk0gSMIrg
 
 __PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
 
