@@ -38,8 +38,14 @@ sub cancel : Local : Args(0) {
     my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
 
     if ($print_job) {
-        $print_job->set_column( 'status', 'Canceled' );
-        my $success = $print_job->update() ? 1 : 0;
+        my $now = DateTime->now( time_zone => $ENV{TZ} );
+
+        my $success = $print_job->update(
+            {
+                status     => 'Canceled',
+                updated_on => $now,
+            }
+        ) ? 1 : 0;
         $c->stash( success => $success );
     }
     else {
@@ -164,9 +170,14 @@ sub release : Local : Args(0) {
                 my $json      = JSON::from_json( $response->decoded_content );
                 my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
 
-                $print_job->data($json);    # Data method takes a hashref
-                $print_job->status($job_state);
-                $print_job->update();
+                my $now = DateTime->now( time_zone => $ENV{TZ} );
+                $print_job->update(
+                    {
+                        data       => $json,
+                        status     => $job_state,
+                        updated_on => $now,
+                    }
+                );
 
                 $c->stash( success => 1, message => $json->{message} );
             }
@@ -219,9 +230,15 @@ sub update : Local : Args(0) {
 
         my $data      = JSON::from_json( $response->decoded_content );
         my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
-        $print_job->data($data);    # Data method takes a hashref
-        $print_job->status($job_state);
-        $print_job->update();
+
+        my $now = DateTime->now( time_zone => $ENV{TZ} );
+        $print_job->update(
+            {
+                data       => $data,
+                status     => $job_state,
+                updated_on => $now,
+            }
+        );
 
         $c->stash->{data}    = $data;
         $c->stash->{success} = 1;

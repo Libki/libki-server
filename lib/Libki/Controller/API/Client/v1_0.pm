@@ -376,6 +376,8 @@ sub print : Path('print') : Args(0) {
     my $config   = $c->config->{instances}->{$instance} || $c->config;
     my $log      = $c->log();
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
+
     my $client_name = $c->request->params->{'client_name'};
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
@@ -409,6 +411,8 @@ sub print : Path('print') : Args(0) {
                 client_location => $client->location,
                 user_id         => $user->id,
                 username        => $username,
+                created_on      => $now,
+                updated_on      => $now,
             }
         );
 
@@ -421,6 +425,8 @@ sub print : Path('print') : Args(0) {
                 printer       => $printer_id,
                 user_id       => $user->id,
                 print_file_id => $print_file->id,
+                created_on    => $now,
+                updated_on    => $now,
             }
         );
 

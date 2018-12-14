@@ -72,6 +72,7 @@ sub create : Local : Args(0) {
 
     my $success = 0;
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
     my $user = $c->model('DB::User')->create(
         {
             instance          => $instance,
@@ -79,6 +80,8 @@ sub create : Local : Args(0) {
             password          => $password,
             minutes_allotment => $minutes,
             status            => 'enabled',
+            created_on        => $now,
+            updated_on        => $now,
         }
     );
 
@@ -119,6 +122,7 @@ sub create_guest : Local : Args(0) {
 
     my $success = 0;
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
     my $user = $c->model('DB::User')->create(
         {
             instance          => $instance,
@@ -128,6 +132,8 @@ sub create_guest : Local : Args(0) {
             minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
+            created_on        => $now,
+            updated_on        => $now,
         }
     );
 
@@ -176,6 +182,8 @@ sub batch_create_guest : Local : Args(0) {
 
     $file_contents .= "\n\n\n";
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
+
     for ( my $i = 0 ; $i < $guest_count ; $i++ ) {
 
         $current_guest_number = $current_guest_number + 1;
@@ -192,6 +200,8 @@ sub batch_create_guest : Local : Args(0) {
                 minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes'
+                created_on        => $now,
+                updated_on        => $now,
             }
         );
 
@@ -240,9 +250,12 @@ sub update : Local : Args(0) {
 
     my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
+
     $user->set_column( 'minutes', $minutes );
     $user->set_column( 'notes',   $notes );
     $user->set_column( 'status',  $status );
+    $user->set_column( 'updated_on', $now );
 
     if ( $user->update() ) {
         $success = 1;
@@ -324,7 +337,10 @@ sub toggle_troublemaker : Local : Args(1) {
 
     my $is_troublemaker = ( $user->is_troublemaker eq 'Yes' ) ? 'No' : 'Yes';
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
+
     $user->set_column( 'is_troublemaker', $is_troublemaker );
+    $user->set_column( 'updated_on', $now );
 
     if ( $user->update() ) {
         $success = 1;
@@ -349,7 +365,10 @@ sub change_password : Local : Args(0) {
 
     my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
+
     $user->set_column( 'password', $password );
+    $user->set_column( 'updated_on', $now );
 
     if ( $user->update() ) {
         $success = 1;
