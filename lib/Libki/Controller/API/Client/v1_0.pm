@@ -41,7 +41,7 @@ sub index : Path : Args(0) {
 
     my $log = $c->log();
 
-    my $now = DateTime->now( time_zone => $ENV{TZ} );
+    my $now = $c->now();
 
     my $action = $c->request->params->{'action'};
 
@@ -376,7 +376,7 @@ sub print : Path('print') : Args(0) {
     my $config   = $c->config->{instances}->{$instance} || $c->config;
     my $log      = $c->log();
 
-    my $now = DateTime->now( time_zone => $ENV{TZ} );
+    my $now = $c->now();
 
     my $client_name = $c->request->params->{'client_name'};
     my $username    = $c->request->params->{'username'};

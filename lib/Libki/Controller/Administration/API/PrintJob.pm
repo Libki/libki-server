@@ -38,7 +38,7 @@ sub cancel : Local : Args(0) {
     my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
 
     if ($print_job) {
-        my $now = DateTime->now( time_zone => $ENV{TZ} );
+        my $now = $c->now();
 
         my $success = $print_job->update(
             {
@@ -170,7 +170,7 @@ sub release : Local : Args(0) {
                 my $json      = JSON::from_json( $response->decoded_content );
                 my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
 
-                my $now = DateTime->now( time_zone => $ENV{TZ} );
+                my $now = $c->now();
                 $print_job->update(
                     {
                         data       => $json,
@@ -231,7 +231,7 @@ sub update : Local : Args(0) {
         my $data      = JSON::from_json( $response->decoded_content );
         my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
 
-        my $now = DateTime->now( time_zone => $ENV{TZ} );
+        my $now = $c->now();
         $print_job->update(
             {
                 data       => $data,

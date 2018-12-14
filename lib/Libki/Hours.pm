@@ -17,7 +17,7 @@ sub minutes_until_closing {
 
     $instance ||= $c->instance;
 
-    my $now = DateTime->now( time_zone => $ENV{TZ} );
+    my $now = $c->now();
 
     my $today        = $now->ymd();
     my $current_time = $now->hour() . ":" . $now->minute();
