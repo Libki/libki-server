@@ -220,12 +220,12 @@ sub can_user_use {
     }
 
     if ( my @age_limits = $self->client_age_limits() ) {
-        my $age = $user->age();
-	$log->debug("User age: $age");
+        my $age = $user->age($c);
+        $log->debug("User age: $age");
 
         foreach my $age_limit ( @age_limits ) {
             my $comparison = $age_limit->comparison();
-            my $limit = $age_limit->age();
+            my $limit = $age_limit->age($c);
             $log->debug("Age comparison: $comparison");
             $log->debug("Age limit: $limit");
 

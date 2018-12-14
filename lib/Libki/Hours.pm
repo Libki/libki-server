@@ -53,7 +53,7 @@ sub minutes_until_closing {
         day       => $now->day(),
         hour      => $closing_hour,
         minute    => $closing_minute,
-        time_zone => $ENV{TZ},
+        time_zone => $c->tz,
     );
 
     my $time_diff = $closing_time - $now;

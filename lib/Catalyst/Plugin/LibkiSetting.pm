@@ -57,7 +57,19 @@ Returns a DataTime::now object corrected for the current timezone.
 =cut
 
 sub now {
-    return DateTime->now( time_zone => $ENV{TZ} );
+    my ($c) = @_;
+
+    return DateTime->now( time_zone => $c->tz );
+}
+
+=head2 tz
+
+Returns the current timezone
+
+=cut
+
+sub tz {
+    return $ENV{TZ};
 }
 
 1;

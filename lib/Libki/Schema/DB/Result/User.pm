@@ -391,7 +391,7 @@ The birthdate column is currently only populated when using SIP for single-signo
 =cut
 
 sub age {
-    my ( $self ) = @_;
+    my ( $self, $c ) = @_;
 
     my $birthdate = $self->birthdate();
 
@@ -406,7 +406,7 @@ sub age {
         day   => $day,
     );
 
-    my $duration = DateTime->now( time_zone => $ENV{TZ} ) - $birthdate;
+    my $duration = $c->now() - $birthdate;
 
     my $age = $duration->in_units('years');
 

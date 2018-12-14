@@ -122,7 +122,7 @@ sub index : Path : Args(0) {
             unless ( $reservation->expiration() ) {
                 $reservation->expiration(
                     DateTime::Format::MySQL->format_datetime(
-                        DateTime->now( time_zone => $ENV{TZ} )->add_duration(
+                        $c->now()->add_duration(
                             DateTime::Duration->new(
                                 minutes => $c->stash->{'Settings'}
                                   ->{'ReservationTimeout'}
