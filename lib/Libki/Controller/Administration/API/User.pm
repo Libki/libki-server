@@ -199,7 +199,7 @@ sub batch_create_guest : Local : Args(0) {
                 minutes           => $minutes,
                 minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
-                is_guest          => 'Yes'
+                is_guest          => 'Yes',
                 created_on        => $now,
                 updated_on        => $now,
             }
