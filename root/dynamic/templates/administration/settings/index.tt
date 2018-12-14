@@ -423,6 +423,14 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file.") %]</small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="LDAPConfiguration">[% c.loc("LDAP configuration") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="LDAPConfiguration" name="LDAPConfiguration" rows="15">[% LDAPConfiguration %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Define LDAP configuration in YAML format. This setting may be overridden by a LDAP block in the Libki conf file.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 

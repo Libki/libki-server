@@ -50,6 +50,30 @@ sub instance {
     return $instance;
 }
 
+=head2 instance_config
+
+Locates various parts of the Libki config and returns a unified hashref
+
+=cut
+
+sub instance_config {
+    my ($c) = @_;
+
+    my $config = $c->config->{instances}->{ $c->instance } || $c->config;
+
+    unless ( $config->{SIP} ) {
+        my $yaml = $c->setting('SIPConfiguration');
+        $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
+    }
+
+    unless ( $config->{LDAP} ) {
+        my $yaml = $c->setting('LDAPConfiguration');
+        $config->{LDAP} = YAML::XS::Load($yaml) if $yaml;
+    }
+
+    return $config;
+}
+
 =head2 now
 
 Returns a DataTime::now object corrected for the current timezone.
