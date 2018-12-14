@@ -39,6 +39,12 @@ sub index : Path : Args(0) {
     my $instance = $c->instance;
     my $config = $c->config->{instances}->{$instance} || $c->config;
 
+    #TODO: Add new method to get SIP and LDAP configs from config file/system setting
+    unless ( $config->{SIP} ) {
+        my $yaml = $c->setting('SIPConfiguration');
+        $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
+    }
+
     my $log = $c->log();
 
     my $now = $c->now();
