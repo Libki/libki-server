@@ -50,4 +50,14 @@ sub instance {
     return $instance;
 }
 
+=head2 now
+
+Returns a DataTime::now object corrected for the current timezone.
+
+=cut
+
+sub now {
+    return DateTime->now( time_zone => $ENV{TZ} );
+}
+
 1;
