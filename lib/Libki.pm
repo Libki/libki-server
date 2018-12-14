@@ -101,7 +101,6 @@ __PACKAGE__->config(
 );
 
 # Set the time zone
-#__PACKAGE__->config->{TZ} = DateTime::TimeZone->new( name => 'local' );
 $ENV{TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
 CORE::say qq{USING TIMEZONE "$ENV{TZ}"};
 

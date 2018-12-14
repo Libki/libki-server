@@ -406,7 +406,7 @@ sub age {
         day   => $day,
     );
 
-    my $duration = DateTime->now() - $birthdate;
+    my $duration = DateTime->now( time_zone => $ENV{TZ} ) - $birthdate;
 
     my $age = $duration->in_units('years');
 

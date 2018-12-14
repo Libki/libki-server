@@ -48,11 +48,12 @@ sub minutes_until_closing {
       split( /:/, $closing_hours->closing_time() );
 
     my $closing_time = DateTime->new(
-        year   => $now->year(),
-        month  => $now->month(),
-        day    => $now->day(),
-        hour   => $closing_hour,
-        minute => $closing_minute,
+        year      => $now->year(),
+        month     => $now->month(),
+        day       => $now->day(),
+        hour      => $closing_hour,
+        minute    => $closing_minute,
+        time_zone => $ENV{TZ},
     );
 
     my $time_diff = $closing_time - $now;

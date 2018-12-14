@@ -38,8 +38,8 @@ sub statistics : Local : Args(0) {
     my $from = $c->request->params->{'from'};
     my $to   = $c->request->params->{'to'};
 
-    $from ||= DateTime->today()->subtract( months => 1 )->ymd();
-    $to ||= DateTime->today()->ymd();
+    $from ||= DateTime->today( time_zone => $ENV{TZ} )->subtract( months => 1 )->ymd();
+    $to ||= DateTime->today( time_zone => $ENV{TZ} )->ymd();
 
     my $from_dt = DateTime::Format::DateParse->parse_datetime($from);
     my $to_dt   = DateTime::Format::DateParse->parse_datetime($to);

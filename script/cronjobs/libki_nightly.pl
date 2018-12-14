@@ -48,7 +48,7 @@ while ( my $user = $user_rs->next() ) {
 my @data_retention_days = $c->model('DB::Setting')->search( { name => 'DataRetentionDays' } );
 foreach my $drd (@data_retention_days) {
     if ( $drd->value ) {
-        my $dt = DateTime->today();
+        my $dt = DateTime->today( time_zone => $ENV{TZ} );
         $dt->subtract( days => $drd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
         $c->model('DB::Statistic')->search( { instance => $drd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
@@ -59,7 +59,7 @@ foreach my $drd (@data_retention_days) {
 my @data_anonymization_days = $c->model('DB::Setting')->search( { name => 'DataAnonymizationDays' } );
 foreach my $dad (@data_anonymization_days) {
     if ( $dad->value ) {
-        my $dt = DateTime->today();
+        my $dt = DateTime->today( time_zone => $ENV{TZ} );
         $dt->subtract( days => $dad->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
         my $random_int = int(rand(1000000));
@@ -82,7 +82,7 @@ foreach my $dad (@data_anonymization_days) {
 my @user_retention_days = $c->model('DB::Setting')->search( { name => 'InactiveUserRetentionDays' } );
 foreach my $urd (@user_retention_days) {
     if ( $urd->value ) {
-        my $dt = DateTime->today();
+        my $dt = DateTime->today( time_zone => $ENV{TZ} );
         $dt->subtract( days => $urd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
         $c->model('DB::User')->search( { instance => $urd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
