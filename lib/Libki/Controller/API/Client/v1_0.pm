@@ -39,15 +39,9 @@ sub index : Path : Args(0) {
     my $instance = $c->instance;
     my $config = $c->config->{instances}->{$instance} || $c->config;
 
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-      localtime(time);
-    my $now = sprintf(
-        "%04d-%02d-%02d %02d:%02d:%02d",
-        $year + 1900,
-        $mon + 1, $mday, $hour, $min, $sec
-    );
-
     my $log = $c->log();
+
+    my $now = DateTime->now( time_zone => $ENV{TZ} );
 
     my $action = $c->request->params->{'action'};
 
