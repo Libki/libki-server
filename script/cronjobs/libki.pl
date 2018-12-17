@@ -25,7 +25,7 @@ my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Conne
 my $dbh = $schema->storage->dbh;
 
 ## Gather sessions to delete, delete them, then log the deletions
-my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{TZ} ) );
+my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{LIBKI_TZ} ) );
 
 my $sessions_to_delete = $dbh->selectall_arrayref(
     q{
@@ -152,7 +152,7 @@ my @post_crash_timeouts = $setting_rs->search( { name => 'PostCrashTimeout' } );
 
 foreach my $pct (@post_crash_timeouts) {
     my $timestamp = DateTime::Format::MySQL->format_datetime(
-        DateTime->now( time_zone => $ENV{TZ} )->subtract_duration(
+        DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration(
             DateTime::Duration->new( minutes => $pct->value )
         )
     );
@@ -169,7 +169,7 @@ $reservation_rs->search(
         'expiration' => {
             '<',
             DateTime::Format::MySQL->format_datetime(
-                DateTime->now( time_zone => $ENV{TZ} )
+                DateTime->now( time_zone => $ENV{LIBKI_TZ} )
             )
         }
     }

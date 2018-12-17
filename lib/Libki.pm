@@ -101,8 +101,8 @@ __PACKAGE__->config(
 );
 
 # Set the time zone
-$ENV{TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
-CORE::say qq{USING TIMEZONE "$ENV{TZ}"};
+$ENV{LIBKI_TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
+CORE::say qq{USING TIMEZONE "$ENV{LIBKI_TZ}"};
 
 # Create a Log4perl object
 __PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));

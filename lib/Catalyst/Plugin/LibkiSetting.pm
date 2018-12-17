@@ -93,7 +93,7 @@ Returns the current timezone
 =cut
 
 sub tz {
-    return $ENV{TZ};
+    return $ENV{LIBKI_TZ};
 }
 
 1;
