@@ -52,14 +52,25 @@ sub update :Local :Args(0) {
     my $instance = $c->instance;
 
     foreach my $setting ( keys %{$c->request->params} ) {
+        my $value = $c->request->params->{ $setting };
+
         $c->model('DB::Setting')->update_or_create(
             {
                 instance => $instance,
                 name     => $setting,
-                value    => $c->request->params->{ $setting },
+                value    => $value,
             }
         );
     }
+
+    # ReservationShowUsername is a checkbox
+    $c->model('DB::Setting')->update_or_create(
+        {
+            instance => $instance,
+            name     => 'ReservationShowUsername',
+            value    => ( $c->request->params->{ReservationShowUsername} // 0 ) eq 'on' ? 1 : 0,
+        }
+    );
     
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
 }

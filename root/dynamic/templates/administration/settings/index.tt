@@ -178,9 +178,8 @@
 
 
                     <div class="form-group">
-                        <input id="ReservationShowUsernameCheckbox" type="checkbox">
+                        <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
                         <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
-                        <input id="ReservationShowUsername" name="ReservationShowUsername" type="hidden" value="0" />
                         <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
                     </div>
                     <script type="text/javascript">
