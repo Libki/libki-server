@@ -103,6 +103,10 @@ sub index : Path : Args(0) {
             BannerBottomURL    => $c->stash->{'Settings'}->{'BannerBottomURL'},
             BannerBottomWidth  => $c->stash->{'Settings'}->{'BannerBottomWidth'},
             BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
+
+            inactivityWarning => $c->stash->{'Settings'}->{'ClientInactivityWarning'},
+            inactivityLogout  => $c->stash->{'Settings'}->{'ClientInactivityLogout'},
+
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {

@@ -131,6 +131,7 @@
                     <legend>[% c.loc("Client behavior") %]</legend>
                 
                     <div class="form-group">
+                        <label for="ClientBehavior">[% c.loc("Client reservations") %]</label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" [% IF ClientBehavior == 'FCFS' %]checked[% END %]>
                             <label class="form-check-label" for="ClientBehaviorFCFS">
@@ -159,6 +160,33 @@
                         $("input[name=ClientBehavior][value='" + value + "']").prop('checked', true);
                     });
                 </script>
+
+                <fieldset>
+                    <legend>[% c.loc("Client inactivity") %]</legend>
+
+                    <div class="form-group">
+                        <label for="ClientInactivity">[% c.loc("Client inactivity warning") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientInactivityWarning" name="ClientInactivityWarning" value="[% ClientInactivityWarning %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Warn user that they will be logged out automatically after this many minutes of inactivity.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientInactivity">[% c.loc("Client inactivity logout") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientInactivityLogout" name="ClientInactivityLogout" value="[% ClientInactivityLogout %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Log user out automatically after this many minutes of inactivity.") %]</small>
+                    </div>
+
+                </fieldset>
             </div>
 
             <div class="tab-pane fade" id="v-pills-reservation-settings" role="tabpanel" aria-labelledby="v-pills-reservation-settings-tab">
