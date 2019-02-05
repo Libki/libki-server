@@ -78,6 +78,64 @@ foreach my $version_dir (@version_dirs) {
     );
 }
 
+=head1 FUNCTIONS
+
+=head2 table_exists
+
+=cut
+
+sub table_exists {
+    my ( $table, $dbh );
+    eval {
+                local $dbh->{PrintError} = 0;
+                local $dbh->{RaiseError} = 1;
+                $dbh->do(qq{SELECT * FROM $table WHERE 1 = 0 });
+            };
+    return 1 unless $@;
+    return 0;
+}
+
+=head2 foreign_key_exists
+
+=cut
+
+sub foreign_key_exists {
+    my ( $table_name, $constraint_name, $dbh ) = @_;
+    my (undef, $infos) = $dbh->selectrow_array(qq|SHOW CREATE TABLE $table_name|);
+    return $infos =~ m|CONSTRAINT `$constraint_name` FOREIGN KEY|;
+}
+
+=head2 index_exists
+
+=cut
+
+sub index_exists {
+    my ( $table_name, $key_name, $dbh ) = @_;
+    my ($exists) = $dbh->selectrow_array(
+        qq|
+        SHOW INDEX FROM $table_name
+        WHERE key_name = ?
+        |, undef, $key_name
+    );
+    return $exists;
+}
+
+=head2 column_exists
+
+=cut
+
+sub column_exists {
+    my ( $table_name, $column_name, $dbh ) = @_;
+    my $dbh = C4::Context->dbh;
+    my ($exists) = $dbh->selectrow_array(
+        qq|
+        SHOW COLUMNS FROM $table_name
+        WHERE Field = ?
+        |, undef, $column_name
+    );
+    return $exists;
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info> 
