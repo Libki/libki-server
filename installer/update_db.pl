@@ -59,7 +59,12 @@ foreach my $version_dir (@version_dirs) {
             my @statements = $script->statements();
 
             foreach my $s (@statements) {
-                $dbh->do($s);
+                try {
+                    $dbh->do($s);
+                }
+                catch {
+                    print "UPDATE FAILED: $_";
+                }
             }
         }
     }
