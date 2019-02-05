@@ -25,7 +25,10 @@ my $schema_version = $schema->schema_version();
 
 my $db_version;
 try {
-    $db_version = $schema->resultset('Setting')->search( { name => 'Version' } )->next->value;
+    my $sth = $dbh->prepare(q{SELECT * FROM settings WHERE name = 'Version'});
+    $sth->execute();
+    my $setting = $sth->fetchrow_hashref;
+    $db_version = $setting->{value};
 }
 catch {
     $db_version = '00.00.00.000';
