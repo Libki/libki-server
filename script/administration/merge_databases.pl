@@ -2,6 +2,7 @@
 
 use Modern::Perl;
 
+use Data::Dumper;
 use Getopt::Long::Descriptive;
 
 use DBI;
@@ -10,15 +11,15 @@ my ( $opt, $usage ) = describe_options(
     '%c %o',
     [ 'from-database|fd=s', "Database to move data from, required"     , { required => 1 } ],
     [ 'from-hostname|fh=s', "Database host to move data from, required", { required => 1 } ],
-    [ 'from-port|fp=s'    , "Database port to move data from, required", { required => 1 } ],
+    [ 'from-port|fP=s'    , "Database port to move data from, required", { required => 1 } ],
     [ 'from-user|fu=s'    , "Database user to move data from, required", { required => 1 } ],
     [ 'from-password|fp=s', "Database user to move data from, required", { required => 1 } ],
     [],
-    [ 'to-database|fd=s', "Database to move data to, required"     , { required => 1 } ],
-    [ 'to-hostname|fh=s', "Database host to move data to, required", { required => 1 } ],
-    [ 'to-port|fp=s'    , "Database port to move data to, required", { required => 1 } ],
-    [ 'to-user|fu=s'    , "Database user to move data to, required", { required => 1 } ],
-    [ 'to-password|fp=s', "Database user to move data to, required", { required => 1 } ],
+    [ 'to-database|td=s', "Database to move data to, required"     , { required => 1 } ],
+    [ 'to-hostname|th=s', "Database host to move data to, required", { required => 1 } ],
+    [ 'to-port|tP=s'    , "Database port to move data to, required", { required => 1 } ],
+    [ 'to-user|tu=s'    , "Database user to move data to, required", { required => 1 } ],
+    [ 'to-password|tp=s', "Database user to move data to, required", { required => 1 } ],
     [],
     [ 'verbose|v+', "print extra stuff" ],
 );
@@ -38,33 +39,74 @@ my $to_dsn = "DBI:mysql:database=$to_database;host=$to_hostname;port=$to_port";
 my $to_dbh = DBI->connect( $to_dsn, $to_user, $to_password, \%attr );
 
 # Verify both tables have matching tables;
-my @from_tables = $from_dbh->tables;
-my @to_tables = $to_dbh->tables;
+my $from_query = qq{SELECT table_name FROM information_schema.tables where table_schema='$from_database'};
+my @from_tables = @{$from_dbh->selectcol_arrayref( $from_query )};
 
-die "Database tables do not match" unless @from_tables ~~ @to_tables;
+my $to_query = qq{SELECT table_name FROM information_schema.tables where table_schema='$to_database'};
+my @to_tables = @{$to_dbh->selectcol_arrayref( $to_query )};
+
+unless ( lists_equal( \@from_tables, \@to_tables ) ) {
+    say "Database tables do not match!";
+    say "From tables: " . Data::Dumper::Dumper( \@from_tables );
+    say "To tables: " . Data::Dumper::Dumper( \@to_tables );
+    $from_dbh->rollback();
+    $from_dbh->disconnect();
+    $to_dbh->rollback();
+    $to_dbh->disconnect();
+    exit(1);
+} else {
+    say "Database tables match!" if $opt->verbose;
+}
 
 # Verify each table pair in the databases have matching columns
 foreach my $table (@from_tables) {
-    my $from_sth = $dbh->prepare("SELECT * FROM $table WHERE 1=0");
-    $from_sth->execute;
-    my @from_cols = @{ $from_sth->{NAME_lc} };
-    $from_sth->finish;
+    my $from_query = qq{SHOW COLUMNS FROM $table};
+    my @from_cols = @{$from_dbh->selectcol_arrayref( $from_query )};
 
-    my $to_sth = $dbh->prepare("SELECT * FROM $table WHERE 1=0");
-    $to_sth->execute;
-    my @to_cols = @{ $to_sth->{NAME_lc} };
-    $to_sth->finish;
+    my $to_query = qq{SHOW COLUMNS FROM $table};
+    my @to_cols = @{$to_dbh->selectcol_arrayref( $to_query )};
 
-    die "Database table $table columns do not match" unless @from_cols ~~ @to_cols;
+    unless ( lists_equal( \@from_cols, \@to_cols ) ) {
+        say "Database table $table columns do not match";
+	say "From columns: " . Data::Dumper::Dumper( \@from_cols );
+	say "To columns: " . Data::Dumper::Dumper( \@to_cols );
+        $from_dbh->rollback();
+        $from_dbh->disconnect();
+        $to_dbh->rollback();
+        $to_dbh->disconnect();
+	exit(1);
+    } else {
+        say "Columns for table $table match!" if $opt->verbose > 1;
+    }
 }
+say "Columns for all tables match!" if $opt->verbose;
 
 eval {
-}
+    $to_dbh->commit();
+    $from_dbh->rollback();
+};
 
 if ($@) {
     say "Error, merge aborted: $@";
-    $dbh_from->rollback();
-    $dbh_to->rollback();
+    $from_dbh->rollback();
+    $from_dbh->disconnect();
+    $to_dbh->rollback();
+    $to_dbh->disconnect();
+}
+
+sub lists_equal {
+    my ( $first, $second ) = @_;
+
+    my @a = sort @$first;
+    my @b = sort @$second;
+
+    return 0 unless scalar @a == scalar @b;
+
+    for ( my $i = 0; $i < scalar @a; $i++ ) {
+        return 0 if $a[$i] ne $b[$i];
+    }
+
+    return 1;
 }
 
 =head1 AUTHOR
