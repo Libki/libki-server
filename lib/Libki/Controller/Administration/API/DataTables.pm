@@ -29,8 +29,7 @@ sub users : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns =
-      qw( me.username me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status );
+    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -40,6 +39,9 @@ sub users : Local Args(0) {
             -or           => [
                 'me.username' => { 'like', "%$search_term%" },
                 'me.notes'    => { 'like', "%$search_term%" },
+                'me.lastname' => { 'like', "%$search_term%" },
+                'me.firstname' => { 'like', "%$search_term%" },
+                'me.category' => {'like', "%$search_term%" },
             ]
         };
     }
@@ -90,17 +92,19 @@ sub users : Local Args(0) {
 
         my $r;
         $r->{'DT_RowId'} = $u->id;
-        $r->{'0'}        = decode( $enc, $u->username );
-        $r->{'1'}        = $u->minutes_allotment;
-        $r->{'2'}        = $u->minutes;
-        $r->{'3'}        = $u->status;
-        $r->{'4'}        = decode( $enc, $u->notes );
-        $r->{'5'}        = $u->is_troublemaker;
-        $r->{'6'} =
+        $r->{'0'}        = decode( $enc, $u->username);
+        $r->{'1'}        = decode( $enc, $u->lastname);
+        $r->{'2'}        = decode( $enc, $u->firstname);
+        $r->{'3'}        = decode( $enc, $u->category);
+        $r->{'4'}        = $u->minutes_allotment;
+        $r->{'5'}        = $u->minutes;
+        $r->{'6'}        = $u->status;
+        $r->{'7'}        = decode( $enc, $u->notes);
+        $r->{'8'}        = $u->is_troublemaker;
+        $r->{'9'}        =
           defined( $u->session )
-          ? decode( $enc, decode( $enc, $u->session->client->name ) )
-          : undef;
-        $r->{'7'} = defined( $u->session ) ? $u->session->status : undef;
+          ? decode($enc,decode( $enc, $u->session->client->name)) : undef;
+        $r->{'10'}        = defined( $u->session ) ? $u->session->status : undef;
 
         push( @results, $r );
     }
@@ -129,7 +133,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw( me.name me.location session.status user.username user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker );
+      qw/ me.name me.location session.status user.username user.lastname user.firstname user.category user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -200,17 +204,20 @@ sub clients : Local Args(0) {
           defined( $c->session )
           ? decode( $enc, $c->session->user->username )
           : undef;
-        $r->{'4'} =
-          defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'5'} = defined( $c->session ) ? $c->session->user->minutes : undef;
-        $r->{'6'} = defined( $c->session ) ? $c->session->user->status  : undef;
+        $r->{'4'}        = defined( $c->session ) ? decode($enc,$c->session->user->lastname) : undef;
+        $r->{'5'}        = defined( $c->session ) ? decode($enc,$c->session->user->firstname) : undef;
+        $r->{'6'}        = defined( $c->session ) ? decode($enc,$c->session->user->category) : undef;
         $r->{'7'} =
+          defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
+        $r->{'8'} = defined( $c->session ) ? $c->session->user->minutes : undef;
+        $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
+        $r->{'10'} =
           defined( $c->session )
           ? decode( $enc, $c->session->user->notes )
           : undef;
-        $r->{'8'} =
+        $r->{'11'} =
           defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'9'} =
+        $r->{'12'} =
           defined( $c->reservation )
           ? decode( $enc, $c->reservation->user->username )
           : undef;
