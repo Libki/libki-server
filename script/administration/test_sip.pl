@@ -32,7 +32,9 @@ my $user = $user_rs->search( { instance => $opt->instance, username => $opt->use
 
 my $r = Libki::SIP::authenticate_via_sip( $c, $user, $opt->username, $opt->password, 1 );
 
-say "Libki::SIP::authenticate_via_sip: " . Data::Dumper::Dumper( $r );
+say "Libki::SIP::authenticate_via_sip: ";
+say "SUCCESS: $r->{success}";
+say "SIP FIELDS: " . Data::Dumper::Dumper( $r->{sip_fields} );
 
 =head1 AUTHOR
 
