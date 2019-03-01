@@ -29,7 +29,7 @@
                 [% FOREACH d IN DaysOfWeek %]
                     <div class="form-group form-inline">
                         <label for="[% d %]" style="width: 7em">[% c.loc("$d") %]</label>
-						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control" style="width: 3em">
+						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control">
 							<option value=""></option>
 							[% FOREACH h IN Hours %]
 								<option value="[% h %]" [% IF h == days.all.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>[% h %]</option>
@@ -38,7 +38,7 @@
 						&nbsp;
 						:
 						&nbsp;
-						<select id="[% d %]-minute-all" name="[% d %]-minute-all" class="form-control" style="width: 3em">
+						<select id="[% d %]-minute-all" name="[% d %]-minute-all" class="form-control">
 							<option value=""></option>
 							[% FOREACH m IN Minutes %]
 								<option value="[% m %]" [% IF m == days.all.$d.closing_time.substr(3,2) %] selected="selected" [% END %]>[% m %]</option>
