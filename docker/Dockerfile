@@ -33,7 +33,9 @@ RUN apt-get update -y \
        perl \
        cpanminus \
        libdbd-mysql-perl \
+# for DBD::mysql
        default-libmysqlclient-dev \
+# Net::Google::DataAPI::Auth::OAuth2
        libxml2-dev \
        libssl-dev \
        libexpat1-dev \
@@ -43,14 +45,15 @@ RUN apt-get update -y \
 COPY . /app
 WORKDIR /app
 
+RUN cpanm -n Module::Install
+RUN cpanm -n --installdeps .
+
+# Comment out the deprecation warning, it cannot be supressed and is screwing things up
+RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /usr/local/share/perl/5.24.1/Any/Moose.pm
+
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
 
-RUN cpanm Carton
-RUN carton install --deployment
+ENV PERL5LIB /app/lib
 
-# Comment out the deprecation warning, it cannot be supressed and is screwing things up
-RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /app/local/lib/perl5/Any/Moose.pm
-
-ENV PERL5LIB /app/local/lib/perl5
-CMD ./installer/update_db.pl && plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 --max-workers ${LIBKI_MAX_WORKERS} -E production -I /app/lib  -a /app/libki.psgi
+CMD ./installer/update_db.pl && plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 --max-workers ${LIBKI_MAX_WORKERS} -E production -a /app/libki.psgi
