@@ -800,7 +800,7 @@ $(document).ready(function() {
     });
     $('#multi-guest-modal-form-print').click(function(){
         var guestPassWindow = window.open();
-        guestPassWindow.document.write("<pre>" + guest_pass_file_contents + "</pre>");
+        guestPassWindow.document.write(guest_pass_file_contents);
     });
 
 

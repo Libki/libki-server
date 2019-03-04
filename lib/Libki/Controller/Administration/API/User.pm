@@ -163,6 +163,8 @@ sub batch_create_guest : Local : Args(0) {
 
     my $success = 0;
 
+    my $BatchGuestPassCustomCSS = $c->setting('BatchGuestPassCustomCSS');
+
     my $guest_count = $c->setting('GuestBatchCount') || 10;
     my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
@@ -180,7 +182,7 @@ sub batch_create_guest : Local : Args(0) {
 
     my $file_contents = q{};
 
-    $file_contents .= "\n\n\n";
+    $file_contents .= "<html><head><style>$BatchGuestPassCustomCSS</style></head><body>";
 
     my $now = $c->now();
 
@@ -205,9 +207,14 @@ sub batch_create_guest : Local : Args(0) {
             }
         );
 
-        $file_contents .= $batch_guest_pass_username_label . $username . "\n\n";
-        $file_contents .= $batch_guest_pass_password_label . $password . "\n";
-        $file_contents .= "\n\n\n";
+        $file_contents .= "\n<span class='guest-pass'>";
+        $file_contents .= "\n<span class='guest-pass-username'>";
+        $file_contents .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
+        $file_contents .= "</span>";
+        $file_contents .= "\n\n<span class='guest-pass-password'>";
+        $file_contents .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
+        $file_contents .= "</span>";
+        $file_contents .= "</body>";
 
         $success = $success + 1 if ($user);
     }

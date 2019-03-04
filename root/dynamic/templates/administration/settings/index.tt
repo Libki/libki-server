@@ -423,6 +423,14 @@
                             [% c.loc("The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting.") %]
                         </small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="BatchGuestPassCustomCSS">[% c.loc("Guest pass CSS") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="BatchGuestPassCustomCSS" name="BatchGuestPassCustomCSS" rows="15">[% BatchGuestPassCustomCSS %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Add custom CSS for batch guest passes here.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 
