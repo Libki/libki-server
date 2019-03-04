@@ -2,6 +2,8 @@ requires 'namespace::autoclean';
 
 requires 'Module::Install';
 
+requires 'IO::Socket::SSL';
+
 requires 'Archive::Zip';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
