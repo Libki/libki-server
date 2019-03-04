@@ -604,6 +604,19 @@ DISTRIBUTIONS
       namespace::autoclean 0.28
       namespace::clean 0.23
       perl 5.008003
+  Catalyst-TraitFor-Request-ProxyBase-0.000005
+    pathname: B/BO/BOBTFISH/Catalyst-TraitFor-Request-ProxyBase-0.000005.tar.gz
+    provides:
+      Catalyst::TraitFor::Request::ProxyBase 0.000005
+    requirements:
+      Catalyst::Runtime 5.80007
+      CatalystX::RoleApplicator 0.005
+      ExtUtils::MakeMaker 6.42
+      HTTP::Request::Common 0
+      Moose 0
+      Test::More 0.88
+      URI 0
+      namespace::autoclean 0
   Catalyst-View-JSON-0.36
     pathname: J/JJ/JJNAPIORK/Catalyst-View-JSON-0.36.tar.gz
     provides:
@@ -647,6 +660,16 @@ DISTRIBUTIONS
       MooseX::Traits::Pluggable 0
       Scalar::Util 0
       namespace::autoclean 0
+  CatalystX-RoleApplicator-0.005
+    pathname: H/HD/HDP/CatalystX-RoleApplicator-0.005.tar.gz
+    provides:
+      CatalystX::RoleApplicator 0.005
+    requirements:
+      Catalyst::Runtime 5.7
+      Class::MOP 0.80
+      ExtUtils::MakeMaker 0
+      Moose 0.73
+      MooseX::RelatedClassRoles 0.003
   CatalystX-Script-Server-Starman-0.02
     pathname: A/AB/ABRAXXA/CatalystX-Script-Server-Starman-0.02.tar.gz
     provides:
@@ -810,13 +833,6 @@ DISTRIBUTIONS
       Time::HiRes 0
       XSLoader 0
       perl 5.008
-  Clone-0.39
-    pathname: G/GA/GARU/Clone-0.39.tar.gz
-    provides:
-      Clone 0.39
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::More 0
   Clone-Choose-0.010
     pathname: H/HE/HERMES/Clone-Choose-0.010.tar.gz
     provides:
@@ -1865,6 +1881,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Sub::Exporter::Progressive 0.001011
       perl 5.006
+  Devel-Hide-0.0010
+    pathname: F/FE/FERREIRA/Devel-Hide-0.0010.tar.gz
+    provides:
+      Devel::Hide 0.0010
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Temp 0
+      perl 5.006001
   Devel-OverloadInfo-0.005
     pathname: I/IL/ILMARI/Devel-OverloadInfo-0.005.tar.gz
     provides:
@@ -1906,6 +1930,16 @@ DISTRIBUTIONS
     requirements:
       Devel::StackTrace 0
       ExtUtils::MakeMaker 0
+  Devel-Symdump-2.18
+    pathname: A/AN/ANDK/Devel-Symdump-2.18.tar.gz
+    provides:
+      Devel::Symdump 2.18
+      Devel::Symdump::Export undef
+    requirements:
+      Compress::Zlib 0
+      ExtUtils::MakeMaker 0
+      Test::More 0
+      perl 5.004
   Digest-HMAC-1.03
     pathname: G/GA/GAAS/Digest-HMAC-1.03.tar.gz
     provides:
@@ -2520,15 +2554,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.64
       Scalar::Util 0
       perl 5.008001
-  Hash-Merge-Simple-0.051
-    pathname: R/RO/ROKR/Hash-Merge-Simple-0.051.tar.gz
-    provides:
-      Hash::Merge::Simple 0.051
-    requirements:
-      Clone 0
-      ExtUtils::MakeMaker 6.31
-      Storable 0
-      Test::Most 0
   Hash-MultiValue-0.16
     pathname: A/AR/ARISTOTLE/Hash-MultiValue-0.16.tar.gz
     provides:
@@ -3543,6 +3568,15 @@ DISTRIBUTIONS
       Moose::Util 0
       Try::Tiny 0
       warnings 0
+  MooseX-RelatedClassRoles-0.004
+    pathname: H/HD/HDP/MooseX-RelatedClassRoles-0.004.tar.gz
+    provides:
+      MooseX::RelatedClassRoles 0.004
+    requirements:
+      Class::MOP 0.80
+      ExtUtils::MakeMaker 0
+      Moose 0.73
+      MooseX::Role::Parameterized 0.04
   MooseX-Role-Parameterized-1.10
     pathname: E/ET/ETHER/MooseX-Role-Parameterized-1.10.tar.gz
     provides:
@@ -4379,6 +4413,20 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Pod-Coverage-0.23
+    pathname: R/RC/RCLAMP/Pod-Coverage-0.23.tar.gz
+    provides:
+      Pod::Coverage 0.23
+      Pod::Coverage::CountParents undef
+      Pod::Coverage::ExportOnly undef
+      Pod::Coverage::Extractor 0.23
+      Pod::Coverage::Overloader undef
+    requirements:
+      Devel::Symdump 2.01
+      ExtUtils::MakeMaker 0
+      Pod::Find 0.21
+      Pod::Parser 1.13
+      Test::More 0
   Proc-Wait3-0.05
     pathname: C/CT/CTILMES/Proc-Wait3-0.05.tar.gz
     provides:
@@ -4896,6 +4944,24 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Term::ReadKey 1
       Text::Wrap 1
+  Term-Size-Any-0.002
+    pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
+    provides:
+      Term::Size::Any 0.002
+    requirements:
+      Devel::Hide 0
+      ExtUtils::MakeMaker 0
+      Module::Load::Conditional 0
+      Term::Size::Perl 0
+      Test::More 0
+  Term-Size-Perl-0.031
+    pathname: F/FE/FERREIRA/Term-Size-Perl-0.031.tar.gz
+    provides:
+      Term::Size::Perl 0.031
+    requirements:
+      Exporter 0
+      ExtUtils::CBuilder 0
+      ExtUtils::MakeMaker 0
   TermReadKey-2.37
     pathname: J/JS/JSTOWE/TermReadKey-2.37.tar.gz
     provides:
@@ -5033,20 +5099,6 @@ DISTRIBUTIONS
       constant 0
       strict 0
       warnings 0
-  Test-Most-0.35
-    pathname: O/OV/OVID/Test-Most-0.35.tar.gz
-    provides:
-      Test::Most 0.35
-      Test::Most::Exception 0.35
-    requirements:
-      Exception::Class 1.14
-      ExtUtils::MakeMaker 0
-      Test::Deep 0.119
-      Test::Differences 0.64
-      Test::Exception 0.43
-      Test::Harness 3.35
-      Test::More 1.302047
-      Test::Warn 0.30
   Test-NoWarnings-1.04
     pathname: A/AD/ADAMK/Test-NoWarnings-1.04.tar.gz
     provides:
@@ -5058,6 +5110,28 @@ DISTRIBUTIONS
       Test::More 0.47
       Test::Tester 0.107
       perl 5.006
+  Test-Pod-1.52
+    pathname: E/ET/ETHER/Test-Pod-1.52.tar.gz
+    provides:
+      Test::Pod 1.52
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Find 0
+      Pod::Simple 3.05
+      Test::Builder::Tester 1.02
+      Test::More 0.62
+      perl 5.008
+  Test-Pod-Coverage-1.10
+    pathname: N/NE/NEILB/Test-Pod-Coverage-1.10.tar.gz
+    provides:
+      Test::Pod::Coverage 1.10
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Coverage 0
+      Test::Builder 0
+      perl 5.006
+      strict 0
+      warnings 0
   Test-Requires-0.10
     pathname: T/TO/TOKUHIROM/Test-Requires-0.10.tar.gz
     provides:
@@ -5081,83 +5155,6 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
-  Test-Simple-1.302135
-    pathname: E/EX/EXODIST/Test-Simple-1.302135.tar.gz
-    provides:
-      Test2 1.302135
-      Test2::API 1.302135
-      Test2::API::Breakage 1.302135
-      Test2::API::Context 1.302135
-      Test2::API::Instance 1.302135
-      Test2::API::Stack 1.302135
-      Test2::Event 1.302135
-      Test2::Event::Bail 1.302135
-      Test2::Event::Diag 1.302135
-      Test2::Event::Encoding 1.302135
-      Test2::Event::Exception 1.302135
-      Test2::Event::Fail 1.302135
-      Test2::Event::Generic 1.302135
-      Test2::Event::Note 1.302135
-      Test2::Event::Ok 1.302135
-      Test2::Event::Pass 1.302135
-      Test2::Event::Plan 1.302135
-      Test2::Event::Skip 1.302135
-      Test2::Event::Subtest 1.302135
-      Test2::Event::TAP::Version 1.302135
-      Test2::Event::V2 1.302135
-      Test2::Event::Waiting 1.302135
-      Test2::EventFacet 1.302135
-      Test2::EventFacet::About 1.302135
-      Test2::EventFacet::Amnesty 1.302135
-      Test2::EventFacet::Assert 1.302135
-      Test2::EventFacet::Control 1.302135
-      Test2::EventFacet::Error 1.302135
-      Test2::EventFacet::Hub 1.302135
-      Test2::EventFacet::Info 1.302135
-      Test2::EventFacet::Meta 1.302135
-      Test2::EventFacet::Parent 1.302135
-      Test2::EventFacet::Plan 1.302135
-      Test2::EventFacet::Render 1.302135
-      Test2::EventFacet::Trace 1.302135
-      Test2::Formatter 1.302135
-      Test2::Formatter::TAP 1.302135
-      Test2::Hub 1.302135
-      Test2::Hub::Interceptor 1.302135
-      Test2::Hub::Interceptor::Terminator 1.302135
-      Test2::Hub::Subtest 1.302135
-      Test2::IPC 1.302135
-      Test2::IPC::Driver 1.302135
-      Test2::IPC::Driver::Files 1.302135
-      Test2::Tools::Tiny 1.302135
-      Test2::Util 1.302135
-      Test2::Util::ExternalMeta 1.302135
-      Test2::Util::Facets2Legacy 1.302135
-      Test2::Util::HashBase 1.302135
-      Test2::Util::Trace 1.302135
-      Test::Builder 1.302135
-      Test::Builder::Formatter 1.302135
-      Test::Builder::IO::Scalar 2.114
-      Test::Builder::Module 1.302135
-      Test::Builder::Tester 1.302135
-      Test::Builder::Tester::Color 1.302135
-      Test::Builder::Tester::Tie 1.302135
-      Test::Builder::TodoDiag 1.302135
-      Test::More 1.302135
-      Test::Simple 1.302135
-      Test::Tester 1.302135
-      Test::Tester::Capture 1.302135
-      Test::Tester::CaptureRunner 1.302135
-      Test::Tester::Delegate 1.302135
-      Test::use::ok 1.302135
-      ok 1.302135
-    requirements:
-      ExtUtils::MakeMaker 0
-      File::Spec 0
-      File::Temp 0
-      Scalar::Util 1.13
-      Storable 0
-      perl 5.006002
-      utf8 0
   Test-TCP-2.19
     pathname: T/TO/TOKUHIROM/Test-TCP-2.19.tar.gz
     provides:
@@ -5245,6 +5242,18 @@ DISTRIBUTIONS
       Test::Builder 0
       Test::Builder::Tester 0.09
       perl 5.007003
+  Text-CSV-1.99
+    pathname: I/IS/ISHIGAKI/Text-CSV-1.99.tar.gz
+    provides:
+      Text::CSV 1.99
+      Text::CSV::ErrorDiag 1.99
+      Text::CSV_PP 1.99
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::Handle 0
+      Test::Harness 0
+      Test::More 0.71
+      perl 5.006001
   Text-Diff-1.45
     pathname: N/NE/NEILB/Text-Diff-1.45.tar.gz
     provides:
