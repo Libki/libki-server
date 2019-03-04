@@ -85,7 +85,16 @@ foreach my $urd (@user_retention_days) {
         my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
         $dt->subtract( days => $urd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
-        $c->model('DB::User')->search( { instance => $urd->instance, 'created_on' => { '<' => $timestamp } } )->delete();
+        $c->model('DB::User')->search(
+            {
+                instance             => $urd->instance,
+                'created_on'         => { '<' => $timestamp },
+                'user_roles.user_id' => undef,
+            },
+            {
+                join => 'user_roles',
+            }
+        )->delete();
     }
 }
 
