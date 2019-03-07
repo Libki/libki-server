@@ -398,6 +398,7 @@ sub prints : Local Args(0) {
         $r->{'4'}        = $p->print_file->pages;
         $r->{'5'}        = $p->print_file->client_name;
         $r->{'6'}        = $p->print_file->username;
+	$r->{'7'}        = $p->created_on->iso8601;
         push( @results, $r );
     }
 

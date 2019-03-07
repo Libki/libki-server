@@ -196,6 +196,7 @@
                 <th>[% c.loc("Pages") %]</th>
                 <th>[% c.loc("Client") %]</th>
                 <th>[% c.loc("User") %]</th>
+                <th>[% c.loc("Created") %]</th>
             </thead>
         </table> 
 
@@ -653,9 +654,7 @@ $(document).ready(function() {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            [% IF Settings.ThirdPartyURL %]
-                $('td:eq(0)', nRow).html( `<a href="#" onclick="postForm('[% Settings.ThirdPartyURL %]', { quicksearch: 1,  searchmember: '${aData[0]}' })">${aData[0]}</a>` );
-            [% END %]
+                $('td:eq(7)', nRow).html( aData[7].replace('T', ' ') );
         },
         "fnServerData": function ( sSource, aoData, fnCallback ) {
             if ( window.location_filter ) {
