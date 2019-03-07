@@ -219,7 +219,7 @@ sub update : Local : Args(0) {
 
     my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
 
-    if ($print_job) {
+    if ( $print_job && $print_job->status ne 'Done' && $print_job->status ne 'Pending' ) {
         my $id = $print_job->data->{job}->{id};
 
         my $request = POST 'https://www.google.com/cloudprint/job',
@@ -240,10 +240,12 @@ sub update : Local : Args(0) {
             }
         );
 
-        $c->stash->{data}    = $data;
+	#$c->stash->{data}    = $data;
         $c->stash->{success} = 1;
     }
-    else {
+    elsif ( $print_job ) {
+        $c->stash->{success} = 1;
+    } else {
         $c->stash->{success} = 0;
         $c->stash->{error}   = 'Print Job Not Found';
     }

@@ -644,7 +644,7 @@ $(document).ready(function() {
     });
 
     // Initalize the Users table as a datatable
-    pTable = $('#print-table').dataTable( {
+    pTable = $('#print-table').DataTable( {
         [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
@@ -676,6 +676,18 @@ $(document).ready(function() {
             $('#print-table-toolbar').prependTo($('#print-table_filter'));
         }
     } );
+
+    setInterval( function(){ 
+        data = pTable.rows().data();
+        for ( i = 0; i < data.length; i++ ) {
+            status = data[i][1];
+
+            if ( status === "Done" ) continue;
+            if ( status === "Pending" ) continue;
+
+            LibkiRefreshPrint( data[i]['DT_RowId'], true );
+        }
+    }, 10 * 1000);
 
     /*********** Page Wide Actions ***********/
     // Set up the 'new user' button
@@ -1144,14 +1156,16 @@ function LibkiReleasePrint( print_job_id ) {
     });
 }
 
-function LibkiRefreshPrint( print_job_id ) {
+function LibkiRefreshPrint( print_job_id, no_refresh ) {
     $.getJSON('[% c.uri_for("api/printjob/update") %]', { id: print_job_id }, function(data) {
         if ( data.success ) {
-            DisplayMessage( "success", "[% c.loc("Print job refreshed.") %]" );
+            if ( ! no_refresh ) {
+                DisplayMessage( "success", "[% c.loc("Print job refreshed") %]: " + print_job_id );
+                ForcePrintTableRefresh();
+            }
         } else {
             DisplayMessage( "error", data.data );
         }
-        ForcePrintTableRefresh();
     });
 }
 
