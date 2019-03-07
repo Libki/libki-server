@@ -39,6 +39,7 @@ RUN apt-get update -y \
        libxml2-dev \
        libssl-dev \
        libexpat1-dev \
+       mysql-client \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 
