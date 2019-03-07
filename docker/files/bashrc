@@ -1,0 +1,3 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+alias ldb='mysql -h$LIBKI_DB_HOST -P$LIBKI_DB_PORT -u$LIBKI_DB_USER -p$LIBKI_DB_PASSWORD $LIBKI_DB_DATABASE'

@@ -53,6 +53,7 @@ RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /usr/local/share/perl/5.24.1
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
+COPY docker/files/bashrc /root/.bashrc
 
 ENV PERL5LIB /app/lib
 
