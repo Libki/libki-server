@@ -650,10 +650,13 @@ $(document).ready(function() {
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/prints') %]",  // The actual URL to call for data
+        "order": [[ 7, "desc" ]],
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $('td:eq(0)', nRow).html( aData[0].replace('google_cloud_print', 'Google Cloud Print') );
+
                 $('td:eq(7)', nRow).html( aData[7].replace('T', ' ') );
         },
         "fnServerData": function ( sSource, aoData, fnCallback ) {

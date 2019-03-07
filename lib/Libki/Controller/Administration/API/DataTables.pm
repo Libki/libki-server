@@ -323,7 +323,7 @@ sub prints : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw( me.type me.status me.printer print_file.filename print_file.pages print_file.client_name print_file.username );
+      qw( me.type me.status me.printer print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
 
     # Set up filters
     my $filter;
