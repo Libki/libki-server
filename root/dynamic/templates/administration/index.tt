@@ -678,14 +678,17 @@ $(document).ready(function() {
     } );
 
     setInterval( function(){ 
-        data = pTable.rows().data();
-        for ( i = 0; i < data.length; i++ ) {
-            status = data[i][1];
+        // Only update print job states if the Prints tab is active
+        if ( $("#prints-tab").hasClass("active") ) {
+            let data = pTable.rows().data();
+            for ( i = 0; i < data.length; i++ ) {
+                status = data[i][1];
 
-            if ( status === "Done" ) continue;
-            if ( status === "Pending" ) continue;
+                if ( status === "Done" ) continue;
+                if ( status === "Pending" ) continue;
 
-            LibkiRefreshPrint( data[i]['DT_RowId'], true );
+                LibkiRefreshPrint( data[i]['DT_RowId'], true );
+            }
         }
     }, 10 * 1000);
 
