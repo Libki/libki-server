@@ -67,3 +67,7 @@ jobs:
         script: docker push "${IMAGE_NAME}" 
         on:
           branch: master
+
+notifications:
+  slack:
+    secure: PJU6s8zH1KYSMkrM2/ATcJdbZoF9tg31fqo3KUQ/Poh6VKodL2JYPsWemTOgTITKNqlC2ffoJahbevSHiG7B2IQX4/ykDE2fl+ssWqygSTJh+If8gsYaypQEJ/oXpWS6q1D2hN1lRoJWvKgBIBpE1Tx7pUajasYtwOaSkOvui/Hr5WpMZw78h+apF0/4RmdJZsBHR3Zsm/YeRVyTrqcQjsZFfgfTx6l+F29J6A9Wh6GLFdD/3EQmNWh1+mYrGA6cM465QTsBBvFXK9ax26fwMMeneQEmOT147bcc+Pakm/K6jZcSxIPilbarshMxfjTtHoIknRZRocAVsaB8rPdYHHefbO0qFqBSqP0tGkXD8SAny1qg59p8TLmNi8ILxq0qGNY95Gi7bPdnLMBvl/vL39H5bfPFf39Gle9EN6VR7e2L4QyODj3hxHbVysvgMXNW0ucO301S4dQnNwOPJBiF0+u2HZ5D7pOzt8ZMmZTCkwxLLi+jh37KofGhaTZGaJ0pB7GUANrgg+0TtQDO8y67zSJSNumYCzhmKKlHEISL5UfJG6RuRzf23Kc3TmPE3llyzM796ymu6ZbnPdv3qK4puNObDfvYvIWaZ2wlXq/n8Xi2PvQXjeZDRzcejUXCVaBgs6Vrdsucy5C3zMY2gAJ7kYAPAJnwkMpoy7FxbdoT7U4=
