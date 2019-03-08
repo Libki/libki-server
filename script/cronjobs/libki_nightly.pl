@@ -98,6 +98,30 @@ foreach my $urd (@user_retention_days) {
     }
 }
 
+## Clear out old print jobs and print files
+my @print_retention_days = $c->model('DB::Setting')->search( { name => 'PrintJobRetentionDays' } );
+foreach my $prd (@print_retention_days) {
+    if ( $prd->value ) {
+        my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
+        $dt->subtract( days => $prd->value );
+        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+
+        $c->model('DB::PrintFile')->search(
+            {
+                instance             => $prd->instance,
+                'created_on'         => { '<' => $timestamp },
+            }
+        )->delete();
+
+        $c->model('DB::PrintJob')->search(
+            {
+                instance             => $prd->instance,
+                'created_on'         => { '<' => $timestamp },
+            }
+        )->delete();
+    }
+}
+
 ## Clear out expired sessions
 ## TODO: Should we delete sessions with no expiration periodically?
 $c->delete_expired_sessions();

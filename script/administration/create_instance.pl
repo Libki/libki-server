@@ -42,6 +42,7 @@ my $defaults = {
     'DefaultTimeAllowance'               => '60',
     'GuestBatchCount'                    => '20',
     'PostCrashTimeout'                   => '5',
+    'PrintJobRetentionDays'              => '0',
     'ReservationShowUsername'            => '0',
     'ReservationTimeout'                 => '15',
     'ThirdPartyURL'                      => '',
