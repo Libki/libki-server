@@ -1,7 +1,7 @@
 [% meta.title = c.loc("Administration / Settings") %]
 [% SET active_class = 'administration__settings' %]
 
-<form class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
+<form id="settings-form" class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
     <br/>
     <div class="container-fluid">
         <div class="row">
@@ -520,7 +520,7 @@
 
             <div class="form-group">
                 <div class="input-group">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
+                    <button id="update-settings" type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
                 </div>
             </div>
 
@@ -529,3 +529,14 @@
     </div><!-- /div.container-fluid -->
 </form>
 
+<script type="text/javascript">
+$('#update-settings').on('click', function(e){
+    e.preventDefault();
+    $.post('', $('#settings-form').serialize(), function(){
+        DisplayMessage( "success", "[% c.loc("Settings updated.") %]" );
+    })
+    .fail(function() {
+        DisplayMessage( "error", "[% c.loc("Settings not updated.") %]" );
+    });
+});
+</script>
