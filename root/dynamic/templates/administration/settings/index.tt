@@ -532,7 +532,7 @@
 <script type="text/javascript">
 $('#update-settings').on('click', function(e){
     e.preventDefault();
-    $.post('', $('#settings-form').serialize(), function(){
+    $.post('[% c.uri_for("update") %]', $('#settings-form').serialize(), function(){
         DisplayMessage( "success", "[% c.loc("Settings updated.") %]" );
     })
     .fail(function() {
