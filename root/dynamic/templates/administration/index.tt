@@ -834,17 +834,17 @@ $(document).ready(function() {
         $('#edit-user-modal-form-submit').removeAttr('disabled');
         $('#edit-user-modal-form-username').parent().removeClass('success warning error');
 
-        $('#edit-user-modal-form-roles-admin').attr('checked', false);
-        $('#edit-user-modal-form-roles-superadmin').attr('checked', false);
-
         $.getJSON('[% c.uri_for("api/user/get") %]/' + window.selected_id, function(data) {
             $('#edit-user-modal-form-username').val( data.username );
             $('#edit-user-modal-form-minutes').val( data.minutes );
             $('#edit-user-modal-form-status').val( data.status );
             $('#edit-user-modal-form-notes').val( data.notes );
+
+            document.getElementById("edit-user-modal-form-roles-admin").checked = false;
+            document.getElementById("edit-user-modal-form-roles-superadmin").checked = false;
             $('#edit-user-modal-form-id').val( data.id );
             for ( var i in data.roles ) {
-                $('#edit-user-modal-form-roles-' + data.roles[i]).attr('checked', true);
+                document.getElementById( "edit-user-modal-form-roles-" + data.roles[i] ).checked = true;
             }
         });
 
