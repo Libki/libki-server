@@ -265,6 +265,8 @@ sub index : Path : Args(0) {
                                     $c->stash->{'Settings'}->{'ClientBehavior'}
                                     =~ 'FCFS'
                                 )
+                                && !( $c->stash->{'Settings'}->{'ListClientexcludedInReservation'}
+                                    =~ $client_name )
                               )
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
