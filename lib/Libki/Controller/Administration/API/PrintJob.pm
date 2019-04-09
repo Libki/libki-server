@@ -167,19 +167,28 @@ sub release : Local : Args(0) {
 
                 my $response = $token->profile->request_auth( $token, $request );
 
-                my $json      = JSON::from_json( $response->decoded_content );
-                my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
+                my $code = $response->code;
+                my $message = $response->message;
 
-                my $now = $c->now();
-                $print_job->update(
-                    {
-                        data       => $json,
-                        status     => $job_state,
-                        updated_on => $now,
-                    }
-                );
+                if ( $code eq '200' ) {
 
-                $c->stash( success => 1, message => $json->{message} );
+                    my $json      = JSON::from_json( $response->decoded_content );
+                    my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
+
+                    my $now = $c->now();
+                    $print_job->update(
+                        {
+                            data       => $json,
+                            status     => $job_state,
+                            updated_on => $now,
+                        }
+                    );
+
+                    $c->stash( success => 1, message => $json->{message} );
+                }
+                else {
+                    $c->stash( success => 0, error => "$code: $message", id => $print_job->printer );
+                }
             }
             else {
                 $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
