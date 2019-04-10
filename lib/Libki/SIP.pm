@@ -18,6 +18,7 @@ sub authenticate_via_sip {
 
     my $instance = $c->instance;
     my $config = $c->instance_config;
+    my $client_location = $c->request->params->{'location'};
 
     my $log = $c->log();
 
@@ -207,14 +208,16 @@ sub authenticate_via_sip {
     }
     else {          ## User authenticated and does not exits in Libki
         my $minutes =
-          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
-
+          ($c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance$client_location" })) ? $c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance$client_location" })->value : $c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance" })->value;
+       my $minutes_session =
+             ($c->model('DB::Setting')->find({ instance => $instance, name => "DefaultSessionTimeAllowance$client_location" })) ? $c->model('DB::Setting')->find({ instance => $instance, name   => "DefaultSessionTimeAllowance$client_location" })->value : $c->model('DB::Setting')->find({ instance =>$instance, name => "DefaultSessionTimeAllowance" })->value;
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
                 minutes_allotment => $minutes,
+                minutes           => $minutes_session,
                 status            => 'enabled',
                 birthdate         => $birthdate,
             }

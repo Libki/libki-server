@@ -14,7 +14,6 @@ use DateTime::Format::MySQL;
 use Libki;
 
 my $c = Libki->new();
-
 my @default_time_allowances = $c->model('DB::Setting')->search( { name => 'DefaultTimeAllowance' } );
 my $default_time_allowances = { map { $_->instance => $_->value } @default_time_allowances };
 
@@ -31,11 +30,19 @@ $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { 
 my $user_rs = $c->model('DB::User');
 while ( my $user = $user_rs->next() ) {
     my $instance = $user->instance;
-
     my $user_minutes = min( $default_time_allowances->{$instance}, $default_session_time_allowances->{$instance} ) // 0;
-
+    #get location for user in statistic
+    my @locations = $c->model('DB::Statistic')->search( { instance => $instance, username => $user->username } );
+    my $locations = { map { $_->username => $_->client_location } @locations };
+    my $location_name = $locations->{$user->username};
+    my $default_time = $c->model('DB::Setting')->find( { instance => $instance, name => "DefaultTimeAllowance$location_name" } );
+    $default_time = ($default_time) ? $default_time->value : 0;
+    my $default_session_time = $c->model('DB::Setting')->find( { instance => $instance, name => "DefaultSessionTimeAllowance$location_name" } );
+    $default_session_time = ($default_session_time) ? $default_session_time->value : 0;
+    my $user_minutes_per_location = min ($default_time, $default_session_time);
     # Removes session minutes from daily allotment
-    my $user_minutes_allotment = $default_time_allowances->{$instance} // 0;
+    $user_minutes =  ($user_minutes_per_location) ? $user_minutes_per_location : $user_minutes;
+    my $user_minutes_allotment = ($default_time) ? $default_time : $default_time_allowances->{$instance} // 0;
     $user_minutes_allotment -= $user_minutes;
 
     $user->minutes_allotment( $user_minutes_allotment );

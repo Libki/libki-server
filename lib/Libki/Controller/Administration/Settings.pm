@@ -34,12 +34,45 @@ sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
-
+    my @timeallowance;
+    my @timesession;
     my $settings = $c->model('DB::Setting')->search({ instance => $instance });
-    
+    my @locations = $c->model('DB::Client')->search(
+         {
+             instance => $instance,
+         },
+         {
+             columns  => [qw/location/],
+             distinct => 1
+         }
+     )->get_column('location')->all();
+
     while ( my $s = $settings->next() ) {
         $c->stash( $s->name => $s->value );
     }
+    foreach my $location (@locations){
+        my $nameallowance = "DefaultTimeAllowance$location";
+        my $namesession = "DefaultSessionTimeAllowance$location";
+        my $time_location = ($c->model('DB::Setting')->find({ instance => $instance, name => $nameallowance })) ? $c->model('DB::Setting')->find({ instance => $instance, name => $nameallowance })->value : $c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance" })->value;
+        my $time_session = ($c->model('DB::Setting')->find({ instance => $instance, name => $namesession })) ? $c->model('DB::Setting')->find({ instance => $instance, name => $namesession })->value : $c->model('DB::Setting')->find({     instance => $instance, name => "DefaultSessionTimeAllowance" })->value;
+        my $row = {
+            name => $nameallowance,
+            location => "$location",
+            time => $time_location
+        };
+        push @timeallowance, $row;
+        $row = {
+            name => $namesession,
+            location => "$location",
+            time => $time_session
+        };
+        push @timesession, $row;
+    }
+    $c->stash(
+        timeallowanceperlocation => \@timeallowance,
+        timesessionallowanceperlocation => \@timesession,
+
+    );
 }
 
 =head2 update

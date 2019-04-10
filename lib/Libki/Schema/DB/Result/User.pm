@@ -358,19 +358,14 @@ sub insert {
     my $schema = $self->result_source->schema;
 
     my $is_guest = $self->is_guest || 'No';
+    my $minute_allotment = $self->minutes_allotment;
+    my $minutes_session = $self->minutes;
+    $self->minutes(0);
+    my $default_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $self->instance, name => "DefaultGuestTimeAllowance" }) if $is_guest eq 'Yes';
+    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : $minute_allotment;
 
-    my $default_time_allowance_setting_name = $is_guest eq 'Yes' ? 'DefaultGuestTimeAllowance' : 'DefaultTimeAllowance';
-    my $default_session_time_allowance_setting_name = $is_guest eq 'Yes' ? 'DefaultGuestSessionTimeAllowance' : 'DefaultSessionTimeAllowance';
-
-    my $default_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
-    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
-
-    my $default_session_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_session_time_allowance_setting_name });
-    my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : 0;
-
-    $self->minutes(0) unless $self->minutes();
+    my $default_session_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $self->instance, name => "DefaultGuestSessionTimeAllowance" }) if $is_guest eq 'Yes';
+    my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : $minutes_session;
 
     while ($self->minutes() < $default_session_time_allowance
         && $self->minutes_allotment() > 0 )
