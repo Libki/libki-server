@@ -174,7 +174,8 @@ sub authenticate_via_sip {
         ## In this case, we don't want the now deleted user to be
         ## able to log into Libki, so let's attempt to delete that
         ## username before we try to authenticate.
-        $c->model('DB::User')->search( { instance => $instance,  username => $username } )->delete();
+        my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+        $user->delete if ( $user && !$c->check_any_user_role( $user, qw/admin superadmin/ ) );
         return { success => 0, error => 'INVALID_USER', user => $user };
     }
 
