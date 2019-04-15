@@ -34,12 +34,30 @@ sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
-
+    my @catsauthorized;
     my $settings = $c->model('DB::Setting')->search({ instance => $instance });
-    
+    my @locations = $c->model('DB::Location')->search(
+         {
+             instance => $instance,
+         }
+     )->get_column('code')->all();
+
     while ( my $s = $settings->next() ) {
         $c->stash( $s->name => $s->value );
     }
+    foreach my $location (@locations){
+        my $namecatauthorized = "ListCatAuthorizedUsingClient$location";
+        my $catautorized = ($c->model('DB::Setting')->find({ instance => $instance, name => $namecatauthorized })) ? ($c->model('DB::Setting')->find({ instance => $instance, name => $namecatauthorized }))->value : 'all';
+        my $row = {
+            name => $namecatauthorized,
+            location => "$location",
+            value => $catautorized,
+        };
+        push @catsauthorized, $row;
+    }
+    $c->stash(
+        catsauthorized     => \@catsauthorized,
+    );
 }
 
 =head2 update

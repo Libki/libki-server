@@ -198,7 +198,18 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("Log user out automatically after this many minutes of inactivity.") %]</small>
                     </div>
-
+                </fieldset>
+                <fieldset>
+                    <legend>[% c.loc("Client log in") %]</legend>
+                    [% FOREACH t IN catsauthorized %]
+                    <div class="form-group">
+                        <label for="[% t.name %]">[% c.loc("List of category authorized to login to clients in location ")  %][% t.location %]  </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="[% t.name %]" name="[% t.name %]" value="[% t.value %]">
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Set list of category authorized to login to clients located in :") %] [% t.location %] , [% c.loc("Example:") %] Biblio,JR or all</small>
+                    </div>
+                    [% END %]
                 </fieldset>
             </div>
 

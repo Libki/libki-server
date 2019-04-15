@@ -271,6 +271,16 @@ sub authenticate_via_sip {
         }
 
     }
+    # Check if user can use the client
+    my $settings_location = ($c->model('DB::Setting')->find({ instance => $instance, name => "ListCatAuthorizedUsingClient$client_location" }))? ($c->model('DB::Setting')->find({ instance => $instance, name => "ListCatAuthorizedUsingClient$client_location" }))->value : 'all';
+    my $location = $sip_fields->{$config->{SIP}->{category_field}} || "";
+    my @locations= split /,/, $settings_location;
+    my %locationss = map {$_ => 1} @locations;
+    if (!(exists($locationss{'all'})) && !(exists($locationss{$location}))) {
+        #TODO Not write the message here, for translation in client
+        #Add message code to client NOT_ALLOWED with this message
+        return { success => 0, error => "You are not allowed to use this client", user => $user };
+    }
 
     return { success => 1, user => $user, sip_fields => $sip_fields };
 
