@@ -25,6 +25,8 @@
     deny_on excessive_outstanding_fines # The full listing is defined in the SIP2 protocol specification
     deny_on_field AB:This is the reason we are denying you  # You can require arbitrary SIP fields to have a value of Y for patrons to be allowed to log in.
                                                             # The format of the setting is Field:Message
+    category_field PC          # Category field in SIP response
+    pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
 </SIP>
 
 <printers>
