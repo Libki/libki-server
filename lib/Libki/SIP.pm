@@ -208,7 +208,10 @@ sub authenticate_via_sip {
     else {          ## User authenticated and does not exits in Libki
         my $minutes =
           $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
-
+        my($lastname, $firstname) = split($c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE});
+        $lastname=~ s/^\s+//;
+        $firstname =~ s/^\s+//;
+        my $category = $sip_fields->{$c->config->{SIP}->{category_field} };
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
@@ -217,6 +220,10 @@ sub authenticate_via_sip {
                 minutes_allotment => $minutes,
                 status            => 'enabled',
                 birthdate         => $birthdate,
+                lastname          => $lastname,
+                firstname         => $firstname,
+                category         => $category,
+
             }
         );
     }

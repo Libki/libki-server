@@ -131,6 +131,24 @@ __PACKAGE__->table("users");
   default_value: 'current_timestamp()'
   is_nullable: 0
 
+=head2 firstname
+
+ data_type: 'varchar'
+ is_nullable: 1
+ size: 255
+
+=head2 lastname
+
+ data_type: 'varchar'
+ is_nullable: 1
+ size: 255
+
+=head2 category
+
+ data_type: 'varchar'
+ is_nullable: 1
+ size: 255
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -180,6 +198,12 @@ __PACKAGE__->add_columns(
     default_value => "current_timestamp()",
     is_nullable => 0,
   },
+  "firstname",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "lastname",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "category",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
 =head1 PRIMARY KEY
