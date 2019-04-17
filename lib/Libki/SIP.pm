@@ -211,6 +211,12 @@ sub authenticate_via_sip {
           ($c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance$client_location" })) ? $c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance$client_location" })->value : $c->model('DB::Setting')->find({ instance => $instance, name => "DefaultTimeAllowance" })->value;
        my $minutes_session =
              ($c->model('DB::Setting')->find({ instance => $instance, name => "DefaultSessionTimeAllowance$client_location" })) ? $c->model('DB::Setting')->find({ instance => $instance, name   => "DefaultSessionTimeAllowance$client_location" })->value : $c->model('DB::Setting')->find({ instance =>$instance, name => "DefaultSessionTimeAllowance" })->value;
+        my($lastname, $firstname) = split($c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE});
+        $lastname=~ s/^\s+//;
+        $firstname =~ s/^\s+//;
+        my $category = $sip_fields->{$c->config->{SIP}->{category_field} };
+        $c->add_user_category( $category ) if $category;
+
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
@@ -220,6 +226,9 @@ sub authenticate_via_sip {
                 minutes           => $minutes_session,
                 status            => 'enabled',
                 birthdate         => $birthdate,
+                lastname          => $lastname,
+                firstname         => $firstname,
+                category          => $category,
             }
         );
     }

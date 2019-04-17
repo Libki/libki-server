@@ -144,6 +144,7 @@ sub index : Path : Args(0) {
         my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
 
+        my $units;
         my $user = $c->model('DB::User')
           ->single( { instance => $instance, username => $username } );
 
@@ -225,7 +226,9 @@ sub index : Path : Args(0) {
                       ->single(
                         { instance => $instance, name => $client_name } );
 
-                    $c->stash( units => $user->minutes );
+                    # Solves issue with some browsers not parsing correctly
+                    $units = $user->minutes;
+                    $c->stash( units => "$units" );
 
                     my $error = {};    # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 )
@@ -332,9 +335,10 @@ sub index : Path : Args(0) {
                 $c->log()
                   ->info( "Sent message for " . $user->username() . " : $_" )
             } @messages;
+            $units = $user->minutes;
             $c->stash(
                 messages => \@messages,
-                units    => $user->minutes,
+                units    => "$units",     # Solves issue with some browsers not parsing correctly
                 status   => $status,
             );
             $user->messages()->delete();

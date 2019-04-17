@@ -8,16 +8,17 @@
             <div class="col-sm-2">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <a class="nav-link active" id="v-pills-basic-settings-tab" data-toggle="pill" href="#v-pills-basic-settings" role="tab" aria-controls="v-pills-basic-settings" aria-selected="true"> [% c.loc("Basic settings") %]</a>
-                    <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
-                    <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
-                    <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
                     <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
-                    <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
+                    <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
                     <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
+                    <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
+                    <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
                     <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
                     <a class="nav-link" id="v-pills-ils-integration-tab" data-toggle="pill" href="#v-pills-ils-integration" role="tab" aria-controls="v-pills-ils-integration" aria-selected="false">[% c.loc("ILS integration") %]</a>
                     <a class="nav-link" id="v-pills-print-management-tab" data-toggle="pill" href="#v-pills-print-management" role="tab" aria-controls="v-pills-print-management" aria-selected="false">[% c.loc("Print management") %]</a>
-                    <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
+                    <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
+                    <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
+                    <a class="nav-link" id="v-pills-user-settings-tab" data-toggle="pill" href="#v-pills-user-settings" role="tab" aria-controls="v-pills-user-settings" aria-selected="false">[% c.loc("User settings") %]</a>
                 </div>
             </div>
 
@@ -330,6 +331,28 @@
                             <textarea class="form-control" id="TermsOfService" name="TermsOfService" rows="10">[% TermsOfService %]</textarea>
                         </div>
                         <small class="form-text text-muted">[% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]</small>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-user-settings" role="tabpanel" aria-labelledby="v-pills-user-settings-tab">
+                <fieldset>
+                    <legend>[% c.loc("User settings") %]</legend>
+
+                    <div class="form-group">
+                        <label for="UserCategories">[% c.loc("User categories") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="UserCategories" name="UserCategories" rows="10">[% UserCategories %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Add your list of user categories here as a list in YAML syntax.") %]</small>
+                        <small class="form-text text-muted">Example:
+                            <pre>
+---
+- 'Category 1'
+- 'Category 2'
+- 'Category 3'
+                            </pre>
+                        </small>
                     </div>
                 </fieldset>
             </div>
