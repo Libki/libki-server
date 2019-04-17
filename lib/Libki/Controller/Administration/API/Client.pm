@@ -36,20 +36,16 @@ sub modify_time : Local : Args(0) {
 
     my $client = $c->model('DB::Client')->find($client_id);
 
-    if ( defined($client) && defined( $client->session ) ) {
-        my $user = $client->session->user;
+    if ( $client && $client->session ) {
+        my $session = $client->session;
 
         if ( $minutes =~ /^[+-]/ ) {
-            $minutes = $user->minutes + $minutes;
+            $minutes = $session->minutes + $minutes;
         }
 
         $minutes = 0 if ( $minutes < 0 );
 
-        $user->set_column( 'minutes', $minutes );
-
-        if ( $user->update() ) {
-            $success = 1;
-        }
+        $success = 1 if $session->update( { minutes => $minutes } );
     }
 
     $c->stash( 'success' => $success );

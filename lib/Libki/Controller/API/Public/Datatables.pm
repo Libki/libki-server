@@ -30,7 +30,7 @@ sub clients : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/ me.name me.location session.status user.minutes /;
+    my @columns = qw/ me.name me.location session.status session.minutes /;
 
     # Set up filters
     my $filter = { instance => $instance};
@@ -80,15 +80,14 @@ sub clients : Local Args(0) {
 
     my @results;
     foreach my $c (@clients) {
-
-	my $enc = 'utf-8';
+	    my $enc = 'utf-8';
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'}        = decode($enc,decode($enc,$c->name));
-        $r->{'1'}        = decode($enc,decode($enc,$c->location));
-        $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} = defined( $c->session ) ? $c->session->user->minutes : undef;
+        $r->{'0'} = decode($enc,decode($enc,$c->name));
+        $r->{'1'} = decode($enc,decode($enc,$c->location));
+        $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
+        $r->{'3'} = defined( $c->session ) ? $c->session->minutes : undef;
         $r->{'4'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
 
         push( @results, $r );

@@ -27,17 +27,24 @@ my $dbh = $schema->storage->dbh;
 ## Gather sessions to delete, delete them, then log the deletions
 my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{LIBKI_TZ} ) );
 
+# Gather the sessions to delete for statistical purposes
 my $sessions_to_delete = $dbh->selectall_arrayref(
     q{
         SELECT * FROM sessions
         LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
         LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )
-        WHERE users.minutes <= 0
+        WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
     },
     { Slice => {} }
 );
 
-$dbh->do(q{DELETE sessions FROM sessions LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id ) WHERE users.minutes <= 0});
+# Delete sessions with a single query for efficiency
+$dbh->do(q{
+    DELETE sessions
+    FROM sessions
+    LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
+    WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
+});
 
 foreach my $s (@$sessions_to_delete) {
     $c->model('DB::Statistic')->create(
@@ -52,7 +59,17 @@ foreach my $s (@$sessions_to_delete) {
 }
 
 ## Decrement minutes for logged in users
-$dbh->do(q{UPDATE sessions LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id ) SET users.minutes = users.minutes - 1});
+$dbh->do(q{
+    UPDATE sessions
+    LEFT JOIN users ON (
+        users.instance = sessions.instance
+      AND 
+        users.id = sessions.user_id
+    ) 
+    SET
+        sessions.minutes = sessions.minutes - 1,
+        users.minutes_allotment = users.minutes_allotment - 1
+});
 
 ## Handle automatic time extensions
 my $sessions = $dbh->selectall_arrayref(
@@ -86,7 +103,7 @@ my $sessions = $dbh->selectall_arrayref(
         LEFT JOIN reservations this_reserved 
                ON ( users.instance = this_reserved.instance 
                     AND this_reserved.client_id = sessions.client_id ) 
-        WHERE  users.minutes < AutomaticTimeExtensionAt.value 
+        WHERE  sessions.minutes < AutomaticTimeExtensionAt.value 
                AND AutomaticTimeExtensionLength.value > 0
                AND sessions.status = 'active' 
         GROUP  BY users.id, 
@@ -96,7 +113,14 @@ my $sessions = $dbh->selectall_arrayref(
     { Slice => {} }
 );
 
-my $update_user_sth = $dbh->prepare(q{UPDATE users SET minutes = minutes + ?, minutes_allotment = minutes_allotment - ? WHERE id = ?});
+my $update_user_sth = $dbh->prepare(q{
+    UPDATE sessions
+    LEFT JOIN users ON (
+        users.instance = sessions.instance
+      AND
+        users.id = sessions.user_id
+    )
+    SET sessions.minutes = minutes + ?nutes_allotment - ? WHERE id = ?});
 
 my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
@@ -174,43 +198,6 @@ $reservation_rs->search(
         }
     }
 )->delete();
-
-## Refill session minutes from allotted minutes for users not logged in to a client
-my @default_session_time_allowances = $setting_rs->search( { name => 'DefaultSessionTimeAllowance' } );
-my $default_session_time_allowances = { map { $_->instance => $_->value } @default_session_time_allowances };
-
-my @default_guest_session_time_allowances = $setting_rs->search( { name => 'DefaultGuestSessionTimeAllowance' } );
-my $default_guest_session_time_allowances = { map { $_->instance => $_->value } @default_guest_session_time_allowances };
-
-my @users;
-foreach my $dsta (@default_session_time_allowances) {
-    my @these_users = $c->model('DB::User')->search(
-        {
-            minutes           => { '<' => $dsta->value },
-            minutes_allotment => { '>' => 0 }
-        },
-        { prefetch => 'session' }
-    );
-
-    push( @users, @these_users );
-}
-
-foreach my $user (@users) {
-    next if $user->session(); #TODO Move to query
-
-    my $allowance =
-        $user->is_guest eq 'Yes'
-      ? $default_guest_session_time_allowances->{ $user->instance }
-      : $default_session_time_allowances->{ $user->instance };
-
-    my $max_minutes = $allowance - $user->minutes;
-    my $minutes = min( $user->minutes_allotment, $max_minutes );
-    
-    $user->decrease_minutes_allotment($minutes);
-    $user->increase_minutes($minutes);
-
-    $user->update();
-}
 
 =head1 AUTHOR
 

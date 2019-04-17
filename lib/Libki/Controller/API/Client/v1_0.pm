@@ -11,6 +11,7 @@ use Libki::Hours qw( minutes_until_closing );
 
 use DateTime::Format::MySQL;
 use DateTime;
+use List::Util qw(min);
 use PDF::API2;
 
 =head1 NAME
@@ -211,24 +212,14 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing =
-                      Libki::Hours::minutes_until_closing( $c,
-                        $client_location );
-                    if ( defined($minutes_until_closing)
-                        && $minutes_until_closing < $user->minutes )
-                    {
-                        $user->minutes($minutes_until_closing);
-                        $user->update();
-                    }
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
 
-                    my $client =
-                      $c->model('DB::Client')
-                      ->single(
-                        { instance => $instance, name => $client_name } );
-
-                    # Solves issue with some browsers not parsing correctly
-                    $units = $user->minutes;
-                    $c->stash( units => "$units" );
+                    my $client = $c->model('DB::Client')->single(
+                        {
+                            instance => $instance,
+                            name     => $client_name,
+                        }
+                    );
 
                     my $error = {};    # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 )
@@ -241,7 +232,7 @@ sub index : Path : Args(0) {
                     elsif ( $user->status eq 'disabled' ) {
                         $c->stash( error => 'ACCOUNT_DISABLED' );
                     }
-                    elsif ( $user->minutes < 1 ) {
+                    elsif ( $user->minutes_allotment < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
                     elsif (
@@ -278,12 +269,24 @@ sub index : Path : Args(0) {
                                 $reservation->delete() if $reservation;
                                 my $session_id = $c->sessionid;
 
+                                my $minutes
+                                    = $user->is_guest eq 'No'
+                                    ? $c->setting('DefaultSessionTimeAllowance')
+                                    : $c->setting('DefaultGuestSessionTimeAllowance');
+
+                                $minutes = min( $minutes, $user->minutes_allotment );
+                                $minutes = min( $minutes, $minutes_until_closing ) if $minutes_until_closing;
+
+                                # Solves issue with some browsers not parsing correctly
+                                $c->stash( units => "$minutes" );
+
                                 my $session = $c->model('DB::Session')->create(
                                     {
-                                        instance  => $instance,
-                                        user_id   => $user->id,
-                                        client_id => $client->id,
-                                        status    => 'active',
+                                        instance   => $instance,
+                                        user_id    => $user->id,
+                                        client_id  => $client->id,
+                                        status     => 'active',
+                                        minutes    => $minutes,
                                         session_id => $session_id,
                                     }
                                 );
@@ -331,18 +334,16 @@ sub index : Path : Args(0) {
             }
 
             my @messages = $user->messages()->get_column('content')->all();
-            map {
-                $c->log()
-                  ->info( "Sent message for " . $user->username() . " : $_" )
-            } @messages;
-            $units = $user->minutes;
+
+            $units = $user->session ? $user->session->minutes : 0;
+
             $c->stash(
                 messages => \@messages,
                 units    => "$units",     # Solves issue with some browsers not parsing correctly
                 status   => $status,
             );
-            $user->messages()->delete();
 
+            $user->messages()->delete();
         }
         elsif ( $action eq 'logout' ) {
             my $session = $user->session;

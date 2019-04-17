@@ -46,7 +46,7 @@ sub get : Local : Args(1) {
             firstname       => $user->firstname,
             lastname        => $user->lastname,
             category        => $user->category,
-            minutes         => $user->minutes,
+            minutes         => $user->minutes_allotment,
             status          => $user->status,
             notes           => decode( $enc, $user->notes ),
             is_troublemaker => $user->is_troublemaker,
@@ -72,9 +72,7 @@ sub create : Local : Args(0) {
     my $lastname  = $params->{lastname};
     my $category  = $params->{category};
     my $password  = $params->{password};
-    my $minutes   = $params->{minutes} || $c->setting('DefaultTimeAllowance');
-
-    $minutes = 0 unless ( $minutes > 0 );
+    my $minutes   = $params->{minutes};
 
     my $success = 0;
 
@@ -123,11 +121,7 @@ sub create_guest : Local : Args(0) {
       random_string("nnnn");    #TODO: Make the pattern a system setting
 
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
-    $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
-    $minutes           = 0 unless ( $minutes > 0 );
-
-    $minutes_allotment = $minutes_allotment - $minutes;
+    $minutes_allotment = 0 unless $minutes_allotment > 0;
 
     my $success = 0;
 
@@ -137,7 +131,6 @@ sub create_guest : Local : Args(0) {
             instance          => $instance,
             username          => $username,
             password          => $password,
-            minutes           => $minutes,
             minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
@@ -152,7 +145,7 @@ sub create_guest : Local : Args(0) {
         'success'  => $success,
         'username' => $username,
         'password' => $password,
-        'minutes'  => $minutes
+        'minutes'  => $minutes_allotment,
     );
     $c->forward( $c->view('JSON') );
 }
@@ -179,11 +172,7 @@ sub batch_create_guest : Local : Args(0) {
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
 
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
     $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
-    $minutes           = 0 unless ( $minutes > 0 );
-
-    $minutes_allotment = $minutes_allotment - $minutes;
 
     my $current_guest_number_setting =
       $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
@@ -207,7 +196,6 @@ sub batch_create_guest : Local : Args(0) {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes           => $minutes,
                 minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes',
@@ -235,7 +223,7 @@ sub batch_create_guest : Local : Args(0) {
         'success'  => $success,
         'highest'  => $current_guest_number,
         'number'   => $guest_count,
-        'minutes'  => $minutes,
+        'minutes'  => $minutes_allotment,
         'contents' => $file_contents,
     );
 
@@ -271,17 +259,18 @@ sub update : Local : Args(0) {
 
     my $now = $c->now();
 
-    $user->set_column( 'firstname',  $firstname );
-    $user->set_column( 'lastname',   $lastname );
-    $user->set_column( 'category',   $category );
-    $user->set_column( 'minutes',    $minutes );
-    $user->set_column( 'notes',      $notes );
-    $user->set_column( 'status',     $status );
-    $user->set_column( 'updated_on', $now );
+    $success = 1 if $user->update(
+        {
 
-    if ( $user->update() ) {
-        $success = 1;
-    }
+            firstname         => $firstname,
+            lastname          => $lastname,
+            category          => $category,
+            minutes_allotment => $minutes,
+            notes             => $notes,
+            status            => $status,
+            updated_on        => $now,
+        }
+    );
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
 

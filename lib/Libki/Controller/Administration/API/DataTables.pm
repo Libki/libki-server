@@ -29,7 +29,7 @@ sub users : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -97,7 +97,7 @@ sub users : Local Args(0) {
         $r->{'2'}        = decode( $enc, $u->firstname);
         $r->{'3'}        = decode( $enc, $u->category);
         $r->{'4'}        = $u->minutes_allotment;
-        $r->{'5'}        = $u->minutes;
+        $r->{'5'}        = $u->session ? $u->session->minutes : undef;
         $r->{'6'}        = $u->status;
         $r->{'7'}        = decode( $enc, $u->notes);
         $r->{'8'}        = $u->is_troublemaker;
@@ -133,7 +133,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location session.status user.username user.lastname user.firstname user.category user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
+      qw/ me.name me.location session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker/;
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -197,30 +197,19 @@ sub clients : Local Args(0) {
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'}        = decode( $enc, decode( $enc, $c->name ) );
-        $r->{'1'}        = decode( $enc, decode( $enc, $c->location ) );
-        $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} =
-          defined( $c->session )
-          ? decode( $enc, $c->session->user->username )
-          : undef;
-        $r->{'4'}        = defined( $c->session ) ? decode($enc,$c->session->user->lastname) : undef;
-        $r->{'5'}        = defined( $c->session ) ? decode($enc,$c->session->user->firstname) : undef;
-        $r->{'6'}        = defined( $c->session ) ? decode($enc,$c->session->user->category) : undef;
-        $r->{'7'} =
-          defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'8'} = defined( $c->session ) ? $c->session->user->minutes : undef;
+        $r->{'0'} = decode( $enc, decode( $enc, $c->name ) );
+        $r->{'1'} = decode( $enc, decode( $enc, $c->location ) );
+        $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
+        $r->{'3'} = defined( $c->session ) ? decode( $enc, $c->session->user->username ) : undef;
+        $r->{'4'} = defined( $c->session ) ? decode($enc,$c->session->user->lastname) : undef;
+        $r->{'5'} = defined( $c->session ) ? decode($enc,$c->session->user->firstname) : undef;
+        $r->{'6'} = defined( $c->session ) ? decode($enc,$c->session->user->category) : undef;
+        $r->{'7'} = defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
+        $r->{'8'} = defined( $c->session ) ? $c->session->minutes : undef;
         $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
-        $r->{'10'} =
-          defined( $c->session )
-          ? decode( $enc, $c->session->user->notes )
-          : undef;
-        $r->{'11'} =
-          defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'12'} =
-          defined( $c->reservation )
-          ? decode( $enc, $c->reservation->user->username )
-          : undef;
+        $r->{'10'} = defined( $c->session ) ? decode( $enc, $c->session->user->notes ) : undef;
+        $r->{'11'} = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
+        $r->{'12'} = defined( $c->reservation ) ? decode( $enc, $c->reservation->user->username ) : undef;
         push( @results, $r );
     }
 
