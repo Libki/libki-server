@@ -289,14 +289,19 @@
 
             <div class="form-group">
                 <label for="new-user-modal-form-category">[% c.loc("Category") %]</label>
-                <input class="form-control" id="new-user-modal-form-category" name="category" type="text" placeholder="Category">
+                <select class="form-control" id="new-user-modal-form-category" name="category">
+                    <option></option>
+                    [% FOREACH category IN c.user_categories %]
+                        <option value="[% category %]">[% category %]</option>
+                    [% END %]
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="new-user-modal-form-password">[% c.loc("Password") %]</label>
-                <input type="password" class="form-control" id="new-user-modal-form-password" name="password" placeholder="[% c.loc("Password") %]" required>
+                <input type="password" class="form-control" id="new-user-modal-form-password" name="password" placeholder="[% c.loc('Password') %]" required>
                 <br/>
-                <input type="password" class="form-control" id="new-user-modal-form-password-confirm" name="password-confirm" placeholder="[% c.loc("Confirm password") %]" required>
+                <input type="password" class="form-control" id="new-user-modal-form-password-confirm" name="password-confirm" placeholder="[% c.loc('Confirm password') %]" required>
                 <small class="form-text text-muted">[% c.loc("Password fields must match.") %]</small>
                 <div class="valid-feedback">
                     [% c.loc("Passwords match") %]
@@ -441,7 +446,12 @@
 
                 <div class="form-group">
                     <label for="edit-user-modal-form-category">[% c.loc("Category") %]</label>
-                    <input class="form-control" id="edit-user-modal-form-category" name="category" type="text" placeholder="Category">
+                    <select class="form-control" id="edit-user-modal-form-category" name="category">
+                        <option></option>
+                        [% FOREACH category IN c.user_categories %]
+                            <option value="[% category %]">[% category %]</option>
+                        [% END %]
+                    </select>
                 </div>
 
                 <div class="form-group">
