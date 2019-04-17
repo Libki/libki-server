@@ -41,13 +41,16 @@ sub get : Local : Args(1) {
 
     $c->stash(
         {
-            'id'              => $user->id,
-            'username'        => decode($enc,$user->username),
-            'minutes'         => $user->minutes,
-            'status'          => $user->status,
-            'notes'           => decode($enc,$user->notes),
-            'is_troublemaker' => $user->is_troublemaker,
-            'roles'           => \@roles,
+            id              => $user->id,
+            username        => decode( $enc, $user->username ),
+            firstname       => $user->firstname,
+            lastname        => $user->lastname,
+            category        => $user->category,
+            minutes         => $user->minutes,
+            status          => $user->status,
+            notes           => decode( $enc, $user->notes ),
+            is_troublemaker => $user->is_troublemaker,
+            roles           => \@roles,
         }
     );
 
@@ -64,9 +67,12 @@ sub create : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $username = $params->{'username'};
-    my $password = $params->{'password'};
-    my $minutes  = $params->{'minutes'} || $c->setting('DefaultTimeAllowance');
+    my $username  = $params->{username};
+    my $firstname = $params->{firstname};
+    my $lastname  = $params->{lastname};
+    my $category  = $params->{category};
+    my $password  = $params->{password};
+    my $minutes   = $params->{minutes} || $c->setting('DefaultTimeAllowance');
 
     $minutes = 0 unless ( $minutes > 0 );
 
@@ -77,6 +83,9 @@ sub create : Local : Args(0) {
         {
             instance          => $instance,
             username          => $username,
+            firstname         => $firstname,
+            lastname          => $lastname,
+            category          => $category,
             password          => $password,
             minutes_allotment => $minutes,
             status            => 'enabled',
@@ -243,11 +252,14 @@ sub update : Local : Args(0) {
 
     my $success = 0;
 
-    my $id      = $c->request->params->{'id'};
-    my $minutes = $c->request->params->{'minutes'} // 0;
-    my $notes   = $c->request->params->{'notes'};
-    my $status  = $c->request->params->{'status'};
-    my @roles   = $c->request->params->{'roles'} || [];
+    my $id        = $c->request->params->{'id'};
+    my $firstname = $c->request->params->{firstname};
+    my $lastname  = $c->request->params->{lastname};
+    my $category  = $c->request->params->{category};
+    my $minutes   = $c->request->params->{'minutes'} // 0;
+    my $notes     = $c->request->params->{'notes'};
+    my $status    = $c->request->params->{'status'};
+    my @roles     = $c->request->params->{'roles'} || [];
 
     # For some reason the list of checkboxes are created
     # as a list within a list if multiple are checked
@@ -259,9 +271,12 @@ sub update : Local : Args(0) {
 
     my $now = $c->now();
 
-    $user->set_column( 'minutes', $minutes );
-    $user->set_column( 'notes',   $notes );
-    $user->set_column( 'status',  $status );
+    $user->set_column( 'firstname',  $firstname );
+    $user->set_column( 'lastname',   $lastname );
+    $user->set_column( 'category',   $category );
+    $user->set_column( 'minutes',    $minutes );
+    $user->set_column( 'notes',      $notes );
+    $user->set_column( 'status',     $status );
     $user->set_column( 'updated_on', $now );
 
     if ( $user->update() ) {
