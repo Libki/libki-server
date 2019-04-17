@@ -226,6 +226,7 @@ sub index : Path : Args(0) {
                       ->single(
                         { instance => $instance, name => $client_name } );
 
+                    # Solves issue with some browsers not parsing correctly
                     $units = $user->minutes;
                     $c->stash( units => "$units" );
 
@@ -337,7 +338,7 @@ sub index : Path : Args(0) {
             $units = $user->minutes;
             $c->stash(
                 messages => \@messages,
-                units    => "$units",
+                units    => "$units",     # Solves issue with some browsers not parsing correctly
                 status   => $status,
             );
             $user->messages()->delete();
