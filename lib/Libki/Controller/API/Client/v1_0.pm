@@ -212,7 +212,7 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+                    my $is_guest = $user->is_guest eq 'Yes';
 
                     my $client = $c->model('DB::Client')->single(
                         {
@@ -220,6 +220,29 @@ sub index : Path : Args(0) {
                             name     => $client_name,
                         }
                     );
+
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+
+                    #TODO: Move this to a unified sub, see TODO below
+                    # Get advanced rule if there is one
+                    my $minutes_allotment = $user->minutes_allotment;
+
+                    unless ( defined($minutes_allotment) ) {
+                        $minutes_allotment = $c->get_rule(
+                            {
+                                rule            => $is_guest ? 'guest_daily' : 'daily',
+                                user_category   => $user->category,
+                                client_location => $client->location,
+                            }
+                        );
+
+                        # Use 'simple' rules if no advanced rule exists
+                        $minutes_allotment //=
+                              $is_guest
+                            ? $c->setting('DefaultGuestTimeAllowance')
+                            : $c->setting('DefaultTimeAllowance');
+                    }
+
 
                     my $error = {};    # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 )
@@ -232,7 +255,7 @@ sub index : Path : Args(0) {
                     elsif ( $user->status eq 'disabled' ) {
                         $c->stash( error => 'ACCOUNT_DISABLED' );
                     }
-                    elsif ( $user->minutes_allotment < 1 ) {
+                    elsif ( $minutes_allotment < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
                     elsif (
@@ -244,11 +267,6 @@ sub index : Path : Args(0) {
                         $c->stash( error => $error->{reason} );
                     }
                     else {
-                        my $client =
-                          $c->model('DB::Client')
-                          ->search( { instance => $instance, name => $client_name } )
-                          ->next();
-
                         if ($client) {
                             my $reservation = $client->reservation;
 
@@ -268,8 +286,7 @@ sub index : Path : Args(0) {
                                 $reservation->delete() if $reservation;
                                 my $session_id = $c->sessionid;
 
-                                my $is_guest = $user->is_guest eq 'Yes';
-
+                                #TODO: Move this to a unified sub, see TODO above
                                 # Get advanced rule if there is one
                                 my $minutes = $c->get_rule(
                                     {
@@ -286,7 +303,7 @@ sub index : Path : Args(0) {
 
                                 # If the user doesn't have enough daily minutes to cover the entire session,
                                 # reduce the session to the remaining daily mintes
-                                $minutes = min( $minutes, $user->minutes_allotment );
+                                $minutes = min( $minutes, $minutes_allotment );
 
                                 # If the location is going to close before the session minutes would be used up,
                                 # reduce the session to the number of minutes before closing
@@ -294,6 +311,8 @@ sub index : Path : Args(0) {
 
                                 # Solves issue with some browsers not parsing correctly
                                 $c->stash( units => "$minutes" );
+
+                                $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
 
                                 my $session = $c->model('DB::Session')->create(
                                     {
@@ -305,7 +324,9 @@ sub index : Path : Args(0) {
                                         session_id => $session_id,
                                     }
                                 );
+
                                 $c->stash( authenticated => $session && 1 );
+
                                 $c->model('DB::Statistic')->create(
                                     {
                                         instance        => $instance,

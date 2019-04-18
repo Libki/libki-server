@@ -244,7 +244,7 @@ sub update : Local : Args(0) {
     my $firstname = $c->request->params->{firstname};
     my $lastname  = $c->request->params->{lastname};
     my $category  = $c->request->params->{category};
-    my $minutes   = $c->request->params->{'minutes'} // 0;
+    my $minutes   = $c->request->params->{'minutes'};
     my $notes     = $c->request->params->{'notes'};
     my $status    = $c->request->params->{'status'};
     my @roles     = $c->request->params->{'roles'} || [];
@@ -253,7 +253,8 @@ sub update : Local : Args(0) {
     # as a list within a list if multiple are checked
     @roles = @{$roles[0]} if ref( $roles[0] ) eq 'ARRAY';
 
-    $minutes = 0 if ( $minutes < 0 );
+    $minutes = undef if $minutes eq q{};
+    $minutes = 0 if defined($minutes) &&  $minutes < 0;
 
     my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 

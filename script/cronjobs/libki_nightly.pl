@@ -17,8 +17,6 @@ my $c = Libki->new();
 my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
 my $dbh = $schema->storage->dbh;
 
-my @default_time_allowances = $c->model('DB::Setting')->search( { name => 'DefaultTimeAllowance' } );
-
 ## Delete any guest accounts
 $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
 
@@ -26,10 +24,7 @@ $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
 $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { value => '1' } );
 
 ## Reset user minutes
-foreach my $a (@default_time_allowances) {
-    $c->model('DB::User')->search( { instance => $a->instance } )
-        ->update( { minutes_allotment => $a->value } );
-}
+$c->model('DB::User')->update( { minutes_allotment => undef } );
 
 ## Set to disabled if a troublemaker
 $c->model('DB::User')->search( { is_troublemaker => 'Yes' } )->update( { status => 'disabled' } );
