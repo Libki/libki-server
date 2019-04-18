@@ -142,4 +142,48 @@ sub add_user_category {
     return $setting->update( { value => $yaml } );
 }
 
+=head2 get_rules
+
+Returns a perl structure for the rules defined in the setting TimeAllowanceRules
+
+=cut
+
+sub get_rules {
+    my ($c) = @_;
+
+    my $yaml = $c->setting('TimeAllowanceRules');
+
+    my $data = YAML::XS::Load($yaml) if $yaml;
+
+    return $data;
+}
+
+=head2 get_rule
+
+Returns a rule value or undef if no matching rule is found
+
+=cut
+
+sub get_rule {
+    my ($c, $params) = @_;
+
+    my $rule_name       = $params->{rule};
+    my $user_category   = $params->{user_category};
+    my $client_location = $params->{client_location};
+
+    return undef unless $rule_name;
+
+    my $rules = $c->get_rules;
+    foreach my $rule ( @$rules ) {
+        my $match = 1;
+
+        $match = 0 if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
+        $match = 0 if $user_category && exists( $rule->{criteria}->{user_category} ) && $rule->{criteria}->{user_category} ne $user_category;
+        $match = 0 if $client_location && exists( $rule->{criteria}->{client_location} ) && $rule->{criteria}->{client_location} ne $client_location;
+        return $rule->{rules}->{$rule_name} if $match;
+    }
+
+    return undef;
+}
+
 1;

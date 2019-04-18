@@ -246,8 +246,7 @@ sub index : Path : Args(0) {
                     else {
                         my $client =
                           $c->model('DB::Client')
-                          ->search(
-                            { instance => $instance, name => $client_name } )
+                          ->search( { instance => $instance, name => $client_name } )
                           ->next();
 
                         if ($client) {
@@ -269,12 +268,28 @@ sub index : Path : Args(0) {
                                 $reservation->delete() if $reservation;
                                 my $session_id = $c->sessionid;
 
-                                my $minutes
-                                    = $user->is_guest eq 'No'
-                                    ? $c->setting('DefaultSessionTimeAllowance')
-                                    : $c->setting('DefaultGuestSessionTimeAllowance');
+                                my $is_guest = $user->is_guest eq 'Yes';
 
+                                # Get advanced rule if there is one
+                                my $minutes = $c->get_rule(
+                                    {
+                                        rule            => $is_guest ? 'guest_session' : 'session',
+                                        user_category   => $user->category,
+                                        client_location => $client->location,
+                                    }
+                                );
+
+                                # Use 'simple' rules if no advanced rule exists
+                                $minutes //= $is_guest
+                                    ? $c->setting('DefaultGuestSessionTimeAllowance')
+                                    : $c->setting('DefaultSessionTimeAllowance');
+
+                                # If the user doesn't have enough daily minutes to cover the entire session,
+                                # reduce the session to the remaining daily mintes
                                 $minutes = min( $minutes, $user->minutes_allotment );
+
+                                # If the location is going to close before the session minutes would be used up,
+                                # reduce the session to the number of minutes before closing
                                 $minutes = min( $minutes, $minutes_until_closing ) if $minutes_until_closing;
 
                                 # Solves issue with some browsers not parsing correctly

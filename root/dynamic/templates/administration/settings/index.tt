@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="v-pills-basic-settings-tab" data-toggle="pill" href="#v-pills-basic-settings" role="tab" aria-controls="v-pills-basic-settings" aria-selected="true"> [% c.loc("Basic settings") %]</a>
+                    <a class="nav-link active" id="v-pills-time-settings-tab" data-toggle="pill" href="#v-pills-time-settings" role="tab" aria-controls="v-pills-time-settings" aria-selected="true"> [% c.loc("Time settings") %]</a>
                     <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
                     <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
                     <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
@@ -24,9 +24,9 @@
 
             <div class="col-lg">
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="v-pills-basic-settings" role="tabpanel" aria-labelledby="v-pills-basic-settings-tab">
+                    <div class="tab-pane fade show active" id="v-pills-time-settings" role="tabpanel" aria-labelledby="v-pills-time-settings-tab">
                         <fieldset>
-                            <legend>[% c.loc("Basic settings") %]</legend>
+                            <legend>[% c.loc("Basic time settings") %]</legend>
 
                             <div class="form-group">
                                 <label for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
@@ -71,6 +71,25 @@
                                  </div>
                                  <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given per session.") %]</small>
                              </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>[% c.loc("Advanced time settings") %]</legend>
+
+                            <div class="form-group">
+                                <label for="TimeAllowanceRules">[% c.loc("Time allowance rules") %]</label>
+                                <div class="input-group">
+                                    <div class="input-group">
+                                        <textarea class="form-control" id="TimeAllowanceRules" name="TimeAllowanceRules" rows="10">[% TimeAllowanceRules %]</textarea>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">[% c.loc("These rules override the basic default rules above.") %]</small>
+                                <small class="form-text text-muted">[% c.loc("If no match is found, the basic default rules will be used.") %]</small>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>[% c.loc("Client registration") %]</legend>
                         
                             <div class="form-group">
                                 <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
