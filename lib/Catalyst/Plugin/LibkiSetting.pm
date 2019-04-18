@@ -145,20 +145,20 @@ sub add_user_category {
 
 =head2 get_rules
 
-Returns a perl structure for the rules defined in the setting TimeAllowanceRules
+Returns a perl structure for the rules defined in the setting AdvancedRules
 
 =cut
 
 sub get_rules {
     my ( $c, $instance ) = @_;
 
-    return $c->stash->{TimeAllowanceRules} if defined $c->stash->{TimeAllowanceRules};
+    return $c->stash->{AdvancedRules} if defined $c->stash->{AdvancedRules};
 
-    my $yaml = $c->setting( { instance => $instance, name => 'TimeAllowanceRules' } );
+    my $yaml = $c->setting( { instance => $instance, name => 'AdvancedRules' } );
 
     my $data = YAML::XS::Load($yaml) if $yaml;
 
-    $c->stash->{TimeAllowanceRules} = $data || q{};
+    $c->stash->{AdvancedRules} = $data || q{};
 
     return $data;
 }
