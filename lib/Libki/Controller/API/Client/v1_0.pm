@@ -233,6 +233,7 @@ sub index : Path : Args(0) {
                                 rule            => $is_guest ? 'guest_daily' : 'daily',
                                 user_category   => $user->category,
                                 client_location => $client->location,
+                                client_name     => $client_name,
                             }
                         );
 
@@ -293,6 +294,7 @@ sub index : Path : Args(0) {
                                         rule            => $is_guest ? 'guest_session' : 'session',
                                         user_category   => $user->category,
                                         client_location => $client->location,
+                                        client_name     => $client_name,
                                     }
                                 );
 

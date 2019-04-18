@@ -177,7 +177,7 @@ sub get_rule {
     RULE: foreach my $rule (@$rules) {
         next if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
 
-        foreach my $r (qw{ user_category client_location }) {
+        foreach my $r (qw{ user_category client_location client_name }) {
             my $criteria_is_used  = $params->{$r} && 1;
             my $criteria          = $rule->{criteria}->{$r};
             my $rule_has_criteria = exists $rule->{criteria}->{$r};
