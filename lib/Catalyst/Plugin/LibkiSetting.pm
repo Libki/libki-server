@@ -152,9 +152,13 @@ Returns a perl structure for the rules defined in the setting TimeAllowanceRules
 sub get_rules {
     my ( $c, $instance ) = @_;
 
+    return $c->stash->{TimeAllowanceRules} if defined $c->stash->{TimeAllowanceRules};
+
     my $yaml = $c->setting( { instance => $instance, name => 'TimeAllowanceRules' } );
 
     my $data = YAML::XS::Load($yaml) if $yaml;
+
+    $c->stash->{TimeAllowanceRules} = $data || q{};
 
     return $data;
 }
@@ -174,6 +178,8 @@ sub get_rule {
     return undef unless $rule_name;
 
     my $rules = $c->get_rules($instance);
+    return undef unless $rules;
+
     RULE: foreach my $rule (@$rules) {
         next if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
 
