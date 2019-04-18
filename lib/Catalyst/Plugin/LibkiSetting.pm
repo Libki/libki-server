@@ -1,6 +1,7 @@
 package Catalyst::Plugin::LibkiSetting;
 
 use Modern::Perl;
+use List::Util qw(any);
 
 our $VERSION = 1;
 
@@ -167,21 +168,34 @@ Returns a rule value or undef if no matching rule is found
 sub get_rule {
     my ( $c, $params ) = @_;
 
-    my $instance        = $params->{instance};
-    my $rule_name       = $params->{rule};
-    my $user_category   = $params->{user_category};
-    my $client_location = $params->{client_location};
+    my $instance  = $params->{instance};
+    my $rule_name = $params->{rule};
 
     return undef unless $rule_name;
 
-    my $rules = $c->get_rules( $instance );
-    foreach my $rule ( @$rules ) {
-        my $match = 1;
+    my $rules = $c->get_rules($instance);
+    RULE: foreach my $rule (@$rules) {
+        next if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
 
-        $match = 0 if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
-        $match = 0 if $user_category && exists( $rule->{criteria}->{user_category} ) && $rule->{criteria}->{user_category} ne $user_category;
-        $match = 0 if $client_location && exists( $rule->{criteria}->{client_location} ) && $rule->{criteria}->{client_location} ne $client_location;
-        return $rule->{rules}->{$rule_name} if $match;
+        foreach my $r (qw{ user_category client_location }) {
+            my $criteria_is_used  = $params->{$r} && 1;
+            my $criteria          = $rule->{criteria}->{$r};
+            my $rule_has_criteria = exists $rule->{criteria}->{$r};
+            my $criteria_is_list  = ref $criteria eq 'ARRAY';
+
+            my $rule_matches_criteria;
+            if ($criteria_is_list) {
+                $rule_matches_criteria = any { $_ eq $params->{$r} } @$criteria;
+            }
+            else {
+                $rule_matches_criteria = $rule->{criteria}->{$r} eq $params->{$r};
+            }
+
+            my $skip_rule = $criteria_is_used && $rule_has_criteria && !$rule_matches_criteria;
+            next RULE if $skip_rule;
+        }
+
+        return $rule->{rules}->{$rule_name};
     }
 
     return undef;
