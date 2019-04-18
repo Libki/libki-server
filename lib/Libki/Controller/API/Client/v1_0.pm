@@ -271,13 +271,20 @@ sub index : Path : Args(0) {
                         if ($client) {
                             my $reservation = $client->reservation;
 
-                            if (
-                                !$reservation
-                                && !(
-                                    $c->stash->{'Settings'}->{'ClientBehavior'}
-                                    =~ 'FCFS'
-                                )
-                              )
+                            # Allows exceptions to "Reservation only" client behavior
+                            my $no_reservation_required = $c->get_rule(
+                                {
+                                    rule            => 'no_reservation_required',
+                                    user_category   => $user->category,
+                                    client_location => $client->location,
+                                    client_name     => $client_name,
+                                }
+                            );
+
+                            my $no_reservation = $reservation ? 0 : 1;
+                            my $reservation_only = $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ? 0 : 1;
+
+                            if ( $reservation_only && $no_reservation && !$no_reservation_required )
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
                             }
