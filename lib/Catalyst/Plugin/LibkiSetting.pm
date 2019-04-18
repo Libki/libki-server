@@ -149,9 +149,9 @@ Returns a perl structure for the rules defined in the setting TimeAllowanceRules
 =cut
 
 sub get_rules {
-    my ($c) = @_;
+    my ( $c, $instance ) = @_;
 
-    my $yaml = $c->setting('TimeAllowanceRules');
+    my $yaml = $c->setting( { instance => $instance, name => 'TimeAllowanceRules' } );
 
     my $data = YAML::XS::Load($yaml) if $yaml;
 
@@ -165,15 +165,16 @@ Returns a rule value or undef if no matching rule is found
 =cut
 
 sub get_rule {
-    my ($c, $params) = @_;
+    my ( $c, $params ) = @_;
 
+    my $instance        = $params->{instance};
     my $rule_name       = $params->{rule};
     my $user_category   = $params->{user_category};
     my $client_location = $params->{client_location};
 
     return undef unless $rule_name;
 
-    my $rules = $c->get_rules;
+    my $rules = $c->get_rules( $instance );
     foreach my $rule ( @$rules ) {
         my $match = 1;
 
