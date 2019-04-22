@@ -619,7 +619,7 @@ $(document).ready(function() {
     /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
     uTable = $('#user-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
@@ -649,7 +649,7 @@ $(document).ready(function() {
 
     // Initalize the Clients table as a datatable
     cTable = $('#client-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
@@ -695,7 +695,7 @@ $(document).ready(function() {
 
     // Initalize the Users table as a datatable
     pTable = $('#print-table').DataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
