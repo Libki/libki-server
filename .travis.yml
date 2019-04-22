@@ -3,6 +3,7 @@ sudo: required
 env:
   global:
     - IMAGE_NAME=libki/libki-server
+    - IMAGE_NAME_CI=libki/libki-server-ci-artifacts
     - DOCKER_USERNAME=kylemhall
     # DOCKER_PASSWORD=...
 
@@ -18,18 +19,18 @@ jobs:
         - docker pull "$IMAGE_NAME" || true
 
       script:
-        - docker build --pull -f docker/Dockerfile --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+        - docker build --pull -f docker/Dockerfile --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME_CI" .
 
       after_script:
         - docker images
 
       before_deploy:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+        - docker tag "$IMAGE_NAME_CI" "${IMAGE_NAME_CI}:${version}"
 
       deploy:
         provider: script
-        script: docker push "${IMAGE_NAME}:${version}"
+        script: docker push "${IMAGE_NAME_CI}:${version}"
         on:
           branch: master
 
@@ -40,14 +41,14 @@ jobs:
 
       before_script:
         - version="$TRAVIS_COMMIT"
-        - docker pull "$IMAGE_NAME:${version}" || true
+        - docker pull "$IMAGE_NAME_CI:${version}" || true
 
       script:
         - docker network create libki-net
         - docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
         - sleep 30 # Wait a few seconds for mariadb to come up
         - docker ps
-        - docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' --rm -d libki/libki-server:${version}
+        - docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' --rm -d "${IMAGE_NAME_CI}:${version}"
         - sleep 30 # Wait a few seconds for libki to come up
         - docker ps
         - docker exec -t libki-test-server /app/installer/update_db.pl
@@ -60,7 +61,7 @@ jobs:
 
       before_deploy:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker tag "$IMAGE_NAME:${version}" "${IMAGE_NAME}:latest"
+        - docker tag "$IMAGE_NAME_CI:${version}" "${IMAGE_NAME}:latest"
 
       deploy:
         provider: script
