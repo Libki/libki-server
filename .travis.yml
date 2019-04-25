@@ -52,6 +52,7 @@ jobs:
         - docker ps
         - sleep 30 # Wait a few seconds for libki to come up
         - docker ps
+        - docker logs libki-test-server
         - docker exec -t libki-test-server /app/installer/update_db.pl
         - docker exec -t libki-test-server prove /app/t/01app.t
         - docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
