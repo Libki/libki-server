@@ -48,7 +48,7 @@ jobs:
         - docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
         - sleep 30 # Wait a few seconds for mariadb to come up
         - docker ps
-        - docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' --rm -d "${IMAGE_NAME_CI}:${version}"
+        - docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -d "${IMAGE_NAME_CI}:${version}"
         - docker ps
         - sleep 30 # Wait a few seconds for libki to come up
         - docker ps
