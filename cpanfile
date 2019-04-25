@@ -26,6 +26,7 @@ requires 'CatalystX::RoleApplicator';
 requires 'CatalystX::Script::Server::Starman';
 requires 'Config::General';
 requires 'DBD::mysql';
+requires 'DBIx::Class::Cursor::Cached';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::InflateColumn::Serializer';
 requires 'DBIx::Class::InflateColumn::Serializer::JSON';
