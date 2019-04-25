@@ -100,6 +100,13 @@ __PACKAGE__->config(
     },
 );
 
+__PACKAGE__->config(
+    {
+        traits       => ['Caching'],
+        cursor_class => 'DBIx::Class::Cursor::Cached',
+    }
+);
+
 # Set the time zone
 $ENV{LIBKI_TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
 CORE::say qq{USING TIMEZONE "$ENV{LIBKI_TZ}"};
