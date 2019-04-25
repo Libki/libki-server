@@ -5,6 +5,9 @@ use base 'Catalyst::Model::DBIC::Schema';
 
 __PACKAGE__->config(
     schema_class => 'Libki::Schema::DB',
+    connect_info => {
+        cursor_class => q{DBIx::Class::Cursor::Cached},
+    }
 );
 
 =head1 NAME
