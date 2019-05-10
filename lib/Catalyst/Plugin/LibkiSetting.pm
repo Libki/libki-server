@@ -207,4 +207,14 @@ sub get_rule {
     return undef;
 }
 
+sub get_printer_configuration {
+    my ( $c, $params ) = @_;
+
+    $params->{name} = 'PrinterConfiguration';
+
+    my $yaml   = $c->setting($params);
+    my $config = YAML::XS::Load($yaml);
+    return $config;
+}
+
 1;

@@ -19,8 +19,7 @@ my $c = Libki->new();
 
 my $instance = $opt->instance;
 
-my $conf = $c->config->{instances}->{$instance} || $c->config;
-my $printers_conf = $conf->{printers};
+my $printers_conf = $c->get_printer_configuration( { instance => $instance } );
 
 my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
 my $client_id = $printers_conf->{google_cloud_print}->{client_id};
