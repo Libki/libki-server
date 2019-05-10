@@ -4,6 +4,7 @@ use namespace::autoclean;
 
 use HTTP::Request::Common;
 use JSON qw( to_json from_json );
+use MIME::Base64;
 use Net::Google::DataAPI::Auth::OAuth2;
 use Net::OAuth2::AccessToken;
 use Storable qw( thaw );
@@ -84,7 +85,9 @@ sub google_cloud_authenticate : Private : Args(0) {
         }
     );
 
-    my $saved_session = thaw( $stored_token->value );
+    my $encoded = $stored_token->value;
+    my $frozen = decode_base64($stored_token->value);
+    my $saved_session = thaw( $frozen );
 
     my $token = Net::OAuth2::AccessToken->session_thaw(
         $saved_session,

@@ -2,10 +2,11 @@
 
 use Modern::Perl;
 
-use Term::Prompt;
-use Storable qw(freeze);
 use Getopt::Long::Descriptive;
+use MIME::Base64;
 use Net::Google::DataAPI::Auth::OAuth2;
+use Storable qw(freeze);
+use Term::Prompt;
 
 use Libki;
 
@@ -39,11 +40,13 @@ my $code = prompt('x', 'Paste in code:', '', '');
 my $token = $oauth2->get_access_token($code) or die 'Unable to get access token';
 my $session = $token->session_freeze;
 
+my $frozen = freeze($session);
+my $encoded = encode_base64( $frozen );
 $c->model('DB::Setting')->update_or_create(
     {
 	instance => $instance,
 	name     => 'google_cloud_print_session',
-	value    => freeze($session),
+	value    => $encoded,
     }
 );
 

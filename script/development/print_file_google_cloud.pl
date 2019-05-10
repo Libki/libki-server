@@ -5,6 +5,7 @@ use Modern::Perl;
 use Getopt::Long::Descriptive;
 use HTTP::Request::Common;
 use JSON;
+use MIME::Base64;
 use Net::Google::DataAPI::Auth::OAuth2;
 use Net::OAuth2::AccessToken;
 use Storable qw(thaw);
@@ -69,7 +70,7 @@ if ( $printer->{type} = 'google_cloud_printer' ) {
         }
     );
 
-    my $saved_session = thaw( $stored_token->value );
+    my $saved_session = thaw( decode_base64($stored_token->value) );
 
     my $token = Net::OAuth2::AccessToken->session_thaw(
         $saved_session,
