@@ -55,20 +55,6 @@ sub cancel : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
-=head2 get_printer_configuration
-
-Returns the printer configuration YAML as a Perl structure.
-
-=cut
-
-sub get_printer_configuration : Private : Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $yaml = $c->setting('PrinterConfiguration');
-    my $config = YAML::XS::Load( $yaml );
-    return $config;
-}
-
 =head2 google_cloud_authenticate
 
 Authenticates the Libki server against the Google Cloud Print API.
@@ -80,7 +66,7 @@ sub google_cloud_authenticate : Private : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
-    my $printers_conf = $self->get_printer_configuration( $c );
+    my $printers_conf = $c->get_printer_configuration;
 
     my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
     my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
@@ -138,9 +124,8 @@ sub release : Local : Args(0) {
     if ($print_job) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
         if ($print_file) {
-            my $printers_conf = $self->get_printer_configuration( $c );
-            my $printers      = $printers_conf->{printers};
-            my $printer       = $printers->{ $print_job->printer };
+            my $printers = $c->get_printer_configuration;
+            my $printer  = $printers->{ $print_job->printer };
 
             if ($printer) {
                 my $filename = $print_file->filename;

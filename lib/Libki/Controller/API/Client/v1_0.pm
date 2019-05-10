@@ -449,9 +449,8 @@ sub print : Path('print') : Args(0) {
         my $pdf        = PDF::API2->open_scalar($pdf_string);
         my $pages      = $pdf->pages();
 
-        my $printers_conf = $self->get_printer_configuration( $c );
-        my $printers      = $printers_conf->{printers};
-        my $printer       = $printers->{$printer_id};
+        my $printers = $c->get_printer_configuration;
+        my $printer  = $printers->{$printer_id};
 
         $print_file = $c->model('DB::PrintFile')->create(
             {
@@ -497,22 +496,6 @@ sub print : Path('print') : Args(0) {
 
     delete( $c->stash->{'Settings'} );
     $c->forward( $c->view('JSON') );
-}
-
-=head2 get_printer_configuration
-
-Returns the printer configuration from the database.
-The configuration is stored as YAML.
-This method returns the config YAML as Perl structure.
-
-=cut
-
-sub get_printer_configuration : Private : Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $yaml   = $c->setting('PrinterConfiguration');
-    my $config = YAML::XS::Load($yaml);
-    return $config;
 }
 
 =head1 AUTHOR
