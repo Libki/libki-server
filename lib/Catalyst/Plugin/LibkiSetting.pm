@@ -207,6 +207,12 @@ sub get_rule {
     return undef;
 }
 
+=head2 get_printer_configuration
+
+Returns the printer configuration stored in the database
+
+=cut
+
 sub get_printer_configuration {
     my ( $c, $params ) = @_;
 
