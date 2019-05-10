@@ -125,7 +125,7 @@ sub release : Local : Args(0) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
         if ($print_file) {
             my $printers = $c->get_printer_configuration;
-            my $printer  = $printers->{ $print_job->printer };
+            my $printer  = $printers->{printers}->{ $print_job->printer };
 
             if ($printer) {
                 my $filename = $print_file->filename;
