@@ -450,7 +450,7 @@ sub print : Path('print') : Args(0) {
         my $pages      = $pdf->pages();
 
         my $printers = $c->get_printer_configuration;
-        my $printer  = $printers->{$printer_id};
+        my $printer  = $printers->{printers}->{$printer_id};
 
         $print_file = $c->model('DB::PrintFile')->create(
             {
