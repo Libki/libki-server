@@ -120,7 +120,7 @@ my $update_user_sth = $dbh->prepare(q{
       AND
         users.id = sessions.user_id
     )
-    SET sessions.minutes = minutes + ?nutes_allotment - ? WHERE id = ?});
+    SET minutes = minutes + ?, minutes_allotment = minutes_allotment + ? WHERE id = ?});
 
 my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
@@ -129,7 +129,7 @@ foreach my $s ( @$sessions ) {
     next if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved' && $s->{ThisReservedCount} > 0;
     next if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved'  && $s->{AnyReservedCount} > 0;
 
-    my $minutes_to_add = $s->{AutomaticTimeExtensionLength};
+    my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
     # If we are nearing closing time, we need to only add minutes up to the cloasing time
     # TODO We could possibly integrate this into the main query, or at least speed it up with raw SQL
@@ -140,10 +140,10 @@ foreach my $s ( @$sessions ) {
 
     # If adding this many minutes would go past closing time, we need to reduce the minutes added
     if ( defined($minutes_until_closing)
-        && $minutes_until_closing < $minutes_to_add )
+        && $minutes_until_closing < $minutes_to_add_to_session )
     {
         # Set the minutes to add so that it will be exactly closing time
-        $minutes_to_add = $minutes_until_closing - $s->{minutes};
+        $minutes_to_add_to_session = $minutes_until_closing - $s->{minutes};
     }
 
     # If adding this many minutes would exceed daily allotted, we need to reduce the minutes added
@@ -151,7 +151,7 @@ foreach my $s ( @$sessions ) {
         if ( $s->{minutes_allotment} < $s->{minutes_to_add} ) {
 
             # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
-            $minutes_to_add = $s->{minutes_allotment};
+            $minutes_to_add_to_session = $s->{minutes_allotment};
         }
     }
 
@@ -160,15 +160,16 @@ foreach my $s ( @$sessions ) {
                 instance => $s->{instance},
                 user_id  => $s->{id},
                 content  => $c->loc(
-                    "Your session time has been automatically extended by $minutes_to_add minutes.",
-                    "Your session time has been automatically extended by $minutes_to_add minutes.",
-                    $minutes_to_add
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    $minutes_to_add_to_session
                 ),
             }
         );
 
     ## Now we can store the changes
-    $update_user_sth->execute( $minutes_to_add, $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? $minutes_to_add : 0, $s->{id} );
+    my $minutes_to_add_to_daily_allotment = $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? 0 : $minutes_to_add_to_session;
+    $update_user_sth->execute( $minutes_to_add_to_session, $minutes_to_add_to_daily_allotment, $s->{id} );
 }
 
 ## Delete clients that haven't updated recently
