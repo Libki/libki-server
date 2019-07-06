@@ -109,7 +109,8 @@ foreach my $prd (@print_retention_days) {
 
 ## Clear out expired sessions
 ## TODO: Should we delete sessions with no expiration periodically?
-$c->delete_expired_sessions();
+
+$c->model('DB::LoginSession')->delete();
 
 =head1 AUTHOR
 
