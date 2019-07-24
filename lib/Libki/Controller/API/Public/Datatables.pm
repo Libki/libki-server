@@ -1,6 +1,7 @@
 package Libki::Controller::API::Public::Datatables;
 use Moose;
 use namespace::autoclean;
+use POSIX qw(strftime);
 
 use Encode qw(decode);
 
@@ -78,9 +79,16 @@ sub clients : Local Args(0) {
         }
     );
 
+    my $client = $c;
     my @results;
     foreach my $c (@clients) {
 	    my $enc = 'utf-8';
+        my $reservation= $client->model('DB::Reservation')->search(
+             { 'client_id' => $c->id},
+             {  order_by => { -asc => 'begin_time' } }
+             )->first || undef;
+        my $time = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
+        $time =~ s/T/ / if(defined($time));
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
@@ -88,7 +96,8 @@ sub clients : Local Args(0) {
         $r->{'1'} = decode($enc,decode($enc,$c->location));
         $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'4'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
+        $r->{'4'} = defined( $reservation ) ? $reservation->user->username : undef;
+        $r->{'5'} = $time;
 
         push( @results, $r );
     }

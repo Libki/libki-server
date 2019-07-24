@@ -175,7 +175,7 @@ sub clients : Local Args(0) {
     my $count = $c->model('DB::Client')->count(
         $filter,
         {
-            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
+            prefetch => [ { 'session' => 'user' } ]
         }
     );
 
@@ -186,14 +186,18 @@ sub clients : Local Args(0) {
             order_by => \@sorting,
             rows     => $c->request->param('iDisplayLength'),
             offset   => $c->request->param('iDisplayStart'),
-            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
+            prefetch => [ { 'session' => 'user' } ]
         }
     );
-
+    my $client = $c;
     my @results;
     foreach my $c (@clients) {
 
         my $enc = 'UTF-8';
+        my $reservation= $client->model('DB::Reservation')->search(
+            { 'client_id' => $c->id},
+            {  order_by => { -asc => 'begin_time' } } 
+            )->first || undef;
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
@@ -209,7 +213,7 @@ sub clients : Local Args(0) {
         $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
         $r->{'10'} = defined( $c->session ) ? decode( $enc, $c->session->user->notes ) : undef;
         $r->{'11'} = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'12'} = defined( $c->reservation ) ? decode( $enc, $c->reservation->user->username ) : undef;
+        $r->{'12'} = defined( $reservation ) ? decode( $enc, $reservation->user->username ) : undef;
         push( @results, $r );
     }
 

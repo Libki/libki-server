@@ -59,17 +59,7 @@ foreach my $s (@$sessions_to_delete) {
 }
 
 ## Decrement minutes for logged in users
-$dbh->do(q{
-    UPDATE sessions
-    LEFT JOIN users ON (
-        users.instance = sessions.instance
-      AND 
-        users.id = sessions.user_id
-    ) 
-    SET
-        sessions.minutes = sessions.minutes - 1,
-        users.minutes_allotment = users.minutes_allotment - 1
-});
+$dbh->do(q{UPDATE sessions SET minutes = minutes - 1});
 
 ## Handle automatic time extensions
 my $sessions = $dbh->selectall_arrayref(
@@ -189,12 +179,13 @@ foreach my $pct (@post_crash_timeouts) {
 
 ## Clear out any expired reservations
 #FIXME We need to deal with timezones at some point
+my $timeout =  $setting_rs->find( { name => 'ReservationTimeout'} );
 $reservation_rs->search(
     {
-        'expiration' => {
+        'begin_time' => {
             '<',
             DateTime::Format::MySQL->format_datetime(
-                DateTime->now( time_zone => $ENV{LIBKI_TZ} )
+                DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration( DateTime::Duration->new(minutes => $timeout->value()) )
             )
         }
     }

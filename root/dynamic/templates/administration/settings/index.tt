@@ -204,6 +204,18 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
                     </div>
+
+                    <legend>[% c.loc("Reservation") %]</legend>
+                    <div class="form-group">
+                        <label for="MinimumReservationMinutes">[% c.loc("Minimum reservation time limit") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="MinimumReservationMinutes" name="MinimumReservationMinutes" value="[% MinimumReservationMinutes %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Minimum time available for a reservation.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 
@@ -225,8 +237,8 @@
 
                     <div class="form-group">
                         <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
-                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
-                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
+                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display the status of the first reservation within an hour") %]</label>
+                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for and the status of the reservation.") %]</small>
                     </div>
                     <script type="text/javascript">
                         $(document).ready(function() {
