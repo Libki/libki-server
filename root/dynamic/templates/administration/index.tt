@@ -141,6 +141,7 @@
             <div class="btn-group" role="group">
                 <button id="client-table-row-toolbar-time" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
                 <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                <button id="client-table-row-toolbar-cancel" class="btn btn-warning" onclick="LibkiShowCancel( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel") %]</button>
                 <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
             </div>
         </div>
@@ -542,6 +543,40 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
+                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date">
+                <select id="hour" name="reservation_hour">
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                </select>
+                 :
+                <select id="minute" name="reservation_minute">
+                     <option>00</option>
+                     <option>05</option>
+                     <option>10</option>
+                     <option>15</option>
+                     <option>20</option>
+                     <option>25</option>
+                     <option>30</option>
+                     <option>35</option>
+                     <option>40</option>
+                     <option>45</option>
+                     <option>50</option>
+                     <option>55</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="make-reservation-modal-form-username">[% c.loc("Username") %]</label>
                 <input type="text" class="form-control" id="make-reservation-modal-form-username" name="username">
                 <small class="form-text text-muted">[% c.loc("Username of user to make reservation for.") %]</small>
@@ -558,6 +593,36 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="cancel-reservation-modal-label"><i class="fas fa-tag"></i> [% c.loc("Cancel reservation") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cancel-reservation-modal-form">
+            <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
+            <div class="form-group">
+                <label for="cancel-reservation-modal-form-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="cancel-reservation-modal-form-username" name="username">
+                <small class="form-text text-muted">[% c.loc("Username of user to cancel reservation for.") %]</small>
+                <div class="invalid-feedback">
+                    [% c.loc("Username is invalid") %]
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Cancel reservation") %]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1048,11 +1113,17 @@ $(document).ready(function() {
                     ForceClientTableRefresh();
                 } else {
                      if ( data.reason == 'USER_ALREADY_RESERVED' ) {
-                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: User already has a reservation for a different client.") %]" );
+                         DisplayMessage( "error", "[% c.loc("Unable to make reservation: User already has a reservation.") %]" );
                      } else if ( data.reason == 'USER_NOT_FOUND' ) {
-                         DisplayMessage( "error", "[% c.loc('Unable to modify reservation: User not found.') %]" );
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: User not found.') %]" );
+                     } else if ( data.reason == 'NO_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: The user has no time remaining..') %]" );
+                     } else if ( data.reason == 'INVALID_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: The time you choose is not available.') %]" );
+                     } else if ( data.reason == 'CLOSING_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: This kiosk will be closed for the time..') %]" );
                      } else {
-                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: Reason unknown.") %]" );
+                         DisplayMessage( "error", "[% c.loc("Unable to make reservation: Reason unknown.") %]" );
                      }
                 }
             });
@@ -1065,6 +1136,32 @@ $(document).ready(function() {
         if (e.which == 13) {
             e.preventDefault();
             $('#make-reservation-modal-form-submit').click();
+        }
+    });
+
+    /* Cancel reservation */
+    $('#cancel-reservation-modal-form-submit').click(function(){
+        let username = $('#cancel-reservation-modal-form-username').val();
+        if ( username ) {
+            let id = $('#cancel-reservation-modal-form-id').val();
+            $.post('[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', $('#cancel-reservation-modal-form').serialize(), function(data) {
+                $('#cancel-reservation-modal').modal('hide');
+                 if ( data.success ) {
+                    DisplayMessage( "success", "[% c.loc("Reservation for user canceled.") %]" );
+                    ForceClientTableRefresh();
+                } else {
+                         DisplayMessage( "error", "[% c.loc( "The cancellation failed" ) %]" );
+                }
+            });
+        } else {
+            $('#make-reservation-modal-form-username').addClass('is-invalid');
+        }
+    });
+
+    $("#cancel-reservation-modal-form-username").keypress(function(e){
+        if (e.which == 13) {
+            e.preventDefault();
+            $('#cancel-reservation-modal-form-submit').click();
         }
     });
 
@@ -1130,32 +1227,25 @@ function LibkiLogOutClient( id ) {
   }
 }
 
+function LibkiShowCancel( id ) {
+    $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
+    $('#client-table-row-toolbar').hide();
+    $('#cancel-reservation-modal-form-id').val( window.selected_id );
+    $('#cancel-reservation-modal-form-username').val("");
+    $('#cancel-reservation-modal').modal();
+    $('#cancel-reservation-modal-form-username').focus();
+
+}
+
 function LibkiToggleReservation( id ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id, function(data) {
-        if ( data.reserved ) { // cancel reservation
-            if ( confirm("[% c.loc("Are you sure you want to cancel the reservation for this client?") %]") ) {
-                $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', function(data) {
-                    if ( data.success ) {
-                        DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
-                        // Refresh the table to remove the deleted row
-                        $("#client-table").dataTable().fnDraw(true);
-                    } else {
-                        DisplayMessage( "error", "[% c.loc("Unable to cancel reservation.") %]" );
-                    }
-                });
-            }
-        } else { // create reservation
-            $('#make-reservation-modal-form-username').removeClass('is-invalid');
+    $('#make-reservation-modal-form-username').removeClass('is-invalid');
+    $('#client-table-row-toolbar').hide();
 
-            $('#client-table-row-toolbar').hide();
+    $('#make-reservation-modal-form-id').val( window.selected_id );
+    $('#make-reservation-modal-form-username').val("");
 
-            $('#make-reservation-modal-form-id').val( window.selected_id );
-            $('#make-reservation-modal-form-username').val("");
-
-            $('#make-reservation-modal').modal();
-            $('#make-reservation-modal-form-username').focus();
-        }
-    });
+    $('#make-reservation-modal').modal();
+    $('#make-reservation-modal-form-username').focus();
 }
 
 function HandleClientTableRefreshCounter() {
@@ -1255,4 +1345,9 @@ function postForm(url, fields) {
     $form.submit();
 }
 
+$('#datepicker').datepicker({
+    dateFormat:'yy-mm-dd',
+    minDate:'%y-%M-%d',
+    gotoCurrent: true,
+});
 </script>

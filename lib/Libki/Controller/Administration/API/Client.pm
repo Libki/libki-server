@@ -86,40 +86,34 @@ sub reservation : Local : Args(1) {
     my $client = $c->model('DB::Client')->find($client_id);
 
     my $instance = $c->instance;
-
     my $action    = $c->request->params->{action}   || q{};
     my $username  = $c->request->params->{username} || q{};
-
+    my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+    my $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
     if ( $action eq 'reserve' ) {
-        my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
-
-        if ( $user ) {
-            if ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
-                $c->stash(
-                    'success' => 0,
-                    'reason'  => 'USER_ALREADY_RESERVED'
-                );
-            }
-            elsif ( $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id, client_id => $client_id } ) ) {
-                $c->stash( 'success' => 1 );
+        if( !$reservation ) {
+            my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
+            my %check = Libki::Controller::API::Public::Reservations::check('begin_time' => $begin_time, 'client' => $client, 'user' => $user, 'libki' => $c);
+            if($check{'error'}) {
+                $c->stash( 'success' => 0, 'reason' => $check{'error'}, 'detail' => $check{'detail'} );
             }
             else {
-                $c->stash( 'success' => 0, 'reason' => 'UNKNOWN' );
+                $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id(), client_id => $client_id, begin_time => $begin_time , end_time => $check{'end_time'} } );
+                $c->stash( 'success' => 1 );
             }
-        } else {
-            $c->stash( 'success' => 0, 'reason' => 'USER_NOT_FOUND' );
         }
-    } if ( $action eq 'cancel' ) {
-        my $reservation = $client->reservation;
-        my $success = $reservation->delete() ? 1 : 0;
-        $c->stash( success => $success );
-    } else {
-        my $reserved = 0;
-        if ( defined($client) && defined( $client->reservation ) ) {
-            $reserved = 1;
+        else {
+           $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
         }
-
-        $c->stash( reserved => $reserved );
+    }
+    elsif ( $action eq 'cancel' ) {
+        if( $reservation ) {
+           my $success = $reservation->delete() ? 1 : 0;
+           $c->stash( success => $success );
+        }
+        else {
+           $c->stash( success => 0 );
+        }
     }
     $c->forward( $c->view('JSON') );
 }
