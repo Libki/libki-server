@@ -96,7 +96,7 @@ mysqldump --defaults-extra-file=/home/libki/mysql_tmp.cnf libki > /home/libki/ba
 rm /home/libki/mysql_tmp.cnf
 
 echo
-echo "Your database has been backed up to /home/libki/backups/libki_db_backup_$DATE.sql"
+echo "Your database has been backed up to /home/libki/backups/db_$DATE.sql"
 echo
 
 exit 0
