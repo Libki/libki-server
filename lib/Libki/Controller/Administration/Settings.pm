@@ -72,6 +72,15 @@ sub update :Local :Args(0) {
         }
     );
     
+    # And so is RenewTimeAllotment
+    $c->model('DB::Setting')->update_or_create(
+        {
+            instance => $instance,
+            name     => 'RenewTimeAllotment',
+            value    => ( $c->request->params->{RenewTimeAllotment} // 0 ) eq 'on' ? 1 : 0,
+        }
+    );
+
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
 }
 

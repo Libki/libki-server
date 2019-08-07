@@ -200,6 +200,17 @@ $reservation_rs->search(
     }
 )->delete();
 
+## Renew time for users that's reached zero if RenewTimeAmount is set to 1
+my $renewTimeAmount = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionLength'");
+
+my $renewTimeSetting = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'RenewTimeAllotment'");
+
+if ($renewTimeSetting eq 1 && $renewTimeAmount ne undef) {
+    $dbh->do(q{
+        UPDATE users SET minutes_allotment = ? WHERE minutes_allotment IS NOT NULL AND minutes_allotment < 1
+    }, undef, $renewTimeAmount);
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info> 
