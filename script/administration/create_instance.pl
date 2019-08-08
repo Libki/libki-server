@@ -27,6 +27,7 @@ say qq{Creating instance '$i'} if $opt->verbose;
 my $defaults = {
     'AutomaticTimeExtensionAt'           => '',
     'AutomaticTimeExtensionLength'       => '',
+    'AutomaticTimeExtensionRenewal'	 => '0',
     'AutomaticTimeExtensionUnless'       => 'this_reserved',
     'AutomaticTimeExtensionUseAllotment' => 'no',
     'BatchGuestPassPasswordLabel'        => 'Password: ',
@@ -43,7 +44,6 @@ my $defaults = {
     'GuestBatchCount'                    => '20',
     'PostCrashTimeout'                   => '5',
     'PrintJobRetentionDays'              => '0',
-    'RenewTimeAllotment'		 => '0',
     'ReservationShowUsername'            => '0',
     'ReservationTimeout'                 => '15',
     'ThirdPartyURL'                      => '',

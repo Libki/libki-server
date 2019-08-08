@@ -72,12 +72,12 @@ sub update :Local :Args(0) {
         }
     );
     
-    # And so is RenewTimeAllotment
+    # And so is AutomaticTimeExtensionRenewal
     $c->model('DB::Setting')->update_or_create(
         {
             instance => $instance,
-            name     => 'RenewTimeAllotment',
-            value    => ( $c->request->params->{RenewTimeAllotment} // 0 ) eq 'on' ? 1 : 0,
+            name     => 'AutomaticTimeExtensionRenewal',
+            value    => ( $c->request->params->{AutomaticTimeExtensionRenewal} // 0 ) eq 'on' ? 1 : 0,
         }
     );
 

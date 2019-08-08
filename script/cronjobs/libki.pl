@@ -200,15 +200,15 @@ $reservation_rs->search(
     }
 )->delete();
 
-## Renew time for users that's reached zero if RenewTimeAmount is set to 1
-my $renewTimeAmount = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionLength'");
+## Renew time for users that's reached zero if AutomaticTimeExtensionRenewal is set to 1
+my $automaticTimeExtensionLength = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionLength'");
 
-my $renewTimeSetting = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'RenewTimeAllotment'");
+my $automaticTimeExtensionRenewal = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionRenewal'");
 
-if ($renewTimeSetting eq 1 && $renewTimeAmount ne undef) {
+if ($automaticTimeExtensionRenewal eq 1 && $automaticTimeExtensionLength ne undef) {
     $dbh->do(q{
         UPDATE users SET minutes_allotment = ? WHERE minutes_allotment IS NOT NULL AND minutes_allotment < 1
-    }, undef, $renewTimeAmount);
+    }, undef, $automaticTimeExtensionLength);
 }
 
 =head1 AUTHOR
