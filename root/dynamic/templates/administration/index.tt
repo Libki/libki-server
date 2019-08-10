@@ -558,7 +558,11 @@
     </div>
   </div>
 </div>
-
+<script>
+    $('#make-reservation-modal').on('shown.bs.modal', function () {
+      $('#make-reservation-modal-form-username').trigger('focus')
+    })
+</script>
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
