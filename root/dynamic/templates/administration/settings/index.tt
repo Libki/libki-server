@@ -301,6 +301,25 @@
                             $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
                         });
                     </script>
+                    <div class="form-group">
+                        <input id="AutomaticTimeExtensionRenewal" name="AutomaticTimeExtensionRenewal" type="checkbox" [% IF AutomaticTimeExtensionRenewal %]checked="checked"[% END %]>
+                        <label for="AutomaticTimeExtensionRenewal">[% c.loc("Renew the time allotment when it reaches zero") %]</label>
+                        <small class="form-text text-muted">[% c.loc("When a user's time allotment reaches zero, it's automatically renewed with the value of Extension length. This makes it possible for the user to log in again.") %]</small>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#AutomaticTimeExtensionRenewalCheckbox").attr('checked', Boolean( [% AutomaticTimeExtensionRenewal %] ) );
+
+                            $("#AutomaticTimeExtensionRenewalCheckbox").change( function() {
+                                if ( $(this).attr('checked') == 'checked') {
+                                    $("#AutomaticTimeExtensionRenewal").val( 1 );
+                                } else {
+                                    $("#AutomaticTimeExtensionRenewal").val( 0 );
+                                }
+                            });
+                        });
+                    </script>
+
                 </fieldset>
             </div>
 
