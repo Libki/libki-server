@@ -62,7 +62,6 @@ requires 'Server::Starter';
 requires 'Socket';
 requires 'Storable';
 requires 'String::Random';
-requires 'Template::Plugin::UTF8Decode';
 requires 'Term::Prompt';
 requires 'Term::Size::Any';
 requires 'Test::Pod';
