@@ -75,7 +75,7 @@ chown libki:libki /home/libki/libki-server/log4perl.conf
 
 # Create libki database and database user
 mysql <<MYSQL_SCRIPT
-CREATE DATABASE libki;
+CREATE DATABASE libki DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
 CREATE USER 'libki'@'localhost' IDENTIFIED BY '$DBPASS';
 GRANT ALL PRIVILEGES ON libki.* TO 'libki'@'localhost';
 FLUSH PRIVILEGES

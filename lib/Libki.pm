@@ -1,7 +1,6 @@
 package Libki;
 use Moose;
 use namespace::autoclean;
-
 use Catalyst::Runtime 5.90011;
 use CatalystX::RoleApplicator;
 
@@ -20,7 +19,6 @@ use DateTime::Format::MySQL;
 #                 application's home directory
 # Static::Simple: will serve static files from the application's root
 #                 directory
-
 use Log::Log4perl::Catalyst;
 
 use Catalyst qw/
@@ -120,8 +118,15 @@ __PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn}      = $ENV{LIBKI_DB_D
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{user}     = $ENV{LIBKI_DB_USER};
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{password} = $ENV{LIBKI_DB_PASSWORD};
 
+
+# This gets rid of the incredibly annoying Any::Moose is deprecated message.
+# Remove this if debugging
+my $blackhole;
+open (STDERR, '>', '$blackhole');
+
 # Start the application
 __PACKAGE__->setup();
+
 
 =head1 NAME
 
@@ -160,4 +165,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
-1;
+
