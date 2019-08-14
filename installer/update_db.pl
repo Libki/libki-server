@@ -31,7 +31,7 @@ try {
     $db_version = $setting->{value};
 }
 catch {
-    $db_version = '00.00.00.000';
+    $db_version = '0.0.0';
 };
 
 my @version_dirs =
@@ -39,18 +39,26 @@ my @version_dirs =
 shift(@version_dirs);
 
 foreach my $version_dir (@version_dirs) {
-    my $version = ( split( '/', $version_dir ) )[-1];
+    my $major_version = ( split( '/', $version_dir ) )[-1];
 
-    next unless ( $version gt $db_version );
-
-    print "Installing version $version\n";
+    my $version;
 
     my @files =
       sort( File::Find::Rule->name( '*.pl', '*.sql' )->in($version_dir) );
 
     foreach my $file (@files) {
         my ( $name, $path, $suffix ) = fileparse( $file, qw( .pl .sql ) );
-        print "Running script $name\n";
+
+        my $filepath = ( split( '/', $file ) )[-1];
+
+        my @subversion_and_name = split(/_/, $filepath);
+
+        $version = $major_version . '.' . @subversion_and_name[0];
+
+	next unless ( $version gt $db_version );
+
+        print "\nInstalling version $version\n\n";
+        print "Running script @subversion_and_name[1]\n\n";
 
         if ( $suffix eq '.pl' ) {
             my $c = eval( read_file($file) );
