@@ -93,6 +93,8 @@ foreach my $version_dir (@version_dirs) {
         }
     }
     
+    $version = '3.0.0';
+
     $schema->storage->dbh_do(
       sub {
         my ($storage, $dbh, $version) = @_;
