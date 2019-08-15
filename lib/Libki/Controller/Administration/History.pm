@@ -78,8 +78,6 @@ sub statistics : Local : Args(0) {
         }
     );
     
-    my $enc = 'UTF-8';
-
     my $results;
     my $columns;
 

@@ -7,8 +7,6 @@ BEGIN { extends 'Catalyst::Controller'; }
 our @days_of_week =
   qw( Monday Tuesday Wednesday Thursday Friday Saturday Sunday );
 
-=encoding utf8
-
 =head1 NAME
 
 Libki::Controller::Administration::Hours - Catalyst Controller

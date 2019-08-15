@@ -800,8 +800,7 @@ msgstr "Prefix för gästpass"
 #: root/dynamic/templates/administration/settings/index.tt:452
 msgid "Prefix for guest passes, defaults to 'guest' if none is specified."
 msgstr ""
-"Prefix för gästpass. Om det inte ändras kommer värdet bli \"guest\". Notera "
-"att ÅÄÖ inte fungerar här ännu."
+"Prefix för gästpass. Om det inte ändras kommer värdet bli \"guest\"."
 
 #: root/dynamic/templates/administration/index.tt:216
 msgid "Print"
@@ -845,7 +844,7 @@ msgstr "Uppdatera"
 
 #: root/dynamic/templates/administration/settings/index.tt:306
 msgid "Renew the time allotment when it reaches zero"
-msgstr "Förnya tidsmöngden när den når noll"
+msgstr "Förnya tidsmängden när den når noll"
 
 #: root/dynamic/templates/administration/index.tt:1139
 #: root/dynamic/templates/public/index.tt:378

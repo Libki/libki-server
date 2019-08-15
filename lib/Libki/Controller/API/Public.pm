@@ -3,8 +3,6 @@ package Libki::Controller::API::Public;
 use Moose;
 use namespace::autoclean;
 
-use Encode qw(decode encode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -54,7 +52,7 @@ sub client : Local : Args(1) {
 
                 $c->stash(
                     username   => $user->username(),
-                    clientname => decode('UTF-8',$client->name()),
+                    clientname => $client->name(),
                     instance   => $instance,
                 );
                 $c->log()->debug( "API::Public::client returning ( username => " . $user->username() . ", clientname => " . $client->name() . " )" );
