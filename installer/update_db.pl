@@ -41,7 +41,7 @@ shift(@version_dirs);
 foreach my $version_dir (@version_dirs) {
     my $major_version = ( split( '/', $version_dir ) )[-1];
 
-    if ( ! $db_version == '0.0.0' && $db_version lt '3.0.0' ) {
+    if ( $db_version gt '0.0.0' && $db_version lt '3.0.0' ) {
         print "Welcome to the Libki Database Updater.\n\n";
         print "Unfortunately it isn't possible to update your version of Libki this way.\n";
         print "You will need to use the r19.08 release first. It's located at https://github.com/Libki/libki-server/archive/r19.08.zip.\n";
