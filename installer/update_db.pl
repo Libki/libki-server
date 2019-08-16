@@ -50,6 +50,8 @@ foreach my $version_dir (@version_dirs) {
         print "wget https://github.com/Libki/libki-server/archive/r19.08.zip\n";
         print "unzip r19.08.zip\n";
         print "./r19.08/installer/update_db.pl\n\n";
+        print "It is HIGHLY adviceable that you do a backup first.\n";
+        print "See https://manual.libki.org for more information on how to do backups.\n";
 
         exit 0;
     }
