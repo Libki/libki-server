@@ -1,4 +1,3 @@
-use utf8;
 package Libki::Schema::DB::Result::Session;
 
 # Created by DBIx::Class::Schema::Loader
