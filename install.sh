@@ -202,9 +202,10 @@ if [[ $PROXYCHECKER = "yes" ]]; then
   service apache2 start
 fi
 
-# Copies the backup and the restore programs to /usr/local/bin
+# Copies the utilities to /usr/local/bin
 cp script/utilities/backup_db.sh /usr/local/bin/libki-backup
 cp script/utilities/restore_db.sh /usr/local/bin/libki-restore
+cp script/utilities/translate.sh /usr/local/bin/libki-translate
 
 # Report all settings
 echo
