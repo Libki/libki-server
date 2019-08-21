@@ -120,8 +120,8 @@ __PACKAGE__->config->{'Model::DB'}->{connect_info}->{password} = $ENV{LIBKI_DB_P
 
 # This gets rid of the incredibly annoying Any::Moose is deprecated message.
 # Remove this if debugging
-my $blackhole;
-open (STDERR, '>', '$blackhole');
+open (STDERR, '>', 'blackhole');
+unlink 'blackhole';
 
 # Start the application
 __PACKAGE__->setup();
