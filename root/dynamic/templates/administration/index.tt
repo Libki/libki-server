@@ -46,9 +46,13 @@
         <table id="user-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>[% c.loc("Username") %]</th>
+                [% IF ShowFirstLastNames %]
                 <th>[% c.loc("Lastname") %] </th>
                 <th>[% c.loc("Firstname") %] </th>
+                [% END %]
+                [% IF UserCategories %]
                 <th>[% c.loc("Category") %]</th>
+                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("Status") %]</th>
@@ -124,9 +128,13 @@
                 <th>[% c.loc("Location") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
+                [% IF ShowFirstLastNames %]
                 <th>[% c.loc("Lastname") %] </th>
                 <th>[% c.loc("Firstname") %] </th>
+                [% END %]
+                [% IF UserCategories %]
                 <th>[% c.loc("Category") %]</th>
+                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("User status") %]</th>
@@ -274,6 +282,7 @@
                 </div>
             </div>
 
+            [% IF ShowFirstLastNames %]
             <div class="form-group">
                 <label for="new-user-modal-form-name">[% c.loc("Name") %]</label>
                 <div class="row">
@@ -285,7 +294,8 @@
                   </div>
                 </div>
             </div>
-
+            [% END %]
+            [% IF UserCategories %]
             <div class="form-group">
                 <label for="new-user-modal-form-category">[% c.loc("Category") %]</label>
                 <select class="form-control" id="new-user-modal-form-category" name="category">
@@ -295,6 +305,7 @@
                     [% END %]
                 </select>
             </div>
+            [% END %]
 
             <div class="form-group">
                 <label for="new-user-modal-form-password">[% c.loc("Password") %]</label>

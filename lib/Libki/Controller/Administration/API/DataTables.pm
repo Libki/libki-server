@@ -26,8 +26,23 @@ sub users : Local Args(0) {
 
     my $instance = $c->instance;
 
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # Get settings
+    my $userCategories = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'UserCategories'");
+    my $showFirstLastNames = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'ShowFirstLastNames'");
+
     # We need to map the table columns to field names for ordering
     my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+
+    if ($userCategories eq '') {
+        splice @columns, 3, 1;
+    }
+
+    if ($showFirstLastNames eq '0') {
+        splice @columns, 1, 2;
+    }
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -86,21 +101,36 @@ sub users : Local Args(0) {
     my @results;
     foreach my $u (@users) {
 
+        my @userValues = (
+            $u->username,
+            $u->lastname,
+            $u->firstname,
+            $u->category,
+            $u->minutes_allotment,
+            $u->session ? $u->session->minutes : undef,
+            $u->status,
+            $u->notes,
+            $u->is_troublemaker,
+            defined( $u->session ) ? $u->session->client->name : undef,
+            defined( $u->session ) ? $u->session->status : undef,
+        );
+
+        if ($userCategories eq '') {
+            splice @userValues, 3, 1;
+        }
+
+        if ($showFirstLastNames eq '0') {
+            splice @userValues, 1, 2;
+        }
+
         my $r;
+        my $userValuesCounter = 0;
         $r->{'DT_RowId'} = $u->id;
-        $r->{'0'}        = $u->username;
-        $r->{'1'}        = $u->lastname;
-        $r->{'2'}        = $u->firstname;
-        $r->{'3'}        = $u->category;
-        $r->{'4'}        = $u->minutes_allotment;
-        $r->{'5'}        = $u->session ? $u->session->minutes : undef;
-        $r->{'6'}        = $u->status;
-        $r->{'7'}        = $u->notes;
-        $r->{'8'}        = $u->is_troublemaker;
-        $r->{'9'}        =
-          defined( $u->session )
-          ? $u->session->client->name : undef;
-        $r->{'10'}        = defined( $u->session ) ? $u->session->status : undef;
+
+        foreach my $userValue (@userValues) {
+            $r->{$userValuesCounter} = $userValue;
+            $userValuesCounter++;
+        }
 
         push( @results, $r );
     }
@@ -127,9 +157,24 @@ sub clients : Local Args(0) {
 
     my $instance = $c->instance;
 
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # Get settings
+    my $userCategories = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'UserCategories'");
+    my $showFirstLastNames = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'ShowFirstLastNames'");
+
     # We need to map the table columns to field names for ordering
     my @columns =
       qw/ me.name me.location session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker/;
+
+    if ($userCategories eq '') {
+        splice @columns, 6, 1;
+    }
+
+    if ($showFirstLastNames eq '0') {
+        splice @columns, 4, 2;
+    }
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -188,22 +233,39 @@ sub clients : Local Args(0) {
 
     my @results;
     foreach my $c (@clients) {
+        my @clientValues = (
+            $c->name,
+            $c->location,
+            defined( $c->session ) ? $c->session->status : undef,
+            defined( $c->session ) ? $c->session->user->username : undef,
+            defined( $c->session ) ? $c->session->user->lastname : undef,
+            defined( $c->session ) ? $c->session->user->firstname : undef,
+            defined( $c->session ) ? $c->session->user->category : undef,
+            defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
+            defined( $c->session ) ? $c->session->minutes : undef,
+            defined( $c->session ) ? $c->session->user->status  : undef,
+            defined( $c->session ) ? $c->session->user->notes : undef,
+            defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
+            defined( $c->reservation ) ? $c->reservation->user->username : undef,
+        );
+
+        if ($userCategories eq '') {
+            splice @clientValues, 6, 1;
+        }
+
+        if ($showFirstLastNames eq '0') {
+            splice @clientValues, 4, 2;
+        }
 
         my $r;
+        my $clientValuesCounter = 0;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'} = $c->name;
-        $r->{'1'} = $c->location;
-        $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} = defined( $c->session ) ? $c->session->user->username : undef;
-        $r->{'4'} = defined( $c->session ) ? $c->session->user->lastname : undef;
-        $r->{'5'} = defined( $c->session ) ? $c->session->user->firstname : undef;
-        $r->{'6'} = defined( $c->session ) ? $c->session->user->category : undef;
-        $r->{'7'} = defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'8'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
-        $r->{'10'} = defined( $c->session ) ? $c->session->user->notes : undef;
-        $r->{'11'} = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'12'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
+
+        foreach my $clientValue (@clientValues) {
+            $r->{$clientValuesCounter} = $clientValue;
+            $clientValuesCounter++;
+        }
+
         push( @results, $r );
     }
 

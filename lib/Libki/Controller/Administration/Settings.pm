@@ -81,6 +81,15 @@ sub update :Local :Args(0) {
         }
     );
 
+    # And so is ShowFirstLastNames
+    $c->model('DB::Setting')->update_or_create(
+        {
+            instance => $instance,
+            name     => 'ShowFirstLastNames',
+            value    => ( $c->request->params->{ShowFirstLastNames} // 0 ) eq 'on' ? 1 : 0,
+        }
+    );
+
     $c->response->redirect( $c->uri_for( $self->action_for('index') ) );
 }
 

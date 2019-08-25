@@ -39,6 +39,8 @@ sub index : Path : Args(0) {
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
         PrinterConfiguration   => $c->setting('PrinterConfiguration'),
+        ShowFirstLastNames     => $c->setting('ShowFirstLastNames'),
+        UserCategories	       => $c->setting('UserCategories'),
         locations              => \@locations,
     );
 }
