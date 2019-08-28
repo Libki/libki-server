@@ -3,6 +3,8 @@ package Catalyst::Plugin::LibkiSetting;
 use Modern::Perl;
 use List::Util qw(any);
 
+use Encode qw/decode encode/;
+
 our $VERSION = 1;
 
 =head2 setting
@@ -64,11 +66,13 @@ sub instance_config {
 
     unless ( $config->{SIP} ) {
         my $yaml = $c->setting('SIPConfiguration');
+        $yaml = encode('UTF-8',$yaml);
         $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
     }
 
     unless ( $config->{LDAP} ) {
         my $yaml = $c->setting('LDAPConfiguration');
+        $yaml = encode('UTF-8',$yaml);
         $config->{LDAP} = YAML::XS::Load($yaml) if $yaml;
     }
 
@@ -107,6 +111,8 @@ sub user_categories {
     my ( $c ) = @_;
 
     my $yaml = $c->setting('UserCategories');
+
+    $yaml = encode('UTF-8',$yaml);
 
     my $categories = YAML::XS::Load($yaml) if $yaml;
 
@@ -155,6 +161,7 @@ sub get_rules {
     return $c->stash->{AdvancedRules} if defined $c->stash->{AdvancedRules};
 
     my $yaml = $c->setting( { instance => $instance, name => 'AdvancedRules' } );
+    $yaml = encode('UTF-8',$yaml);
 
     my $data = YAML::XS::Load($yaml) if $yaml;
 
@@ -219,6 +226,8 @@ sub get_printer_configuration {
     $params->{name} = 'PrinterConfiguration';
 
     my $yaml   = $c->setting($params);
+    $yaml = encode('UTF-8',$yaml);
+
     my $config = YAML::XS::Load($yaml);
     return $config;
 }

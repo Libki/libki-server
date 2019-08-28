@@ -1,5 +1,4 @@
 [% SET active_class = "public__index" %]
-[% USE UTF8Decode %]
 
 <nav class="navbar navbar-expand-lg navbar-light bg-none">
     <ul class="nav nav-pills" id="primary-tabs">
@@ -11,7 +10,7 @@
       </li>
       [% FOREACH location IN locations %]
           <li class="nav-item">
-              <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location | utf8_decode | utf8_decode %]</a>
+              <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
           </li>
       [% END %]
     </ul>

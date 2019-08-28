@@ -3,8 +3,6 @@ use Moose;
 use namespace::autoclean;
 use POSIX qw(strftime);
 
-use Encode qw(decode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -92,8 +90,8 @@ sub clients : Local Args(0) {
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'} = decode($enc,decode($enc,$c->name));
-        $r->{'1'} = decode($enc,decode($enc,$c->location));
+        $r->{'0'} = $c->name;
+        $r->{'1'} = $c->location;
         $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'} = defined( $c->session ) ? $c->session->minutes : undef;
         $r->{'4'} = defined( $reservation ) ? $reservation->user->username : undef;

@@ -31,7 +31,7 @@ try {
     $db_version = $setting->{value};
 }
 catch {
-    $db_version = '00.00.00.000';
+    $db_version = '0.0.0';
 };
 
 my @version_dirs =
@@ -39,18 +39,41 @@ my @version_dirs =
 shift(@version_dirs);
 
 foreach my $version_dir (@version_dirs) {
-    my $version = ( split( '/', $version_dir ) )[-1];
+    my $major_version = ( split( '/', $version_dir ) )[-1];
 
-    next unless ( $version gt $db_version );
+    if ( $db_version gt '0.0.0' && $db_version lt '3.0.0' ) {
+        print "Welcome to the Libki Database Updater.\n\n";
+        print "Unfortunately it isn't possible to update your version of Libki this way.\n";
+        print "You will need to use the r19.08 release first. It's located at https://github.com/Libki/libki-server/archive/r19.08.zip.\n";
+        print "Run update_db.pl from there, and when that is done it will be possible to use this updater.\n\n";
+        print "As root, run:\n\n";
+        print "wget https://github.com/Libki/libki-server/archive/r19.08.zip\n";
+        print "unzip r19.08.zip\n";
+        print "./r19.08/installer/update_db.pl\n\n";
+        print "It is HIGHLY adviceable that you do a backup first.\n";
+        print "See https://manual.libki.org for more information on how to do backups.\n";
 
-    print "Installing version $version\n";
+        exit 0;
+    }
+
+    my $version;
 
     my @files =
       sort( File::Find::Rule->name( '*.pl', '*.sql' )->in($version_dir) );
 
     foreach my $file (@files) {
         my ( $name, $path, $suffix ) = fileparse( $file, qw( .pl .sql ) );
-        print "Running script $name\n";
+
+        my $filepath = ( split( '/', $file ) )[-1];
+
+        my @subversion_and_name = split(/_/, $filepath);
+
+        $version = $major_version . '.' . @subversion_and_name[0];
+
+	next unless ( $version gt $db_version );
+
+        print "\nInstalling version $version\n\n";
+        print "Running script @subversion_and_name[1]\n";
 
         if ( $suffix eq '.pl' ) {
             my $c = eval( read_file($file) );
@@ -72,6 +95,8 @@ foreach my $version_dir (@version_dirs) {
         }
     }
     
+    $version = '3.0.0';
+
     $schema->storage->dbh_do(
       sub {
         my ($storage, $dbh, $version) = @_;

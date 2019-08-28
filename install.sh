@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root."
+   exit 1
+fi
+
 is_debian_stretch=false
 is_debian_buster=false
 is_ubuntu_bionic=false
@@ -197,14 +202,27 @@ done
 # Starting the Libki service
 service libki start
 
+# Wait for the service to start
+while (( $(ps -ef | grep -v grep | grep "libki" | wc -l) == 0 ))
+do
+  sleep 1
+done
+
 # Starting the Apache service
 if [[ $PROXYCHECKER = "yes" ]]; then
   service apache2 start
-fi
 
-# Copies the backup and the restore programs to /usr/local/bin
-cp script/utilities/backup_db.sh /usr/local/bin/libki-backup
-cp script/utilities/restore_db.sh /usr/local/bin/libki-restore
+  # Wait for the service to start
+  while (( $(ps -ef | grep -v grep | grep "apache2" | wc -l) == 0 ))
+  do
+    sleep 1
+  done
+fi
+# Copies the utilities to /usr/local/bin
+cp script/utilities/backup.sh /usr/local/bin/libki-backup
+cp script/utilities/restore.sh /usr/local/bin/libki-restore
+cp script/utilities/translate.sh /usr/local/bin/libki-translate
+cp script/utilities/update.sh /usr/local/bin/libki-update
 
 # Report all settings
 echo
@@ -228,5 +246,6 @@ echo "Your log files are located in /var/log/libki/"
 echo
 echo "Your server can be reached on the following address:"
 echo "$URL"
+echo
 
 exit 0

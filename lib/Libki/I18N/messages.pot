@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: root/dynamic/templates/administration/hours/index.tt:31 root/dynamic/templates/administration/hours/index.tt:57
-msgid "$d"
+#: root/dynamic/includes/language_menu.tt:0
+msgid "('lang.' _ lang)"
 msgstr ""
 
 #: root/dynamic/templates/administration/history/index.tt:8
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:516
+#: root/dynamic/templates/administration/index.tt:526
 msgid "Add a + or - sign to increment or decrement the existing amount of time."
 msgstr ""
 
@@ -35,19 +35,19 @@ msgstr ""
 msgid "Add closing hours for specific dates"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:472
+#: root/dynamic/templates/administration/settings/index.tt:509
 msgid "Add custom CSS for batch guest passes here."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:535
+#: root/dynamic/templates/administration/settings/index.tt:572
 msgid "Add custom JavaScript for the administration interface here."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:543
+#: root/dynamic/templates/administration/settings/index.tt:580
 msgid "Add custom JavaScript for the public web interface here."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:330
+#: root/dynamic/templates/administration/settings/index.tt:349
 msgid "Add your list of user categories here as a list in YAML syntax."
 msgstr ""
 
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Administration / History"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:5
+#: root/dynamic/templates/administration/history/statistics.tt:3
 msgid "Administration / History / Statistics"
 msgstr ""
 
@@ -71,19 +71,19 @@ msgstr ""
 msgid "Administration / Settings"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:531
+#: root/dynamic/templates/administration/settings/index.tt:568
 msgid "Administration interface JavaScript"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:480
+#: root/dynamic/templates/administration/index.tt:490
 msgid "Administrator"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:553
+#: root/dynamic/templates/administration/settings/index.tt:590
 msgid "Advanced rules"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:22 root/dynamic/templates/administration/settings/index.tt:550
+#: root/dynamic/templates/administration/settings/index.tt:22 root/dynamic/templates/administration/settings/index.tt:587
 msgid "Advanced settings"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgstr ""
 msgid "Alert:"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:156 root/dynamic/templates/administration/index.tt:82 root/dynamic/templates/public/index.tt:10
+#: root/dynamic/templates/administration/index.tt:163 root/dynamic/templates/administration/index.tt:85 root/dynamic/templates/public/index.tt:9
 msgid "All"
 msgstr ""
 
@@ -123,15 +123,15 @@ msgstr ""
 msgid "Any client is reserved"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1136
+#: root/dynamic/templates/administration/index.tt:1150
 msgid "Are you sure you want to cancel the reservation for this client?"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1106
+#: root/dynamic/templates/administration/index.tt:1120
 msgid "Are you sure you want to delete this user?"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1120
+#: root/dynamic/templates/administration/index.tt:1134
 msgid "Are you sure you want to log this user out?"
 msgstr ""
 
@@ -139,31 +139,31 @@ msgstr ""
 msgid "Automatic time extension"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:141
+#: root/dynamic/templates/public/index.tt:140
 msgid "Available"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:385
+#: root/dynamic/templates/administration/settings/index.tt:422
 msgid "Bottom banner"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:248 root/dynamic/templates/administration/index.tt:325 root/dynamic/templates/administration/index.tt:493 root/dynamic/templates/administration/index.tt:524 root/dynamic/templates/administration/index.tt:555 root/dynamic/templates/administration/index.tt:587 root/dynamic/templates/public/index.tt:110 root/dynamic/templates/public/index.tt:75
+#: root/dynamic/templates/administration/index.tt:255 root/dynamic/templates/administration/index.tt:335 root/dynamic/templates/administration/index.tt:503 root/dynamic/templates/administration/index.tt:534 root/dynamic/templates/administration/index.tt:565 root/dynamic/templates/administration/index.tt:601 root/dynamic/templates/public/index.tt:109 root/dynamic/templates/public/index.tt:74
 msgid "Cancel"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:111 root/dynamic/templates/public/index.tt:38 root/dynamic/templates/public/index.tt:91
+#: root/dynamic/templates/public/index.tt:110 root/dynamic/templates/public/index.tt:37 root/dynamic/templates/public/index.tt:90
 msgid "Cancel reservation"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:130 root/dynamic/templates/administration/index.tt:291 root/dynamic/templates/administration/index.tt:448 root/dynamic/templates/administration/index.tt:52
+#: root/dynamic/templates/administration/index.tt:136 root/dynamic/templates/administration/index.tt:300 root/dynamic/templates/administration/index.tt:458 root/dynamic/templates/administration/index.tt:54
 msgid "Category"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:566 root/dynamic/templates/administration/index.tt:588
+#: root/dynamic/templates/administration/index.tt:580 root/dynamic/templates/administration/index.tt:602
 msgid "Change password"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/index.tt:7 root/dynamic/templates/administration/index.tt:203 root/dynamic/templates/administration/index.tt:58 root/dynamic/templates/public/index.tt:22
+#: root/dynamic/templates/administration/history/index.tt:7 root/dynamic/templates/administration/index.tt:210 root/dynamic/templates/administration/index.tt:61 root/dynamic/templates/public/index.tt:21
 msgid "Client"
 msgstr ""
 
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Client inactivity warning"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:345
+#: root/dynamic/templates/administration/settings/index.tt:382
 msgid "Client login banner settings"
 msgstr ""
 
@@ -203,11 +203,11 @@ msgstr ""
 msgid "Client reservations"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:59
+#: root/dynamic/templates/administration/index.tt:62
 msgid "Client status"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:10
+#: root/dynamic/templates/administration/index.tt:9
 msgid "Clients"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 msgid "Closing hours"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:304 root/dynamic/templates/administration/index.tt:580 root/dynamic/templates/administration/index.tt:581
+#: root/dynamic/templates/administration/index.tt:314 root/dynamic/templates/administration/index.tt:594 root/dynamic/templates/administration/index.tt:595
 msgid "Confirm password"
 msgstr ""
 
@@ -227,27 +227,27 @@ msgstr ""
 msgid "Control whether a user's time extension uses up minutes from the user's daily allotment, or if the minutes are \"free\"."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:326
+#: root/dynamic/templates/administration/index.tt:336
 msgid "Create user"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:205
+#: root/dynamic/templates/administration/index.tt:212
 msgid "Created"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:14 root/dynamic/templates/administration/settings/index.tt:528
+#: root/dynamic/templates/administration/settings/index.tt:14 root/dynamic/templates/administration/settings/index.tt:565
 msgid "Custom JavaScript"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:131 root/dynamic/templates/administration/index.tt:53
+#: root/dynamic/templates/administration/index.tt:138 root/dynamic/templates/administration/index.tt:56
 msgid "Daily minutes"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:39
+#: root/dynamic/templates/administration/history/statistics.tt:37
 msgid "Daily usage"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:41
+#: root/dynamic/templates/administration/history/statistics.tt:39
 msgid "Daily usage, count of daily logins by location"
 msgstr ""
 
@@ -255,7 +255,7 @@ msgstr ""
 msgid "Data retention"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:44
+#: root/dynamic/templates/administration/history/statistics.tt:42
 msgid "Date"
 msgstr ""
 
@@ -283,19 +283,19 @@ msgstr ""
 msgid "Default time allowance per session"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:507
+#: root/dynamic/templates/administration/settings/index.tt:544
 msgid "Define LDAP configuration in YAML format. This setting may be overridden by a LDAP block in the Libki conf file."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:499
+#: root/dynamic/templates/administration/settings/index.tt:536
 msgid "Define SIP configuration in YAML format. This setting may be overridden by a SIP block in the Libki conf file."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:521
+#: root/dynamic/templates/administration/settings/index.tt:558
 msgid "Define printer configuration in YAML format."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:70
+#: root/dynamic/templates/administration/index.tt:73
 msgid "Delete"
 msgstr ""
 
@@ -303,16 +303,20 @@ msgstr ""
 msgid "Delete selected"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:418
+#: root/dynamic/templates/administration/index.tt:428
 msgid "Details"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:467
+#: root/dynamic/templates/administration/index.tt:477
 msgid "Disabled"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:360 root/dynamic/templates/administration/index.tt:396
+#: root/dynamic/templates/administration/index.tt:370 root/dynamic/templates/administration/index.tt:406
 msgid "Dismiss"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:361
+msgid "Display first and last names"
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:228
@@ -323,28 +327,32 @@ msgstr ""
 msgid "Don't take minutes from daily allotment"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:232
+#: root/dynamic/templates/administration/index.tt:239
 msgid "Download"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:65
+#: root/dynamic/templates/administration/index.tt:68
 msgid "Edit"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:407
+#: root/dynamic/templates/administration/index.tt:417
 msgid "Edit user"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:466
+#: root/dynamic/templates/administration/index.tt:476
 msgid "Enabled"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:487
+#: root/dynamic/templates/administration/settings/index.tt:524
 msgid "Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning."
 msgstr ""
 
 #: root/dynamic/includes/wrapper.tt:51
 msgid "Error:"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:350
+msgid "Example:"
 msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:270
@@ -363,11 +371,11 @@ msgstr ""
 msgid "Extension length"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1211
+#: root/dynamic/templates/administration/index.tt:1225
 msgid "Failed to release print job: "
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:201
+#: root/dynamic/templates/administration/index.tt:208
 msgid "File name"
 msgstr ""
 
@@ -379,35 +387,35 @@ msgstr ""
 msgid "First come, first served. A patron walks up to an open client and logs in."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:282 root/dynamic/templates/administration/index.tt:439
+#: root/dynamic/templates/administration/index.tt:290 root/dynamic/templates/administration/index.tt:449
 msgid "First name"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:129 root/dynamic/templates/administration/index.tt:51
+#: root/dynamic/templates/administration/index.tt:133 root/dynamic/templates/administration/index.tt:51
 msgid "Firstname"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:490
+#: root/dynamic/templates/administration/settings/index.tt:527
 msgid "For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username."
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:13 root/dynamic/templates/administration/history/statistics.tt:16
+#: root/dynamic/templates/administration/history/statistics.tt:11 root/dynamic/templates/administration/history/statistics.tt:14
 msgid "From"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:468
+#: root/dynamic/templates/administration/settings/index.tt:505
 msgid "Guest pass CSS"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:16 root/dynamic/templates/administration/settings/index.tt:426
+#: root/dynamic/templates/administration/settings/index.tt:16 root/dynamic/templates/administration/settings/index.tt:463
 msgid "Guest passes"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:373 root/dynamic/templates/administration/settings/index.tt:410
+#: root/dynamic/templates/administration/settings/index.tt:410 root/dynamic/templates/administration/settings/index.tt:447
 msgid "Height"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:378
+#: root/dynamic/templates/administration/index.tt:388
 msgid "Highest guest account created"
 msgstr ""
 
@@ -427,7 +435,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:17 root/dynamic/templates/administration/settings/index.tt:479
+#: root/dynamic/templates/administration/settings/index.tt:17 root/dynamic/templates/administration/settings/index.tt:516
 msgid "ILS integration"
 msgstr ""
 
@@ -435,15 +443,19 @@ msgstr ""
 msgid "If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:560
+#: root/dynamic/templates/administration/settings/index.tt:597
 msgid "If no match is found, the default time allowances will be used."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:316
+#: root/dynamic/templates/administration/settings/index.tt:362
+msgid "If not checked, the possibility to enter users' first and last name will disappear."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:335
 msgid "If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:139
+#: root/dynamic/templates/public/index.tt:138
 msgid "In use"
 msgstr ""
 
@@ -451,7 +463,7 @@ msgstr ""
 msgid "Inactive user retention"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:385
+#: root/dynamic/templates/public/index.tt:384
 msgid "Incorrect password."
 msgstr ""
 
@@ -459,11 +471,11 @@ msgstr ""
 msgid "Info:"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:319
+#: root/dynamic/templates/administration/index.tt:329
 msgid "Is not a whole number"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:503
+#: root/dynamic/templates/administration/settings/index.tt:540
 msgid "LDAP configuration"
 msgstr ""
 
@@ -471,15 +483,15 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:285 root/dynamic/templates/administration/index.tt:442
+#: root/dynamic/templates/administration/index.tt:293 root/dynamic/templates/administration/index.tt:452
 msgid "Last name"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:128 root/dynamic/templates/administration/index.tt:50
+#: root/dynamic/templates/administration/index.tt:132 root/dynamic/templates/administration/index.tt:50
 msgid "Lastname"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:317 root/dynamic/templates/administration/index.tt:460
+#: root/dynamic/templates/administration/index.tt:327 root/dynamic/templates/administration/index.tt:470
 msgid "Leave unmodified for default amount of time."
 msgstr ""
 
@@ -499,11 +511,11 @@ msgstr ""
 msgid "Libki Kiosk Management System"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:33
+#: root/dynamic/templates/administration/history/statistics.tt:31
 msgid "Limit"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:125 root/dynamic/templates/administration/index.tt:153 root/dynamic/templates/administration/index.tt:79 root/dynamic/templates/public/index.tt:23 root/dynamic/templates/public/index.tt:7
+#: root/dynamic/templates/administration/index.tt:128 root/dynamic/templates/administration/index.tt:160 root/dynamic/templates/administration/index.tt:82 root/dynamic/templates/public/index.tt:22 root/dynamic/templates/public/index.tt:6
 msgid "Location"
 msgstr ""
 
@@ -511,7 +523,7 @@ msgstr ""
 msgid "Log in"
 msgstr ""
 
-#: root/dynamic/includes/navbar_administration.tt:36 root/dynamic/templates/administration/index.tt:144
+#: root/dynamic/includes/navbar_administration.tt:36 root/dynamic/templates/administration/index.tt:151
 msgid "Log out"
 msgstr ""
 
@@ -519,15 +531,15 @@ msgstr ""
 msgid "Log user out automatically after this many minutes of inactivity."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1123
+#: root/dynamic/templates/administration/index.tt:1137
 msgid "Logged user out."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:535 root/dynamic/templates/administration/index.tt:556 root/dynamic/templates/public/index.tt:34 root/dynamic/templates/public/index.tt:76
+#: root/dynamic/templates/administration/index.tt:545 root/dynamic/templates/administration/index.tt:566 root/dynamic/templates/public/index.tt:33 root/dynamic/templates/public/index.tt:75
 msgid "Make reservation"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:48
+#: root/dynamic/templates/public/index.tt:47
 msgid "Make reservation for"
 msgstr ""
 
@@ -535,11 +547,11 @@ msgstr ""
 msgid "Manage existing specific dates"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:315 root/dynamic/templates/administration/index.tt:354 root/dynamic/templates/administration/index.tt:388 root/dynamic/templates/administration/index.tt:458 root/dynamic/templates/administration/index.tt:514 root/dynamic/templates/administration/settings/index.tt:176 root/dynamic/templates/administration/settings/index.tt:187 root/dynamic/templates/administration/settings/index.tt:202 root/dynamic/templates/administration/settings/index.tt:219 root/dynamic/templates/administration/settings/index.tt:256 root/dynamic/templates/administration/settings/index.tt:267 root/dynamic/templates/administration/settings/index.tt:37 root/dynamic/templates/administration/settings/index.tt:48 root/dynamic/templates/administration/settings/index.tt:59 root/dynamic/templates/administration/settings/index.tt:70 root/dynamic/templates/public/index.tt:145
+#: root/dynamic/templates/administration/index.tt:325 root/dynamic/templates/administration/index.tt:364 root/dynamic/templates/administration/index.tt:398 root/dynamic/templates/administration/index.tt:468 root/dynamic/templates/administration/index.tt:524 root/dynamic/templates/administration/settings/index.tt:176 root/dynamic/templates/administration/settings/index.tt:187 root/dynamic/templates/administration/settings/index.tt:202 root/dynamic/templates/administration/settings/index.tt:219 root/dynamic/templates/administration/settings/index.tt:256 root/dynamic/templates/administration/settings/index.tt:267 root/dynamic/templates/administration/settings/index.tt:37 root/dynamic/templates/administration/settings/index.tt:48 root/dynamic/templates/administration/settings/index.tt:59 root/dynamic/templates/administration/settings/index.tt:70 root/dynamic/templates/public/index.tt:144
 msgid "Minutes"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:142 root/dynamic/templates/administration/index.tt:504
+#: root/dynamic/templates/administration/index.tt:149 root/dynamic/templates/administration/index.tt:514
 msgid "Modify time"
 msgstr ""
 
@@ -547,103 +559,103 @@ msgstr ""
 msgid "More"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:116 root/dynamic/templates/administration/index.tt:190 root/dynamic/templates/administration/index.tt:41
+#: root/dynamic/templates/administration/index.tt:119 root/dynamic/templates/administration/index.tt:197 root/dynamic/templates/administration/index.tt:40
 msgid "Multiple guests"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:124 root/dynamic/templates/administration/index.tt:279 root/dynamic/templates/administration/index.tt:436
+#: root/dynamic/templates/administration/index.tt:127 root/dynamic/templates/administration/index.tt:287 root/dynamic/templates/administration/index.tt:446
 msgid "Name"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:115 root/dynamic/templates/administration/index.tt:189 root/dynamic/templates/administration/index.tt:40
+#: root/dynamic/templates/administration/index.tt:118 root/dynamic/templates/administration/index.tt:196 root/dynamic/templates/administration/index.tt:39
 msgid "New guest"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:370
+#: root/dynamic/templates/administration/index.tt:380
 msgid "New guest batch created"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:336
+#: root/dynamic/templates/administration/index.tt:346
 msgid "New guest user created"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:113 root/dynamic/templates/administration/index.tt:187 root/dynamic/templates/administration/index.tt:259 root/dynamic/templates/administration/index.tt:38
+#: root/dynamic/templates/administration/index.tt:116 root/dynamic/templates/administration/index.tt:194 root/dynamic/templates/administration/index.tt:266 root/dynamic/templates/administration/index.tt:37
 msgid "New user"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:50
+#: root/dynamic/templates/administration/history/statistics.tt:48
 msgid "No location set"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:134 root/dynamic/templates/administration/index.tt:472 root/dynamic/templates/administration/index.tt:56
+#: root/dynamic/templates/administration/index.tt:141 root/dynamic/templates/administration/index.tt:482 root/dynamic/templates/administration/index.tt:59
 msgid "Notes"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:383
+#: root/dynamic/templates/administration/index.tt:393
 msgid "Number of accounts created"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:202
+#: root/dynamic/templates/administration/index.tt:209
 msgid "Pages"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:441
+#: root/dynamic/templates/administration/settings/index.tt:478
 msgid "Passes"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:437
+#: root/dynamic/templates/administration/settings/index.tt:474
 msgid "Passes to create per batch"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:301 root/dynamic/templates/administration/index.tt:302 root/dynamic/templates/administration/index.tt:349 root/dynamic/templates/administration/index.tt:576 root/dynamic/templates/administration/index.tt:577 root/dynamic/templates/administration/index.tt:67 root/dynamic/templates/login.tt:45 root/dynamic/templates/public/index.tt:101 root/dynamic/templates/public/index.tt:66
+#: root/dynamic/templates/administration/index.tt:311 root/dynamic/templates/administration/index.tt:312 root/dynamic/templates/administration/index.tt:359 root/dynamic/templates/administration/index.tt:590 root/dynamic/templates/administration/index.tt:591 root/dynamic/templates/administration/index.tt:70 root/dynamic/templates/login.tt:45 root/dynamic/templates/public/index.tt:100 root/dynamic/templates/public/index.tt:65
 msgid "Password"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:979
+#: root/dynamic/templates/administration/index.tt:993
 msgid "Password changed."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:305 root/dynamic/templates/administration/index.tt:582
+#: root/dynamic/templates/administration/index.tt:315 root/dynamic/templates/administration/index.tt:596
 msgid "Password fields must match."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:104 root/dynamic/templates/public/index.tt:69
+#: root/dynamic/templates/public/index.tt:103 root/dynamic/templates/public/index.tt:68
 msgid "Password is required"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:458
+#: root/dynamic/templates/administration/settings/index.tt:495
 msgid "Password label"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:310
+#: root/dynamic/templates/administration/index.tt:320
 msgid "Passwords do not match"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:307
+#: root/dynamic/templates/administration/index.tt:317
 msgid "Passwords match"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:482
+#: root/dynamic/templates/administration/settings/index.tt:519
 msgid "Patron hyperlinks"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:366 root/dynamic/templates/administration/settings/index.tt:377 root/dynamic/templates/administration/settings/index.tt:403 root/dynamic/templates/administration/settings/index.tt:414
+#: root/dynamic/templates/administration/settings/index.tt:403 root/dynamic/templates/administration/settings/index.tt:414 root/dynamic/templates/administration/settings/index.tt:440 root/dynamic/templates/administration/settings/index.tt:451
 msgid "Pixels"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:429
+#: root/dynamic/templates/administration/settings/index.tt:466
 msgid "Prefix for guest passes"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:433
+#: root/dynamic/templates/administration/settings/index.tt:470
 msgid "Prefix for guest passes, defaults to 'guest' if none is specified."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:216
+#: root/dynamic/templates/administration/index.tt:223
 msgid "Print"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1220
+#: root/dynamic/templates/administration/index.tt:1234
 msgid "Print job refreshed"
 msgstr ""
 
@@ -651,39 +663,43 @@ msgstr ""
 msgid "Print job retention"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:18 root/dynamic/templates/administration/settings/index.tt:514
+#: root/dynamic/templates/administration/settings/index.tt:18 root/dynamic/templates/administration/settings/index.tt:551
 msgid "Print management"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:200
+#: root/dynamic/templates/administration/index.tt:207
 msgid "Printer"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:517
+#: root/dynamic/templates/administration/settings/index.tt:554
 msgid "Printer configuration"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:14
+#: root/dynamic/templates/administration/index.tt:13
 msgid "Prints"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:539
+#: root/dynamic/templates/administration/settings/index.tt:576
 msgid "Public interface JavaScript"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:172 root/dynamic/templates/administration/index.tt:224 root/dynamic/templates/administration/index.tt:28 root/dynamic/templates/administration/index.tt:98
+#: root/dynamic/templates/administration/index.tt:101 root/dynamic/templates/administration/index.tt:179 root/dynamic/templates/administration/index.tt:231 root/dynamic/templates/administration/index.tt:27
 msgid "Refresh"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1139 root/dynamic/templates/public/index.tt:378
+#: root/dynamic/templates/administration/settings/index.tt:306
+msgid "Renew the time allotment when it reaches zero"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1153 root/dynamic/templates/public/index.tt:377
 msgid "Reservation canceled."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:257
+#: root/dynamic/templates/public/index.tt:256
 msgid "Reservation created."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1047
+#: root/dynamic/templates/administration/index.tt:1061
 msgid "Reservation for user created."
 msgstr ""
 
@@ -691,7 +707,7 @@ msgstr ""
 msgid "Reservation only. A patron must place a reservation for a client before logging in to it."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:26
+#: root/dynamic/templates/public/index.tt:25
 msgid "Reservation status"
 msgstr ""
 
@@ -703,31 +719,31 @@ msgstr ""
 msgid "Reservations"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:143
+#: root/dynamic/templates/administration/index.tt:150
 msgid "Reserve"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:136 root/dynamic/templates/public/index.tt:153
+#: root/dynamic/templates/administration/index.tt:143 root/dynamic/templates/public/index.tt:152
 msgid "Reserved"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:150
+#: root/dynamic/templates/public/index.tt:149
 msgid "Reserved by"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:421
+#: root/dynamic/templates/administration/index.tt:431
 msgid "Roles"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:495
+#: root/dynamic/templates/administration/settings/index.tt:532
 msgid "SIP configuration"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:132 root/dynamic/templates/administration/index.tt:54
+#: root/dynamic/templates/administration/index.tt:139 root/dynamic/templates/administration/index.tt:57
 msgid "Session minutes"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:126
+#: root/dynamic/templates/administration/index.tt:129
 msgid "Session status"
 msgstr ""
 
@@ -735,15 +751,15 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:583
+#: root/dynamic/templates/administration/settings/index.tt:620
 msgid "Settings not updated."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:580
+#: root/dynamic/templates/administration/settings/index.tt:617
 msgid "Settings updated."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:351 root/dynamic/templates/administration/settings/index.tt:388
+#: root/dynamic/templates/administration/settings/index.tt:388 root/dynamic/templates/administration/settings/index.tt:425
 msgid "Source URL"
 msgstr ""
 
@@ -755,7 +771,7 @@ msgstr ""
 msgid "Statistics and history for users older than this number of days will be automatically anonymized. If not set, data will never be anonymized."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:199 root/dynamic/templates/administration/index.tt:464 root/dynamic/templates/administration/index.tt:55 root/dynamic/templates/public/index.tt:24
+#: root/dynamic/templates/administration/index.tt:206 root/dynamic/templates/administration/index.tt:474 root/dynamic/templates/administration/index.tt:58 root/dynamic/templates/public/index.tt:23
 msgid "Status"
 msgstr ""
 
@@ -763,7 +779,7 @@ msgstr ""
 msgid "Success:"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:485
+#: root/dynamic/templates/administration/index.tt:495
 msgid "Super administrator"
 msgstr ""
 
@@ -771,23 +787,23 @@ msgstr ""
 msgid "Take minutes from daily allotment"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:20 root/dynamic/templates/administration/settings/index.tt:309
+#: root/dynamic/templates/administration/settings/index.tt:20 root/dynamic/templates/administration/settings/index.tt:328
 msgid "Terms of service"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:312
+#: root/dynamic/templates/administration/settings/index.tt:331
 msgid "Terms of service text"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:358 root/dynamic/templates/administration/settings/index.tt:395
+#: root/dynamic/templates/administration/settings/index.tt:395 root/dynamic/templates/administration/settings/index.tt:432
 msgid "The URL for the source image or image service."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:380 root/dynamic/templates/administration/settings/index.tt:417
+#: root/dynamic/templates/administration/settings/index.tt:417 root/dynamic/templates/administration/settings/index.tt:454
 msgid "The height of the source image or image service in pixels."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:444
+#: root/dynamic/templates/administration/settings/index.tt:481
 msgid "The number of passes to create per batch."
 msgstr ""
 
@@ -795,35 +811,35 @@ msgstr ""
 msgid "The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:463
+#: root/dynamic/templates/administration/settings/index.tt:500
 msgid "The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:453
+#: root/dynamic/templates/administration/settings/index.tt:490
 msgid "The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:369 root/dynamic/templates/administration/settings/index.tt:406
+#: root/dynamic/templates/administration/settings/index.tt:406 root/dynamic/templates/administration/settings/index.tt:443
 msgid "The width of the source image or image service in pixels."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:559
+#: root/dynamic/templates/administration/settings/index.tt:596
 msgid "These rules override the default time allowances"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:224 root/dynamic/templates/public/index.tt:277
+#: root/dynamic/templates/public/index.tt:223 root/dynamic/templates/public/index.tt:276
 msgid "This client is already reserved."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:351
+#: root/dynamic/templates/public/index.tt:350
 msgid "This client is not currently reserved."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:268
+#: root/dynamic/templates/public/index.tt:267
 msgid "This kiosk is closed for the day."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:25
+#: root/dynamic/templates/public/index.tt:24
 msgid "Time remaining"
 msgstr ""
 
@@ -835,79 +851,79 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:23 root/dynamic/templates/administration/history/statistics.tt:26
+#: root/dynamic/templates/administration/history/statistics.tt:21 root/dynamic/templates/administration/history/statistics.tt:24
 msgid "To"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:348
+#: root/dynamic/templates/administration/settings/index.tt:385
 msgid "Top banner"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:56
+#: root/dynamic/templates/administration/history/statistics.tt:54
 msgid "Total by date"
 msgstr ""
 
-#: root/dynamic/templates/administration/history/statistics.tt:77
+#: root/dynamic/templates/administration/history/statistics.tt:75
 msgid "Total by location"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:135 root/dynamic/templates/administration/index.tt:57 root/dynamic/templates/administration/index.tt:69
+#: root/dynamic/templates/administration/index.tt:142 root/dynamic/templates/administration/index.tt:60 root/dynamic/templates/administration/index.tt:72
 msgid "Troublemaker"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:992
+#: root/dynamic/templates/administration/index.tt:1006
 msgid "Troublemaker status switched."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:198
+#: root/dynamic/templates/administration/index.tt:205
 msgid "Type"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1143
+#: root/dynamic/templates/administration/index.tt:1157
 msgid "Unable to cancel reservation."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:982
+#: root/dynamic/templates/administration/index.tt:996
 msgid "Unable to change password."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:846 root/dynamic/templates/administration/index.tt:869
+#: root/dynamic/templates/administration/index.tt:860 root/dynamic/templates/administration/index.tt:883
 msgid "Unable to create guest user."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1113
+#: root/dynamic/templates/administration/index.tt:1127
 msgid "Unable to delete user."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1127
+#: root/dynamic/templates/administration/index.tt:1141
 msgid "Unable to log user out."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1055
+#: root/dynamic/templates/administration/index.tt:1069
 msgid "Unable to modify reservation: Reason unknown."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1051
+#: root/dynamic/templates/administration/index.tt:1065
 msgid "Unable to modify reservation: User already has a reservation for a different client."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1053
+#: root/dynamic/templates/administration/index.tt:1067
 msgid "Unable to modify reservation: User not found."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:995
+#: root/dynamic/templates/administration/index.tt:1009
 msgid "Unable to switch troublemaker status."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1025
+#: root/dynamic/templates/administration/index.tt:1039
 msgid "Unable to update user's time."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:938
+#: root/dynamic/templates/administration/index.tt:952
 msgid "Unable to update user."
 msgstr ""
 
-#: root/dynamic/templates/administration/hours/index.tt:80 root/dynamic/templates/administration/settings/index.tt:567
+#: root/dynamic/templates/administration/hours/index.tt:80 root/dynamic/templates/administration/settings/index.tt:604
 msgid "Update"
 msgstr ""
 
@@ -915,11 +931,11 @@ msgstr ""
 msgid "Update hours for all locations."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:525
+#: root/dynamic/templates/administration/index.tt:535
 msgid "Update time"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:494
+#: root/dynamic/templates/administration/index.tt:504
 msgid "Update user"
 msgstr ""
 
@@ -927,35 +943,35 @@ msgstr ""
 msgid "Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:204
+#: root/dynamic/templates/administration/index.tt:211
 msgid "User"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:326
+#: root/dynamic/templates/administration/settings/index.tt:345
 msgid "User categories"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:821
+#: root/dynamic/templates/administration/index.tt:835
 msgid "User created."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1109
+#: root/dynamic/templates/administration/index.tt:1123
 msgid "User deleted."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:824
+#: root/dynamic/templates/administration/index.tt:838
 msgid "User not created."
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:21 root/dynamic/templates/administration/settings/index.tt:323
+#: root/dynamic/templates/administration/settings/index.tt:21 root/dynamic/templates/administration/settings/index.tt:342
 msgid "User settings"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:133
+#: root/dynamic/templates/administration/index.tt:140
 msgid "User status"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:935
+#: root/dynamic/templates/administration/index.tt:949
 msgid "User updated."
 msgstr ""
 
@@ -963,59 +979,59 @@ msgstr ""
 msgid "User's client is reserved"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:1022
+#: root/dynamic/templates/administration/index.tt:1036
 msgid "User's time updated."
 msgstr ""
 
-#: root/dynamic/templates/administration/history/index.tt:6 root/dynamic/templates/administration/index.tt:127 root/dynamic/templates/administration/index.tt:267 root/dynamic/templates/administration/index.tt:268 root/dynamic/templates/administration/index.tt:344 root/dynamic/templates/administration/index.tt:430 root/dynamic/templates/administration/index.tt:49 root/dynamic/templates/administration/index.tt:545 root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27 root/dynamic/templates/public/index.tt:58
+#: root/dynamic/templates/administration/history/index.tt:6 root/dynamic/templates/administration/index.tt:130 root/dynamic/templates/administration/index.tt:274 root/dynamic/templates/administration/index.tt:275 root/dynamic/templates/administration/index.tt:354 root/dynamic/templates/administration/index.tt:440 root/dynamic/templates/administration/index.tt:48 root/dynamic/templates/administration/index.tt:555 root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27 root/dynamic/templates/public/index.tt:57
 msgid "Username"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:261
+#: root/dynamic/templates/public/index.tt:260
 msgid "Username & password do not match."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:274
+#: root/dynamic/templates/administration/index.tt:281
 msgid "Username already used"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:549
+#: root/dynamic/templates/administration/index.tt:559
 msgid "Username is invalid"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:61
+#: root/dynamic/templates/public/index.tt:60
 msgid "Username is required"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:271
+#: root/dynamic/templates/administration/index.tt:278
 msgid "Username is unique"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:448
+#: root/dynamic/templates/administration/settings/index.tt:485
 msgid "Username label"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:432
+#: root/dynamic/templates/administration/index.tt:442
 msgid "Username may not be edited."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:269
+#: root/dynamic/templates/administration/index.tt:276
 msgid "Username must be unique."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:547
+#: root/dynamic/templates/administration/index.tt:557
 msgid "Username of user to make reservation for."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:7
+#: root/dynamic/templates/administration/index.tt:6
 msgid "Users"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:240
+#: root/dynamic/templates/administration/index.tt:247
 msgid "View"
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:392
+#: root/dynamic/templates/administration/index.tt:402
 msgid "View & print guest passes"
 msgstr ""
 
@@ -1027,100 +1043,108 @@ msgstr ""
 msgid "When a Libki client is reserved and waiting, display the username of the person it is waiting for."
 msgstr ""
 
+#: root/dynamic/templates/administration/settings/index.tt:307
+msgid "When a user's time allotment reaches zero, it's automatically renewed with the value of Extension length. This makes it possible for the user to log in again."
+msgstr ""
+
 #: root/dynamic/templates/administration/settings/index.tt:290
 msgid "When extending time"
 msgstr ""
 
-#: root/dynamic/templates/administration/settings/index.tt:362 root/dynamic/templates/administration/settings/index.tt:399
+#: root/dynamic/templates/administration/settings/index.tt:399 root/dynamic/templates/administration/settings/index.tt:436
 msgid "Width"
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:325
+#: root/dynamic/templates/public/index.tt:324
 msgid "You are not of the appropriate age to use this client."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:274
+#: root/dynamic/templates/public/index.tt:273
 msgid "You have already reserved a client."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:271
+#: root/dynamic/templates/public/index.tt:270
 msgid "You have already reserved this client."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:319
+#: root/dynamic/templates/public/index.tt:318
 msgid "You have an overdue item recall."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:322
+#: root/dynamic/templates/public/index.tt:321
 msgid "You have been billed for too many items."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:307
+#: root/dynamic/templates/public/index.tt:306
 msgid "You have claimed returned for too many items."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:280
+#: root/dynamic/templates/public/index.tt:279
 msgid "You have excessive oustanding fees."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:316
+#: root/dynamic/templates/public/index.tt:315
 msgid "You have excessive outstanding fees."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:313
+#: root/dynamic/templates/public/index.tt:312
 msgid "You have excessive outstanding fines."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:310
+#: root/dynamic/templates/public/index.tt:309
 msgid "You have lost too many items."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:265
+#: root/dynamic/templates/public/index.tt:264
 msgid "You have no time remaining."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:304
+#: root/dynamic/templates/public/index.tt:303
 msgid "You have renewed too many items."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:298
+#: root/dynamic/templates/public/index.tt:297
 msgid "You have too many items checked out."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:301
+#: root/dynamic/templates/public/index.tt:300
 msgid "You have too many overdue items."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:283
+#: root/dynamic/templates/public/index.tt:282
 msgid "Your checkout privileges have been denied."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:292
+#: root/dynamic/templates/public/index.tt:291
 msgid "Your hold privileges have been denied."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:295
+#: root/dynamic/templates/public/index.tt:294
 msgid "Your library card has been reported lost or stolen."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:289
+#: root/dynamic/templates/public/index.tt:288
 msgid "Your recall privileges have been denied."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:286
+#: root/dynamic/templates/public/index.tt:285
 msgid "Your renewal privileges have been denied."
 msgstr ""
 
-#: root/dynamic/templates/public/index.tt:382
+#: root/dynamic/templates/public/index.tt:381
 msgid "Your reservation cancelation failed for an unknown reason."
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:0
+msgid "d"
 msgstr ""
 
 #: root/dynamic/templates/administration/hours/index.tt:140 root/dynamic/templates/administration/hours/index.tt:99
 msgid "for"
 msgstr ""
 
-#: root/dynamic/includes/language_menu.tt:8
-msgid "lang.$lang"
+#: root/dynamic/includes/breadcrumbs.tt:5 root/dynamic/includes/breadcrumbs.tt:9
+msgid "item.label"
 msgstr ""
 
 # Not generated by xgettext.pl
