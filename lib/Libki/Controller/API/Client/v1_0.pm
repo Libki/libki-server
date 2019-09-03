@@ -14,7 +14,6 @@ use DateTime;
 use List::Util qw(min);
 use PDF::API2;
 use Date::Parse;
-use POSIX;
 
 =head1 NAME
 
@@ -70,7 +69,7 @@ sub index : Path : Args(0) {
         );
         $log->debug( "Client Registered: " . $client->name() );
 
-        my $reserved_for = get_reservation_status($client);
+        my $reserved_for = $c->get_reservation_status( $client );
         $c->stash( reserved_for => $reserved_for) if($reserved_for);
 
         my $age_limit = $c->request->params->{'age_limit'};
@@ -112,12 +111,15 @@ sub index : Path : Args(0) {
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
         my $client_name  = $c->request->params->{'node'};
-
         my $client = $c->model('DB::Client')->find( { name => $client_name } ) || undef;
-        my $reservation= $c->model('DB::Reservation')->search(
-                                                               {'client_id' => $client->id},
-                                                               { order_by => { -asc => 'begin_time' }}
-                                                             )->first || undef;
+
+        my $reservation = $c->model('DB::Reservation')->search(
+            {
+                instance => $instance,
+                client_id => $client->id
+            },
+            { order_by => { -asc => 'begin_time' } }
+        )->first;
 
         if ($reservation) {
             if ( str2time($reservation->end_time) < str2time($c->now) ) {
@@ -198,6 +200,8 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
+                    my $is_guest = $user->is_guest eq 'Yes';
+
                     my $client = $c->model('DB::Client')->single(
                         {
                             instance => $instance,
@@ -205,8 +209,44 @@ sub index : Path : Args(0) {
                         }
                     );
 
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+
+                    #TODO: Move this to a unified sub, see TODO below
+                    # Get advanced rule if there is one
+                    my $minutes_allotment = $user->minutes_allotment;
+
+                    unless ( defined($minutes_allotment) ) {
+                        $minutes_allotment = $c->get_rule(
+                            {
+                                rule            => $is_guest ? 'guest_daily' : 'daily',
+                                user_category   => $user->category,
+                                client_location => $client->location,
+                                client_name     => $client_name,
+                            }
+                        );
+
+                        # Use 'simple' rules if no advanced rule exists
+                        $minutes_allotment //=
+                              $is_guest
+                            ? $c->setting('DefaultGuestTimeAllowance')
+                            : $c->setting('DefaultTimeAllowance');
+                    }
+
                     my $error = {};    # Must be initialized as a hashref
-                    if (
+                    if ( $minutes_until_closing && $minutes_until_closing <= 0 )
+                    {
+                        $c->stash( error => 'CLOSED' );
+                    }
+                    elsif ( $user->session ) {
+                        $c->stash( error => 'ACCOUNT_IN_USE' );
+                    }
+                    elsif ( $user->status eq 'disabled' ) {
+                        $c->stash( error => 'ACCOUNT_DISABLED' );
+                    }
+                    elsif ( $minutes_allotment < 1 ) {
+                        $c->stash( error => 'NO_TIME' );
+                    }
+                    elsif (
                         !$client->can_user_use(
                             { user => $user, error => $error, c => $c }
                         )
@@ -216,17 +256,38 @@ sub index : Path : Args(0) {
                     }
                     else {
                         if ($client) {
-                            my %result = check($client,$user,$c);
+                            $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
+                            my %result = $c->check_login($client,$user);
                             my $reservation = $result{'reservation'};
 
-                            if ( !$result{'error'} )
+                            # Allows exceptions to "Reservation only" client behavior
+                            my $no_reservation_required = $c->get_rule(
+                                {
+                                    rule            => 'no_reservation_required',
+                                    user_category   => $user->category,
+                                    client_location => $client->location,
+                                    client_name     => $client_name,
+                                }
+                            );
+
+                            my $no_reservation = $reservation ? 0 : 1;
+                            my $reservation_only = $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ? 0 : 1;
+
+                            if ( $reservation_only && $no_reservation && !$no_reservation_required )
                             {
+                                $c->stash( error => 'RESERVATION_REQUIRED' );
+                            }
+                            elsif ( (!$reservation || $reservation->user_id() == $user->id() )
+                                    && !$result{'error'} )
+                            {
+                                $reservation->delete() if $reservation;
+                                %result = $c->check_login($client,$user);
+
                                 my $session_id = $c->sessionid;
 
-                                $user->minutes_allotment($user->minutes_allotment - $result{'minutes'});
-                                $user->update();
-
+                                # Solves issue with some browsers not parsing correctly
                                 $c->stash( units => "$result{'minutes'}" );
+
                                 my $session = $c->model('DB::Session')->create(
                                     {
                                         instance   => $instance,
@@ -237,6 +298,7 @@ sub index : Path : Args(0) {
                                         session_id => $session_id,
                                     }
                                 );
+
                                 $c->stash( authenticated => $session && 1 );
 
                                 $c->model('DB::Statistic')->create(
@@ -298,10 +360,6 @@ sub index : Path : Args(0) {
             my $session_id = $session->session_id;
             my $location = $session->client->location;
 
-            if( $session->minutes > 0 ) {
-                $user->minutes_allotment($user->minutes_allotment + $session->minutes);
-                $user->update();
-            }
             my $success = $user->session->delete();
             $success &&= 1;
             $c->stash( logged_out => $success );
@@ -404,157 +462,6 @@ sub print : Path('print') : Args(0) {
     delete( $c->stash->{'Settings'} );
     $c->forward( $c->view('JSON') );
 }
-
-=head2 get_reservation_status
-
-Get the status of the first reservation.
-
-=cut
-
-sub get_reservation_status : Private : Args(1) {
-    my ($client) = @_;
-    my $c = Libki->new();
-    my $timeout =  $c->model('DB::Setting')->find( { name => 'ReservationTimeout'} )->value;
-    my $reservation= $c->model('DB::Reservation')->search(
-       { 'client_id' => $client->id},
-       { order_by => { -asc => 'begin_time' } }
-       )->first || undef;
-
-    my $status = undef;
-
-    if ($reservation) {
-        my $seconds = str2time($reservation->end_time) - str2time($reservation->begin_time);
-        my $time_left = ($timeout * 60) > $seconds ? $seconds : ($timeout * 60);
-        my $reserve = str2time($reservation->begin_time) + $time_left -time();
-        if($reserve >= 0 && $reserve <= $time_left) {
-            $status = $reservation->user->username.'  left '.floor($reserve/60).'m'.($reserve%60).'s';
-        }
-        elsif($reserve > $time_left && $reserve < 3600) {
-            my $willbereserved = $reserve - $time_left;
-            $status = $reservation->user->username().' in '.floor($willbereserved/60).'m'.($willbereserved%60).'s' ;
-        }
-    }
-    return $status;
-}
-
-=head2 check
-
-Check the time and the user, return the available time if possible.
-
-=cut
-
-sub check : Private : Args(3) {
-    my($client,$user,$c) = @_;
-    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c,$client->location );
-    my $timeout = $c->setting('ReservationTimeout');
-    my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
-    my $time_to_reservation = 0;
-    my $reservation = $c->model('DB::Reservation')->find({ user_id => $user->id(), client_id => $client->id});
-
-    # 1. Check user session, status and the closing time.
-    if ( $user->session ) {
-        $result{"error"} = 'ACCOUNT_IN_USE';
-    }
-    elsif ( $user->status eq 'disabled' ) {
-        $result{"error"} = 'ACCOUNT_DISABLED';
-    }
-    elsif($minutes_until_closing && $minutes_until_closing <= 0) {
-        $result{"error"} = 'CLOSED';
-    }
-
-    # 2. Check the allotment
-    if(!$result{'error'} && !$reservation) {
-        # Get advanced rule if there is one
-        my $minutes_allotment = $user->minutes_allotment;
-        my $is_guest = $user->is_guest eq 'Yes';
-        unless ( defined($minutes_allotment) ) {
-            $minutes_allotment = $c->get_rule( {
-                    rule            => $is_guest ? 'guest_daily' : 'daily',
-                    user_category   => $user->category,
-                    client_location => $client->location,
-                    client_name     => $client->name,
-                 } );
-
-            # Use 'simple' rules if no advanced rule exists
-            $minutes_allotment //=
-                  $is_guest
-                ? $c->setting('DefaultGuestTimeAllowance')
-                : $c->setting('DefaultTimeAllowance');
-        }
-
-        if ( $minutes_allotment < 1 ) {
-            $result{"error"} = 'NO_TIME';
-        }
-    }
-
-    # 3. Check the ClientBehavior setting
-    # Allows exceptions to "Reservation only" client behavior
-    if(!$result{'error'}) {
-        my $no_reservation_required = $c->get_rule( {
-                rule            => 'no_reservation_required',
-                user_category   => $user->category,
-                client_location => $client->location,
-                client_name     => $client->name,
-            } );
-
-        my $no_reservation = $reservation ? 0 : 1;
-        my $reservation_only = $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ? 0 : 1;
-        if ( $reservation_only && $no_reservation && !$no_reservation_required ) {
-            $result{"error"} = 'RESERVATION_REQUIRED' ;
-        }
-    }
-
-    # 4. Check if the time is available and get the time_to_reservation
-    if(!$result{'error'}) {
-        ## If the user has a reservation, delete the reservation and return the minutes to minutes_allotment.
-        if($reservation) {
-            $result{'reservation'} = $reservation;
-            $user->minutes_allotment($user->minutes_allotment + ceil((str2time($reservation->end_time) - (str2time($reservation->begin_time) > str2time($c->now) ? str2time($reservation->begin_time): str2time($c->now)) )/60));
-            $user->update();
-            $reservation->delete();
-        }
-
-        my $first_reservation = $c->model('DB::Reservation')->search(
-                        { client_id => $client->id },
-                        { order_by => { -asc => 'begin_time' } }
-                        )->first || undef;
-
-        my $minutes_timeout = $timeout < $user->minutes_allotment ? $timeout:$user->minutes_allotment;
-        my $begin_time = $c->now;
-
-        ## Calculate the time to the first reservation.
-        if($first_reservation) {
-            if(
-              ( (str2time($first_reservation->begin_time) - 60 ) <= str2time($c->now) )
-              && str2time($c->now) <= ( str2time($first_reservation->begin_time) + $minutes_timeout*60 )
-             ) {
-              $result{'error'} = 'RESERVED_FOR_OTHER';
-            }
-            $begin_time = $first_reservation->begin_time;
-            $time_to_reservation = floor( (str2time($begin_time) - str2time($c->now))/60 );
-        }
-    }
-
-    # 5. Get the available minutes
-    if(!$result{'error'}) {
-        my $allotment = $user->minutes_allotment;
-        my $allowance = $c->setting('DefaultSessionTimeAllowance');
-        my @array = ($allowance, $allotment);
-        push(@array, $minutes_until_closing) if ($minutes_until_closing);
-        push(@array, $time_to_reservation) if ($time_to_reservation > 0);
-        my $min = min @array;
-
-        if($min > 0) {
-            $result{'minutes'} = $min;
-        }
-        else {
-            $result{'error'} = 'NO_TIME';
-        }
-    }
-
-    return %result;
-}
-
 
 =head1 AUTHOR
 

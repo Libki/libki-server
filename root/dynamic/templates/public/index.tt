@@ -29,7 +29,7 @@
 <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
     <div class="btn-group" role="group">
     [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary">
+        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="setTime()">
             <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
         </button>
 
@@ -53,36 +53,11 @@
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
             <div class="form-group">
-               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date">
-               <select id="hour" name="reservation_hour">
-                   <option>08</option>
-                   <option>09</option>
-                   <option>10</option>
-                   <option>11</option>
-                   <option>12</option>
-                   <option>13</option>
-                   <option>14</option>
-                   <option>15</option>
-                   <option>16</option>
-                   <option>17</option>
-                   <option>18</option>
-                   <option>19</option>
-                   <option>20</option>
+               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="setTime()">
+               <select id="reservation-hour" name="reservation_hour" onchange="setMinute()">
                </select>
                 :
-               <select id="minute" name="reservation_minute">
-                    <option>00</option>
-                    <option>05</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                    <option>25</option>
-                    <option>30</option>
-                    <option>35</option>
-                    <option>40</option>
-                    <option>45</option>
-                    <option>50</option>
-                    <option>55</option>
+               <select id="reservation-minute" name="reservation_minute">
                 </select>
 
             </div>
@@ -285,7 +260,7 @@ $(document).ready(function() {
                     ForceClientTableRefresh();
                 }
                 else if ( data.reason == "INVALID_TIME" )  {
-                    DisplayMessage( "error", "[% c.loc("The time you choose is not available.") %]" );
+                    DisplayMessage( "error", "[% c.loc("The time you chose is not available.") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
                 else if ( data.reason == "INVALID_USER" || data.reason == "INVALID_PASSWORD" )  {
@@ -293,7 +268,7 @@ $(document).ready(function() {
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
                 else if ( data.reason == "INVALID_USER" || data.reason == "CLOSING_TIME" )  {
-                    DisplayMessage( "error", "[% c.loc("This kiosk will be closed at the time you choosed.") %]" );
+                    DisplayMessage( "error", "[% c.loc("This kiosk will be closed at the time you chose.") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
                 else if ( data.reason == "NO_TIME" ) {
@@ -425,6 +400,9 @@ $(document).ready(function() {
                 else if ( data.reason == "UNKOWN" ) {
                     DisplayMessage( "error", "[% c.loc("Your reservation cancelation failed for an unknown reason.") %]" );
                 } 
+                else if ( data.reason == "NOTFOUND" ) {
+                    DisplayMessage( "error", "[% c.loc("You have no reservation on this kiosk.") %]" );
+                }
                 else  {
                     DisplayMessage( "error", "[% c.loc("Incorrect password.") %]" );
                     $("#client-table-row-toolbar-cancel-reservation").click();
@@ -452,7 +430,8 @@ $('#datepicker').datepicker({
      dateFormat:'yy-mm-dd',
      minDate:'%y-%M-%d',
      gotoCurrent: true,
-     //beforeShowDay: $.datepicker.noWeekends
  });
 
+$("#datepicker").datepicker("setDate", new Date());
+setTime();
 </script>

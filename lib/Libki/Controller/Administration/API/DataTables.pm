@@ -232,7 +232,14 @@ sub clients : Local Args(0) {
     );
     my $client = $c;
     my @results;
+    my $enc = 'UTF-8';
     foreach my $c (@clients) {
+        my $reservation= $client->model('DB::Reservation')->search(
+             { 'client_id' => $c->id},
+             {  order_by => { -asc => 'begin_time' } }
+             )->first || undef;
+        my $begin = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
+        $begin =~ s/T/ / if(defined($begin));
         my @clientValues = (
             $c->name,
             $c->location,
@@ -246,18 +253,14 @@ sub clients : Local Args(0) {
             defined( $c->session ) ? $c->session->user->status  : undef,
             defined( $c->session ) ? $c->session->user->notes : undef,
             defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
-            defined( $c->reservation ) ? $c->reservation->user->username : undef,
+            defined( $reservation ) ? $reservation->user->username : undef,
+            defined( $reservation ) ? $begin : undef,
         );
 
         if ($userCategories eq '') {
             splice @clientValues, 6, 1;
         }
 
-        my $enc = 'UTF-8';
-        my $reservation= $client->model('DB::Reservation')->search(
-            { 'client_id' => $c->id},
-            {  order_by => { -asc => 'begin_time' } } 
-            )->first || undef;
         if ($showFirstLastNames eq '0') {
             splice @clientValues, 4, 2;
         }
@@ -265,19 +268,6 @@ sub clients : Local Args(0) {
         my $r;
         my $clientValuesCounter = 0;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'} = decode( $enc, decode( $enc, $c->name ) );
-        $r->{'1'} = decode( $enc, decode( $enc, $c->location ) );
-        $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} = defined( $c->session ) ? decode( $enc, $c->session->user->username ) : undef;
-        $r->{'4'} = defined( $c->session ) ? decode($enc,$c->session->user->lastname) : undef;
-        $r->{'5'} = defined( $c->session ) ? decode($enc,$c->session->user->firstname) : undef;
-        $r->{'6'} = defined( $c->session ) ? decode($enc,$c->session->user->category) : undef;
-        $r->{'7'} = defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'8'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
-        $r->{'10'} = defined( $c->session ) ? decode( $enc, $c->session->user->notes ) : undef;
-        $r->{'11'} = defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'12'} = defined( $reservation ) ? decode( $enc, $reservation->user->username ) : undef;
 
         foreach my $clientValue (@clientValues) {
             $r->{$clientValuesCounter} = $clientValue;

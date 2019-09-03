@@ -90,15 +90,26 @@ sub reservation : Local : Args(1) {
     my $username  = $c->request->params->{username} || q{};
     my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
     my $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
+
     if ( $action eq 'reserve' ) {
         if( !$reservation ) {
-            my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
-            my %check = Libki::Controller::API::Public::Reservations::check('begin_time' => $begin_time, 'client' => $client, 'user' => $user, 'libki' => $c);
+            my $begin_time = $c->request->params->{'reservation_date'}.' '
+                                                  .$c->request->params->{'reservation_hour'}.':'
+                                                  .$c->request->params->{'reservation_minute'}.':00';
+
+            my %check = $c->check_reservation($client,$user,$begin_time);
+
             if($check{'error'}) {
                 $c->stash( 'success' => 0, 'reason' => $check{'error'}, 'detail' => $check{'detail'} );
             }
             else {
-                $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id(), client_id => $client_id, begin_time => $begin_time , end_time => $check{'end_time'} } );
+                $c->model('DB::Reservation')->create( {
+                                                        instance   => $instance,
+                                                        user_id    => $user->id,
+                                                        client_id  => $client_id,
+                                                        begin_time => $begin_time,
+                                                        end_time   => $check{'end_time'}
+                                                    } );
                 $c->stash( 'success' => 1 );
             }
         }

@@ -1,7 +1,6 @@
 package Libki::Controller::API::Public::Datatables;
 use Moose;
 use namespace::autoclean;
-use POSIX qw(strftime);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -80,7 +79,6 @@ sub clients : Local Args(0) {
     my $client = $c;
     my @results;
     foreach my $c (@clients) {
-	    my $enc = 'utf-8';
         my $reservation= $client->model('DB::Reservation')->search(
              { 'client_id' => $c->id},
              {  order_by => { -asc => 'begin_time' } }
