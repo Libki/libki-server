@@ -223,21 +223,32 @@
                         <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
                     </div>
 
-                     <div class="form-group">
-                         <label for="MinimumReservationMinutes">[% c.loc("Minimum reservation time required") %]</label>
-                         <div class="input-group">
-                             <input type="text" class="form-control" id="MinimumReservationMinutes" name="MinimumReservationMinutes" value="[% MinimumReservationMinutes %]">
-                             <div class="input-group-append">
-                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
-                             </div>
-                         </div>
-                         <small class="form-text text-muted">[% c.loc("Minimum time available for a reservation.") %]</small>
-                     </div>
+                    <div class="form-group">
+                        <label for="MinimumReservationMinutes">[% c.loc("Minimum reservation time required") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="MinimumReservationMinutes" name="MinimumReservationMinutes" value="[% MinimumReservationMinutes %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Minimum minutes required for a reservation.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DisplayReservationStatusWithin">[% c.loc("Display the status of the first reservation within:") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="DisplayReservationStatusWithin" name="DisplayReservationStatusWithin" value="[% DisplayReservationStatusWithin %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client.") %]</small>
+                    </div>
 
                     <div class="form-group">
                         <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
-                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display the status of the first reservation within an hour") %]</label>
-                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for and the status of the reservation.") %]</small>
+                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display the status of the first reservation") %]</label>
+                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the reservation status of the person it is waiting for.") %]</small>
                     </div>
                     <script type="text/javascript">
                         $(document).ready(function() {

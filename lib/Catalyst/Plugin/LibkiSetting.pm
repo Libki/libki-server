@@ -242,7 +242,9 @@ Get the status of the first reservation.
 
 sub get_reservation_status {
     my ($c,$client) = @_;
-    my $timeout =  $c->model('DB::Setting')->find( { name => 'ReservationTimeout'} )->value;
+    my $timeout = $c->model('DB::Setting')->find( { name => 'ReservationTimeout'} )->value;
+    my $display = $c->model('DB::Setting')->find( { name => 'DisplayReservationStatusWithin'} )->value;
+    $display = $display > 0 ? $display : 0;
     my $reservation= $c->model('DB::Reservation')->search(
        { 'client_id' => $client->id},
        { order_by => { -asc => 'begin_time' } }
@@ -253,10 +255,11 @@ sub get_reservation_status {
         my $seconds = str2time($reservation->end_time) - str2time($reservation->begin_time);
         my $time_left = ($timeout * 60) > $seconds ? $seconds : ($timeout * 60);
         my $reserve = str2time($reservation->begin_time) + $time_left -time();
+        my $begin = str2time($reservation->begin_time) -time();
         if($reserve >= 0 && $reserve <= $time_left) {
             $status = $reservation->user->username.'  left '.floor($reserve/60).'m'.($reserve%60).'s';
         }
-        elsif($reserve > $time_left && $reserve < 3600) {
+        elsif($reserve > $time_left && $begin < $display * 60) {
             my $willbereserved = $reserve - $time_left;
             $status = $reservation->user->username().' in '.floor($willbereserved/60).'m'.($willbereserved%60).'s' ;
         }

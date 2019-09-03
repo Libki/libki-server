@@ -5,3 +5,4 @@
      DROP `expiration`,
      DROP INDEX `client_id`;
    INSERT INTO settings SET name='MinimumReservationMinutes', value='5';
+   INSERT INTO settings SET name='DisplayReservationStatusWithin', value='60';
