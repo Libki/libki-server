@@ -140,8 +140,13 @@ sub delete : Local : Args(0) {
       )
     {
 
-        if ( $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->next()
-            ->delete() )
+        my $reservation = $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->first;
+
+        if(!$reservation)
+        {
+            $c->stash( 'success' => 0, 'reason' => 'NOTFOUND' );
+        }
+        elsif($reservation->delete())
         {
             $c->stash( 'success' => 1, );
         }

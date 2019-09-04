@@ -279,7 +279,7 @@ sub check_login {
     my $timeout = $c->setting('ReservationTimeout');
     my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
-    my $reservation = $c->model('DB::Reservation')->find({ user_id => $user->id(), client_id => $client->id});
+    my $reservation = $c->model('DB::Reservation')->search({ user_id => $user->id(), client_id => $client->id})->first || undef;
 
     # 1. Check if the time is available and get the time_to_reservation
     if(!$result{'error'}) {

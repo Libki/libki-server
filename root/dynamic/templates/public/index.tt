@@ -361,7 +361,7 @@ $(document).ready(function() {
 
             $("#cancel-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            DisplayMessage("error", "[% c.loc("This client is not currently reserved.") %]");
+            DisplayMessage("error", "[% c.loc("This client has no reservation.") %]");
         }
     });
 
@@ -397,7 +397,7 @@ $(document).ready(function() {
                     DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
                     ForceClientTableRefresh();
                 }
-                else if ( data.reason == "UNKOWN" ) {
+                else if ( data.reason == "UNKNOWN" ) {
                     DisplayMessage( "error", "[% c.loc("Your reservation cancelation failed for an unknown reason.") %]" );
                 } 
                 else if ( data.reason == "NOTFOUND" ) {
