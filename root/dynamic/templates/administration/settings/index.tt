@@ -220,7 +220,7 @@
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled. If left blank, the default is 15 minutes.") %]</small>
                     </div>
 
                     <div class="form-group">
@@ -231,7 +231,7 @@
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("Minimum minutes required for a reservation.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Minimum minutes required for a reservation. If left blank, the default is 1 minute.") %]</small>
                     </div>
 
                     <div class="form-group">
@@ -242,7 +242,7 @@
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes.") %]</small>
                     </div>
 
                     <div class="form-group">

@@ -242,9 +242,8 @@ Get the status of the first reservation.
 
 sub get_reservation_status {
     my ($c,$client) = @_;
-    my $timeout = $c->model('DB::Setting')->find( { name => 'ReservationTimeout'} )->value;
-    my $display = $c->model('DB::Setting')->find( { name => 'DisplayReservationStatusWithin'} )->value;
-    $display = $display > 0 ? $display : 0;
+    my $timeout = $c->setting('ReservationTimeout') ? $c->setting('ReservationTimeout') : 15 ;
+    my $display = $c->setting('DisplayReservationStatusWithin') ? $c->setting('DisplayReservationStatusWithin') : 60 ;
     my $reservation= $c->model('DB::Reservation')->search(
        { 'client_id' => $client->id},
        { order_by => { -asc => 'begin_time' } }
@@ -276,7 +275,7 @@ Check the time and the user, return the available time if possible.
 sub check_login {
     my($c,$client,$user) = @_;
     my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c,$client->location );
-    my $timeout = $c->setting('ReservationTimeout');
+    my $timeout = $c->setting('ReservationTimeout') ? $c->setting('ReservationTimeout') : 15 ;
     my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
     my $reservation = $c->model('DB::Reservation')->search({ user_id => $user->id(), client_id => $client->id})->first || undef;
@@ -424,6 +423,7 @@ sub check_reservation
     #7. Check the minimum minutes limit preference
     if(!$result{'error'}) {
         my $minimum = $c->model('DB::Setting')->find({ name => 'MinimumReservationMinutes'})->value;
+        $minimum = 1 unless $minimum;
         $minutes = min @array;
         if($minutes <  $minimum) {
            $result{'error'}  = 'INVALID_TIME';
