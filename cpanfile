@@ -27,7 +27,7 @@ requires 'CatalystX::Script::Server::Starman';
 requires 'Config::General';
 requires 'DBD::mysql';
 requires 'DBIx::Class::Cursor::Cached';
-requires 'DBIx::Class::EncodedColumn';
+requires 'DBIx::Class::EncodedColumn', '== 0.00016';
 requires 'DBIx::Class::InflateColumn::Serializer';
 requires 'DBIx::Class::InflateColumn::Serializer::JSON';
 requires 'DBIx::Class::Numeric';
