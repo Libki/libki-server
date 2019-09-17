@@ -42,13 +42,6 @@ sub create : Local : Args(0) {
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
-    my %check = $c->check_reservation($client,$user,$begin_time);
-    if( $check{'error'} ) {
-        $c->stash( 'success' => 0, 'reason' => $check{'error'}, details => $check{'detail'} );
-        $success = 0;
-    }
-    else{
-
     unless ( $user && $user->is_guest eq 'Yes' ) {
         if ( $config->{SIP}->{enable} ) {
             $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
@@ -68,6 +61,14 @@ sub create : Local : Args(0) {
         }
     } else {
         $log->debug("User $username is a guest, not trying external authentication");
+    }
+    my %check;
+    if( $success ) {
+        %check = $c->check_reservation($client,$user,$begin_time);
+        if( $check{'error'} ) {
+            $c->stash( 'success' => 0, 'reason' => $check{'error'}, details => $check{'detail'} );
+            $success = 0;
+        }
     }
 
     if (
@@ -109,7 +110,6 @@ sub create : Local : Args(0) {
     else {
         $c->stash( 'success' => 0, 'reason' => $error_code || 'INVALID_USER', details => $details );
     }
-  }
     $c->logout();
 
     $c->forward( $c->view('JSON') );
@@ -130,7 +130,8 @@ sub delete : Local : Args(0) {
     my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
 
     if (
-        $c->authenticate(
+        $user
+        && $c->authenticate(
             {
                 username => $user->username,
                 password => $password,

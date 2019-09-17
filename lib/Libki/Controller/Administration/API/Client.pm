@@ -89,9 +89,15 @@ sub reservation : Local : Args(1) {
     my $action    = $c->request->params->{action}   || q{};
     my $username  = $c->request->params->{username} || q{};
     my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
-    my $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
+    my $reservation = undef;
+    if ( $user ) {
+        $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
+    }
+    else {
+        $c->stash( 'success' => 0, 'reason' => 'INVALID_USER');
+    }
 
-    if ( $action eq 'reserve' ) {
+    if ( $action eq 'reserve' && $user) {
         if( !$reservation ) {
             my $begin_time = $c->request->params->{'reservation_date'}.' '
                                                   .$c->request->params->{'reservation_hour'}.':'
@@ -117,13 +123,13 @@ sub reservation : Local : Args(1) {
            $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
         }
     }
-    elsif ( $action eq 'cancel' ) {
+    elsif ( $action eq 'cancel' && $reservation) {
         if( $reservation ) {
            my $success = $reservation->delete() ? 1 : 0;
            $c->stash( success => $success );
         }
         else {
-           $c->stash( success => 0 );
+           $c->stash( success => 0 ,'reason' => 'NOTFOUND');
         }
     }
     $c->forward( $c->view('JSON') );
