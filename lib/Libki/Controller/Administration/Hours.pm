@@ -186,7 +186,7 @@ sub delete_dates : Local : Args(0) {
 
 =head1 AUTHOR
 
-Erik Öhrn <erik.ohrn@gmail.com>
+Kyle M Hall <kyle@kylehall.info>
 
 =cut
 
