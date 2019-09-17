@@ -469,6 +469,108 @@ sub prints : Local Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+sub reservations  : Local Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # We need to map the table columns to field names for ordering
+    my @columns =
+       qw/ me.client_id me.user_id me.begin_time me.end_time user.username/;
+
+    # Set up filters
+    my $filter = { 'me.instance' => $instance };
+
+    my $search_term = $c->request->param("sSearch");
+    if ($search_term) {
+        $filter->{-or} = [
+            'me.user_id'     => { 'like', "$search_term%" },
+            'me.client_id'   => { 'like', "$search_term%" },
+            'client.name'    => { 'like', "$search_term%" },
+            'user.username'  => { 'like', "$search_term%" },
+        ];
+    }
+
+    # Sorting options
+    my @sorting;
+    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+        push(
+            @sorting,
+            {
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
+            }
+        );
+    }
+
+    # May need editing with a filter if the table contains records for other items
+    # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
+    # in this case, we'd only want the count of notes affecting the specific item,
+    # not *all* items
+    my $total_records =
+      $c->model('DB::Reservation')->search( { instance => $instance } )->count;
+
+    # In case of pagination, we need to know how many records match in total
+    my $count = $c->model('DB::Reservation')->count(
+        $filter,
+        {
+            prefetch => [ 'client', 'user' ]
+        }
+    );
+
+    # Do the search, including any required sorting and pagination.
+    my @reservations = $c->model('DB::Reservation')->search(
+        $filter,
+        {
+            order_by => \@sorting,
+            rows     => $c->request->param('iDisplayLength'),
+            offset   => $c->request->param('iDisplayStart'),
+            prefetch => [ 'client', 'user' ],
+        }
+    );
+
+    my @results;
+    foreach my $r (@reservations) {
+        my $begin = $r->begin_time->stringify();
+        $begin =~ s/T/ /;
+        my $end = $r->end_time->stringify();
+        $end =~ s/T/ /;
+
+        my @reservationValues = (
+            $r->client->name,
+            $r->user->username,
+            $begin,
+            $end,
+        );
+
+        my $row;
+        my $reservationValuesCounter = 0;
+        $row->{'DT_RowId'} = $r->user->username;
+
+        foreach my $reservationValue (@reservationValues) {
+            $row->{$reservationValuesCounter} = $reservationValue;
+            $reservationValuesCounter++;
+        }
+
+        push( @results, $row );
+    }
+
+    $c->stash(
+        {
+            'iTotalRecords'        => $total_records,
+            'iTotalDisplayRecords' => $count,
+            'sEcho'                => $c->request->param('sEcho') || undef,
+            'aaData'               => \@results,
+        }
+    );
+    $c->forward( $c->view('JSON') );
+
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
