@@ -479,7 +479,7 @@ sub reservations  : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-       qw/ me.client_id me.user_id me.begin_time me.end_time user.username/;
+       qw/ client.name user.username me.begin_time me.end_time /;
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -487,8 +487,6 @@ sub reservations  : Local Args(0) {
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
         $filter->{-or} = [
-            'me.user_id'     => { 'like', "%$search_term%" },
-            'me.client_id'   => { 'like', "%$search_term%" },
             'client.name'    => { 'like', "%$search_term%" },
             'user.username'  => { 'like', "%$search_term%" },
         ];
