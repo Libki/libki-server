@@ -15,6 +15,10 @@ msgstr "Fran&ccedil;ais"
 msgid "lang.sv"
 msgstr "Svenska"
 
+# Spanish
+msgid "lang.es"
+msgstr "Espa&ntilde;ol"
+
 # Days of the week
 
 msgid "Monday"
