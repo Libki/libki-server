@@ -30,8 +30,8 @@ sub users : Local Args(0) {
     my $dbh = $schema->storage->dbh;
 
     # Get settings
-    my $userCategories = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'UserCategories'");
-    my $showFirstLastNames = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'ShowFirstLastNames'");
+    my $userCategories = $c->setting('UserCategories');
+    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
 
     # We need to map the table columns to field names for ordering
     my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
@@ -161,8 +161,8 @@ sub clients : Local Args(0) {
     my $dbh = $schema->storage->dbh;
 
     # Get settings
-    my $userCategories = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'UserCategories'");
-    my $showFirstLastNames = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'ShowFirstLastNames'");
+    my $userCategories = $c->setting('UserCategories');
+    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
 
     # We need to map the table columns to field names for ordering
     my @columns =
