@@ -1,3 +1,4 @@
+use utf8;
 package Libki::Schema::DB::Result::LoginSession;
 
 # Created by DBIx::Class::Schema::Loader
@@ -56,7 +57,7 @@ __PACKAGE__->table("login_sessions");
 
 =head2 session_data
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 expires
@@ -70,7 +71,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "char", is_nullable => 0, size => 72 },
   "session_data",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "expires",
   { data_type => "integer", is_nullable => 1 },
 );
@@ -88,8 +89,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-19 11:06:21
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bTCeHxy4cOD1ek3Rsw9p1Q
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bpfVD6lyS/dqMF9mWNL8gw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

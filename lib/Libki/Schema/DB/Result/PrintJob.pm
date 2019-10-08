@@ -1,3 +1,4 @@
+use utf8;
 package Libki::Schema::DB::Result::PrintJob;
 
 # Created by DBIx::Class::Schema::Loader
@@ -65,24 +66,29 @@ __PACKAGE__->table("print_jobs");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 status
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
+
+=head2 copies
+
+  data_type: 'integer'
+  is_nullable: 1
 
 =head2 data
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 printer
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 user_id
 
@@ -118,13 +124,15 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "type",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "status",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
+  "copies",
+  { data_type => "integer", is_nullable => 1 },
   "data",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "printer",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "print_file_id",
@@ -200,8 +208,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:shYecgUClh6a3QAp+9UQlQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3Q3kPpy7RlRlBEFHaLzCtg
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

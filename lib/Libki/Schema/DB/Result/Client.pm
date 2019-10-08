@@ -1,3 +1,4 @@
+use utf8;
 package Libki::Schema::DB::Result::Client;
 
 # Created by DBIx::Class::Schema::Loader
@@ -65,13 +66,13 @@ __PACKAGE__->table("clients");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 location
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
 
 =head2 last_registered
 
@@ -87,9 +88,9 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
   {
     data_type => "timestamp",
@@ -189,8 +190,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-23 05:54:02
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NaCOX9ibm8QXCGWk8vCRSw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mUK+CBKZWBONMnncvzfc9Q
 
 =head2 can_user_use
 

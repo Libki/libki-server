@@ -1,3 +1,4 @@
+use utf8;
 package Libki::Schema::DB::Result::PrintFile;
 
 # Created by DBIx::Class::Schema::Loader
@@ -63,14 +64,14 @@ __PACKAGE__->table("print_files");
 
 =head2 filename
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 0
 
 =head2 content_type
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
 
 =head2 data
 
@@ -92,13 +93,13 @@ __PACKAGE__->table("print_files");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 client_location
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
 
 =head2 user_id
 
@@ -110,7 +111,7 @@ __PACKAGE__->table("print_files");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 created_on
 
@@ -134,9 +135,9 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "filename",
-  { data_type => "text", is_nullable => 0 },
+  { data_type => "mediumtext", is_nullable => 0 },
   "content_type",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "data",
   { data_type => "longblob", is_nullable => 1 },
   "pages",
@@ -144,13 +145,13 @@ __PACKAGE__->add_columns(
   "client_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "client_name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "client_location",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "username",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "created_on",
   {
     data_type => "datetime",
@@ -237,8 +238,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:icAtVFG+YUAgJBPIsEyr3g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nyivTe/knYgL4MskxaiNrg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

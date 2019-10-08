@@ -1,3 +1,4 @@
+use utf8;
 package Libki::Schema::DB::Result::ClientAgeLimit;
 
 # Created by DBIx::Class::Schema::Loader
@@ -150,8 +151,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-05 09:11:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KKPdOxS5epmb1T3mWlW65A
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RoSOF2D12X1bMFqzeWCnVQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
