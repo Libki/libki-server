@@ -117,15 +117,8 @@ __PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn}      = $ENV{LIBKI_DB_D
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{user}     = $ENV{LIBKI_DB_USER};
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{password} = $ENV{LIBKI_DB_PASSWORD};
 
-
-# This gets rid of the incredibly annoying Any::Moose is deprecated message.
-# Remove this if debugging
-open (STDERR, '>', 'blackhole');
-unlink 'blackhole';
-
 # Start the application
 __PACKAGE__->setup();
-
 
 =head1 NAME
 
