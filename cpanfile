@@ -5,9 +5,11 @@ requires 'Module::Install';
 requires 'IO::Socket::SSL';
 
 requires 'Archive::Zip';
+requires 'BIx::Class::Schema::Loader';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Controller::REST';
+requires 'Catalyst::Helper';
 requires 'Catalyst::Helper::View::JSON';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authorization::Roles';
