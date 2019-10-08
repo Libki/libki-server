@@ -449,6 +449,9 @@ sub print : Path('print') : Args(0) {
         my $pdf        = PDF::API2->open_scalar($pdf_string);
         my $pages      = $pdf->pages();
 
+        $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
+        my $copies = $1 || 1;
+
         my $printers = $c->get_printer_configuration;
         my $printer  = $printers->{printers}->{$printer_id};
 
@@ -475,6 +478,7 @@ sub print : Path('print') : Args(0) {
                 type          => $printer->{type},
                 status        => 'Pending',
                 data          => undef,
+                copies        => $copies,
                 printer       => $printer_id,
                 user_id       => $user->id,
                 print_file_id => $print_file->id,

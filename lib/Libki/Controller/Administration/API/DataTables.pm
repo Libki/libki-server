@@ -373,16 +373,17 @@ sub prints : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw( me.type me.status me.printer print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
+      qw( me.type me.status me.printer me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
 
     # Set up filters
     my $filter;
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
         $filter->{-or} = [
-            'me.type'                 => { 'like', "%$search_term%" },
-            'me.status'               => { 'like', "%$search_term%" },
-            'me.printer'              => { 'like', "%$search_term%" },
+            'me.type'                => { 'like', "%$search_term%" },
+            'me.status'              => { 'like', "%$search_term%" },
+            'me.printer'             => { 'like', "%$search_term%" },
+            'me.copies'              => { 'like', "%$search_term%" },
             'print_file.filename'    => { 'like', "%$search_term%" },
             'print_file.pages'       => { 'like', "%$search_term%" },
             'print_file.client_name' => { 'like', "%$search_term%" },
@@ -442,11 +443,12 @@ sub prints : Local Args(0) {
         $r->{'0'}        = $p->type;
         $r->{'1'}        = $p->status;
         $r->{'2'}        = $p->printer;
-        $r->{'3'}        = $p->print_file->filename;
-        $r->{'4'}        = $p->print_file->pages;
-        $r->{'5'}        = $p->print_file->client_name;
-        $r->{'6'}        = $p->print_file->username;
-	$r->{'7'}        = $p->created_on->iso8601;
+        $r->{'3'}        = $p->copies;
+        $r->{'4'}        = $p->print_file->filename;
+        $r->{'5'}        = $p->print_file->pages;
+        $r->{'6'}        = $p->print_file->client_name;
+        $r->{'7'}        = $p->print_file->username;
+	    $r->{'8'}        = $p->created_on->iso8601;
         push( @results, $r );
     }
 

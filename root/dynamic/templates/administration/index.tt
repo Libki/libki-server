@@ -205,6 +205,7 @@
                 <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Status") %]</th>
                 <th>[% c.loc("Printer") %]</th>
+                <th>[% c.loc("Copies") %]</th>
                 <th>[% c.loc("File name") %]</th>
                 <th>[% c.loc("Pages") %]</th>
                 <th>[% c.loc("Client") %]</th>
