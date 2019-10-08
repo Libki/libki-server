@@ -5,7 +5,6 @@ requires 'Module::Install';
 requires 'IO::Socket::SSL';
 
 requires 'Archive::Zip';
-requires 'BIx::Class::Schema::Loader';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Controller::REST';
@@ -33,6 +32,7 @@ requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::InflateColumn::Serializer';
 requires 'DBIx::Class::InflateColumn::Serializer::JSON';
 requires 'DBIx::Class::Numeric';
+requires 'DBIx::Class::Schema::Loader';
 requires 'DBIx::Class::TimeStamp';
 requires 'Data::Printer';
 requires 'DateTime';
