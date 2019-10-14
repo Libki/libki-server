@@ -11,13 +11,17 @@ msgstr "English"
 msgid "lang.fr"
 msgstr "Fran&ccedil;ais"
 
-#Swedish
+# Swedish
 msgid "lang.sv"
 msgstr "Svenska"
 
 # Spanish
 msgid "lang.es"
 msgstr "Espa&ntilde;ol"
+
+# Portuguese
+msgid "lang.pt_PT"
+msgstr "Portugu&ecirc;s"
 
 # Days of the week
 
