@@ -39,8 +39,8 @@ CREATE TABLE `client_age_limits` (
 CREATE TABLE `clients` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `location` varchar(255) DEFAULT NULL,
+  `name` varchar(191) NOT NULL,
+  `location` varchar(191) DEFAULT NULL,
   `last_registered` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`instance`,`name`),
@@ -70,10 +70,10 @@ CREATE TABLE `closing_hours` (
 CREATE TABLE `jobs` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
+  `type` varchar(191) NOT NULL,
   `data` mediumtext,
-  `taken` varchar(255) DEFAULT NULL,
-  `status` varchar(255) NOT NULL DEFAULT 'QUEUED',
+  `taken` varchar(191) DEFAULT NULL,
+  `status` varchar(191) NOT NULL DEFAULT 'QUEUED',
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -125,14 +125,14 @@ CREATE TABLE `print_files` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` mediumtext NOT NULL,
-  `content_type` varchar(255) DEFAULT NULL,
+  `content_type` varchar(191) DEFAULT NULL,
   `data` longblob,
   `pages` int(4) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `client_name` varchar(255) NOT NULL,
-  `client_location` varchar(255) DEFAULT NULL,
+  `client_name` varchar(191) NOT NULL,
+  `client_location` varchar(191) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `username` varchar(255) NOT NULL,
+  `username` varchar(191) NOT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -147,10 +147,10 @@ CREATE TABLE `print_files` (
 CREATE TABLE `print_jobs` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `type` varchar(191) NOT NULL,
+  `status` varchar(191) NOT NULL,
   `data` mediumtext,
-  `printer` varchar(255) NOT NULL,
+  `printer` varchar(191) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `print_file_id` int(11) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -209,7 +209,7 @@ CREATE TABLE `sessions` (
 
 CREATE TABLE `settings` (
   `instance` varchar(32) NOT NULL DEFAULT '',
-  `name` varchar(255) NOT NULL,
+  `name` varchar(191) NOT NULL,
   `value` mediumtext NOT NULL,
   PRIMARY KEY (`instance`,`name`)
 ) ENGINE=InnoDB;
@@ -221,10 +221,10 @@ CREATE TABLE `settings` (
 CREATE TABLE `statistics` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `client_name` varchar(255) NOT NULL,
-  `client_location` varchar(255) DEFAULT NULL,
-  `action` varchar(255) DEFAULT NULL,
+  `username` varchar(191) NOT NULL,
+  `client_name` varchar(191) NOT NULL,
+  `client_location` varchar(191) DEFAULT NULL,
+  `action` varchar(191) DEFAULT NULL,
   `created_on` timestamp NULL DEFAULT NULL,
   `anonymized` tinyint(1) DEFAULT '0',
   `session_id` char(72) DEFAULT NULL,
@@ -250,19 +250,19 @@ CREATE TABLE `user_roles` (
 CREATE TABLE `users` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `username` varchar(191) NOT NULL,
+  `password` varchar(191) NOT NULL,
   `minutes_allotment` int(11) DEFAULT '0',
-  `status` varchar(255) NOT NULL,
+  `status` varchar(191) NOT NULL,
   `notes` mediumtext,
   `is_troublemaker` enum('Yes','No') NOT NULL DEFAULT 'No',
   `is_guest` enum('Yes','No') NOT NULL DEFAULT 'No',
   `birthdate` date DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `firstname` varchar(255) DEFAULT '',
-  `lastname` varchar(255) DEFAULT '',
-  `category` varchar(255) DEFAULT '',
+  `firstname` varchar(191) DEFAULT '',
+  `lastname` varchar(191) DEFAULT '',
+  `category` varchar(191) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_username` (`instance`,`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2;
@@ -341,44 +341,4 @@ ALTER TABLE `user_roles`
 --
 -- ------------------------------------------------------
 
-
---
--- Data for table `roles`
---
-
-INSERT INTO `roles` VALUES
-    (1,'user'),
-    (2,'admin'),
-    (3,'superadmin');
-
---
--- Data for table `settings`
---
-
-INSERT INTO `settings` VALUES
-    ('','AutomaticTimeExtensionAt',''),
-    ('','AutomaticTimeExtensionLength',''),
-    ('','AutomaticTimeExtensionRenewal','0'),
-    ('','AutomaticTimeExtensionUnless','this_reserved'),
-    ('','AutomaticTimeExtensionUseAllotment','no'),
-    ('','BatchGuestPassCustomCSS','body { /* default body style emulates a pre tag */\n    font-family: monospace;\n    white-space: pre;\n    display: block;\n    unicode-bidi: embed;\n}\n.guest-pass { /* each username and password is in a guest-pass span */\n    /* page-break-before: always; */ /* This will cause each pass to have a page break, good for use with receipt printers */\n}\n.guest-pass-username {} /* span containing the username label and the username itself */\n.guest-pass-username-label {} /* span containing the username label */\n.guest-pass-username-content {} /* span containing the username itself */\n.guest-pass-password {} /* span containing the password label and the password itself */\n.guest-pass-password-label {} /* span containing the password label */\n.guest-pass-password-content {} /* span containing the password itself */\n'),
-    ('','BatchGuestPassPasswordLabel','Computer Guest Pass     Password=  '),
-    ('','BatchGuestPassUsernameLabel','Your Library            Username=  '),
-    ('','ClientBehavior','FCFS+RES'),('','CurrentGuestNumber','1'),
-    ('','CustomJsAdministration',''),('','CustomJsPublic',''),
-    ('','DataRetentionDays',''),
-    ('','DefaultGuestSessionTimeAllowance','45'),
-    ('','DefaultGuestTimeAllowance','45'),
-    ('','DefaultSessionTimeAllowance','45'),
-    ('','DefaultTimeAllowance','45'),
-    ('','GuestBatchCount','40'),
-    ('','GuestPassFile','/mnt/share/guestpasses.txt'),
-    ('','PostCrashTimeout','5'),
-    ('','PrintJobRetentionDays','0'),
-    ('','ReservationShowUsername','0'),
-    ('','ReservationTimeout','15'),
-    ('','ShowFirstLastNames','1'),
-    ('','ThirdPartyURL',''),
-    ('','UserCategories',''),
-    ('','Version','1.0.0');
 

@@ -20,6 +20,9 @@ if [ -e /etc/os-release ]; then
     debian-buster)
       is_debian_buster=true
       ;;
+    debian-stretch)
+      is_debian_stretch=true
+      ;;
     debian-9)
       is_debian_stretch=true
       ;;
