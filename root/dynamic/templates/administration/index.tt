@@ -1125,7 +1125,13 @@ function LibkiDeleteUser( id ) {
              // Refresh the table to remove the deleted row
              $("#user-table").dataTable().fnDraw(true);
          } else {
-             DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
+             if ( data.message ) {
+                 if ( data.message == 'ADMIN_CANNOT_DELETE_SUPERADMIN' ) {
+                     DisplayMessage( "error", "[% c.loc("Administrators cannot delete super administrators.") %]" );
+                 }
+             } else {
+                 DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
+             }
          }
     });
   }

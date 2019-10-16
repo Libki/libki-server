@@ -300,14 +300,32 @@ sub delete : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
-    my $user    = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user    = $c->model('DB::User')->find( { instance => $instance, id => $id } );
     my $success = 0;
 
-    if ( $user->delete() ) {
-        $success = 1;
+    my $msg;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                if ( $user->delete() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CANNOT_DELETE_USER};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 

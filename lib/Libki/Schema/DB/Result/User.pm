@@ -363,7 +363,7 @@ sub has_role {
     my ($self, $role) = @_;
 
     # Does this user posses the required role?
-    return any(map { $_->role } $self->roles) eq $role;
+    return any( map { $_->role } $self->roles ) eq $role;
 }
 
 =head2 insert
@@ -371,6 +371,7 @@ sub has_role {
 Wrap DBIx::Class::Row::insert to handle daily vs session minutes
 
 =cut
+
 sub insert {
     my ( $self, @args ) = @_;
 
