@@ -1,0 +1,1452 @@
+# Portuguese translations for PACKAGE package.
+# Copyright (C) 2019 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# <vfernandes@keep.pt>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2019-10-10 16:36+0100\n"
+"Last-Translator:  <vfernandes@keep.pt>\n"
+"Language-Team: Portuguese\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: root/dynamic/includes/language_menu.tt:0
+msgid "('lang.' _ lang)"
+msgstr "('lang.' _ lang)"
+
+#: root/dynamic/templates/administration/history/index.tt:8
+msgid "Action"
+msgstr "Ação"
+
+#: root/dynamic/templates/administration/hours/index.tt:151
+msgid "Add"
+msgstr "Adicionar"
+
+#: root/dynamic/templates/administration/index.tt:527
+msgid ""
+"Add a + or - sign to increment or decrement the existing amount of time."
+msgstr "Adicione o sinal + ou - para incrementar ou diminuir o tempo."
+
+#: root/dynamic/templates/administration/hours/index.tt:117
+msgid "Add closing hours for specific dates"
+msgstr "Adicionar horas de fecho para datas específicas"
+
+#: root/dynamic/templates/administration/settings/index.tt:509
+msgid "Add custom CSS for batch guest passes here."
+msgstr "Adicione CSS personalizado para os passes de visitante aqui."
+
+#: root/dynamic/templates/administration/settings/index.tt:572
+msgid "Add custom JavaScript for the administration interface here."
+msgstr ""
+"Adicione Javascript personalizado para a interface de administração aqui."
+
+#: root/dynamic/templates/administration/settings/index.tt:580
+msgid "Add custom JavaScript for the public web interface here."
+msgstr "Adicione Javascript personalizado para a interface web público aqui."
+
+#: root/dynamic/templates/administration/settings/index.tt:349
+msgid "Add your list of user categories here as a list in YAML syntax."
+msgstr ""
+"Adicione a sua lista de categorias de utilizador aqui com a sintaxe YAML."
+
+#: root/dynamic/templates/administration/index.tt:1
+msgid "Administration"
+msgstr "Administração"
+
+#: root/dynamic/templates/administration/hours/index.tt:3
+msgid "Administration / Closing hours"
+msgstr "Administração / Horas de fecho"
+
+#: root/dynamic/templates/administration/history/index.tt:1
+msgid "Administration / History"
+msgstr "Administração / "
+
+#: root/dynamic/templates/administration/history/statistics.tt:3
+msgid "Administration / History / Statistics"
+msgstr "Administração / Histórico / Estatísticas"
+
+#: root/dynamic/templates/administration/settings/index.tt:1
+msgid "Administration / Settings"
+msgstr "Administração / Configurações"
+
+#: root/dynamic/templates/administration/settings/index.tt:568
+msgid "Administration interface JavaScript"
+msgstr "Javascript para o interface de administração"
+
+#: root/dynamic/templates/administration/index.tt:491
+msgid "Administrator"
+msgstr "Administrador"
+
+#: root/dynamic/templates/administration/settings/index.tt:590
+msgid "Advanced rules"
+msgstr "Regras avançadas"
+
+#: root/dynamic/templates/administration/settings/index.tt:22
+#: root/dynamic/templates/administration/settings/index.tt:587
+msgid "Advanced settings"
+msgstr "Configurações avançadas"
+
+#: root/dynamic/includes/wrapper.tt:47
+msgid "Alert:"
+msgstr "Aviso:"
+
+#: root/dynamic/templates/administration/index.tt:163
+#: root/dynamic/templates/administration/index.tt:85
+#: root/dynamic/templates/public/index.tt:9
+msgid "All"
+msgstr "Todas"
+
+#: root/dynamic/templates/administration/hours/index.tt:143
+#: root/dynamic/templates/administration/hours/index.tt:17
+#: root/dynamic/templates/administration/hours/index.tt:99
+msgid "All locations"
+msgstr "Todas as localizações"
+
+#: root/dynamic/templates/administration/settings/index.tt:62
+msgid "Amount of time a guest user is given daily."
+msgstr "Limite de tempo que é dado a um visitante diariamente."
+
+#: root/dynamic/templates/administration/settings/index.tt:73
+msgid "Amount of time a guest user is given per session."
+msgstr "Limite de tempo que é dado a um utilizador por sessão."
+
+#: root/dynamic/templates/administration/settings/index.tt:40
+msgid "Amount of time a user is given daily."
+msgstr "Limite de tempo que é dado a um utilizador diariamente."
+
+#: root/dynamic/templates/administration/settings/index.tt:51
+msgid "Amount of time a user is given per session."
+msgstr "Limite de tempo que é dado a um utilizador por sessão."
+
+#: root/dynamic/templates/administration/settings/index.tt:259
+msgid "Amount of time to automatically increase a user's session time by."
+msgstr "Tempo que será automaticamente incrementado à sessão do utilizador."
+
+#: root/dynamic/templates/administration/settings/index.tt:278
+msgid "Any client is reserved"
+msgstr "Qualquer cliente reservado"
+
+#: root/dynamic/templates/administration/index.tt:1151
+msgid "Are you sure you want to cancel the reservation for this client?"
+msgstr "Tem a certeza que deseja cancelar a reserva para este cliente?"
+
+#: root/dynamic/templates/administration/index.tt:1121
+msgid "Are you sure you want to delete this user?"
+msgstr "Tem a certeza que deseja eliminar este utilizador?"
+
+#: root/dynamic/templates/administration/index.tt:1135
+msgid "Are you sure you want to log this user out?"
+msgstr "Tem a certeza que deseja terminar a sessão deste utilizador?"
+
+#: root/dynamic/templates/administration/settings/index.tt:11
+#: root/dynamic/templates/administration/settings/index.tt:249
+msgid "Automatic time extension"
+msgstr "Extensão de tempo automática"
+
+#: root/dynamic/templates/public/index.tt:140
+msgid "Available"
+msgstr "Disponível"
+
+#: root/dynamic/templates/administration/settings/index.tt:422
+msgid "Bottom banner"
+msgstr "Imagem de rodapé"
+
+#: root/dynamic/templates/administration/index.tt:256
+#: root/dynamic/templates/administration/index.tt:336
+#: root/dynamic/templates/administration/index.tt:504
+#: root/dynamic/templates/administration/index.tt:535
+#: root/dynamic/templates/administration/index.tt:566
+#: root/dynamic/templates/administration/index.tt:602
+#: root/dynamic/templates/public/index.tt:109
+#: root/dynamic/templates/public/index.tt:74
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: root/dynamic/templates/public/index.tt:110
+#: root/dynamic/templates/public/index.tt:37
+#: root/dynamic/templates/public/index.tt:90
+msgid "Cancel reservation"
+msgstr "Cancelar a reserva"
+
+#: root/dynamic/templates/administration/index.tt:136
+#: root/dynamic/templates/administration/index.tt:301
+#: root/dynamic/templates/administration/index.tt:459
+#: root/dynamic/templates/administration/index.tt:54
+msgid "Category"
+msgstr "Categoria"
+
+#: root/dynamic/templates/administration/index.tt:581
+#: root/dynamic/templates/administration/index.tt:603
+msgid "Change password"
+msgstr "Alterar palavra-passe"
+
+#: root/dynamic/templates/administration/history/index.tt:7
+#: root/dynamic/templates/administration/index.tt:211
+#: root/dynamic/templates/administration/index.tt:61
+#: root/dynamic/templates/public/index.tt:21
+msgid "Client"
+msgstr "Cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:12
+#: root/dynamic/templates/administration/settings/index.tt:135
+msgid "Client behavior"
+msgstr "Comportamento do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:169
+msgid "Client inactivity"
+msgstr "Inactividade do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:183
+msgid "Client inactivity logout"
+msgstr "Desconexão por inactividade do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:172
+msgid "Client inactivity warning"
+msgstr "Aviso de inactividade do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:382
+msgid "Client login banner settings"
+msgstr "Configuração das imagens de autenticação do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:13
+msgid "Client login banners"
+msgstr "Imagens da autenticação no cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:195
+msgid "Client registration"
+msgstr "Registo de clientes"
+
+#: root/dynamic/templates/administration/settings/index.tt:198
+msgid "Client registration update delay limit"
+msgstr "Limite de atraso da atualização do registo do cliente"
+
+#: root/dynamic/templates/administration/settings/index.tt:138
+msgid "Client reservations"
+msgstr "Reservas de clientes"
+
+#: root/dynamic/templates/administration/index.tt:62
+msgid "Client status"
+msgstr "Estado do cliente"
+
+#: root/dynamic/templates/administration/index.tt:9
+msgid "Clients"
+msgstr "Clientes"
+
+#: root/dynamic/includes/navbar_administration.tt:20
+#: root/dynamic/templates/administration/hours/index.tt:13
+msgid "Closing hours"
+msgstr "Horas de fecho"
+
+#: root/dynamic/templates/administration/index.tt:315
+#: root/dynamic/templates/administration/index.tt:595
+#: root/dynamic/templates/administration/index.tt:596
+msgid "Confirm password"
+msgstr "Confirmar palavra-passe"
+
+#: root/dynamic/templates/administration/settings/index.tt:281
+msgid ""
+"Control whether a user's session is extended automatically unless that "
+"user's client is reserved, or any client at all is reserved."
+msgstr ""
+"Controle se a sessão do utilizador é automaticamente estendida, a não ser "
+"que o cliente do utilizador ou qualquer outro cliente esteja reservado."
+
+#: root/dynamic/templates/administration/settings/index.tt:297
+msgid ""
+"Control whether a user's time extension uses up minutes from the user's "
+"daily allotment, or if the minutes are \"free\"."
+msgstr ""
+"Controle se a extensão de tempo de um utilizador consome minutos da "
+"atribuição diária de tempo ou se os minutos são \"gratuitos\"."
+
+#: root/dynamic/templates/administration/index.tt:208
+msgid "Copies"
+msgstr "Cópias"
+
+#: root/dynamic/templates/administration/index.tt:337
+msgid "Create user"
+msgstr "Criar utilizador"
+
+#: root/dynamic/templates/administration/index.tt:213
+msgid "Created"
+msgstr "Criado"
+
+#: root/dynamic/templates/administration/settings/index.tt:14
+#: root/dynamic/templates/administration/settings/index.tt:565
+msgid "Custom JavaScript"
+msgstr "JavaScript personalizado"
+
+#: root/dynamic/templates/administration/index.tt:138
+#: root/dynamic/templates/administration/index.tt:56
+msgid "Daily minutes"
+msgstr "Minutos diários"
+
+#: root/dynamic/templates/administration/history/statistics.tt:37
+msgid "Daily usage"
+msgstr "Uso diário"
+
+#: root/dynamic/templates/administration/history/statistics.tt:39
+msgid "Daily usage, count of daily logins by location"
+msgstr "Uso diário, contagem de autenticações diárias por localização"
+
+#: root/dynamic/templates/administration/settings/index.tt:15
+#: root/dynamic/templates/administration/settings/index.tt:80
+msgid "Data retention"
+msgstr "Retenção de dados"
+
+#: root/dynamic/templates/administration/history/statistics.tt:42
+msgid "Date"
+msgstr "Data"
+
+#: root/dynamic/templates/administration/hours/index.tt:121
+msgid "Date and time"
+msgstr "Data e hora"
+
+#: root/dynamic/templates/administration/settings/index.tt:109
+#: root/dynamic/templates/administration/settings/index.tt:123
+#: root/dynamic/templates/administration/settings/index.tt:87
+#: root/dynamic/templates/administration/settings/index.tt:98
+msgid "Days"
+msgstr "Dias"
+
+#: root/dynamic/templates/administration/settings/index.tt:55
+msgid "Default guest time allowance per day"
+msgstr "Tempo por omissão permitido por dia para visitantes"
+
+#: root/dynamic/templates/administration/settings/index.tt:66
+msgid "Default guest time allowance per session"
+msgstr "Tempo por omissão permitido por sessão para visitantes"
+
+#: root/dynamic/templates/administration/settings/index.tt:33
+msgid "Default time allowance per day"
+msgstr "Tempo por omissão permitido por dia"
+
+#: root/dynamic/templates/administration/settings/index.tt:44
+msgid "Default time allowance per session"
+msgstr "Tempo por omissão permitido por sessão"
+
+#: root/dynamic/templates/administration/settings/index.tt:544
+msgid ""
+"Define LDAP configuration in YAML format. This setting may be overridden by "
+"a LDAP block in the Libki conf file."
+msgstr ""
+"Defina a configuração LDAP no formato YAML. Esta configuração pode ser "
+"sobreposta pelo bloco LDAP no ficheiro de configuração do sistema."
+
+#: root/dynamic/templates/administration/settings/index.tt:536
+msgid ""
+"Define SIP configuration in YAML format. This setting may be overridden by a "
+"SIP block in the Libki conf file."
+msgstr ""
+"Defina a configuração SIP no formato YAML. Esta configuração pode ser "
+"sobreposta pelo bloco SIP no ficheiro de configuração do sistema."
+
+#: root/dynamic/templates/administration/settings/index.tt:558
+msgid "Define printer configuration in YAML format."
+msgstr "Defina a configuração da impressão no formato YAML."
+
+#: root/dynamic/templates/administration/index.tt:73
+msgid "Delete"
+msgstr "Eliminar"
+
+#: root/dynamic/templates/administration/hours/index.tt:107
+msgid "Delete selected"
+msgstr "Eliminar os seleccionados"
+
+#: root/dynamic/templates/administration/index.tt:429
+msgid "Details"
+msgstr "Detalhes"
+
+#: root/dynamic/templates/administration/index.tt:478
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: root/dynamic/templates/administration/index.tt:371
+#: root/dynamic/templates/administration/index.tt:407
+msgid "Dismiss"
+msgstr "Fechar"
+
+#: root/dynamic/templates/administration/settings/index.tt:361
+msgid "Display first and last names"
+msgstr "Mostrar os primeiros nomes e os apelidos"
+
+#: root/dynamic/templates/administration/settings/index.tt:228
+msgid "Display usernames"
+msgstr "Mostrar os nomes de utilizador"
+
+#: root/dynamic/templates/administration/settings/index.tt:293
+msgid "Don't take minutes from daily allotment"
+msgstr "Não retirar minutos à atribuição diária"
+
+#: root/dynamic/templates/administration/index.tt:240
+msgid "Download"
+msgstr "Descarregar"
+
+#: root/dynamic/templates/administration/index.tt:68
+msgid "Edit"
+msgstr "Editar"
+
+#: root/dynamic/templates/administration/index.tt:418
+msgid "Edit user"
+msgstr "Editar utilizador"
+
+#: root/dynamic/templates/administration/index.tt:477
+msgid "Enabled"
+msgstr "Activado"
+
+#: root/dynamic/templates/administration/settings/index.tt:524
+msgid ""
+"Entering a url here will cause a username to become a hyperlink with the "
+"user's username at the end. Make sure to add <i>http://</i> or <i>https://</"
+"i> at the beginning."
+msgstr ""
+"Ao inserir um URL o nome de utilizador vai passar a ser uma ligação com o "
+"nome de utilizador no fim. Tenha a certeza que inseriu o protocolo <i>http://"
+"</i> ou <i>https://</i>."
+
+#: root/dynamic/includes/wrapper.tt:51
+msgid "Error:"
+msgstr "Erro:"
+
+#: root/dynamic/templates/administration/settings/index.tt:350
+msgid "Example:"
+msgstr "Exemplo:"
+
+#: root/dynamic/templates/administration/settings/index.tt:270
+msgid ""
+"Extend the session time when a user has less than this number of session "
+"minutes remaining."
+msgstr ""
+"Extender a sessão quando a sessão do utilizador tiver menos que este número "
+"de minutos disponíveis."
+
+#: root/dynamic/templates/administration/settings/index.tt:263
+msgid "Extend time at"
+msgstr "Extender o tempo quando"
+
+#: root/dynamic/templates/administration/settings/index.tt:274
+msgid "Extend time unless"
+msgstr "Extender o tempo excepto"
+
+#: root/dynamic/templates/administration/settings/index.tt:252
+msgid "Extension length"
+msgstr "Extensão"
+
+#: root/dynamic/templates/administration/index.tt:1226
+msgid "Failed to release print job: "
+msgstr "Falha no trabalho de impressão:"
+
+#: root/dynamic/templates/administration/index.tt:209
+msgid "File name"
+msgstr "Nome do ficheiro"
+
+#: root/dynamic/templates/administration/settings/index.tt:156
+msgid ""
+"First come first served, with option to place reservation. A patron may "
+"either walk up and use an open client, or may place a reservation on one "
+"( either open or in use )."
+msgstr ""
+"Primeiro a chegar, primeiro a ser servido, com opção de fazer a reserva. Um "
+"utilizador pode usar um cliente aberto ou pode reservar um cliente (aberto "
+"ou em uso)."
+
+#: root/dynamic/templates/administration/settings/index.tt:142
+msgid ""
+"First come, first served. A patron walks up to an open client and logs in."
+msgstr ""
+"Primeiro a chegar, primeiro a ser servido. Um utilizador chega a um cliente "
+"aberto e pode autenticar-se."
+
+#: root/dynamic/templates/administration/index.tt:291
+#: root/dynamic/templates/administration/index.tt:450
+msgid "First name"
+msgstr "Primeiro nome"
+
+#: root/dynamic/templates/administration/index.tt:133
+#: root/dynamic/templates/administration/index.tt:51
+msgid "Firstname"
+msgstr "Primeiro nome"
+
+#: root/dynamic/templates/administration/settings/index.tt:527
+msgid ""
+"For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?"
+"quicksearch=1&searchmember=</i> will link to the Koha ILS's search function "
+"for the given username."
+msgstr ""
+"Por exemplo, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?"
+"quicksearch=1&searchmember=</i> vai ligar à função de pesquisa do Koha com o "
+"nome de utilizador fornecido."
+
+#: root/dynamic/templates/administration/history/statistics.tt:11
+#: root/dynamic/templates/administration/history/statistics.tt:14
+msgid "From"
+msgstr "Desde"
+
+#: root/dynamic/templates/administration/settings/index.tt:505
+msgid "Guest pass CSS"
+msgstr "CSS para os passes de visitante"
+
+#: root/dynamic/templates/administration/settings/index.tt:16
+#: root/dynamic/templates/administration/settings/index.tt:463
+msgid "Guest passes"
+msgstr "Passes de visitante"
+
+#: root/dynamic/templates/administration/settings/index.tt:410
+#: root/dynamic/templates/administration/settings/index.tt:447
+msgid "Height"
+msgstr "Altura"
+
+#: root/dynamic/templates/administration/index.tt:389
+msgid "Highest guest account created"
+msgstr "Maior conta de visitante criada"
+
+#: root/dynamic/includes/navbar_administration.tt:18
+msgid "History"
+msgstr "Histórico"
+
+#: root/dynamic/templates/administration/settings/index.tt:83
+msgid "History anonymization"
+msgstr "Anonimização do histórico"
+
+#: root/dynamic/templates/administration/settings/index.tt:94
+msgid "History retention"
+msgstr "Retenção do histórico"
+
+#: root/dynamic/includes/navbar_administration.tt:10
+msgid "Home"
+msgstr "Início"
+
+#: root/dynamic/templates/administration/settings/index.tt:17
+#: root/dynamic/templates/administration/settings/index.tt:516
+msgid "ILS integration"
+msgstr "Integração com ILS"
+
+#: root/dynamic/templates/administration/settings/index.tt:205
+msgid ""
+"If a Libki client has not re-registered itself within this amount of time, "
+"it will be removed from the list of active clients."
+msgstr ""
+"Se um cliente não for registado novamente dentro deste período de tempo, "
+"será removido da lista de clientes activos."
+
+#: root/dynamic/templates/administration/settings/index.tt:597
+msgid "If no match is found, the default time allowances will be used."
+msgstr "Se não houver correspondência, será usado o tempo por omissão."
+
+#: root/dynamic/templates/administration/settings/index.tt:362
+msgid ""
+"If not checked, the possibility to enter users' first and last name will "
+"disappear."
+msgstr ""
+"Se não estiver marcado, a possibilidade de inserir os primeiros nomes e os "
+"apelidos dos utilizadores vai desaparecer."
+
+#: root/dynamic/templates/administration/settings/index.tt:335
+msgid ""
+"If text is added here for terms of service, it will be displayed in click-"
+"though dialog on the client before allowing a login."
+msgstr ""
+"Se adicionar qualquer texto para os termos de serviço, esse texto será "
+"mostrado uma caixa de diálogo ao utilizador antes de permitir a autenticação."
+
+#: root/dynamic/templates/public/index.tt:138
+msgid "In use"
+msgstr "Em uso"
+
+#: root/dynamic/templates/administration/settings/index.tt:105
+msgid "Inactive user retention"
+msgstr "Retenção de utilizadores inactivos"
+
+#: root/dynamic/templates/public/index.tt:384
+msgid "Incorrect password."
+msgstr "Palavra-passe incorrecta."
+
+#: root/dynamic/includes/wrapper.tt:59
+msgid "Info:"
+msgstr "Info:"
+
+#: root/dynamic/templates/administration/index.tt:330
+msgid "Is not a whole number"
+msgstr "Não é um número inteiro"
+
+#: root/dynamic/templates/administration/settings/index.tt:540
+msgid "LDAP configuration"
+msgstr "Configuração LDAP"
+
+#: root/dynamic/includes/language_menu.tt:4
+msgid "Language"
+msgstr "Idioma"
+
+#: root/dynamic/templates/administration/index.tt:294
+#: root/dynamic/templates/administration/index.tt:453
+msgid "Last name"
+msgstr "Apelido"
+
+#: root/dynamic/templates/administration/index.tt:132
+#: root/dynamic/templates/administration/index.tt:50
+msgid "Lastname"
+msgstr "Apelido"
+
+#: root/dynamic/templates/administration/index.tt:328
+#: root/dynamic/templates/administration/index.tt:471
+msgid "Leave unmodified for default amount of time."
+msgstr "Não modifique para utilizador o tempo por omissão."
+
+#: root/dynamic/templates/administration/settings/index.tt:127
+msgid ""
+"Length of time to retain print jobs. If not set, will default to 0 and print "
+"jobs will be removed nightly."
+msgstr ""
+"Período de tempo para manter os trabalhos de impressão. Se não estiver "
+"definido, por omissão será 0 e os trabalhos de impressão serão removidos "
+"todas as noites."
+
+#: root/dynamic/templates/administration/settings/index.tt:113
+msgid ""
+"Length of time to retain user data of inactive users. If not set, data will "
+"be kept indefinitely."
+msgstr ""
+"Período de tempo para manter os dados dos utilizadores inactivos. Se não "
+"estiver definido, os dados serão mantidos infinitamente."
+
+#: root/dynamic/templates/administration/settings/index.tt:101
+msgid ""
+"Length of time to retain user/client data for statistics and history. If not "
+"set, data will be kept indefinitely."
+msgstr ""
+"Período de tempo para manter os dados do utilizador para estatísticas e "
+"histórico. Se não estiver definido, os dados serão mantidos infinitamente."
+
+#: root/dynamic/includes/navbar_administration.tt:4
+#: root/dynamic/includes/navbar_public.tt:4
+msgid "Libki Kiosk Management System"
+msgstr "Sistema de gestão de postos Libki"
+
+#: root/dynamic/templates/administration/history/statistics.tt:31
+msgid "Limit"
+msgstr "Limite"
+
+#: root/dynamic/templates/administration/index.tt:128
+#: root/dynamic/templates/administration/index.tt:160
+#: root/dynamic/templates/administration/index.tt:82
+#: root/dynamic/templates/public/index.tt:22
+#: root/dynamic/templates/public/index.tt:6
+msgid "Location"
+msgstr "Localização"
+
+#: root/dynamic/templates/login.tt:1 root/dynamic/templates/login.tt:15
+#: root/dynamic/templates/login.tt:64
+msgid "Log in"
+msgstr "Entrar"
+
+#: root/dynamic/includes/navbar_administration.tt:36
+#: root/dynamic/templates/administration/index.tt:151
+msgid "Log out"
+msgstr "Sair"
+
+#: root/dynamic/templates/administration/settings/index.tt:190
+msgid "Log user out automatically after this many minutes of inactivity."
+msgstr ""
+"Desconectar automaticamente os utilizadores após estes minutos de "
+"inactividade."
+
+#: root/dynamic/templates/administration/index.tt:1138
+msgid "Logged user out."
+msgstr "Utilizador desconectado."
+
+#: root/dynamic/templates/administration/index.tt:546
+#: root/dynamic/templates/administration/index.tt:567
+#: root/dynamic/templates/public/index.tt:33
+#: root/dynamic/templates/public/index.tt:75
+msgid "Make reservation"
+msgstr "Reservar"
+
+#: root/dynamic/templates/public/index.tt:47
+msgid "Make reservation for"
+msgstr "Reservar para"
+
+#: root/dynamic/templates/administration/hours/index.tt:90
+msgid "Manage existing specific dates"
+msgstr "Gerir datas específicas existentes"
+
+#: root/dynamic/templates/administration/index.tt:326
+#: root/dynamic/templates/administration/index.tt:365
+#: root/dynamic/templates/administration/index.tt:399
+#: root/dynamic/templates/administration/index.tt:469
+#: root/dynamic/templates/administration/index.tt:525
+#: root/dynamic/templates/administration/settings/index.tt:176
+#: root/dynamic/templates/administration/settings/index.tt:187
+#: root/dynamic/templates/administration/settings/index.tt:202
+#: root/dynamic/templates/administration/settings/index.tt:219
+#: root/dynamic/templates/administration/settings/index.tt:256
+#: root/dynamic/templates/administration/settings/index.tt:267
+#: root/dynamic/templates/administration/settings/index.tt:37
+#: root/dynamic/templates/administration/settings/index.tt:48
+#: root/dynamic/templates/administration/settings/index.tt:59
+#: root/dynamic/templates/administration/settings/index.tt:70
+#: root/dynamic/templates/public/index.tt:144
+msgid "Minutes"
+msgstr "Minutos"
+
+#: root/dynamic/templates/administration/index.tt:149
+#: root/dynamic/templates/administration/index.tt:515
+msgid "Modify time"
+msgstr "Modificar tempo"
+
+#: root/dynamic/includes/navbar_administration.tt:15
+msgid "More"
+msgstr "Mais"
+
+#: root/dynamic/templates/administration/index.tt:119
+#: root/dynamic/templates/administration/index.tt:197
+#: root/dynamic/templates/administration/index.tt:40
+msgid "Multiple guests"
+msgstr "Múltiplos visitantes"
+
+#: root/dynamic/templates/administration/index.tt:127
+#: root/dynamic/templates/administration/index.tt:288
+#: root/dynamic/templates/administration/index.tt:447
+msgid "Name"
+msgstr "Nome"
+
+#: root/dynamic/templates/administration/index.tt:118
+#: root/dynamic/templates/administration/index.tt:196
+#: root/dynamic/templates/administration/index.tt:39
+msgid "New guest"
+msgstr "Novo visitante"
+
+#: root/dynamic/templates/administration/index.tt:381
+msgid "New guest batch created"
+msgstr "Novo lote de visitantes criado"
+
+#: root/dynamic/templates/administration/index.tt:347
+msgid "New guest user created"
+msgstr "Novo visitante criado"
+
+#: root/dynamic/templates/administration/index.tt:116
+#: root/dynamic/templates/administration/index.tt:194
+#: root/dynamic/templates/administration/index.tt:267
+#: root/dynamic/templates/administration/index.tt:37
+msgid "New user"
+msgstr "Novo utilizador"
+
+#: root/dynamic/templates/administration/history/statistics.tt:48
+msgid "No location set"
+msgstr "Nenhuma localização definida"
+
+#: root/dynamic/templates/administration/index.tt:141
+#: root/dynamic/templates/administration/index.tt:483
+#: root/dynamic/templates/administration/index.tt:59
+msgid "Notes"
+msgstr "Notas"
+
+#: root/dynamic/templates/administration/index.tt:394
+msgid "Number of accounts created"
+msgstr "Número de contas criadas"
+
+#: root/dynamic/templates/administration/index.tt:210
+msgid "Pages"
+msgstr "Páginas"
+
+#: root/dynamic/templates/administration/settings/index.tt:478
+msgid "Passes"
+msgstr "Passes"
+
+#: root/dynamic/templates/administration/settings/index.tt:474
+msgid "Passes to create per batch"
+msgstr "Passes a criar por lote"
+
+#: root/dynamic/templates/administration/index.tt:312
+#: root/dynamic/templates/administration/index.tt:313
+#: root/dynamic/templates/administration/index.tt:360
+#: root/dynamic/templates/administration/index.tt:591
+#: root/dynamic/templates/administration/index.tt:592
+#: root/dynamic/templates/administration/index.tt:70
+#: root/dynamic/templates/login.tt:45
+#: root/dynamic/templates/public/index.tt:100
+#: root/dynamic/templates/public/index.tt:65
+msgid "Password"
+msgstr "Palavra-passe"
+
+#: root/dynamic/templates/administration/index.tt:994
+msgid "Password changed."
+msgstr "Palavra-passe alterada."
+
+#: root/dynamic/templates/administration/index.tt:316
+#: root/dynamic/templates/administration/index.tt:597
+msgid "Password fields must match."
+msgstr "As palavras-passe devem corresponder."
+
+#: root/dynamic/templates/public/index.tt:103
+#: root/dynamic/templates/public/index.tt:68
+msgid "Password is required"
+msgstr "A palavra-passe é obrigatória"
+
+#: root/dynamic/templates/administration/settings/index.tt:495
+msgid "Password label"
+msgstr "Palavra-passe"
+
+#: root/dynamic/templates/administration/index.tt:321
+msgid "Passwords do not match"
+msgstr "As palavras-passe não correspondem"
+
+#: root/dynamic/templates/administration/index.tt:318
+msgid "Passwords match"
+msgstr "As palavras-passe correspondem"
+
+#: root/dynamic/templates/administration/settings/index.tt:519
+msgid "Patron hyperlinks"
+msgstr "Hiperligações dos utilizadores"
+
+#: root/dynamic/templates/administration/settings/index.tt:403
+#: root/dynamic/templates/administration/settings/index.tt:414
+#: root/dynamic/templates/administration/settings/index.tt:440
+#: root/dynamic/templates/administration/settings/index.tt:451
+msgid "Pixels"
+msgstr "Pixeis"
+
+#: root/dynamic/templates/administration/settings/index.tt:466
+msgid "Prefix for guest passes"
+msgstr "Prefixo para os passes de visitante"
+
+#: root/dynamic/templates/administration/settings/index.tt:470
+msgid "Prefix for guest passes, defaults to 'guest' if none is specified."
+msgstr ""
+"Prefixo para os passes de visitante, se não especificar será usado por "
+"omissão o prefixo 'guest'"
+
+#: root/dynamic/templates/administration/index.tt:224
+msgid "Print"
+msgstr "Imprimir"
+
+#: root/dynamic/templates/administration/index.tt:1235
+msgid "Print job refreshed"
+msgstr "Impressão refrescada"
+
+#: root/dynamic/templates/administration/settings/index.tt:119
+msgid "Print job retention"
+msgstr "Retenção dos trabalhos de impressão"
+
+#: root/dynamic/templates/administration/settings/index.tt:18
+#: root/dynamic/templates/administration/settings/index.tt:551
+msgid "Print management"
+msgstr "Gestão da impressão"
+
+#: root/dynamic/templates/administration/index.tt:207
+msgid "Printer"
+msgstr "Impressora"
+
+#: root/dynamic/templates/administration/settings/index.tt:554
+msgid "Printer configuration"
+msgstr "Configuração da impressora"
+
+#: root/dynamic/templates/administration/index.tt:13
+msgid "Prints"
+msgstr "Impressões"
+
+#: root/dynamic/templates/administration/settings/index.tt:576
+msgid "Public interface JavaScript"
+msgstr "Javascript para o interface público"
+
+#: root/dynamic/templates/administration/index.tt:101
+#: root/dynamic/templates/administration/index.tt:179
+#: root/dynamic/templates/administration/index.tt:232
+#: root/dynamic/templates/administration/index.tt:27
+msgid "Refresh"
+msgstr "Atualizar"
+
+#: root/dynamic/templates/administration/settings/index.tt:306
+msgid "Renew the time allotment when it reaches zero"
+msgstr "Renovar a atribuição de tempo quando chegar a zero"
+
+#: root/dynamic/templates/administration/index.tt:1154
+#: root/dynamic/templates/public/index.tt:377
+msgid "Reservation canceled."
+msgstr "Reserva cancelada."
+
+#: root/dynamic/templates/public/index.tt:256
+msgid "Reservation created."
+msgstr "Reserva criada."
+
+#: root/dynamic/templates/administration/index.tt:1062
+msgid "Reservation for user created."
+msgstr "Reserva para o utilizador criada."
+
+#: root/dynamic/templates/administration/settings/index.tt:149
+msgid ""
+"Reservation only. A patron must place a reservation for a client before "
+"logging in to it."
+msgstr ""
+"Apenas reservas. Um utilizador deve efectuar uma reserva para um cliente "
+"antes de poder autenticar no mesmo."
+
+#: root/dynamic/templates/public/index.tt:25
+msgid "Reservation status"
+msgstr "Estado de reserva"
+
+#: root/dynamic/templates/administration/settings/index.tt:215
+msgid "Reservation timeout"
+msgstr "Tempo limite da reserva"
+
+#: root/dynamic/templates/administration/settings/index.tt:19
+#: root/dynamic/templates/administration/settings/index.tt:212
+msgid "Reservations"
+msgstr "Reservas"
+
+#: root/dynamic/templates/administration/index.tt:150
+msgid "Reserve"
+msgstr "Reservar"
+
+#: root/dynamic/templates/administration/index.tt:143
+#: root/dynamic/templates/public/index.tt:152
+msgid "Reserved"
+msgstr "Reservado"
+
+#: root/dynamic/templates/public/index.tt:149
+msgid "Reserved by"
+msgstr "Reservado por"
+
+#: root/dynamic/templates/administration/index.tt:432
+msgid "Roles"
+msgstr "Papéis"
+
+#: root/dynamic/templates/administration/settings/index.tt:532
+msgid "SIP configuration"
+msgstr "Configuração SIP"
+
+#: root/dynamic/templates/administration/index.tt:139
+#: root/dynamic/templates/administration/index.tt:57
+msgid "Session minutes"
+msgstr "Minutos da sessão"
+
+#: root/dynamic/templates/administration/index.tt:129
+msgid "Session status"
+msgstr "Estado da sessão"
+
+#: root/dynamic/includes/navbar_administration.tt:23
+msgid "Settings"
+msgstr "Configurações"
+
+#: root/dynamic/templates/administration/settings/index.tt:620
+msgid "Settings not updated."
+msgstr "Configurações não atualizadas."
+
+#: root/dynamic/templates/administration/settings/index.tt:617
+msgid "Settings updated."
+msgstr "Configurações atualizadas."
+
+#: root/dynamic/templates/administration/settings/index.tt:388
+#: root/dynamic/templates/administration/settings/index.tt:425
+msgid "Source URL"
+msgstr "Endereço URL"
+
+#: root/dynamic/includes/navbar_administration.tt:19
+msgid "Statistics"
+msgstr "Estatísticas"
+
+#: root/dynamic/templates/administration/settings/index.tt:90
+msgid ""
+"Statistics and history for users older than this number of days will be "
+"automatically anonymized. If not set, data will never be anonymized."
+msgstr ""
+"As estatísticas e o histórico dos utilizados com mais que este número de "
+"dias serão automaticamente anonimizadas. Se não for definido, os dados nunca "
+"serão anonimizados."
+
+#: root/dynamic/templates/administration/index.tt:206
+#: root/dynamic/templates/administration/index.tt:475
+#: root/dynamic/templates/administration/index.tt:58
+#: root/dynamic/templates/public/index.tt:23
+msgid "Status"
+msgstr "Estado"
+
+#: root/dynamic/includes/wrapper.tt:55
+msgid "Success:"
+msgstr "Sucesso:"
+
+#: root/dynamic/templates/administration/index.tt:496
+msgid "Super administrator"
+msgstr "Super administrador"
+
+#: root/dynamic/templates/administration/settings/index.tt:294
+msgid "Take minutes from daily allotment"
+msgstr "Retirar minutos à atribuição diária"
+
+#: root/dynamic/templates/administration/settings/index.tt:20
+#: root/dynamic/templates/administration/settings/index.tt:328
+msgid "Terms of service"
+msgstr "Termos de serviço"
+
+#: root/dynamic/templates/administration/settings/index.tt:331
+msgid "Terms of service text"
+msgstr "Texto dos termos de serviço"
+
+#: root/dynamic/templates/administration/settings/index.tt:395
+#: root/dynamic/templates/administration/settings/index.tt:432
+msgid "The URL for the source image or image service."
+msgstr "Endereço URL da imagem ou do serviço de imagens."
+
+#: root/dynamic/templates/administration/settings/index.tt:417
+#: root/dynamic/templates/administration/settings/index.tt:454
+msgid "The height of the source image or image service in pixels."
+msgstr "Altura da imagem em pixeis."
+
+#: root/dynamic/templates/administration/settings/index.tt:481
+msgid "The number of passes to create per batch."
+msgstr "O número de passes a criar por lote"
+
+#: root/dynamic/templates/administration/settings/index.tt:222
+msgid ""
+"The size of the time window a patron has to log in to a client. If the "
+"patron does not do so his or her reservation will be canceled."
+msgstr ""
+"Período de tempo que um utilizador tem para se autenticar num cliente. Se o "
+"utilizador não o fizer a reserva será cancelada."
+
+#: root/dynamic/templates/administration/settings/index.tt:500
+msgid ""
+"The text in this field will be prepended to the guest password, for example "
+"<i>Password:</i>. This field is displayed in monospace for ease of "
+"formatting."
+msgstr ""
+"O texto neste campo será usado como prefixo da palavra-passe do visitante, "
+"por exemplo <i>Password:</i>. Este campo é mostrado em em espaço simples "
+"para facilitar a formatação."
+
+#: root/dynamic/templates/administration/settings/index.tt:490
+msgid ""
+"The text in this field will be prepended to the guest username, for example "
+"<i>Username:</i>. This field is displayed in monospace for ease of "
+"formatting."
+msgstr ""
+"O texto neste campo será usado como prefixo do nome de utilizador do "
+"visitante, por exemplo <i>Username:</i>. Este campo é mostrado em em espaço "
+"simples para facilitar a formatação."
+
+#: root/dynamic/templates/administration/settings/index.tt:406
+#: root/dynamic/templates/administration/settings/index.tt:443
+msgid "The width of the source image or image service in pixels."
+msgstr "Largura da imagem em pixeis."
+
+#: root/dynamic/templates/administration/settings/index.tt:596
+msgid "These rules override the default time allowances"
+msgstr "Estas regras vão sobrepor os prazos por omissão definidos"
+
+#: root/dynamic/templates/public/index.tt:223
+#: root/dynamic/templates/public/index.tt:276
+msgid "This client is already reserved."
+msgstr "Este cliente já se encontra reservado."
+
+#: root/dynamic/templates/public/index.tt:350
+msgid "This client is not currently reserved."
+msgstr "Este cliente não se encontra reservado."
+
+#: root/dynamic/templates/public/index.tt:267
+msgid "This kiosk is closed for the day."
+msgstr "O quiosque encontra-se fechado hoje."
+
+#: root/dynamic/templates/public/index.tt:24
+msgid "Time remaining"
+msgstr "Tempo restante"
+
+#: root/dynamic/templates/administration/settings/index.tt:10
+#: root/dynamic/templates/administration/settings/index.tt:30
+msgid "Time settings"
+msgstr "Configurações dos tempos"
+
+#: root/dynamic/templates/administration/history/index.tt:9
+msgid "Timestamp"
+msgstr "Dia/hora"
+
+#: root/dynamic/templates/administration/history/statistics.tt:21
+#: root/dynamic/templates/administration/history/statistics.tt:24
+msgid "To"
+msgstr "Até"
+
+#: root/dynamic/templates/administration/settings/index.tt:385
+msgid "Top banner"
+msgstr "Imagem de cabeçalho"
+
+#: root/dynamic/templates/administration/history/statistics.tt:54
+msgid "Total by date"
+msgstr "Total por data"
+
+#: root/dynamic/templates/administration/history/statistics.tt:75
+msgid "Total by location"
+msgstr "Total por localização"
+
+#: root/dynamic/templates/administration/index.tt:142
+#: root/dynamic/templates/administration/index.tt:60
+#: root/dynamic/templates/administration/index.tt:72
+msgid "Troublemaker"
+msgstr "Problemático"
+
+#: root/dynamic/templates/administration/index.tt:1007
+msgid "Troublemaker status switched."
+msgstr "Estado de problemático alterado."
+
+#: root/dynamic/templates/administration/index.tt:205
+msgid "Type"
+msgstr "Tipo"
+
+#: root/dynamic/templates/administration/index.tt:1158
+msgid "Unable to cancel reservation."
+msgstr "Não foi possível cancelar a reserva."
+
+#: root/dynamic/templates/administration/index.tt:997
+msgid "Unable to change password."
+msgstr "Não foi possível alterar a palavra-passe."
+
+#: root/dynamic/templates/administration/index.tt:861
+#: root/dynamic/templates/administration/index.tt:884
+msgid "Unable to create guest user."
+msgstr "Não foi possível criar o visitante."
+
+#: root/dynamic/templates/administration/index.tt:1128
+msgid "Unable to delete user."
+msgstr "Não foi possível eliminar o utilizador."
+
+#: root/dynamic/templates/administration/index.tt:1142
+msgid "Unable to log user out."
+msgstr "Não foi possível desconectar o utilizador."
+
+#: root/dynamic/templates/administration/index.tt:1070
+msgid "Unable to modify reservation: Reason unknown."
+msgstr "Não foi possível modificar a reserva: Razão desconhecida."
+
+#: root/dynamic/templates/administration/index.tt:1066
+msgid ""
+"Unable to modify reservation: User already has a reservation for a different "
+"client."
+msgstr ""
+"Não foi possível modificar a reserva: Utilizador com uma reserva para outro "
+"cliente."
+
+#: root/dynamic/templates/administration/index.tt:1068
+msgid "Unable to modify reservation: User not found."
+msgstr "Não foi possível modificar a reserva: Utilizador não encontrado."
+
+#: root/dynamic/templates/administration/index.tt:1010
+msgid "Unable to switch troublemaker status."
+msgstr "Não foi possível alterar o estado de problemático."
+
+#: root/dynamic/templates/administration/index.tt:1040
+msgid "Unable to update user's time."
+msgstr "Não foi possível atualizar o tempo do utilizador."
+
+#: root/dynamic/templates/administration/index.tt:953
+msgid "Unable to update user."
+msgstr "Não foi possível atualizar o utilizador."
+
+#: root/dynamic/templates/administration/hours/index.tt:80
+#: root/dynamic/templates/administration/settings/index.tt:604
+msgid "Update"
+msgstr "Atualizar"
+
+#: root/dynamic/templates/administration/hours/index.tt:81
+msgid "Update hours for all locations."
+msgstr "Atualiza as horas para todas as localizações."
+
+#: root/dynamic/templates/administration/index.tt:536
+msgid "Update time"
+msgstr "Atualizar tempo"
+
+#: root/dynamic/templates/administration/index.tt:505
+msgid "Update user"
+msgstr "Atualizar utilizador"
+
+#: root/dynamic/templates/administration/settings/index.tt:114
+msgid ""
+"Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</"
+"a>"
+msgstr ""
+"Útil para implementar o <a href='https://eugdpr.org/' target='_blank'>RGPD</"
+"a>"
+
+#: root/dynamic/templates/administration/index.tt:212
+msgid "User"
+msgstr "Utilizador"
+
+#: root/dynamic/templates/administration/settings/index.tt:345
+msgid "User categories"
+msgstr "Categorias de utilizador"
+
+#: root/dynamic/templates/administration/index.tt:836
+msgid "User created."
+msgstr "Utilizador criado."
+
+#: root/dynamic/templates/administration/index.tt:1124
+msgid "User deleted."
+msgstr "Utilizador eliminado."
+
+#: root/dynamic/templates/administration/index.tt:839
+msgid "User not created."
+msgstr "O utilizador não foi criado."
+
+#: root/dynamic/templates/administration/settings/index.tt:21
+#: root/dynamic/templates/administration/settings/index.tt:342
+msgid "User settings"
+msgstr "Configurações do utilizador"
+
+#: root/dynamic/templates/administration/index.tt:140
+msgid "User status"
+msgstr "Estado do utilizador"
+
+#: root/dynamic/templates/administration/index.tt:950
+msgid "User updated."
+msgstr "Utilizador atualizado."
+
+#: root/dynamic/templates/administration/settings/index.tt:277
+msgid "User's client is reserved"
+msgstr "Cliente do utilizador reservado"
+
+#: root/dynamic/templates/administration/index.tt:1037
+msgid "User's time updated."
+msgstr "Tempo do utilizador atualizado."
+
+#: root/dynamic/templates/administration/history/index.tt:6
+#: root/dynamic/templates/administration/index.tt:130
+#: root/dynamic/templates/administration/index.tt:275
+#: root/dynamic/templates/administration/index.tt:276
+#: root/dynamic/templates/administration/index.tt:355
+#: root/dynamic/templates/administration/index.tt:441
+#: root/dynamic/templates/administration/index.tt:48
+#: root/dynamic/templates/administration/index.tt:556
+#: root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27
+#: root/dynamic/templates/public/index.tt:57
+msgid "Username"
+msgstr "Nome de utilizador"
+
+#: root/dynamic/templates/public/index.tt:260
+msgid "Username & password do not match."
+msgstr "Nome de utilizador e a palavra-passe sem correspondência."
+
+#: root/dynamic/templates/administration/index.tt:282
+msgid "Username already used"
+msgstr "O nome de utilizador já está em uso"
+
+#: root/dynamic/templates/administration/index.tt:560
+msgid "Username is invalid"
+msgstr "O nome de utilizador é inválido"
+
+#: root/dynamic/templates/public/index.tt:60
+msgid "Username is required"
+msgstr "O nome de utilizador é obrigatório"
+
+#: root/dynamic/templates/administration/index.tt:279
+msgid "Username is unique"
+msgstr "O nome de utilizador é único"
+
+#: root/dynamic/templates/administration/settings/index.tt:485
+msgid "Username label"
+msgstr "Nome de utilizador"
+
+#: root/dynamic/templates/administration/index.tt:443
+msgid "Username may not be edited."
+msgstr "O nome de utilizador não pode ser editado."
+
+#: root/dynamic/templates/administration/index.tt:277
+msgid "Username must be unique."
+msgstr "O nome de utilizador tem que ser único."
+
+#: root/dynamic/templates/administration/index.tt:558
+msgid "Username of user to make reservation for."
+msgstr "Nome de utilizador para efectuar a reserva."
+
+#: root/dynamic/templates/administration/index.tt:6
+msgid "Users"
+msgstr "Utilizadores"
+
+#: root/dynamic/templates/administration/index.tt:248
+msgid "View"
+msgstr "Ver"
+
+#: root/dynamic/templates/administration/index.tt:403
+msgid "View & print guest passes"
+msgstr "Ver e imprimir os passes de visitante"
+
+#: root/dynamic/templates/administration/settings/index.tt:179
+msgid ""
+"Warn user that they will be logged out automatically after this many minutes "
+"of inactivity."
+msgstr ""
+"Avisar o utilizador que serão automaticamente desconectados após estes "
+"minutos de inactividade."
+
+#: root/dynamic/templates/administration/settings/index.tt:229
+msgid ""
+"When a Libki client is reserved and waiting, display the username of the "
+"person it is waiting for."
+msgstr ""
+"Quando um cliente estiver reservado e em espera, o nome de utilizador da "
+"pessoa da reserva deverá ser mostrado."
+
+#: root/dynamic/templates/administration/settings/index.tt:307
+msgid ""
+"When a user's time allotment reaches zero, it's automatically renewed with "
+"the value of Extension length. This makes it possible for the user to log in "
+"again."
+msgstr ""
+"Quando à atribuição de tempo de utilizador chegar a zero, é automaticamente "
+"renovada com o valor da extensão de tempo. Permite que o utilizador se "
+"autentique novamente."
+
+#: root/dynamic/templates/administration/settings/index.tt:290
+msgid "When extending time"
+msgstr "Quando extender o tempo"
+
+#: root/dynamic/templates/administration/settings/index.tt:399
+#: root/dynamic/templates/administration/settings/index.tt:436
+msgid "Width"
+msgstr "Largura"
+
+#: root/dynamic/templates/public/index.tt:324
+msgid "You are not of the appropriate age to use this client."
+msgstr "Você não tem a idade apropriada para usar este cliente."
+
+#: root/dynamic/templates/public/index.tt:273
+msgid "You have already reserved a client."
+msgstr "Você já reservou um cliente."
+
+#: root/dynamic/templates/public/index.tt:270
+msgid "You have already reserved this client."
+msgstr "Você já reservou este cliente."
+
+#: root/dynamic/templates/public/index.tt:318
+msgid "You have an overdue item recall."
+msgstr "Você tem um devolução de exemplar em atraso."
+
+#: root/dynamic/templates/public/index.tt:321
+msgid "You have been billed for too many items."
+msgstr "Você foi cobrado por demasiados exemplares."
+
+#: root/dynamic/templates/public/index.tt:306
+msgid "You have claimed returned for too many items."
+msgstr "Você recebeu reclamações para a devolução de muitos exemplares."
+
+#: root/dynamic/templates/public/index.tt:279
+msgid "You have excessive oustanding fees."
+msgstr "Você têm multas por pagar em excesso."
+
+#: root/dynamic/templates/public/index.tt:315
+msgid "You have excessive outstanding fees."
+msgstr "Você têm multas por pagar em excesso."
+
+#: root/dynamic/templates/public/index.tt:312
+msgid "You have excessive outstanding fines."
+msgstr "Você têm multas por pagar em excesso."
+
+#: root/dynamic/templates/public/index.tt:309
+msgid "You have lost too many items."
+msgstr "Você perdeu demasiados exemplares."
+
+#: root/dynamic/templates/public/index.tt:264
+msgid "You have no time remaining."
+msgstr "Você não tem tempo disponível."
+
+#: root/dynamic/templates/public/index.tt:303
+msgid "You have renewed too many items."
+msgstr "Você renovou demasiados exemplares."
+
+#: root/dynamic/templates/public/index.tt:297
+msgid "You have too many items checked out."
+msgstr "Você tem demasiados exemplares emprestados."
+
+#: root/dynamic/templates/public/index.tt:300
+msgid "You have too many overdue items."
+msgstr "Você tem demasiados empréstimos em atraso."
+
+#: root/dynamic/templates/public/index.tt:282
+msgid "Your checkout privileges have been denied."
+msgstr "Os seus privilégios de empréstimo foram negados."
+
+#: root/dynamic/templates/public/index.tt:291
+msgid "Your hold privileges have been denied."
+msgstr "Os seus privilégios de reserva foram negados."
+
+#: root/dynamic/templates/public/index.tt:294
+msgid "Your library card has been reported lost or stolen."
+msgstr "O seu cartão de leitor foi reportado como perdido ou roubado."
+
+#: root/dynamic/templates/public/index.tt:288
+msgid "Your recall privileges have been denied."
+msgstr "Os seus privilégios de devolução foram negados."
+
+#: root/dynamic/templates/public/index.tt:285
+msgid "Your renewal privileges have been denied."
+msgstr "Os seus privilégios de renovação foram negados."
+
+#: root/dynamic/templates/public/index.tt:381
+msgid "Your reservation cancelation failed for an unknown reason."
+msgstr "O seu cancelamento de reserva falhou por uma razão desconhecida."
+
+#: root/dynamic/templates/administration/hours/index.tt:0
+msgid "d"
+msgstr "d"
+
+#: root/dynamic/templates/administration/hours/index.tt:140
+#: root/dynamic/templates/administration/hours/index.tt:99
+msgid "for"
+msgstr "para"
+
+#: root/dynamic/includes/breadcrumbs.tt:5
+#: root/dynamic/includes/breadcrumbs.tt:9
+msgid "item.label"
+msgstr "item.label"
+
+# Not generated by xgettext.pl
+# Language menu
+# English
+msgid "lang.en"
+msgstr "English"
+
+# French
+msgid "lang.fr"
+msgstr "Fran&ccedil;ais"
+
+# Swedish
+msgid "lang.sv"
+msgstr "Svenska"
+
+# Spanish
+msgid "lang.es"
+msgstr "Espa&ntilde;ol"
+
+# Portuguese
+msgid "lang.pt_PT"
+msgstr "Portugu&ecirc;s"
+
+# Days of the week
+msgid "Monday"
+msgstr "Segunda"
+
+msgid "Tuesday"
+msgstr "Terça"
+
+msgid "Wednesday"
+msgstr "Quarta"
+
+msgid "Thursday"
+msgstr "Quinta"
+
+msgid "Friday"
+msgstr "Sexta"
+
+msgid "Saturday"
+msgstr "Sábado"
+
+msgid "Sunday"
+msgstr "Domingo"
+
+# Breadcrumb words
+msgid "Hours"
+msgstr "Horas"
+
+msgid "Login"
+msgstr "Entrar"
