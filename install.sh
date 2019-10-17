@@ -100,11 +100,11 @@ while true; do
   echo
   read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME
 
-  if [[ $ADMINUSERNAME = *[!\ ]* ]]; then
-    break 2
-  else
+  if [ -z $ADMINUSERNAME ]; then
     echo
     echo "Your username cannot be empty."
+  else
+    break 2
   fi
 done
 
