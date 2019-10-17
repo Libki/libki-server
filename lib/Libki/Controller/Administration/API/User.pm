@@ -381,7 +381,7 @@ sub toggle_troublemaker : Local : Args(1) {
 =cut
 
 sub change_password : Local : Args(0) {
-    my ( $self, $c ) = @_;
+    my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
     my $success = 0;
@@ -393,14 +393,33 @@ sub change_password : Local : Args(0) {
 
     my $now = $c->now();
 
-    $user->set_column( 'password', $password );
-    $user->set_column( 'updated_on', $now );
+    my $msg;
 
-    if ( $user->update() ) {
-        $success = 1;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                $user->set_column( 'password', $password );
+                $user->set_column( 'updated_on', $now );
+
+                if ( $user->update() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CHANGE_PASSWORD};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 

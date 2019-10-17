@@ -994,7 +994,14 @@ $(document).ready(function() {
                     DisplayMessage( "success", "[% c.loc("Password changed.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to change password.") %]" );
+                    if ( data.message ) {
+                        if ( data.message == 'ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD' ) {
+                            DisplayMessage( "error", "[%c.loc("Administrators cannot change a super administrator password.") %]" );
+                        }
+                    }
+                    else {
+                        DisplayMessage( "error", "[% c.loc("Unable to change password.") %]" );
+                    }
                 }
             });
         }
