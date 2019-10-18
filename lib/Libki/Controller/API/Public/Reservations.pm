@@ -108,7 +108,7 @@ sub create : Local : Args(0) {
         }
     }
     else {
-        $c->stash( 'success' => 0, 'reason' => $error_code || 'INVALID_USER', details => $details );
+        $c->stash( 'success' => 0, 'reason' => $error_code || %check{'error'} || 'INVALID_USER', details => $details );
     }
     $c->logout();
 
