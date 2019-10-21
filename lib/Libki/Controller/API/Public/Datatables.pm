@@ -76,15 +76,8 @@ sub clients : Local Args(0) {
         }
     );
 
-    my $client = $c;
     my @results;
     foreach my $c (@clients) {
-        my $reservation= $client->model('DB::Reservation')->search(
-             { 'client_id' => $c->id},
-             {  order_by => { -asc => 'begin_time' } }
-             )->first || undef;
-        my $time = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
-        $time =~ s/T/ / if(defined($time));
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
@@ -92,8 +85,7 @@ sub clients : Local Args(0) {
         $r->{'1'} = $c->location;
         $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
         $r->{'3'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'4'} = defined( $reservation ) ? $reservation->user->username : undef;
-        $r->{'5'} = $time;
+        $r->{'4'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
 
         push( @results, $r );
     }

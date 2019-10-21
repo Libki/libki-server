@@ -1,8 +1,6 @@
 package Libki::Controller::API::Public::Reservations;
 use Moose;
 use namespace::autoclean;
-use Date::Parse;
-#use POSIX;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -32,8 +30,6 @@ sub create : Local : Args(0) {
     my $username  = $c->request->params->{'username'};
     my $password  = $c->request->params->{'password'};
     my $client_id = $c->request->params->{'id'};
-    my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
-    my $client = $c->model('DB::Client')->find( $client_id );
 
     my $log = $c->log();
     $log->debug("Creating reservation for $username / $client_id");
@@ -62,14 +58,6 @@ sub create : Local : Args(0) {
     } else {
         $log->debug("User $username is a guest, not trying external authentication");
     }
-    my %check;
-    if( $success ) {
-        %check = $c->check_reservation($client,$user,$begin_time);
-        if( $check{'error'} ) {
-            $c->stash( 'success' => 0, 'reason' => $check{'error'}, details => $check{'detail'} );
-            $success = 0;
-        }
-    }
 
     if (
         $success
@@ -91,6 +79,9 @@ sub create : Local : Args(0) {
                 'reason'  => 'CLIENT_USER_ALREADY_RESERVED'
             );
         }
+        elsif ( $c->model('DB::Reservation')->search( { client_id => $client_id } )->next() ) {
+            $c->stash( 'success' => 0, 'reason' => 'CLIENT_ALREADY_RESERVED' );
+        }
         elsif ( $c->model('DB::Reservation')->search( { user_id => $user->id() } )->next() ) {
             $c->stash( 'success' => 0, 'reason' => 'USER_ALREADY_RESERVED' );
         }
@@ -99,7 +90,7 @@ sub create : Local : Args(0) {
             $c->stash( %$error );
         }
         else {
-            if ( $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id(), client_id => $client_id, begin_time => $begin_time , end_time => $check{'end_time'} } ) ) {
+            if ( $c->model('DB::Reservation')->create( { instance => $instance, user_id => $user->id(), client_id => $client_id } ) ) {
                 $c->stash( 'success' => 1 );
             }
             else {
@@ -108,8 +99,9 @@ sub create : Local : Args(0) {
         }
     }
     else {
-        $c->stash( 'success' => 0, 'reason' => $error_code || $check{'error'} || 'INVALID_USER', details => $details );
+        $c->stash( 'success' => 0, 'reason' => $error_code || 'INVALID_USER', details => $details );
     }
+
     $c->logout();
 
     $c->forward( $c->view('JSON') );
@@ -124,14 +116,13 @@ sub delete : Local : Args(0) {
 
     my $password  = $c->request->params->{'password'};
     my $client_id = $c->request->params->{'id'};
-    my $username = $c->request->params->{'username'};
+
     my $instance = $c->instance;
 
-    my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+    my $user = $c->model('DB::Client')->find($client_id)->reservation->user;
 
     if (
-        $user
-        && $c->authenticate(
+        $c->authenticate(
             {
                 username => $user->username,
                 password => $password,
@@ -141,13 +132,8 @@ sub delete : Local : Args(0) {
       )
     {
 
-        my $reservation = $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->first;
-
-        if(!$reservation)
-        {
-            $c->stash( 'success' => 0, 'reason' => 'NOTFOUND' );
-        }
-        elsif($reservation->delete())
+        if ( $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->next()
+            ->delete() )
         {
             $c->stash( 'success' => 1, );
         }
