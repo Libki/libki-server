@@ -63,28 +63,12 @@ $dbh->do(q{
     UPDATE sessions
     LEFT JOIN users ON (
         users.instance = sessions.instance
-      AND
+      AND 
         users.id = sessions.user_id
-    )
+    ) 
     SET
         sessions.minutes = sessions.minutes - 1,
         users.minutes_allotment = users.minutes_allotment - 1
-});
-
-## Decrement minutes_allotment for reservation begins but not logged in users
-$dbh->do(q{
-    UPDATE users
-    INNER JOIN reservations ON (
-        reservations.begin_time < now()
-      AND
-        reservations.end_time > now()
-      AND
-        reservations.user_id = users.id
-      AND
-        users.minutes_allotment > 0
-    )
-    SET
-        users.minutes_allotment = users.minutes_allotment -1
 });
 
 ## Handle automatic time extensions
@@ -205,25 +189,16 @@ foreach my $pct (@post_crash_timeouts) {
 
 ## Clear out any expired reservations
 #FIXME We need to deal with timezones at some point
-my $timeout =  $setting_rs->find( { name => 'ReservationTimeout'} );
-$reservation_rs->search([
+$reservation_rs->search(
     {
-        'begin_time' => {
-            '<',
-            DateTime::Format::MySQL->format_datetime(
-                DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration( DateTime::Duration->new(minutes => $timeout->value()) )
-            )
-        }
-    },
-    {
-        'end_time' => {
+        'expiration' => {
             '<',
             DateTime::Format::MySQL->format_datetime(
                 DateTime->now( time_zone => $ENV{LIBKI_TZ} )
             )
-       }
+        }
     }
-])->delete();
+)->delete();
 
 ## Renew time for users that's reached zero if AutomaticTimeExtensionRenewal is set to 1
 my @instances = $dbh->selectrow_array("SELECT DISTINCT(instance) FROM users");

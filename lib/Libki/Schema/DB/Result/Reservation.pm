@@ -74,13 +74,7 @@ __PACKAGE__->table("reservations");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 begin_time
-
-  data_type: 'datetime'
-  datetime_undef_if_invalid: 1
-  is_nullable: 1
-
-=head2 end_time
+=head2 expiration
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
@@ -97,13 +91,7 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "begin_time",
-  {
-    data_type => "datetime",
-    datetime_undef_if_invalid => 1,
-    is_nullable => 1,
-  },
-  "end_time",
+  "expiration",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
@@ -124,6 +112,18 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
+
+=head2 C<client_id>
+
+=over 4
+
+=item * L</client_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("client_id", ["client_id"]);
 
 =head2 C<user_id>
 

@@ -13,7 +13,6 @@ use DateTime::Format::MySQL;
 use DateTime;
 use List::Util qw(min);
 use PDF::API2;
-use Date::Parse;
 
 =head1 NAME
 
@@ -69,8 +68,10 @@ sub index : Path : Args(0) {
         );
         $log->debug( "Client Registered: " . $client->name() );
 
-        my $reserved_for = $c->get_reservation_status( $client );
-        $c->stash( reserved_for => $reserved_for) if($reserved_for);
+        my $reservation = $client->reservation || undef;
+        if ($reservation) {
+            $c->stash( reserved_for => $reservation->user->username() );
+        }
 
         my $age_limit = $c->request->params->{'age_limit'};
         if ($age_limit) {
@@ -111,19 +112,30 @@ sub index : Path : Args(0) {
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
         my $client_name  = $c->request->params->{'node'};
-        my $client = $c->model('DB::Client')->find( { name => $client_name } ) || undef;
+        my $reserved_for = $c->request->params->{'reserved_for'};
 
         my $reservation = $c->model('DB::Reservation')->search(
+            {},
             {
                 instance => $instance,
-                client_id => $client->id
-            },
-            { order_by => { -asc => 'begin_time' } }
-        )->first;
+                username => $reserved_for,
+                name     => $client_name
+            }
+        )->next();
 
         if ($reservation) {
-            if ( str2time($reservation->end_time) < str2time($c->now) ) {
-                $reservation->delete();
+            unless ( $reservation->expiration() ) {
+                $reservation->expiration(
+                    DateTime::Format::MySQL->format_datetime(
+                        $c->now()->add_duration(
+                            DateTime::Duration->new(
+                                minutes => $c->stash->{'Settings'}
+                                  ->{'ReservationTimeout'}
+                            )
+                        )
+                    )
+                );
+                $reservation->update();
             }
         }
     }
@@ -232,6 +244,7 @@ sub index : Path : Args(0) {
                             : $c->setting('DefaultTimeAllowance');
                     }
 
+
                     my $error = {};    # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 )
                     {
@@ -256,9 +269,7 @@ sub index : Path : Args(0) {
                     }
                     else {
                         if ($client) {
-                            $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
-                            my %result = $c->check_login($client,$user);
-                            my $reservation = $result{'reservation'};
+                            my $reservation = $client->reservation;
 
                             # Allows exceptions to "Reservation only" client behavior
                             my $no_reservation_required = $c->get_rule(
@@ -277,16 +288,40 @@ sub index : Path : Args(0) {
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
                             }
-                            elsif ( (!$reservation || $reservation->user_id() == $user->id() )
-                                    && !$result{'error'} )
+                            elsif ( !$reservation
+                                || $reservation->user_id() == $user->id() )
                             {
                                 $reservation->delete() if $reservation;
-                                %result = $c->check_login($client,$user);
-
                                 my $session_id = $c->sessionid;
 
+                                #TODO: Move this to a unified sub, see TODO above
+                                # Get advanced rule if there is one
+                                my $minutes = $c->get_rule(
+                                    {
+                                        rule            => $is_guest ? 'guest_session' : 'session',
+                                        user_category   => $user->category,
+                                        client_location => $client->location,
+                                        client_name     => $client_name,
+                                    }
+                                );
+
+                                # Use 'simple' rules if no advanced rule exists
+                                $minutes //= $is_guest
+                                    ? $c->setting('DefaultGuestSessionTimeAllowance')
+                                    : $c->setting('DefaultSessionTimeAllowance');
+
+                                # If the user doesn't have enough daily minutes to cover the entire session,
+                                # reduce the session to the remaining daily mintes
+                                $minutes = min( $minutes, $minutes_allotment );
+
+                                # If the location is going to close before the session minutes would be used up,
+                                # reduce the session to the number of minutes before closing
+                                $minutes = min( $minutes, $minutes_until_closing ) if $minutes_until_closing;
+
                                 # Solves issue with some browsers not parsing correctly
-                                $c->stash( units => "$result{'minutes'}" );
+                                $c->stash( units => "$minutes" );
+
+                                $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
 
                                 my $session = $c->model('DB::Session')->create(
                                     {
@@ -294,7 +329,7 @@ sub index : Path : Args(0) {
                                         user_id    => $user->id,
                                         client_id  => $client->id,
                                         status     => 'active',
-                                        minutes    => $result{'minutes'},
+                                        minutes    => $minutes,
                                         session_id => $session_id,
                                     }
                                 );
@@ -314,7 +349,7 @@ sub index : Path : Args(0) {
                                 );
                             }
                             else {
-                                $c->stash( error => $result{'error'} );
+                                $c->stash( error => 'RESERVED_FOR_OTHER' );
                             }
                         }
                         else {
