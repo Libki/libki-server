@@ -216,13 +216,14 @@ sub batch_create_guest : Local : Args(0) {
             }
         );
 
-        $file_contents .= "\n<span class='guest-pass'>";
+        $file_contents .= "\n<div class='guest-pass'>";
         $file_contents .= "\n<span class='guest-pass-username'>";
         $file_contents .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
         $file_contents .= "</span>";
         $file_contents .= "\n\n<span class='guest-pass-password'>";
         $file_contents .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
         $file_contents .= "</span>";
+        $file_contents .= "</div>";
         $file_contents .= "</body>";
 
         $success = $success + 1 if ($user);
