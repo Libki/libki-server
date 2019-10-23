@@ -471,7 +471,7 @@ sub prints : Local Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
-=head2
+=head2 reservations
 
 Endpoint that returns DataTables JSON of reservations.
 
