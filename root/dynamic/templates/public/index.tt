@@ -29,7 +29,7 @@
 <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
     <div class="btn-group" role="group">
     [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary">
+        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="setTime()">
             <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
         </button>
 
@@ -52,7 +52,15 @@
       <div class="modal-body">
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
+            <div class="form-group">
+               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="setTime()">
+               <select id="reservation-hour" name="reservation_hour" onchange="setMinute()">
+               </select>
+                :
+               <select id="reservation-minute" name="reservation_minute">
+                </select>
 
+            </div>
             <div class="form-group">
                 <label for="make-reservation-username">[% c.loc("Username") %]</label>
                 <input type="text" class="form-control" id="make-reservation-username" name="username" />
@@ -77,11 +85,6 @@
     </div>
   </div>
 </div>
-<script>
-    $('#make-reservation-modal').on('shown.bs.modal', function () {
-      $('#make-reservation-username').trigger('focus')
-    })
-</script>
 
 <div class="modal fade" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -97,6 +100,11 @@
             <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
+                <label for="cancel-reservation-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="cancel-reservation-username" name="username" />
+                <div class="invalid-feedback">
+                      [% c.loc("Username is required") %]
+                </div>
                 <label for="cancel-reservation-password">[% c.loc("Password") %]</label>
                 <input type="password" class="form-control" id="cancel-reservation-password" name="password" />
                 <div class="invalid-feedback">
@@ -114,7 +122,7 @@
 </div>
 <script>
     $('#cancel-reservation-modal').on('shown.bs.modal', function () {
-      $('#cancel-reservation-password').trigger('focus')
+      $('#cancel-reservation-username').trigger('focus')
     })
 </script>
 
@@ -122,7 +130,7 @@
 $(document).ready(function() {
     // Initalize the Clients table as a datatable
     cTable = $("#client-table").dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bPaginate": false,
         "bFilter": false, // Hide the search form
         "bProcessing": false,  // Indicate when the table is processing data
@@ -146,7 +154,7 @@ $(document).ready(function() {
 
             if ( Boolean( aData[4] ) ) {
                 if ( [% Settings.ReservationShowUsername ? 1 : 0 %] ) {
-                    $("td:eq(3)", nRow).html( "[% c.loc("Reserved by") %]" + " " + "<i>" + aData[4] + "</i>" );
+                    $("td:eq(3)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[4] + "</i>" +" at " + aData[5]);
                 }
                 else {
                     $("td:eq(3)", nRow).html( "[% c.loc("Reserved") %]" );
@@ -200,7 +208,6 @@ $(document).ready(function() {
     } );
 
     $("#client-table-row-toolbar-make-reservation").click(function(){
-        if ( ! $("#" + window.selected_id).children(":nth(3)").text() ) {
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
 
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
@@ -216,12 +223,9 @@ $(document).ready(function() {
             $("#make-reservation-password").removeClass("is-invalid");
 
             $("#make-reservation-modal").modal();
-            $("#make-reservation-username").focus();
 
             $("#make-reservation-modal-form-submit").removeAttr("disabled");
-        } else {
-            DisplayMessage("error", "[% c.loc("This client is already reserved.") %]");
-        }
+
     });
 
     $("#make-reservation-password").keypress(function(event) {
@@ -249,15 +253,22 @@ $(document).ready(function() {
 
         if ( ! errors ) {
             $("#make-reservation-modal-form-submit").attr("disabled","disabled");
-
             $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
                 if ( data.success ) {
                     $("#make-reservation-modal").modal("hide");
                     DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );
                     ForceClientTableRefresh();
                 }
+                else if ( data.reason == "INVALID_TIME" )  {
+                    DisplayMessage( "error", "[% c.loc("The time you chose is not available.") %]" );
+                    $("#client-table-row-toolbar-make-reservation").click();
+                }
                 else if ( data.reason == "INVALID_USER" || data.reason == "INVALID_PASSWORD" )  {
                     DisplayMessage( "error", "[% c.loc("Username & password do not match.") %]" );
+                    $("#client-table-row-toolbar-make-reservation").click();
+                }
+                else if ( data.reason == "INVALID_USER" || data.reason == "CLOSING_TIME" )  {
+                    DisplayMessage( "error", "[% c.loc("This kiosk will be closed at the time you chose.") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
                 }
                 else if ( data.reason == "NO_TIME" ) {
@@ -342,12 +353,15 @@ $(document).ready(function() {
             $("#cancel-reservation-password").val("");
             $("#cancel-reservation-password").removeClass("is-invalid");
 
+            $("#cancel-reservation-username").val("");
+            $("#cancel-reservation-username").removeClass("is-invalid");
+
             $("#cancel-reservation-modal").modal();
             $("#cancel-reservation-password").focus();
 
             $("#cancel-reservation-modal-form-submit").removeAttr("disabled");
         } else {
-            DisplayMessage("error", "[% c.loc("This client is not currently reserved.") %]");
+            DisplayMessage("error", "[% c.loc("This client has no reservation.") %]");
         }
     });
 
@@ -360,6 +374,12 @@ $(document).ready(function() {
     $("#cancel-reservation-modal-form-submit").click(function(){
         var errors = false;
         $("#cancel-reservation-password").removeClass("is-invalid");
+
+        if ( ! $("#cancel-reservation-username").val() ) {
+             errors = true;
+             $("#cancel-reservation-username").addClass("is-invalid");
+             $("#cancel-reservation-username").focus();
+         }
 
         if ( ! $("#cancel-reservation-password").val() ) {
             errors = true;
@@ -377,9 +397,12 @@ $(document).ready(function() {
                     DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
                     ForceClientTableRefresh();
                 }
-                else if ( data.reason == "UNKOWN" ) {
+                else if ( data.reason == "UNKNOWN" ) {
                     DisplayMessage( "error", "[% c.loc("Your reservation cancelation failed for an unknown reason.") %]" );
                 } 
+                else if ( data.reason == "NOTFOUND" ) {
+                    DisplayMessage( "error", "[% c.loc("You have no reservation on this kiosk.") %]" );
+                }
                 else  {
                     DisplayMessage( "error", "[% c.loc("Incorrect password.") %]" );
                     $("#client-table-row-toolbar-cancel-reservation").click();
@@ -403,4 +426,12 @@ function ClientTableUpdateLocationFilter( location ) {
     ForceClientTableRefresh();
 }
 
+$('#datepicker').datepicker({
+     dateFormat:'yy-mm-dd',
+     minDate:'%y-%M-%d',
+     gotoCurrent: true,
+ });
+
+$("#datepicker").datepicker("setDate", new Date());
+setTime();
 </script>
