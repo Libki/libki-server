@@ -159,16 +159,16 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 reservation
+=head2 reservations
 
-Type: might_have
+Type: has_many
 
 Related object: L<Libki::Schema::DB::Result::Reservation>
 
 =cut
 
-__PACKAGE__->might_have(
-  "reservation",
+__PACKAGE__->has_many(
+  "reservations",
   "Libki::Schema::DB::Result::Reservation",
   { "foreign.client_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
@@ -188,7 +188,6 @@ __PACKAGE__->might_have(
   { "foreign.client_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
-
 
 # Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mUK+CBKZWBONMnncvzfc9Q
