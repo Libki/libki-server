@@ -471,6 +471,12 @@ sub prints : Local Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 reservations
+
+Endpoint that returns DataTables JSON of reservations.
+
+=cut
+
 sub reservations  : Local Args(0) {
     my ( $self, $c ) = @_;
 
