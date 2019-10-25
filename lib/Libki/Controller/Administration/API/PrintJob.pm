@@ -124,77 +124,87 @@ sub release : Local : Args(0) {
 
     my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
 
+
     if ($print_job) {
-        my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
-        if ($print_file) {
-            my $printers = $c->get_printer_configuration;
-            my $printer  = $printers->{printers}->{ $print_job->printer };
+        # Google Cloud print support
+        if ($print_job->type eq 'google_cloud_print') {
+            my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
+            if ($print_file) {
+                my $printers = $c->get_printer_configuration;
+                my $printer  = $printers->{printers}->{ $print_job->printer };
 
-            if ($printer) {
-                my $filename = $print_file->filename;
-                my $content  = $print_file->data;
+                if ($printer) {
+                    my $filename = $print_file->filename;
+                    my $content  = $print_file->data;
 
-                my $ticket = { "version" => "1.0", "print" => {}, };
+                    my $ticket = { "version" => "1.0", "print" => {}, };
 
-                my $ticket_conf = $printer->{ticket};
-                foreach my $key ( keys %$ticket_conf ) {
-                    my $data = $ticket_conf->{$key};
-                    $ticket->{print}->{$key} = $data;
-                }
+                    my $ticket_conf = $printer->{ticket};
+                    foreach my $key ( keys %$ticket_conf ) {
+                        my $data = $ticket_conf->{$key};
+                        $ticket->{print}->{$key} = $data;
+                    }
 
-                $ticket->{print}->{copies}->{copies} = $print_job->copies || 1;
+                    $ticket->{print}->{copies}->{copies} = $print_job->copies || 1;
 
-                my $ticket_json = to_json($ticket);
+                    my $ticket_json = to_json($ticket);
 
-                my $request = POST 'https://www.google.com/cloudprint/submit',
-                    Content_Type => 'form-data',
-                    Content      => [
-                    printerid => $printer->{google_cloud_id},
-                    content   => [ undef, $filename, Content => $content ],
-                    title     => $filename,
-                    ticket    => $ticket_json,
-                    ];
+                    my $request = POST 'https://www.google.com/cloudprint/submit',
+                        Content_Type => 'form-data',
+                        Content      => [
+                        printerid => $printer->{google_cloud_id},
+                        content   => [ undef, $filename, Content => $content ],
+                        title     => $filename,
+                        ticket    => $ticket_json,
+                        ];
 
-                my $response = $token->profile->request_auth( $token, $request );
+                    my $response = $token->profile->request_auth( $token, $request );
 
-                my $code = $response->code;
-                my $message = $response->message;
+                    my $code = $response->code;
+                    my $message = $response->message;
 
-                if ( $code eq '200' ) {
+                    if ( $code eq '200' ) {
 
-                    my $json      = JSON::from_json( $response->decoded_content );
-                    my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
+                        my $json      = JSON::from_json( $response->decoded_content );
+                        my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
 
-                    my $now = $c->now();
-                    $print_job->update(
-                        {
-                            data       => $json,
-                            status     => $job_state,
-                            updated_on => $now,
-                        }
-                    );
+                        my $now = $c->now();
+                        $print_job->update(
+                            {
+                                data       => $json,
+                                status     => $job_state,
+                                updated_on => $now,
+                            }
+                        );
 
-                    $c->stash( success => 1, message => $json->{message} );
+                        $c->stash( success => 1, message => $json->{message} );
+                    }
+                    else {
+                        $c->stash( success => 0, error => "$code: $message", id => $print_job->printer );
+                    }
                 }
                 else {
-                    $c->stash( success => 0, error => "$code: $message", id => $print_job->printer );
+                    $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
                 }
             }
             else {
-                $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
+                $c->stash(
+                    success => 0,
+                    error   => 'Print File Not Found',
+                    id      => $print_job->print_file_id
+                );
             }
+
         }
-        else {
-            $c->stash(
-                success => 0,
-                error   => 'Print File Not Found',
-                id      => $print_job->print_file_id
-            );
+        # CUPS print support
+        elsif ($print_job && $print_job->type eq 'cups') {
+            $c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $id );
         }
+
     }
     else {
         $c->stash( success => 0, error => 'Print Job Not Found', id => $id );
-    }
+    };
 
     $c->forward( $c->view('JSON') );
 }
@@ -217,34 +227,41 @@ sub update : Local : Args(0) {
     my $print_job_id = $c->request->params->{id};
 
     my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
+    if ($print_job) {
+        if ($print_job->type eq 'google_cloud_print') {
+            if ( $print_job && $print_job->status ne 'Done' && $print_job->status ne 'Pending' ) {
+                my $id = $print_job->data->{job}->{id};
 
-    if ( $print_job && $print_job->status ne 'Done' && $print_job->status ne 'Pending' ) {
-        my $id = $print_job->data->{job}->{id};
+                my $request = POST 'https://www.google.com/cloudprint/job',
+                    Content_Type => 'form-data',
+                    Content      => [ jobid => $id, ];
 
-        my $request = POST 'https://www.google.com/cloudprint/job',
-            Content_Type => 'form-data',
-            Content      => [ jobid => $id, ];
+                my $response = $token->profile->request_auth( $token, $request );
 
-        my $response = $token->profile->request_auth( $token, $request );
+                my $data      = JSON::from_json( $response->decoded_content );
+                my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
 
-        my $data      = JSON::from_json( $response->decoded_content );
-        my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
+                my $now = $c->now();
+                $print_job->update(
+                    {
+                        data       => $data,
+                        status     => $job_state,
+                        updated_on => $now,
+                    }
+                );
 
-        my $now = $c->now();
-        $print_job->update(
-            {
-                data       => $data,
-                status     => $job_state,
-                updated_on => $now,
+        	#$c->stash->{data}    = $data;
+                $c->stash->{success} = 1;
             }
-        );
-
-	#$c->stash->{data}    = $data;
-        $c->stash->{success} = 1;
+            elsif ( $print_job ) {
+                $c->stash->{success} = 1;
+            }
+        }
+        elsif ($print_job->type eq 'cups') {
+            $c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $print_job->id );
+        };
     }
-    elsif ( $print_job ) {
-        $c->stash->{success} = 1;
-    } else {
+    else {
         $c->stash->{success} = 0;
         $c->stash->{error}   = 'Print Job Not Found';
     }
@@ -310,12 +327,12 @@ published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.   
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
