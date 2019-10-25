@@ -142,7 +142,7 @@ sub release : Local : Args(0) {
                     $ticket->{print}->{$key} = $data;
                 }
 
-                $ticket->{print}->{copies} = $print_job->copies || 1;
+                $ticket->{print}->{copies}->{copies} = $print_job->copies || 1;
 
                 my $ticket_json = to_json($ticket);
 
