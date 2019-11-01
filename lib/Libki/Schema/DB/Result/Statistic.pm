@@ -80,6 +80,12 @@ __PACKAGE__->table("statistics");
   is_nullable: 1
   size: 191
 
+=head2 client_type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =head2 action
 
   data_type: 'varchar'
@@ -117,6 +123,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "client_location",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "client_type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "action",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "created_on",
@@ -144,8 +152,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TDhnlJNhZjKFyT9L9+3kOQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-01 12:22:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qtwYDmDIG9LqQJXnv1znpQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -80,6 +80,12 @@ __PACKAGE__->table("clients");
   datetime_undef_if_invalid: 1
   is_nullable: 1
 
+=head2 type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -97,6 +103,8 @@ __PACKAGE__->add_columns(
     datetime_undef_if_invalid => 1,
     is_nullable => 1,
   },
+  "type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
 );
 
 =head1 PRIMARY KEY
@@ -159,21 +167,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 reservations
-
-Type: has_many
-
-Related object: L<Libki::Schema::DB::Result::Reservation>
-
-=cut
-
-__PACKAGE__->has_many(
-  "reservations",
-  "Libki::Schema::DB::Result::Reservation",
-  { "foreign.client_id" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 session
 
 Type: might_have
@@ -189,8 +182,9 @@ __PACKAGE__->might_have(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mUK+CBKZWBONMnncvzfc9Q
+
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-01 11:50:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:DBDUbVrCpS9AG6N8eFXt5w
 
 =head2 can_user_use
 
