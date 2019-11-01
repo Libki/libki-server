@@ -382,7 +382,7 @@ sub toggle_troublemaker : Local : Args(1) {
 =cut
 
 sub change_password : Local : Args(0) {
-    my ( $self, $c, $id ) = @_;
+    my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
     my $success = 0;
