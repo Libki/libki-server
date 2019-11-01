@@ -129,6 +129,7 @@
             <thead>
                 <th>[% c.loc("Name") %]</th>
                 <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
                 [% IF ShowFirstLastNames %]

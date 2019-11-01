@@ -28,7 +28,7 @@ sub clients : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/ me.name me.location session.status session.minutes /;
+    my @columns = qw/ me.name me.location me.type session.status session.minutes /;
 
     # Set up filters
     my $filter = { instance => $instance};
@@ -38,6 +38,7 @@ sub clients : Local Args(0) {
         $filter->{-or} = [
             'me.name'     => { 'like', "%$search_term%" },
             'me.location' => { 'like', "%$search_term%" },
+            'me.type'     => { 'like', "%$search_term%" },
         ];
     }
 
@@ -90,10 +91,11 @@ sub clients : Local Args(0) {
         $r->{'DT_RowId'} = $c->id;
         $r->{'0'} = $c->name;
         $r->{'1'} = $c->location;
-        $r->{'2'} = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'4'} = defined( $reservation ) ? $reservation->user->username : undef;
-        $r->{'5'} = $time;
+        $r->{'2'} = $c->type;
+        $r->{'3'} = defined( $c->session ) ? $c->session->status : undef;
+        $r->{'4'} = defined( $c->session ) ? $c->session->minutes : undef;
+        $r->{'5'} = defined( $reservation ) ? $reservation->user->username : undef;
+        $r->{'6'} = $time;
 
         push( @results, $r );
     }
