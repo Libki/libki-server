@@ -89,7 +89,7 @@ foreach my $version_dir (@version_dirs) {
                     $dbh->do($s);
                 }
                 catch {
-                    print "UPDATE FAILED: $_";
+                    print "UPDATE FAILED IN FILE $file: $_";
                 }
             }
         }
