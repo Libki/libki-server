@@ -1,5 +1,9 @@
 sudo: required
 
+branches:
+  only:
+  - master
+
 env:
   global:
     - IMAGE_NAME=libki/libki-server
