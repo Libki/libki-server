@@ -74,17 +74,17 @@ __PACKAGE__->table("clients");
   is_nullable: 1
   size: 191
 
-=head2 last_registered
-
-  data_type: 'timestamp'
-  datetime_undef_if_invalid: 1
-  is_nullable: 1
-
 =head2 type
 
   data_type: 'varchar'
   is_nullable: 1
   size: 191
+
+=head2 last_registered
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
 
 =cut
 
@@ -97,14 +97,14 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
   {
     data_type => "timestamp",
     datetime_undef_if_invalid => 1,
     is_nullable => 1,
   },
-  "type",
-  { data_type => "varchar", is_nullable => 1, size => 191 },
 );
 
 =head1 PRIMARY KEY
@@ -183,8 +183,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-01 11:50:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:DBDUbVrCpS9AG6N8eFXt5w
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-04 09:06:02
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+Cu+O4th0iM/LmOotto/Zw
 
 =head2 can_user_use
 
