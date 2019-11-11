@@ -98,7 +98,7 @@ perl /home/libki/libki-server/installer/update_db.pl
 # Create administrator user
 while true; do
   echo
-  read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME
+  read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME < /dev/tty
 
   if [ -z $ADMINUSERNAME ]; then
     echo
@@ -109,9 +109,9 @@ while true; do
 done
 
 while true; do
-  read -s -p "Please enter your desired password: " ADMINPASSWORD
+  read -s -p "Please enter your desired password: " ADMINPASSWORD < /dev/tty
   echo
-  read -s -p "Please enter your desired password again: " ADMINPASSWORD2
+  read -s -p "Please enter your desired password again: " ADMINPASSWORD2 < /dev/tty
 
   if [[ $ADMINPASSWORD = $ADMINPASSWORD2 ]]; then
     if [[ $ADMINPASSWORD = *[!\ ]* ]]; then
@@ -200,7 +200,7 @@ select PROXYANSWER in "Yes" "No"; do
       continue
   esac
   break
-done
+done < /dev/tty
 
 # Starting the Libki service
 service libki start
