@@ -323,7 +323,35 @@ sub update : Local : Args(0) {
             }
         }
         elsif ($print_job->type eq 'cups') {
-            $c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $print_job->id );
+
+            my $cups = $self->cups_setup($c);
+
+            if ( $print_job && $print_job->status ne 'completed' && $print_job->status ne 'processing' ) {
+                my $cups_printjob_id = $print_job->data->{id};
+                my $printer  = $printers->{printers}->{ $print_job->printer };
+                if ($printer) {
+                    my $cups_printer = $cups->getDestination($printer);
+                    my $cups_print_job_data = $cups_printer->getJob($cups_printjob_id);
+                    my $cups_print_job_state = $cups_print_job_data->{state_text};
+                    my $now = $c->now();
+                    $print_job->update(
+                        {
+                            data       => $cups_print_job_data,
+                            status     => $cups_print_job_state,
+                            updated_on => $now,
+                        }
+                    );
+                    $c->stash->{success} = 1;
+
+                }
+                else {
+                    $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
+                }
+            }
+            elsif ( $print_job ) {
+                $c->stash->{success} = 1;
+            }
+            #$c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $print_job->id );
         };
     }
     else {
