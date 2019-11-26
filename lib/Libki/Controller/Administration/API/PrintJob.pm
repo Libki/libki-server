@@ -7,6 +7,7 @@ use JSON qw( to_json from_json );
 use MIME::Base64;
 use Net::Google::DataAPI::Auth::OAuth2;
 use Net::OAuth2::AccessToken;
+use Net::CUPS;
 use Storable qw( thaw );
 use YAML::XS;
 
@@ -106,6 +107,28 @@ sub google_cloud_authenticate : Private : Args(0) {
     $c->stash->{google_cloud_print_token} = $token;
 }
 
+=head2 cups_setup
+
+Initializes the Net::CUPS module with the values from the configuration.
+
+=cut
+
+sub cups_setup : Private : Args(0) {
+    my ( $self, $c ) = @_;
+    my $instance = $c->instance;
+
+    my $printers_conf = $c->get_printer_configuration;
+
+    my $cups_server = $printers_conf->{cups}->{server};
+    my $cups_username = $printers_conf->{cups}->{username};
+
+
+    my $cups = Net::CUPS->new();
+    $cups->setServer($cups_server);
+    $cups->setUsername($cups_username);
+    return $cups;
+}
+
 =head2 release
 
 Sends the given print job to the actual print management backend.
@@ -198,9 +221,51 @@ sub release : Local : Args(0) {
         }
         # CUPS print support
         elsif ($print_job && $print_job->type eq 'cups') {
-            $c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $id );
-        }
 
+            my $cups = $self->cups_setup($c);
+
+            my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
+            if ($print_file) {
+
+                my $printers = $c->get_printer_configuration;
+                my $printer_name  = $printers->{printers}->{ $print_job->printer };
+                my $printer = $cups->getDestination($printer_name);
+
+                if ($printer) {
+                    # The job title is the print file name
+                    my $cups_print_job_id = $printer->printFile($print_file, $print_file);
+                    if ($cups_print_job_id) {
+
+                        my $cups_print_job_data = $printer->getJob($cups_print_job_id);
+                        my $cups_print_job_state = $cups_print_job_data->{state_text};
+                        my $now = $c->now();
+                        $print_job->update(
+                            {
+                                data       => $cups_print_job_data,
+                                status     => $cups_print_job_state,
+                                updated_on => $now,
+                            }
+                        );
+
+                        $c->stash( success => 1, message => 'Ok' );
+
+                    }
+                    else {
+                        $c->stash( success => 0, error => 'Error printing on printer', id => $print_job->printer );
+                    }
+                }
+                else {
+                    $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
+                }
+            }
+            else {
+                $c->stash(
+                    success => 0,
+                    error   => 'Print File Not Found',
+                    id      => $print_job->print_file_id
+                );
+            }
+        }
     }
     else {
         $c->stash( success => 0, error => 'Print Job Not Found', id => $id );
