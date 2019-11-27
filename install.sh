@@ -160,7 +160,7 @@ select PROXYANSWER in "Yes" "No"; do
       cp /home/libki/libki-server/reverse_proxy.config /etc/apache2/sites-available/libki.conf
 
       # Set domain name
-      read -p "What domain name do you wish to use? " DOMAINNAME
+      read -p "What domain name do you wish to use? " DOMAINNAME < /dev/tty
 
       sed -i "s/libki.server.org/$DOMAINNAME/g" /etc/apache2/sites-available/libki.conf
 
@@ -174,7 +174,7 @@ select PROXYANSWER in "Yes" "No"; do
     No )
       # Set custom port if the user so desires
       while true; do
-        read -p "What port would you like to run Libki on? " -i "3000" -e PREFERREDPORT
+        read -p "What port would you like to run Libki on? " -i "3000" -e PREFERREDPORT < /dev/tty
         [[ $PREFERREDPORT =~ ^[0-9]+$ ]] && break
         echo
         echo "Your port number must be a number."
