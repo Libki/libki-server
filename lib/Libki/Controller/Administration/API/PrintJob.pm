@@ -328,6 +328,7 @@ sub update : Local : Args(0) {
 
             if ( $print_job && $print_job->status ne 'completed' && $print_job->status ne 'processing' ) {
                 my $cups_printjob_id = $print_job->data->{id};
+                my $printers = $c->get_printer_configuration;
                 my $printer  = $printers->{printers}->{ $print_job->printer };
                 if ($printer) {
                     my $cups_printer = $cups->getDestination($printer);
