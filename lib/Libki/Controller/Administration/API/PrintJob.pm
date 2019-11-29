@@ -10,6 +10,7 @@ use Net::OAuth2::AccessToken;
 use Net::CUPS;
 use Storable qw( thaw );
 use YAML::XS;
+use File::Temp qw( tempfile );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -129,6 +130,24 @@ sub cups_setup : Private : Args(0) {
     return $cups;
 }
 
+=head2 cups_create_print_file
+
+Stores the print data on a temporary file and returns the filename
+
+=cut
+
+sub cups_create_print_file : Private : Args(0) {
+    my ( $self, $c, $print_data ) = @_;
+    my $instance = $c->instance;
+
+    my $tmp_fh = new File::Temp ( UNLINK => 0 );
+    binmode ($tmp_fh);
+    $tmp_fh->write($print_data);
+    $tmp_fh->close();
+    return $tmp_fh;
+
+}
+
 =head2 release
 
 Sends the given print job to the actual print management backend.
@@ -221,37 +240,53 @@ sub release : Local : Args(0) {
         }
         # CUPS print support
         elsif ($print_job && $print_job->type eq 'cups') {
-
+            my $log = $c->log();
             my $cups = $self->cups_setup($c);
 
             my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
             if ($print_file) {
 
                 my $printers = $c->get_printer_configuration;
-                my $printer_name  = $printers->{printers}->{ $print_job->printer };
-                my $printer = $cups->getDestination($printer_name);
+                my $printer  = $printers->{printers}->{ $print_job->printer };
 
                 if ($printer) {
-                    # The job title is the print file name
-                    my $cups_print_job_id = $printer->printFile($print_file, $print_file);
-                    if ($cups_print_job_id) {
 
-                        my $cups_print_job_data = $printer->getJob($cups_print_job_id);
-                        my $cups_print_job_state = $cups_print_job_data->{state_text};
-                        my $now = $c->now();
-                        $print_job->update(
-                            {
-                                data       => $cups_print_job_data,
-                                status     => $cups_print_job_state,
-                                updated_on => $now,
-                            }
-                        );
+                    my $filename = $print_file->filename;
+                    my $content  = $print_file->data;
 
-                        $c->stash( success => 1, message => 'Ok' );
+                    my $cups_printer_name = $printer->{name};
+                    $log->debug("CUPS Printer name: " . $cups_printer_name);
+                    my $cups_printer = $cups->getDestination($cups_printer_name);
+                    if ($cups_printer) {
+                        # In order to print to CUPS, the data must be on a file
+                        # Create a temporary file to print
+                        my $cups_print_filename = $self->cups_create_print_file($c, $content);
+                        $log->debug("Created temp file for CUPS printing: " . $cups_print_filename);
+                        # The job title is the original print file name
+                        my $cups_print_job_id = $cups_printer->printFile($cups_print_filename, $filename);
+                        unlink ($cups_print_filename);
+                        if ($cups_print_job_id) {
 
+                            my $cups_print_job_data = $cups_printer->getJob($cups_print_job_id);
+                            my $cups_print_job_state = $cups_print_job_data->{state_text};
+                            my $now = $c->now();
+                            $print_job->update(
+                                {
+                                    data       => $cups_print_job_data,
+                                    status     => $cups_print_job_state,
+                                    updated_on => $now,
+                                }
+                            );
+
+                            $c->stash( success => 1, message => 'Ok' );
+
+                        }
+                        else {
+                            $c->stash( success => 0, error => 'Error printing on printer', id => $print_job->printer );
+                        }
                     }
                     else {
-                        $c->stash( success => 0, error => 'Error printing on printer', id => $print_job->printer );
+                        $c->stash( success => 0, error => 'Printer Not Found on CUPS server', id => $print_job->printer );
                     }
                 }
                 else {
@@ -326,23 +361,42 @@ sub update : Local : Args(0) {
 
             my $cups = $self->cups_setup($c);
 
-            if ( $print_job && $print_job->status ne 'completed' && $print_job->status ne 'processing' ) {
-                my $cups_printjob_id = $print_job->data->{id};
+            if ( $print_job && $print_job->status ne 'completed' ) {
+
+                my $printers = $c->get_printer_configuration;
                 my $printer  = $printers->{printers}->{ $print_job->printer };
                 if ($printer) {
-                    my $cups_printer = $cups->getDestination($printer);
-                    my $cups_print_job_data = $cups_printer->getJob($cups_printjob_id);
-                    my $cups_print_job_state = $cups_print_job_data->{state_text};
-                    my $now = $c->now();
-                    $print_job->update(
-                        {
-                            data       => $cups_print_job_data,
-                            status     => $cups_print_job_state,
-                            updated_on => $now,
-                        }
-                    );
-                    $c->stash->{success} = 1;
 
+                    my $cups_printer_name = $printer->{name};
+                    my $cups_printer = $cups->getDestination($cups_printer_name);
+                    if ($cups_printer) {
+
+                        my $cups_printjob_id = $print_job->data->{id};
+                        if ($cups_printjob_id) {
+                            my $cups_print_job_data = $cups_printer->getJob($cups_printjob_id);
+                            if ($cups_print_job_data) {
+                                my $cups_print_job_state = $cups_print_job_data->{state_text};
+                                my $now = $c->now();
+                                $print_job->update(
+                                    {
+                                        data       => $cups_print_job_data,
+                                        status     => $cups_print_job_state,
+                                        updated_on => $now,
+                                    }
+                                );
+                                $c->stash->{success} = 1;
+                            }
+                            else {
+                                $c->stash( success => 0, error => 'Error getting CUPS printjob data', id => $cups_printjob_id );
+                            }
+                        }
+                        else {
+                            $c->stash( success => 0, error => 'CUPS printjob not found', id => $cups_printjob_id );
+                        }
+                    }
+                    else {
+                        $c->stash( success => 0, error => 'Printer Not Found on CUPS server', id => $print_job->printer );
+                    }
                 }
                 else {
                     $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
@@ -351,7 +405,6 @@ sub update : Local : Args(0) {
             elsif ( $print_job ) {
                 $c->stash->{success} = 1;
             }
-            #$c->stash( success => 0, error => 'Print Job type "cups" not yet supported', id => $print_job->id );
         };
     }
     else {
