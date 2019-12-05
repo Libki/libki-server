@@ -47,6 +47,7 @@ my $defaults = {
     'ReservationShowUsername'            => '0',
     'ReservationTimeout'                 => '15',
     'ThirdPartyURL'                      => '',
+    'UserCategories'                     => '',
 };
 
 while ( my ( $name, $value ) = each %$defaults ) {
