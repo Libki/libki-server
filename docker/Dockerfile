@@ -40,6 +40,9 @@ RUN apt-get update -y \
        libssl-dev \
        libexpat1-dev \
        mysql-client \
+# Net::CUPS
+       libcups2-dev \
+       libcupsfilters-dev \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 
