@@ -52,6 +52,7 @@ requires 'Modern::Perl';
 requires 'Moose';
 requires 'MooseX::NonMoose';
 requires 'Net::Google::DataAPI::Auth::OAuth2';
+requires 'Net::CUPS';
 requires 'Net::LDAP';
 requires 'Net::OAuth2::AccessToken';
 requires 'Net::Server::SS::PreFork';
