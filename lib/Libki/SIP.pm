@@ -262,6 +262,8 @@ sub authenticate_via_sip {
             if ( $value ) {
                 if ( $sip_fields->{$field} eq $value ) {
                     return { success => 0, error => $message, user => $user };
+                }elsif( $sip_fields->{$field} =~ /$value/ ) {
+                    return { success => 0, error => $message, user => $user };
                 }
             } else {
                 if ( $sip_fields->{$field} ne 'Y' ) {
