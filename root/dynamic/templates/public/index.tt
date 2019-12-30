@@ -344,7 +344,7 @@ $(document).ready(function() {
     });
 
     $("#client-table-row-toolbar-cancel-reservation").click(function(){
-        if ( $("#" + window.selected_id).children(":nth(3)").text() ) {
+        if ( $("#" + window.selected_id).children(":nth(4)").text() ) {
             $("#cancel-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
 
             $("#client-table-row-toolbar").hide();
