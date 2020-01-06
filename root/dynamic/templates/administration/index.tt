@@ -1414,6 +1414,7 @@ function LibkiRefreshPrint( print_job_id, no_refresh ) {
                 ForcePrintTableRefresh();
             }
         } else {
+console.log( data.data );
             DisplayMessage( "error", data.data );
         }
     });

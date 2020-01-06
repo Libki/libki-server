@@ -116,6 +116,24 @@ __PACKAGE__->table("print_jobs");
   default_value: 'current_timestamp()'
   is_nullable: 0
 
+=head2 released_on
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
+
+=head2 queued_on
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
+
+=head2 queued_to
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -151,6 +169,20 @@ __PACKAGE__->add_columns(
     default_value => "current_timestamp()",
     is_nullable => 0,
   },
+  "released_on",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    is_nullable => 1,
+  },
+  "queued_on",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    is_nullable => 1,
+  },
+  "queued_to",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
 );
 
 =head1 PRIMARY KEY
@@ -208,8 +240,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3Q3kPpy7RlRlBEFHaLzCtg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CZUbxsGury02GqAfh4MFnw
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

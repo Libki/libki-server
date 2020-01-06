@@ -332,8 +332,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QGHj8cSnZ7PiFp8Uzysrvg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Wcgrx5p3PdwTGrxH5rrdnA
 
 __PACKAGE__->numeric_columns(qw/minutes_allotment/);
 

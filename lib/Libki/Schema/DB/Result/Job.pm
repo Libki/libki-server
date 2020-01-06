@@ -149,8 +149,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6EXZ+lLlPlYka2CLOWeDQw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SztReotZ4mJ4D1Rl6qAMag
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

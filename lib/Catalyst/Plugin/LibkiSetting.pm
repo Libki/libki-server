@@ -225,10 +225,8 @@ Returns the printer configuration stored in the database
 sub get_printer_configuration {
     my ( $c, $params ) = @_;
 
-    $params->{name} = 'PrinterConfiguration';
-
-    my $yaml   = $c->setting($params);
-    $yaml = encode('UTF-8',$yaml);
+    my $yaml = $c->setting('PrinterConfiguration');
+    $yaml = encode( 'UTF-8', $yaml );
 
     my $config = YAML::XS::Load($yaml);
     return $config;

@@ -5,8 +5,6 @@ use namespace::autoclean;
 use HTTP::Request::Common;
 use JSON qw( to_json from_json );
 use MIME::Base64;
-use Net::Google::DataAPI::Auth::OAuth2;
-use Net::OAuth2::AccessToken;
 use Net::CUPS;
 use Storable qw( thaw );
 use YAML::XS;
@@ -56,56 +54,6 @@ sub cancel : Local : Args(0) {
     }
 
     $c->forward( $c->view('JSON') );
-}
-
-=head2 google_cloud_authenticate
-
-Authenticates the Libki server against the Google Cloud Print API.
-Stashes the API token in the stash with the key 'google_cloud_print_token'.
-
-=cut
-
-sub google_cloud_authenticate : Private : Args(0) {
-    my ( $self, $c ) = @_;
-    my $instance = $c->instance;
-
-    my $printers_conf = $c->get_printer_configuration;
-
-    my $client_secret = $printers_conf->{google_cloud_print}->{client_secret};
-    my $client_id     = $printers_conf->{google_cloud_print}->{client_id};
-
-    my $oauth2 = Net::Google::DataAPI::Auth::OAuth2->new(
-        client_id     => $client_id,
-        client_secret => $client_secret,
-        scope         => ['https://www.googleapis.com/auth/cloudprint'],
-    );
-
-    my $stored_token = $c->model('DB::Setting')->single(
-        {
-            instance => $instance,
-            name     => 'google_cloud_print_session',
-        }
-    );
-
-    my $encoded = $stored_token->value;
-    my $frozen = decode_base64($stored_token->value);
-    my $saved_session = thaw( $frozen );
-
-    my $token = Net::OAuth2::AccessToken->session_thaw(
-        $saved_session,
-        auto_refresh => 1,
-        profile      => $oauth2->oauth2_webserver,
-    );
-    $oauth2->access_token($token);
-
-    my $oa = $oauth2->oauth2_client;
-
-    my $r = $token->get('https://www.google.com/cloudprint/search');
-
-    my $auth_response = $token->profile->request_auth( $token,
-        GET => 'https://www.google.com/cloudprint/search' );
-
-    $c->stash->{google_cloud_print_token} = $token;
 }
 
 =head2 cups_setup
@@ -158,88 +106,14 @@ sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
-    $self->google_cloud_authenticate($c);
-    my $token = $c->stash->{google_cloud_print_token};
-    delete $c->stash->{google_cloud_print_token};
-
     my $id = $c->request->params->{id};
 
     my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
 
 
     if ($print_job) {
-        # Google Cloud print support
-        if ($print_job->type eq 'google_cloud_print') {
-            my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
-            if ($print_file) {
-                my $printers = $c->get_printer_configuration;
-                my $printer  = $printers->{printers}->{ $print_job->printer };
-
-                if ($printer) {
-                    my $filename = $print_file->filename;
-                    my $content  = $print_file->data;
-
-                    my $ticket = { "version" => "1.0", "print" => {}, };
-
-                    my $ticket_conf = $printer->{ticket};
-                    foreach my $key ( keys %$ticket_conf ) {
-                        my $data = $ticket_conf->{$key};
-                        $ticket->{print}->{$key} = $data;
-                    }
-
-                    $ticket->{print}->{copies}->{copies} = $print_job->copies || 1;
-
-                    my $ticket_json = to_json($ticket);
-
-                    my $request = POST 'https://www.google.com/cloudprint/submit',
-                        Content_Type => 'form-data',
-                        Content      => [
-                        printerid => $printer->{google_cloud_id},
-                        content   => [ undef, $filename, Content => $content ],
-                        title     => $filename,
-                        ticket    => $ticket_json,
-                        ];
-
-                    my $response = $token->profile->request_auth( $token, $request );
-
-                    my $code = $response->code;
-                    my $message = $response->message;
-
-                    if ( $code eq '200' ) {
-
-                        my $json      = JSON::from_json( $response->decoded_content );
-                        my $job_state = ucfirst( lc( $json->{job}->{uiState}->{summary} ) );
-
-                        my $now = $c->now();
-                        $print_job->update(
-                            {
-                                data       => $json,
-                                status     => $job_state,
-                                updated_on => $now,
-                            }
-                        );
-
-                        $c->stash( success => 1, message => $json->{message} );
-                    }
-                    else {
-                        $c->stash( success => 0, error => "$code: $message", id => $print_job->printer );
-                    }
-                }
-                else {
-                    $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
-                }
-            }
-            else {
-                $c->stash(
-                    success => 0,
-                    error   => 'Print File Not Found',
-                    id      => $print_job->print_file_id
-                );
-            }
-
-        }
         # CUPS print support
-        elsif ($print_job && $print_job->type eq 'cups') {
+        if ($print_job->type eq 'cups') {
             my $log = $c->log();
             my $cups = $self->cups_setup($c);
 
@@ -320,48 +194,15 @@ sub update : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
-    $self->google_cloud_authenticate($c);
-    my $token = $c->stash->{google_cloud_print_token};
-    delete $c->stash->{google_cloud_print_token};
-
     my $print_job_id = $c->request->params->{id};
 
     my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
     if ($print_job) {
-        if ($print_job->type eq 'google_cloud_print') {
-            if ( $print_job && $print_job->status ne 'Done' && $print_job->status ne 'Pending' ) {
-                my $id = $print_job->data->{job}->{id};
-
-                my $request = POST 'https://www.google.com/cloudprint/job',
-                    Content_Type => 'form-data',
-                    Content      => [ jobid => $id, ];
-
-                my $response = $token->profile->request_auth( $token, $request );
-
-                my $data      = JSON::from_json( $response->decoded_content );
-                my $job_state = ucfirst( lc( $data->{job}->{uiState}->{summary} ) );
-
-                my $now = $c->now();
-                $print_job->update(
-                    {
-                        data       => $data,
-                        status     => $job_state,
-                        updated_on => $now,
-                    }
-                );
-
-        	#$c->stash->{data}    = $data;
-                $c->stash->{success} = 1;
-            }
-            elsif ( $print_job ) {
-                $c->stash->{success} = 1;
-            }
-        }
-        elsif ($print_job->type eq 'cups') {
+        if ($print_job->type eq 'cups') {
 
             my $cups = $self->cups_setup($c);
 
-            if ( $print_job && $print_job->status ne 'completed' ) {
+            if ( $print_job->status ne 'completed' ) {
 
                 my $printers = $c->get_printer_configuration;
                 my $printer  = $printers->{printers}->{ $print_job->printer };
@@ -406,6 +247,10 @@ sub update : Local : Args(0) {
                 $c->stash->{success} = 1;
             }
         };
+
+	if ( $print_job->type eq 'PrintManager' ) {
+            $c->stash->{success} = 1;
+	}
     }
     else {
         $c->stash->{success} = 0;

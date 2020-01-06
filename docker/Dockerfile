@@ -36,11 +36,6 @@ RUN apt-get update -y \
        libdbd-mysql-perl \
 # for DBD::mysql
        default-libmysqlclient-dev \
-# Net::Google::DataAPI::Auth::OAuth2
-       libxml2-dev \
-       libssl-dev \
-       libexpat1-dev \
-       default-mysql-client \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
