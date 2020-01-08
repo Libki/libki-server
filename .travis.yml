@@ -10,6 +10,8 @@ env:
     - IMAGE_NAME_CI=libki/libki-server-ci-artifacts
     - DOCKER_USERNAME=kylemhall
     # DOCKER_PASSWORD=...
+    - QUAY_USERNAME=kylemhall
+    # QUAY_PASSWORD=...
 
 jobs:
   include:
@@ -30,11 +32,13 @@ jobs:
 
       before_deploy:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - echo "$QUAY_PASSWORD"   | docker login -u "$QUAY_USERNAME"   --password-stdin quay.io
         - docker tag "$IMAGE_NAME_CI" "${IMAGE_NAME_CI}:${version}"
 
       deploy:
         provider: script
-        script: docker push "${IMAGE_NAME_CI}:${version}"
+        script:
+          - docker push "${IMAGE_NAME_CI}:${version}"
         on:
           branch: master
 
@@ -68,11 +72,13 @@ jobs:
 
       before_deploy:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - echo "$QUAY_PASSWORD" | docker login quay.io -u "$QUAY_USERNAME" --password-stdin
         - docker tag "$IMAGE_NAME_CI:${version}" "${IMAGE_NAME}:latest"
+        - docker tag "$IMAGE_NAME_CI:${version}" "quay.io/${IMAGE_NAME}:latest"
 
       deploy:
         provider: script
-        script: docker push "${IMAGE_NAME}" 
+        script: docker push "${IMAGE_NAME}" && docker push "quay.io/${IMAGE_NAME}"
         on:
           branch: master
 
