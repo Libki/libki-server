@@ -1,0 +1,112 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Docker build
+      run: docker build -t libki-server -f docker/Dockerfile .
+
+    - name: Export image to file
+      run: docker save libki-server > ${{ github.sha }}.tar
+
+    - name: Upload image artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: ${{ github.sha }}.tar
+
+  test:
+    name: Run unit tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.tar
+
+    - name: Create docker network
+      run: docker network create libki-net
+
+    - name: Start database container
+      run:  docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
+
+    - name: Sleep to give database container time to launch
+      run: sleep 30
+
+    - name: Start Libki container
+      run: docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -d libki-server
+
+    - name: Sleep to give Libki container time to launch
+      run: sleep 30
+
+    - name: List docker containers
+      run: docker ps && docker logs libki-test-server
+
+    - name: Set up the Libki database
+      run: docker exec -t libki-test-server /app/installer/update_db.pl
+
+    - name: Run unit tests
+      run: |
+        docker exec -t libki-test-server prove /app/t/01app.t
+        docker exec -t libki-test-server prove /app/t/stdout.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
+
+  publish_docker_io:
+    name: Publish Docker image to docker.io
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.tar
+
+    - name: Log in to docker.io
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u kylemhall --password-stdin
+
+    - name: Tag image for docker.io
+      run: docker tag libki-server:latest libki/libki-server:latest
+
+    - name: Push image to docker.io
+      run: docker push libki/libki-server
+
+  publish_quay_io:
+    name: Publish Docker image to quay.io
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.tar
+
+    - name: Log in to quay.io
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+
+    - name: Tag image for quay.io
+      run: docker tag libki-server:latest quay.io/libki/libki-server:latest
+
+    - name: Push image to quay.io
+      run: docker push quay.io/libki/libki-server
