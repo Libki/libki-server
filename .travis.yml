@@ -25,7 +25,7 @@ jobs:
         - docker pull "$IMAGE_NAME" || true
 
       script:
-        - docker build --pull -f docker/Dockerfile --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME_CI" .
+        - docker build --pull -f docker/Dockerfile --tag "$IMAGE_NAME_CI" .
 
       after_script:
         - docker images
