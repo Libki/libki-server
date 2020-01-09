@@ -26,7 +26,7 @@ ENV LIBKI_MAX_WORKERS 4
 
 # Install needed packages
 RUN apt-get update -y \
-    && apt-get -y install \
+    && apt-get -y --no-install-recommends install \
        git \
        vim \
        build-essential \
