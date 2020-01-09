@@ -47,7 +47,7 @@ COPY . /app
 WORKDIR /app
 
 RUN cpanm -n Module::Install
-RUN cpanm -n --installdeps .
+RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
 
 # Comment out the deprecation warning, it cannot be supressed and is screwing things up
 RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /app/local/lib/perl5/Any/Moose.pm
