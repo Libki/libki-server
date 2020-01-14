@@ -167,6 +167,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 reservations
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Reservation>
+
+=cut
+
+__PACKAGE__->has_many(
+  "reservations",
+  "Libki::Schema::DB::Result::Reservation",
+  { "foreign.client_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 session
 
 Type: might_have
@@ -183,8 +198,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-04 09:06:02
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+Cu+O4th0iM/LmOotto/Zw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-14 07:30:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5gxuV3yJ/As2c615AL5SNQ
 
 =head2 can_user_use
 

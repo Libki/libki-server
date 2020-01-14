@@ -65,6 +65,7 @@ __PACKAGE__->table("reservations");
 =head2 client_id
 
   data_type: 'integer'
+  is_foreign_key: 1
   is_nullable: 0
 
 =head2 user_id
@@ -93,7 +94,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "client_id",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "begin_time",
@@ -138,6 +139,21 @@ __PACKAGE__->add_unique_constraint("user_id", ["user_id"]);
 
 =head1 RELATIONS
 
+=head2 client
+
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::Client>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "client",
+  "Libki::Schema::DB::Result::Client",
+  { id => "client_id" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+);
+
 =head2 user
 
 Type: belongs_to
@@ -154,8 +170,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-01 11:50:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:s+2yX8BTdWZm5eK9e874gg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-14 07:30:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mV8PZS2hN7ksBFreWOAvFg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
