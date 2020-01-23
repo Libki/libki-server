@@ -1,6 +1,5 @@
 [% meta.title = c.loc("Administration") %]
 [% SET active_class = 'administration__index' %]
-[% USE UTF8Decode %]
 
 <ul class="nav nav-tabs" id="primaryTabs" role="tablist">
   <li class="nav-item">
@@ -8,6 +7,9 @@
   </li>
   <li class="nav-item">
       <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> [% c.loc("Clients") %]</a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link" id="reservations-tab" data-toggle="tab" href="#reservations" role="tab" aria-controls="reservations" aria-selected="false"><i class="fas fa-clock"></i> [% c.loc("Reservations") %]</a>
   </li>
   [% IF PrinterConfiguration %]
   <li class="nav-item">
@@ -47,9 +49,13 @@
         <table id="user-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>[% c.loc("Username") %]</th>
+                [% IF ShowFirstLastNames %]
                 <th>[% c.loc("Lastname") %] </th>
                 <th>[% c.loc("Firstname") %] </th>
+                [% END %]
+                [% IF UserCategories %]
                 <th>[% c.loc("Category") %]</th>
+                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("Status") %]</th>
@@ -83,7 +89,7 @@
           </li>
           [% FOREACH location IN locations %]
               <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location | utf8_decode | utf8_decode %]</a>
+                  <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
               </li>
           [% END %]
         </ul>
@@ -123,24 +129,33 @@
             <thead>
                 <th>[% c.loc("Name") %]</th>
                 <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
+                [% IF ShowFirstLastNames %]
                 <th>[% c.loc("Lastname") %] </th>
                 <th>[% c.loc("Firstname") %] </th>
+                [% END %]
+                [% IF UserCategories %]
                 <th>[% c.loc("Category") %]</th>
+                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("User status") %]</th>
                 <th>[% c.loc("Notes") %]</th>
                 <th>[% c.loc("Troublemaker") %]</th>
                 <th>[% c.loc("Reserved") %]</th>
+                <th>[% c.loc("From") %]</th>
             </thead>
         </table> 
 
         <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
                 <button id="client-table-row-toolbar-time" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+                [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                <button id="client-table-row-toolbar-cancel" class="btn btn-secondary" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+                [% END %]
                 <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
             </div>
         </div>
@@ -157,7 +172,7 @@
           </li>
           [% FOREACH location IN locations %]
               <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter(`[% location %]`);">[% location | utf8_decode | utf8_decode %]</a>
+                  <a class="nav-link" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
               </li>
           [% END %]
         </ul>
@@ -198,6 +213,7 @@
                 <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Status") %]</th>
                 <th>[% c.loc("Printer") %]</th>
+                <th>[% c.loc("Copies") %]</th>
                 <th>[% c.loc("File name") %]</th>
                 <th>[% c.loc("Pages") %]</th>
                 <th>[% c.loc("Client") %]</th>
@@ -250,6 +266,54 @@
             </div>
         </div>
   </div>
+
+  <div class="tab-pane fade" id="reservations" role="tabpanel" aria-labelledby="reservations-tab">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-none">
+        <ul class="navbar-nav mr-auto"></ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="Table actions">
+                    <div id="client-table-refresh" class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                        </div>
+                        <a href="#" id="reservation-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                    </div>
+                </div>
+            </li>
+
+            &nbsp; <!-- FIXME: Use CSS -->
+
+            <li class="nav-item">
+                <div class="btn-group" role="group" aria-label="New user actions">
+                    [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                        <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                    [% END %]
+                    <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                    <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+        <table id="reservation-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <thead>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("User") %]</th>
+                <th>[% c.loc("Begin") %]</th>
+                <th>[% c.loc("End") %]</th>
+            </thead>
+        </table>
+
+        <div id="reservation-table-row-toolbar" class="table-row-toolbar" role="toolbar">
+            <div class="btn-group" role="group">
+                <button id="reservation-table-row-toolbar-info" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Operation: ") %]</button>
+                <button id="reservation-table-row-toolbar-cancel" class="btn btn-danger" onclick="LibkiShowCancelReservationTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+            </div>
+        </div>
+
 </div>
 
 <div class="modal fade" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="new-user-modal-label" aria-hidden="true">
@@ -275,11 +339,36 @@
                 </div>
             </div>
 
+            [% IF ShowFirstLastNames %]
+            <div class="form-group">
+                <label for="new-user-modal-form-name">[% c.loc("Name") %]</label>
+                <div class="row">
+                  <div class="col">
+                    <input class="form-control" id="new-user-modal-form-firstname" name="firstname" type="text" placeholder="[% c.loc('First name') %]">
+                  </div>
+                  <div class="col">
+                    <input class="form-control" id="new-user-modal-form-lastname" name="lastname" type="text" placeholder="[% c.loc('Last name') %]">
+                  </div>
+                </div>
+            </div>
+            [% END %]
+            [% IF UserCategories %]
+            <div class="form-group">
+                <label for="new-user-modal-form-category">[% c.loc("Category") %]</label>
+                <select class="form-control" id="new-user-modal-form-category" name="category">
+                    <option></option>
+                    [% FOREACH category IN c.user_categories %]
+                        <option value="[% category %]">[% category %]</option>
+                    [% END %]
+                </select>
+            </div>
+            [% END %]
+
             <div class="form-group">
                 <label for="new-user-modal-form-password">[% c.loc("Password") %]</label>
-                <input type="password" class="form-control" id="new-user-modal-form-password" name="password" placeholder="[% c.loc("Password") %]" required>
+                <input type="password" class="form-control" id="new-user-modal-form-password" name="password" placeholder="[% c.loc('Password') %]" required>
                 <br/>
-                <input type="password" class="form-control" id="new-user-modal-form-password-confirm" name="password-confirm" placeholder="[% c.loc("Confirm password") %]" required>
+                <input type="password" class="form-control" id="new-user-modal-form-password-confirm" name="password-confirm" placeholder="[% c.loc('Confirm password') %]" required>
                 <small class="form-text text-muted">[% c.loc("Password fields must match.") %]</small>
                 <div class="valid-feedback">
                     [% c.loc("Passwords match") %]
@@ -411,6 +500,28 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="edit-user-modal-form-name">[% c.loc("Name") %]</label>
+                    <div class="row">
+                      <div class="col">
+                        <input class="form-control" id="edit-user-modal-form-firstname" name="firstname" type="text" placeholder="[% c.loc('First name') %]">
+                      </div>
+                      <div class="col">
+                        <input class="form-control" id="edit-user-modal-form-lastname" name="lastname" type="text" placeholder="[% c.loc('Last name') %]">
+                      </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-user-modal-form-category">[% c.loc("Category") %]</label>
+                    <select class="form-control" id="edit-user-modal-form-category" name="category">
+                        <option></option>
+                        [% FOREACH category IN c.user_categories %]
+                            <option value="[% category %]">[% category %]</option>
+                        [% END %]
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="edit-user-modal-form-minutes">[% c.loc("Minutes") %]</label>
                     <input class="form-control" id="edit-user-modal-form-minutes" name="minutes" class="input-mini" type="text">
                     <small class="form-text text-muted">[% c.loc("Leave unmodified for default amount of time.") %]</small>
@@ -498,6 +609,15 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
+                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="setTime()">
+                <select id="reservation-hour" name="reservation_hour" onchange="setMinute()">
+                </select>
+                 :
+                <select id="reservation-minute" name="reservation_minute">
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="make-reservation-modal-form-username">[% c.loc("Username") %]</label>
                 <input type="text" class="form-control" id="make-reservation-modal-form-username" name="username">
                 <small class="form-text text-muted">[% c.loc("Username of user to make reservation for.") %]</small>
@@ -515,6 +635,40 @@
   </div>
 </div>
 
+<div class="modal fade" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="cancel-reservation-modal-label"><i class="fas fa-tag"></i> [% c.loc("Cancel reservation") %]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cancel-reservation-modal-form">
+            <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
+            <div class="form-group">
+                <label for="cancel-reservation-modal-form-username">[% c.loc("Username") %]</label>
+                <input type="text" class="form-control" id="cancel-reservation-modal-form-username" name="username">
+                <small class="form-text text-muted">[% c.loc("Username of user to cancel reservation for.") %]</small>
+                <div class="invalid-feedback">
+                    [% c.loc("Username is invalid") %]
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-reservation-modal-form-submit" class="btn btn-primary">[% c.loc("Cancel reservation") %]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $('#make-reservation-modal').on('shown.bs.modal', function () {
+      $('#make-reservation-modal-form-username').trigger('focus')
+    })
+</script>
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -567,15 +721,20 @@ $(document).ready(function() {
         ForcePrintTableRefresh();
         return false;
     });
+    $('#reservation-table-refresh-button').on( 'click', function() {
+        ForceReservationTableRefresh();
+        return false;
+    });
 
     // When we switch tabs, refresh the new tab automatically
     $('#user-tab-label').click( function(){ ForceUserTableRefresh() });
     $('#client-tab-label').click( function(){ ForceClientTableRefresh() });
+    $('#reservation-tab-label').click( function(){ ForceReservationTableRefresh() });
 
     /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
     uTable = $('#user-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
@@ -605,7 +764,7 @@ $(document).ready(function() {
 
     // Initalize the Clients table as a datatable
     cTable = $('#client-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
@@ -649,9 +808,21 @@ $(document).ready(function() {
         $(event.target.parentNode).addClass('row_selected');
     });
 
-    // Initalize the Users table as a datatable
+    //Initalize the Reservations table as a datatable
+        rTable = $('#reservation-table').dataTable( {
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "bProcessing": true,  // Indicate when the table is processing data
+        "bServerSide": true,  // Indicate that the datatable gets data from a
+                              // HTTP GET request
+        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/reservations') %]",  // The actual URL to call for data
+        "fnDrawCallback": function(oSettings, json) {
+             AddTableRowToolbar( $('#reservation-table-row-toolbar'), $('#reservation-table'), $('#reservation-table tbody tr') );
+         },
+     } );
+
+    // Initalize the Print table as a datatable
     pTable = $('#print-table').DataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
@@ -707,6 +878,11 @@ $(document).ready(function() {
         $('#new-user-modal-form-username').val('');
         $('#new-user-modal-form-username').removeClass('is-valid is-invalid');
 
+        $('#new-user-modal-form-firstname').val('');
+        $('#new-user-modal-form-lastname').val('');
+
+        $('#new-user-modal-form-category').val('');
+
         $('#new-user-modal-form-password').val('');
         $('#new-user-modal-form-password-confirm').val('');
         $('#new-user-modal-form-password').removeClass('is-valid is-invalid');
@@ -739,10 +915,6 @@ $(document).ready(function() {
             }
         });
     }
-
-    $('#new-user-modal-form-username').blur(function(){
-    
-    });
 
     // Handle the new user form submission
     $('#new-user-modal-form-submit').click(function(){
@@ -842,6 +1014,9 @@ $(document).ready(function() {
 
         $.getJSON('[% c.uri_for("api/user/get") %]/' + window.selected_id, function(data) {
             $('#edit-user-modal-form-username').val( data.username );
+            $('#edit-user-modal-form-firstname').val( data.firstname );
+            $('#edit-user-modal-form-lastname').val( data.lastname );
+            $('#edit-user-modal-form-category').val( data.category );
             $('#edit-user-modal-form-minutes').val( data.minutes );
             $('#edit-user-modal-form-status').val( data.status );
             $('#edit-user-modal-form-notes').val( data.notes );
@@ -931,7 +1106,14 @@ $(document).ready(function() {
                     DisplayMessage( "success", "[% c.loc("Password changed.") %]" );
                     $("#user-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to change password.") %]" );
+                    if ( data.message ) {
+                        if ( data.message == 'ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD' ) {
+                            DisplayMessage( "error", "[%c.loc("Administrators cannot change a super administrator password.") %]" );
+                        }
+                    }
+                    else {
+                        DisplayMessage( "error", "[% c.loc("Unable to change password.") %]" );
+                    }
                 }
             });
         }
@@ -998,13 +1180,20 @@ $(document).ready(function() {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Reservation for user created.") %]" );
                     ForceClientTableRefresh();
+                    ForceReservationTableRefresh();
                 } else {
                      if ( data.reason == 'USER_ALREADY_RESERVED' ) {
-                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: User already has a reservation for a different client.") %]" );
+                         DisplayMessage( "error", "[% c.loc("Unable to make reservation: User already has a reservation.") %]" );
                      } else if ( data.reason == 'USER_NOT_FOUND' ) {
-                         DisplayMessage( "error", "[% c.loc('Unable to modify reservation: User not found.') %]" );
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: User not found.') %]" );
+                     } else if ( data.reason == 'NO_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: The user has no time remaining..') %]" );
+                     } else if ( data.reason == 'INVALID_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: The time you choose is not available.') %]" );
+                     } else if ( data.reason == 'CLOSING_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: This kiosk will be closed for the time..') %]" );
                      } else {
-                         DisplayMessage( "error", "[% c.loc("Unable to modify reservation: Reason unknown.") %]" );
+                         DisplayMessage( "error", "[% c.loc("Unable to make reservation: Reason unknown.") %]" );
                      }
                 }
             });
@@ -1017,6 +1206,33 @@ $(document).ready(function() {
         if (e.which == 13) {
             e.preventDefault();
             $('#make-reservation-modal-form-submit').click();
+        }
+    });
+
+    /* Cancel reservation */
+    $('#cancel-reservation-modal-form-submit').click(function(){
+        let username = $('#cancel-reservation-modal-form-username').val();
+        if ( username ) {
+            let id = $('#cancel-reservation-modal-form-id').val();
+            $.post('[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', $('#cancel-reservation-modal-form').serialize(), function(data) {
+                $('#cancel-reservation-modal').modal('hide');
+                 if ( data.success ) {
+                    DisplayMessage( "success", "[% c.loc("Reservation for user canceled.") %]" );
+                    ForceReservationTableRefresh();
+                    ForceClientTableRefresh();
+                } else {
+                         DisplayMessage( "error", "[% c.loc( "The cancellation failed" ) %]" );
+                }
+            });
+        } else {
+            $('#make-reservation-modal-form-username').addClass('is-invalid');
+        }
+    });
+
+    $("#cancel-reservation-modal-form-username").keypress(function(e){
+        if (e.which == 13) {
+            e.preventDefault();
+            $('#cancel-reservation-modal-form-submit').click();
         }
     });
 
@@ -1062,7 +1278,13 @@ function LibkiDeleteUser( id ) {
              // Refresh the table to remove the deleted row
              $("#user-table").dataTable().fnDraw(true);
          } else {
-             DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
+             if ( data.message ) {
+                 if ( data.message == 'ADMIN_CANNOT_DELETE_SUPERADMIN' ) {
+                     DisplayMessage( "error", "[% c.loc("Administrators cannot delete super administrators.") %]" );
+                 }
+             } else {
+                 DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
+             }
          }
     });
   }
@@ -1082,32 +1304,36 @@ function LibkiLogOutClient( id ) {
   }
 }
 
+function LibkiShowCancelClientTab( id ) {
+    $('#cancel-reservation-modal-form-username').removeAttr("readonly");
+    $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
+    $('#client-table-row-toolbar').hide();
+    $('#cancel-reservation-modal-form-id').val( id );
+    $('#cancel-reservation-modal-form-username').val("");
+    $('#cancel-reservation-modal').modal();
+    $('#cancel-reservation-modal-form-username').focus();
+}
+
+ function LibkiShowCancelReservationTab( id ) {
+     $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
+     $('#client-table-row-toolbar').hide();
+     $('#cancel-reservation-modal-form-id').val( id );
+     $('#cancel-reservation-modal-form-username').val(id);
+     $('#cancel-reservation-modal-form-username').attr("readonly","readonly");
+     $('#cancel-reservation-modal').modal();
+     $('#cancel-reservation-modal-form-username').focus();
+ }
+
 function LibkiToggleReservation( id ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id, function(data) {
-        if ( data.reserved ) { // cancel reservation
-            if ( confirm("[% c.loc("Are you sure you want to cancel the reservation for this client?") %]") ) {
-                $.getJSON( '[% c.uri_for('/administration/api/client/reservation') %]' + '/' + id + '?action=cancel', function(data) {
-                    if ( data.success ) {
-                        DisplayMessage( "success", "[% c.loc("Reservation canceled.") %]" );
-                        // Refresh the table to remove the deleted row
-                        $("#client-table").dataTable().fnDraw(true);
-                    } else {
-                        DisplayMessage( "error", "[% c.loc("Unable to cancel reservation.") %]" );
-                    }
-                });
-            }
-        } else { // create reservation
-            $('#make-reservation-modal-form-username').removeClass('is-invalid');
+    setTime();
+    $('#make-reservation-modal-form-username').removeClass('is-invalid');
+    $('#client-table-row-toolbar').hide();
 
-            $('#client-table-row-toolbar').hide();
+    $('#make-reservation-modal-form-id').val( window.selected_id );
+    $('#make-reservation-modal-form-username').val("");
 
-            $('#make-reservation-modal-form-id').val( window.selected_id );
-            $('#make-reservation-modal-form-username').val("");
-
-            $('#make-reservation-modal').modal();
-            $('#make-reservation-modal-form-username').focus();
-        }
-    });
+    $('#make-reservation-modal').modal();
+    $('#make-reservation-modal-form-username').focus();
 }
 
 function HandleClientTableRefreshCounter() {
@@ -1132,6 +1358,10 @@ function ForceClientTableRefresh() {
 
 function ForceUserTableRefresh() {
      $("#user-table").dataTable().fnDraw(true);
+}
+
+function ForceReservationTableRefresh() {
+     $("#reservation-table").dataTable().fnDraw(true);
 }
 
 function HandlePrintTableRefreshCounter() {
@@ -1207,4 +1437,11 @@ function postForm(url, fields) {
     $form.submit();
 }
 
+$('#datepicker').datepicker({
+    dateFormat:'yy-mm-dd',
+    minDate:'%y-%M-%d',
+    gotoCurrent: true,
+});
+$("#datepicker").datepicker("setDate", new Date());
+setTime();
 </script>

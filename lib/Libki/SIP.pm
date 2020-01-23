@@ -212,6 +212,7 @@ sub authenticate_via_sip {
         $lastname=~ s/^\s+//;
         $firstname =~ s/^\s+//;
         my $category = $sip_fields->{$c->config->{SIP}->{category_field} };
+        $c->add_user_category( $category ) if $category;
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
@@ -222,8 +223,7 @@ sub authenticate_via_sip {
                 birthdate         => $birthdate,
                 lastname          => $lastname,
                 firstname         => $firstname,
-                category         => $category,
-
+                category          => $category,
             }
         );
     }

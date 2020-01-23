@@ -27,17 +27,24 @@ my $dbh = $schema->storage->dbh;
 ## Gather sessions to delete, delete them, then log the deletions
 my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{LIBKI_TZ} ) );
 
+# Gather the sessions to delete for statistical purposes
 my $sessions_to_delete = $dbh->selectall_arrayref(
     q{
         SELECT * FROM sessions
         LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
         LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )
-        WHERE users.minutes <= 0
+        WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
     },
     { Slice => {} }
 );
 
-$dbh->do(q{DELETE sessions FROM sessions LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id ) WHERE users.minutes <= 0});
+# Delete sessions with a single query for efficiency
+$dbh->do(q{
+    DELETE sessions
+    FROM sessions
+    LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
+    WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
+});
 
 foreach my $s (@$sessions_to_delete) {
     $c->model('DB::Statistic')->create(
@@ -52,7 +59,33 @@ foreach my $s (@$sessions_to_delete) {
 }
 
 ## Decrement minutes for logged in users
-$dbh->do(q{UPDATE sessions LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id ) SET users.minutes = users.minutes - 1});
+$dbh->do(q{
+    UPDATE sessions
+    LEFT JOIN users ON (
+        users.instance = sessions.instance
+      AND
+        users.id = sessions.user_id
+    )
+    SET
+        sessions.minutes = sessions.minutes - 1,
+        users.minutes_allotment = users.minutes_allotment - 1
+});
+
+## Decrement minutes_allotment for reservation begins but not logged in users
+$dbh->do(q{
+    UPDATE users
+    INNER JOIN reservations ON (
+        reservations.begin_time < now()
+      AND
+        reservations.end_time > now()
+      AND
+        reservations.user_id = users.id
+      AND
+        users.minutes_allotment > 0
+    )
+    SET
+        users.minutes_allotment = users.minutes_allotment -1
+});
 
 ## Handle automatic time extensions
 my $sessions = $dbh->selectall_arrayref(
@@ -86,7 +119,7 @@ my $sessions = $dbh->selectall_arrayref(
         LEFT JOIN reservations this_reserved 
                ON ( users.instance = this_reserved.instance 
                     AND this_reserved.client_id = sessions.client_id ) 
-        WHERE  users.minutes < AutomaticTimeExtensionAt.value 
+        WHERE  sessions.minutes < AutomaticTimeExtensionAt.value 
                AND AutomaticTimeExtensionLength.value > 0
                AND sessions.status = 'active' 
         GROUP  BY users.id, 
@@ -96,7 +129,14 @@ my $sessions = $dbh->selectall_arrayref(
     { Slice => {} }
 );
 
-my $update_user_sth = $dbh->prepare(q{UPDATE users SET minutes = minutes + ?, minutes_allotment = minutes_allotment - ? WHERE id = ?});
+my $update_user_sth = $dbh->prepare(q{
+    UPDATE sessions
+    LEFT JOIN users ON (
+        users.instance = sessions.instance
+      AND
+        users.id = sessions.user_id
+    )
+    SET minutes = minutes + ?, minutes_allotment = minutes_allotment + ? WHERE id = ?});
 
 my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
@@ -105,7 +145,7 @@ foreach my $s ( @$sessions ) {
     next if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved' && $s->{ThisReservedCount} > 0;
     next if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved'  && $s->{AnyReservedCount} > 0;
 
-    my $minutes_to_add = $s->{AutomaticTimeExtensionLength};
+    my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
     # If we are nearing closing time, we need to only add minutes up to the cloasing time
     # TODO We could possibly integrate this into the main query, or at least speed it up with raw SQL
@@ -116,10 +156,10 @@ foreach my $s ( @$sessions ) {
 
     # If adding this many minutes would go past closing time, we need to reduce the minutes added
     if ( defined($minutes_until_closing)
-        && $minutes_until_closing < $minutes_to_add )
+        && $minutes_until_closing < $minutes_to_add_to_session )
     {
         # Set the minutes to add so that it will be exactly closing time
-        $minutes_to_add = $minutes_until_closing - $s->{minutes};
+        $minutes_to_add_to_session = $minutes_until_closing - $s->{minutes};
     }
 
     # If adding this many minutes would exceed daily allotted, we need to reduce the minutes added
@@ -127,7 +167,7 @@ foreach my $s ( @$sessions ) {
         if ( $s->{minutes_allotment} < $s->{minutes_to_add} ) {
 
             # Set the minutes to add so that it will be exactly the remaining daily allotted minutes
-            $minutes_to_add = $s->{minutes_allotment};
+            $minutes_to_add_to_session = $s->{minutes_allotment};
         }
     }
 
@@ -136,15 +176,16 @@ foreach my $s ( @$sessions ) {
                 instance => $s->{instance},
                 user_id  => $s->{id},
                 content  => $c->loc(
-                    "Your session time has been automatically extended by $minutes_to_add minutes.",
-                    "Your session time has been automatically extended by $minutes_to_add minutes.",
-                    $minutes_to_add
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    $minutes_to_add_to_session
                 ),
             }
         );
 
     ## Now we can store the changes
-    $update_user_sth->execute( $minutes_to_add, $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? $minutes_to_add : 0, $s->{id} );
+    my $minutes_to_add_to_daily_allotment = $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? 0 : $minutes_to_add_to_session;
+    $update_user_sth->execute( $minutes_to_add_to_session, $minutes_to_add_to_daily_allotment, $s->{id} );
 }
 
 ## Delete clients that haven't updated recently
@@ -164,52 +205,37 @@ foreach my $pct (@post_crash_timeouts) {
 
 ## Clear out any expired reservations
 #FIXME We need to deal with timezones at some point
-$reservation_rs->search(
+my $timeout =  $setting_rs->find( { name => 'ReservationTimeout'} );
+$reservation_rs->search([
     {
-        'expiration' => {
+        'begin_time' => {
+            '<',
+            DateTime::Format::MySQL->format_datetime(
+                DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration( DateTime::Duration->new(minutes => $timeout->value()) )
+            )
+        }
+    },
+    {
+        'end_time' => {
             '<',
             DateTime::Format::MySQL->format_datetime(
                 DateTime->now( time_zone => $ENV{LIBKI_TZ} )
             )
-        }
+       }
     }
-)->delete();
+])->delete();
 
-## Refill session minutes from allotted minutes for users not logged in to a client
-my @default_session_time_allowances = $setting_rs->search( { name => 'DefaultSessionTimeAllowance' } );
-my $default_session_time_allowances = { map { $_->instance => $_->value } @default_session_time_allowances };
+## Renew time for users that's reached zero if AutomaticTimeExtensionRenewal is set to 1
+my @instances = $dbh->selectrow_array("SELECT DISTINCT(instance) FROM users");
+foreach my $instance ( @instances ) {
+    my $automaticTimeExtensionLength = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionLength'");
+    my $automaticTimeExtensionRenewal = $dbh->selectrow_array("SELECT value FROM settings WHERE name = 'AutomaticTimeExtensionRenewal'");
 
-my @default_guest_session_time_allowances = $setting_rs->search( { name => 'DefaultGuestSessionTimeAllowance' } );
-my $default_guest_session_time_allowances = { map { $_->instance => $_->value } @default_guest_session_time_allowances };
-
-my @users;
-foreach my $dsta (@default_session_time_allowances) {
-    my @these_users = $c->model('DB::User')->search(
-        {
-            minutes           => { '<' => $dsta->value },
-            minutes_allotment => { '>' => 0 }
-        },
-        { prefetch => 'session' }
-    );
-
-    push( @users, @these_users );
-}
-
-foreach my $user (@users) {
-    next if $user->session(); #TODO Move to query
-
-    my $allowance =
-        $user->is_guest eq 'Yes'
-      ? $default_guest_session_time_allowances->{ $user->instance }
-      : $default_session_time_allowances->{ $user->instance };
-
-    my $max_minutes = $allowance - $user->minutes;
-    my $minutes = min( $user->minutes_allotment, $max_minutes );
-    
-    $user->decrease_minutes_allotment($minutes);
-    $user->increase_minutes($minutes);
-
-    $user->update();
+    if ($automaticTimeExtensionRenewal eq 1 && $automaticTimeExtensionLength ne undef) {
+        $dbh->do(q{
+            UPDATE users SET minutes_allotment = ? WHERE instance = ? AND minutes_allotment IS NOT NULL AND minutes_allotment < 1
+        }, undef, $instance, $automaticTimeExtensionLength);
+    }
 }
 
 =head1 AUTHOR

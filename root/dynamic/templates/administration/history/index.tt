@@ -14,7 +14,7 @@
 $(document).ready(function() {
     /**** Initialize Datatables ****/
     hTable = $('#history-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request

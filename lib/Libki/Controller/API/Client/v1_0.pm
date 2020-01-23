@@ -11,7 +11,9 @@ use Libki::Hours qw( minutes_until_closing );
 
 use DateTime::Format::MySQL;
 use DateTime;
+use List::Util qw(min);
 use PDF::API2;
+use Date::Parse;
 
 =head1 NAME
 
@@ -49,6 +51,7 @@ sub index : Path : Args(0) {
 
         my $node_name = $c->request->params->{'node_name'};
         my $location  = $c->request->params->{'location'};
+        my $type      = $c->request->params->{'type'};
 
         $c->model('DB::Location')->update_or_create(
             {
@@ -62,15 +65,14 @@ sub index : Path : Args(0) {
                 instance        => $instance,
                 name            => $node_name,
                 location        => $location ? $location : undef,
+                type            => $type     ? $type     : undef,
                 last_registered => $now,
             }
         );
         $log->debug( "Client Registered: " . $client->name() );
 
-        my $reservation = $client->reservation || undef;
-        if ($reservation) {
-            $c->stash( reserved_for => $reservation->user->username() );
-        }
+        my $reserved_for = $c->get_reservation_status( $client );
+        $c->stash( reserved_for => $reserved_for) if($reserved_for);
 
         my $age_limit = $c->request->params->{'age_limit'};
         if ($age_limit) {
@@ -111,30 +113,19 @@ sub index : Path : Args(0) {
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
         my $client_name  = $c->request->params->{'node'};
-        my $reserved_for = $c->request->params->{'reserved_for'};
+        my $client = $c->model('DB::Client')->find( { name => $client_name } ) || undef;
 
         my $reservation = $c->model('DB::Reservation')->search(
-            {},
             {
                 instance => $instance,
-                username => $reserved_for,
-                name     => $client_name
-            }
-        )->next();
+                client_id => $client->id
+            },
+            { order_by => { -asc => 'begin_time' } }
+        )->first;
 
         if ($reservation) {
-            unless ( $reservation->expiration() ) {
-                $reservation->expiration(
-                    DateTime::Format::MySQL->format_datetime(
-                        $c->now()->add_duration(
-                            DateTime::Duration->new(
-                                minutes => $c->stash->{'Settings'}
-                                  ->{'ReservationTimeout'}
-                            )
-                        )
-                    )
-                );
-                $reservation->update();
+            if ( str2time($reservation->end_time) < str2time($c->now) ) {
+                $reservation->delete();
             }
         }
     }
@@ -143,7 +134,9 @@ sub index : Path : Args(0) {
         my $password        = $c->request->params->{'password'};
         my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
+        my $client_type     = $c->request->params->{'type'};
 
+        my $units;
         my $user = $c->model('DB::User')
           ->single( { instance => $instance, username => $username } );
 
@@ -210,22 +203,39 @@ sub index : Path : Args(0) {
                     )
                   )
                 {
-                    my $minutes_until_closing =
-                      Libki::Hours::minutes_until_closing( $c,
-                        $client_location );
-                    if ( defined($minutes_until_closing)
-                        && $minutes_until_closing < $user->minutes )
-                    {
-                        $user->minutes($minutes_until_closing);
-                        $user->update();
+                    my $is_guest = $user->is_guest eq 'Yes';
+
+                    my $client = $c->model('DB::Client')->single(
+                        {
+                            instance => $instance,
+                            name     => $client_name,
+                        }
+                    );
+
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+
+                    #TODO: Move this to a unified sub, see TODO below
+                    # Get advanced rule if there is one
+                    my $minutes_allotment = $user->minutes_allotment;
+
+                    unless ( defined($minutes_allotment) ) {
+                        $minutes_allotment = $c->get_rule(
+                            {
+                                rule            => $is_guest ? 'guest_daily' : 'daily',
+                                client_location => $client->location,
+                                client_type     => $client->type,
+                                client_name     => $client_name,
+                                client_type     => $client_type,
+                                user_category   => $user->category,
+                            }
+                        );
+
+                        # Use 'simple' rules if no advanced rule exists
+                        $minutes_allotment //=
+                              $is_guest
+                            ? $c->setting('DefaultGuestTimeAllowance')
+                            : $c->setting('DefaultTimeAllowance');
                     }
-
-                    my $client =
-                      $c->model('DB::Client')
-                      ->single(
-                        { instance => $instance, name => $client_name } );
-
-                    $c->stash( units => $user->minutes );
 
                     my $error = {};    # Must be initialized as a hashref
                     if ( $minutes_until_closing && $minutes_until_closing <= 0 )
@@ -238,7 +248,7 @@ sub index : Path : Args(0) {
                     elsif ( $user->status eq 'disabled' ) {
                         $c->stash( error => 'ACCOUNT_DISABLED' );
                     }
-                    elsif ( $user->minutes < 1 ) {
+                    elsif ( $minutes_allotment < 1 ) {
                         $c->stash( error => 'NO_TIME' );
                     }
                     elsif (
@@ -250,47 +260,61 @@ sub index : Path : Args(0) {
                         $c->stash( error => $error->{reason} );
                     }
                     else {
-                        my $client =
-                          $c->model('DB::Client')
-                          ->search(
-                            { instance => $instance, name => $client_name } )
-                          ->next();
-
                         if ($client) {
-                            my $reservation = $client->reservation;
+                            $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
+                            my %result = $c->check_login($client,$user);
+                            my $reservation = $result{'reservation'};
 
-                            if (
-                                !$reservation
-                                && !(
-                                    $c->stash->{'Settings'}->{'ClientBehavior'}
-                                    =~ 'FCFS'
-                                )
-                              )
+                            # Allows exceptions to "Reservation only" client behavior
+                            my $no_reservation_required = $c->get_rule(
+                                {
+                                    rule            => 'no_reservation_required',
+                                    client_location => $client->location,
+                                    client_type     => $client->type,
+                                    client_name     => $client_name,
+                                    client_type     => $client_type,
+                                    user_category   => $user->category,
+                                }
+                            );
+
+                            my $no_reservation = $reservation ? 0 : 1;
+                            my $reservation_only = $c->stash->{'Settings'}->{'ClientBehavior'} =~ 'FCFS' ? 0 : 1;
+
+                            if ( $reservation_only && $no_reservation && !$no_reservation_required )
                             {
                                 $c->stash( error => 'RESERVATION_REQUIRED' );
                             }
-                            elsif ( !$reservation
-                                || $reservation->user_id() == $user->id() )
+                            elsif ( (!$reservation || $reservation->user_id() == $user->id() )
+                                    && !$result{'error'} )
                             {
                                 $reservation->delete() if $reservation;
+                                %result = $c->check_login($client,$user);
+
                                 my $session_id = $c->sessionid;
+
+                                # Solves issue with some browsers not parsing correctly
+                                $c->stash( units => "$result{'minutes'}" );
 
                                 my $session = $c->model('DB::Session')->create(
                                     {
-                                        instance  => $instance,
-                                        user_id   => $user->id,
-                                        client_id => $client->id,
-                                        status    => 'active',
+                                        instance   => $instance,
+                                        user_id    => $user->id,
+                                        client_id  => $client->id,
+                                        status     => 'active',
+                                        minutes    => $result{'minutes'},
                                         session_id => $session_id,
                                     }
                                 );
+
                                 $c->stash( authenticated => $session && 1 );
+
                                 $c->model('DB::Statistic')->create(
                                     {
                                         instance        => $instance,
                                         username        => $username,
                                         client_name     => $client_name,
                                         client_location => $client_location,
+                                        client_type     => $client_type,
                                         action          => 'LOGIN',
                                         created_on      => $now,
                                         session_id      => $session_id,
@@ -298,7 +322,7 @@ sub index : Path : Args(0) {
                                 );
                             }
                             else {
-                                $c->stash( error => 'RESERVED_FOR_OTHER' );
+                                $c->stash( error => $result{'error'} );
                             }
                         }
                         else {
@@ -328,22 +352,22 @@ sub index : Path : Args(0) {
             }
 
             my @messages = $user->messages()->get_column('content')->all();
-            map {
-                $c->log()
-                  ->info( "Sent message for " . $user->username() . " : $_" )
-            } @messages;
+
+            $units = $user->session ? $user->session->minutes : 0;
+
             $c->stash(
                 messages => \@messages,
-                units    => $user->minutes,
+                units    => "$units",     # Solves issue with some browsers not parsing correctly
                 status   => $status,
             );
-            $user->messages()->delete();
 
+            $user->messages()->delete();
         }
         elsif ( $action eq 'logout' ) {
-            my $session = $user->session;
+            my $session    = $user->session;
             my $session_id = $session->session_id;
-            my $location = $session->client->location;
+            my $location   = $session->client->location;
+            my $type       = $session->client->type;
 
             my $success = $user->session->delete();
             $success &&= 1;
@@ -355,6 +379,7 @@ sub index : Path : Args(0) {
                     username        => $username,
                     client_name     => $client_name,
                     client_location => $client_location,
+                    client_type     => $client_type,
                     action          => 'LOGOUT',
                     created_on      => $now,
                     session_id      => $session_id,
@@ -386,6 +411,7 @@ sub print : Path('print') : Args(0) {
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
     my $location    = $c->request->params->{'location'};
+    my $type        = $c->request->params->{'type'};
 
     my $client = $c->model('DB::Client')
       ->single( { instance => $instance, name => $client_name } );
@@ -399,9 +425,11 @@ sub print : Path('print') : Args(0) {
         my $pdf        = PDF::API2->open_scalar($pdf_string);
         my $pages      = $pdf->pages();
 
-        my $printers_conf = $self->get_printer_configuration( $c );
-        my $printers      = $printers_conf->{printers};
-        my $printer       = $printers->{$printer_id};
+        $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
+        my $copies = $1 || 1;
+
+        my $printers = $c->get_printer_configuration;
+        my $printer  = $printers->{printers}->{$printer_id};
 
         $print_file = $c->model('DB::PrintFile')->create(
             {
@@ -413,6 +441,7 @@ sub print : Path('print') : Args(0) {
                 client_id       => $client->id,
                 client_name     => $client_name,
                 client_location => $client->location,
+                client_type     => $client->type,
                 user_id         => $user->id,
                 username        => $username,
                 created_on      => $now,
@@ -426,6 +455,7 @@ sub print : Path('print') : Args(0) {
                 type          => $printer->{type},
                 status        => 'Pending',
                 data          => undef,
+                copies        => $copies,
                 printer       => $printer_id,
                 user_id       => $user->id,
                 print_file_id => $print_file->id,
@@ -447,22 +477,6 @@ sub print : Path('print') : Args(0) {
 
     delete( $c->stash->{'Settings'} );
     $c->forward( $c->view('JSON') );
-}
-
-=head2 get_printer_configuration
-
-Returns the printer configuration from the database.
-The configuration is stored as YAML.
-This method returns the config YAML as Perl structure.
-
-=cut
-
-sub get_printer_configuration : Private : Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $yaml   = $c->setting('PrinterConfiguration');
-    my $config = YAML::XS::Load($yaml);
-    return $config;
 }
 
 =head1 AUTHOR

@@ -5,8 +5,6 @@ use String::Random qw(random_string);
 
 use namespace::autoclean;
 
-use Encode qw(decode encode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -31,8 +29,6 @@ sub get : Local : Args(1) {
 
     my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
-    my $enc = 'UTF-8';
-
     my $roles = $user->roles;
     my @roles;
     while ( my $role = $roles->next() ) {
@@ -41,13 +37,16 @@ sub get : Local : Args(1) {
 
     $c->stash(
         {
-            'id'              => $user->id,
-            'username'        => decode($enc,$user->username),
-            'minutes'         => $user->minutes,
-            'status'          => $user->status,
-            'notes'           => decode($enc,$user->notes),
-            'is_troublemaker' => $user->is_troublemaker,
-            'roles'           => \@roles,
+            id              => $user->id,
+            username        => $user->username,
+            firstname       => $user->firstname,
+            lastname        => $user->lastname,
+            category        => $user->category,
+            minutes         => $user->minutes_allotment,
+            status          => $user->status,
+            notes           => $user->notes,
+            is_troublemaker => $user->is_troublemaker,
+            roles           => \@roles,
         }
     );
 
@@ -64,11 +63,12 @@ sub create : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $username = $params->{'username'};
-    my $password = $params->{'password'};
-    my $minutes  = $params->{'minutes'} || $c->setting('DefaultTimeAllowance');
-
-    $minutes = 0 unless ( $minutes > 0 );
+    my $username  = $params->{username};
+    my $firstname = $params->{firstname};
+    my $lastname  = $params->{lastname};
+    my $category  = $params->{category};
+    my $password  = $params->{password};
+    my $minutes   = $params->{minutes};
 
     my $success = 0;
 
@@ -77,6 +77,9 @@ sub create : Local : Args(0) {
         {
             instance          => $instance,
             username          => $username,
+            firstname         => $firstname,
+            lastname          => $lastname,
+            category          => $category,
             password          => $password,
             minutes_allotment => $minutes,
             status            => 'enabled',
@@ -114,11 +117,7 @@ sub create_guest : Local : Args(0) {
       random_string("nnnn");    #TODO: Make the pattern a system setting
 
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
-    $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
-    $minutes           = 0 unless ( $minutes > 0 );
-
-    $minutes_allotment = $minutes_allotment - $minutes;
+    $minutes_allotment = 0 unless $minutes_allotment > 0;
 
     my $success = 0;
 
@@ -128,7 +127,6 @@ sub create_guest : Local : Args(0) {
             instance          => $instance,
             username          => $username,
             password          => $password,
-            minutes           => $minutes,
             minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
@@ -143,7 +141,7 @@ sub create_guest : Local : Args(0) {
         'success'  => $success,
         'username' => $username,
         'password' => $password,
-        'minutes'  => $minutes
+        'minutes'  => $minutes_allotment,
     );
     $c->forward( $c->view('JSON') );
 }
@@ -170,11 +168,7 @@ sub batch_create_guest : Local : Args(0) {
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
 
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-    my $minutes           = $c->setting('DefaultGuestSessionTimeAllowance');
     $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
-    $minutes           = 0 unless ( $minutes > 0 );
-
-    $minutes_allotment = $minutes_allotment - $minutes;
 
     my $current_guest_number_setting =
       $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
@@ -198,7 +192,6 @@ sub batch_create_guest : Local : Args(0) {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes           => $minutes,
                 minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes',
@@ -207,13 +200,14 @@ sub batch_create_guest : Local : Args(0) {
             }
         );
 
-        $file_contents .= "\n<span class='guest-pass'>";
+        $file_contents .= "\n<div class='guest-pass'>";
         $file_contents .= "\n<span class='guest-pass-username'>";
         $file_contents .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
         $file_contents .= "</span>";
         $file_contents .= "\n\n<span class='guest-pass-password'>";
         $file_contents .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
         $file_contents .= "</span>";
+        $file_contents .= "</div>";
         $file_contents .= "</body>";
 
         $success = $success + 1 if ($user);
@@ -226,7 +220,7 @@ sub batch_create_guest : Local : Args(0) {
         'success'  => $success,
         'highest'  => $current_guest_number,
         'number'   => $guest_count,
-        'minutes'  => $minutes,
+        'minutes'  => $minutes_allotment,
         'contents' => $file_contents,
     );
 
@@ -243,30 +237,38 @@ sub update : Local : Args(0) {
 
     my $success = 0;
 
-    my $id      = $c->request->params->{'id'};
-    my $minutes = $c->request->params->{'minutes'} // 0;
-    my $notes   = $c->request->params->{'notes'};
-    my $status  = $c->request->params->{'status'};
-    my @roles   = $c->request->params->{'roles'} || [];
+    my $id        = $c->request->params->{'id'};
+    my $firstname = $c->request->params->{firstname};
+    my $lastname  = $c->request->params->{lastname};
+    my $category  = $c->request->params->{category};
+    my $minutes   = $c->request->params->{'minutes'};
+    my $notes     = $c->request->params->{'notes'};
+    my $status    = $c->request->params->{'status'};
+    my @roles     = $c->request->params->{'roles'} || [];
 
     # For some reason the list of checkboxes are created
     # as a list within a list if multiple are checked
     @roles = @{$roles[0]} if ref( $roles[0] ) eq 'ARRAY';
 
-    $minutes = 0 if ( $minutes < 0 );
+    $minutes = undef if $minutes eq q{};
+    $minutes = 0 if defined($minutes) &&  $minutes < 0;
 
     my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
 
     my $now = $c->now();
 
-    $user->set_column( 'minutes', $minutes );
-    $user->set_column( 'notes',   $notes );
-    $user->set_column( 'status',  $status );
-    $user->set_column( 'updated_on', $now );
+    $success = 1 if $user->update(
+        {
 
-    if ( $user->update() ) {
-        $success = 1;
-    }
+            firstname         => $firstname,
+            lastname          => $lastname,
+            category          => $category,
+            minutes_allotment => $minutes,
+            notes             => $notes,
+            status            => $status,
+            updated_on        => $now,
+        }
+    );
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
 
@@ -299,14 +301,32 @@ sub delete : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
-    my $user    = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user    = $c->model('DB::User')->find( { instance => $instance, id => $id } );
     my $success = 0;
 
-    if ( $user->delete() ) {
-        $success = 1;
+    my $msg;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                if ( $user->delete() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CANNOT_DELETE_USER};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 
@@ -374,14 +394,33 @@ sub change_password : Local : Args(0) {
 
     my $now = $c->now();
 
-    $user->set_column( 'password', $password );
-    $user->set_column( 'updated_on', $now );
+    my $msg;
 
-    if ( $user->update() ) {
-        $success = 1;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                $user->set_column( 'password', $password );
+                $user->set_column( 'updated_on', $now );
+
+                if ( $user->update() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CHANGE_PASSWORD};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 

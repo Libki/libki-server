@@ -7,8 +7,6 @@ BEGIN { extends 'Catalyst::Controller'; }
 our @days_of_week =
   qw( Monday Tuesday Wednesday Thursday Friday Saturday Sunday );
 
-=encoding utf8
-
 =head1 NAME
 
 Libki::Controller::Administration::Hours - Catalyst Controller
@@ -188,7 +186,7 @@ sub delete_dates : Local : Args(0) {
 
 =head1 AUTHOR
 
-Erik Öhrn <erik.ohrn@gmail.com>
+Kyle M Hall <kyle@kylehall.info>
 
 =cut
 

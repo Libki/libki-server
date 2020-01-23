@@ -1,10 +1,8 @@
 package Libki;
 use Moose;
 use namespace::autoclean;
-
 use Catalyst::Runtime 5.90011;
 use CatalystX::RoleApplicator;
-
 use DateTime;
 use DateTime::Format::DateParse;
 use DateTime::Format::MySQL;
@@ -20,7 +18,6 @@ use DateTime::Format::MySQL;
 #                 application's home directory
 # Static::Simple: will serve static files from the application's root
 #                 directory
-
 use Log::Log4perl::Catalyst;
 
 use Catalyst qw/
@@ -100,9 +97,15 @@ __PACKAGE__->config(
     },
 );
 
+__PACKAGE__->config(
+    {
+        traits       => ['Caching'],
+        cursor_class => 'DBIx::Class::Cursor::Cached',
+    }
+);
+
 # Set the time zone
 $ENV{LIBKI_TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
-CORE::say qq{USING TIMEZONE "$ENV{LIBKI_TZ}"};
 
 # Create a Log4perl object
 __PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));

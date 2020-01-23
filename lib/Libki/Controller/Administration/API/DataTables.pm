@@ -3,8 +3,6 @@ package Libki::Controller::Administration::API::DataTables;
 use Moose;
 use namespace::autoclean;
 
-use Encode qw(decode encode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -28,8 +26,23 @@ sub users : Local Args(0) {
 
     my $instance = $c->instance;
 
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # Get settings
+    my $userCategories = $c->setting('UserCategories');
+    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
+
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment me.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+
+    if ($userCategories eq '') {
+        splice @columns, 3, 1;
+    }
+
+    if ($showFirstLastNames eq '0') {
+        splice @columns, 1, 2;
+    }
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -88,23 +101,36 @@ sub users : Local Args(0) {
     my @results;
     foreach my $u (@users) {
 
-        my $enc = 'UTF-8';
+        my @userValues = (
+            $u->username,
+            $u->lastname,
+            $u->firstname,
+            $u->category,
+            $u->minutes_allotment,
+            $u->session ? $u->session->minutes : undef,
+            $u->status,
+            $u->notes,
+            $u->is_troublemaker,
+            defined( $u->session ) ? $u->session->client->name : undef,
+            defined( $u->session ) ? $u->session->status : undef,
+        );
+
+        if ($userCategories eq '') {
+            splice @userValues, 3, 1;
+        }
+
+        if ($showFirstLastNames eq '0') {
+            splice @userValues, 1, 2;
+        }
 
         my $r;
+        my $userValuesCounter = 0;
         $r->{'DT_RowId'} = $u->id;
-        $r->{'0'}        = decode( $enc, $u->username);
-        $r->{'1'}        = decode( $enc, $u->lastname);
-        $r->{'2'}        = decode( $enc, $u->firstname);
-        $r->{'3'}        = decode( $enc, $u->category);
-        $r->{'4'}        = $u->minutes_allotment;
-        $r->{'5'}        = $u->minutes;
-        $r->{'6'}        = $u->status;
-        $r->{'7'}        = decode( $enc, $u->notes);
-        $r->{'8'}        = $u->is_troublemaker;
-        $r->{'9'}        =
-          defined( $u->session )
-          ? decode($enc,decode( $enc, $u->session->client->name)) : undef;
-        $r->{'10'}        = defined( $u->session ) ? $u->session->status : undef;
+
+        foreach my $userValue (@userValues) {
+            $r->{$userValuesCounter} = $userValue;
+            $userValuesCounter++;
+        }
 
         push( @results, $r );
     }
@@ -131,9 +157,24 @@ sub clients : Local Args(0) {
 
     my $instance = $c->instance;
 
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # Get settings
+    my $userCategories = $c->setting('UserCategories');
+    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
+
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location session.status user.username user.lastname user.firstname user.category user.minutes_allotment user.minutes user.status user.notes user.is_troublemaker/;
+      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker/;
+
+    if ($userCategories eq '') {
+        splice @columns, 6, 1;
+    }
+
+    if ($showFirstLastNames eq '0') {
+        splice @columns, 4, 2;
+    }
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -143,6 +184,7 @@ sub clients : Local Args(0) {
         $filter->{-or} = [
             'me.name'       => { 'like', "%$search_term%" },
             'me.location'   => { 'like', "%$search_term%" },
+            'me.type'       => { 'like', "%$search_term%" },
             'user.username' => { 'like', "%$search_term%" },
         ];
     }
@@ -175,7 +217,7 @@ sub clients : Local Args(0) {
     my $count = $c->model('DB::Client')->count(
         $filter,
         {
-            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
+            prefetch => [ { 'session' => 'user' } ]
         }
     );
 
@@ -186,41 +228,54 @@ sub clients : Local Args(0) {
             order_by => \@sorting,
             rows     => $c->request->param('iDisplayLength'),
             offset   => $c->request->param('iDisplayStart'),
-            prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' } ]
+            prefetch => [ { 'session' => 'user' } ]
         }
     );
-
+    my $client = $c;
     my @results;
+    my $enc = 'UTF-8';
     foreach my $c (@clients) {
+        my $reservation= $client->model('DB::Reservation')->search(
+             { 'client_id' => $c->id},
+             {  order_by => { -asc => 'begin_time' } }
+             )->first || undef;
+        my $begin = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
+        $begin =~ s/T/ / if(defined($begin));
+        my @clientValues = (
+            $c->name,
+            $c->location,
+            $c->type,
+            defined( $c->session ) ? $c->session->status : undef,
+            defined( $c->session ) ? $c->session->user->username : undef,
+            defined( $c->session ) ? $c->session->user->lastname : undef,
+            defined( $c->session ) ? $c->session->user->firstname : undef,
+            defined( $c->session ) ? $c->session->user->category : undef,
+            defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
+            defined( $c->session ) ? $c->session->minutes : undef,
+            defined( $c->session ) ? $c->session->user->status  : undef,
+            defined( $c->session ) ? $c->session->user->notes : undef,
+            defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
+            defined( $reservation ) ? $reservation->user->username : undef,
+            defined( $reservation ) ? $begin : undef,
+        );
 
-        my $enc = 'UTF-8';
+        if ($userCategories eq '') {
+            splice @clientValues, 6, 1;
+        }
+
+        if ($showFirstLastNames eq '0') {
+            splice @clientValues, 4, 2;
+        }
 
         my $r;
+        my $clientValuesCounter = 0;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'}        = decode( $enc, decode( $enc, $c->name ) );
-        $r->{'1'}        = decode( $enc, decode( $enc, $c->location ) );
-        $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} =
-          defined( $c->session )
-          ? decode( $enc, $c->session->user->username )
-          : undef;
-        $r->{'4'}        = defined( $c->session ) ? decode($enc,$c->session->user->lastname) : undef;
-        $r->{'5'}        = defined( $c->session ) ? decode($enc,$c->session->user->firstname) : undef;
-        $r->{'6'}        = defined( $c->session ) ? decode($enc,$c->session->user->category) : undef;
-        $r->{'7'} =
-          defined( $c->session ) ? $c->session->user->minutes_allotment : undef;
-        $r->{'8'} = defined( $c->session ) ? $c->session->user->minutes : undef;
-        $r->{'9'} = defined( $c->session ) ? $c->session->user->status  : undef;
-        $r->{'10'} =
-          defined( $c->session )
-          ? decode( $enc, $c->session->user->notes )
-          : undef;
-        $r->{'11'} =
-          defined( $c->session ) ? $c->session->user->is_troublemaker : undef;
-        $r->{'12'} =
-          defined( $c->reservation )
-          ? decode( $enc, $c->reservation->user->username )
-          : undef;
+
+        foreach my $clientValue (@clientValues) {
+            $r->{$clientValuesCounter} = $clientValue;
+            $clientValuesCounter++;
+        }
+
         push( @results, $r );
     }
 
@@ -294,12 +349,10 @@ sub statistics : Local Args(0) {
     my @results;
     foreach my $s (@stats) {
 
-        my $enc = 'UTF-8';
-
         my $r;
         $r->{'DT_RowId'} = $s->id;
-        $r->{'0'}        = decode( $enc, $s->username );
-        $r->{'1'}        = decode( $enc, decode( $enc, $s->client_name ) );
+        $r->{'0'}        = $s->username;
+        $r->{'1'}        = $s->client_name;
         $r->{'2'}        = $s->action;
         $r->{'3'}        = $s->created_on->strftime('%m/%d/%Y %I:%M %p');
 
@@ -330,16 +383,17 @@ sub prints : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw( me.type me.status me.printer print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
+      qw( me.type me.status me.printer me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
 
     # Set up filters
     my $filter;
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
         $filter->{-or} = [
-            'me.type'                 => { 'like', "%$search_term%" },
-            'me.status'               => { 'like', "%$search_term%" },
-            'me.printer'              => { 'like', "%$search_term%" },
+            'me.type'                => { 'like', "%$search_term%" },
+            'me.status'              => { 'like', "%$search_term%" },
+            'me.printer'             => { 'like', "%$search_term%" },
+            'me.copies'              => { 'like', "%$search_term%" },
             'print_file.filename'    => { 'like', "%$search_term%" },
             'print_file.pages'       => { 'like', "%$search_term%" },
             'print_file.client_name' => { 'like', "%$search_term%" },
@@ -394,18 +448,17 @@ sub prints : Local Args(0) {
     my @results;
     foreach my $p (@prints) {
 
-        my $enc = 'UTF-8';
-
         my $r;
         $r->{'DT_RowId'} = $p->id;
         $r->{'0'}        = $p->type;
         $r->{'1'}        = $p->status;
         $r->{'2'}        = $p->printer;
-        $r->{'3'}        = $p->print_file->filename;
-        $r->{'4'}        = $p->print_file->pages;
-        $r->{'5'}        = $p->print_file->client_name;
-        $r->{'6'}        = $p->print_file->username;
-	$r->{'7'}        = $p->created_on->iso8601;
+        $r->{'3'}        = $p->copies;
+        $r->{'4'}        = $p->print_file->filename;
+        $r->{'5'}        = $p->print_file->pages;
+        $r->{'6'}        = $p->print_file->client_name;
+        $r->{'7'}        = $p->print_file->username;
+	    $r->{'8'}        = $p->created_on->iso8601;
         push( @results, $r );
     }
 
@@ -418,6 +471,112 @@ sub prints : Local Args(0) {
         }
     );
     $c->forward( $c->view('JSON') );
+}
+
+=head2 reservations
+
+Endpoint that returns DataTables JSON of reservations.
+
+=cut
+
+sub reservations  : Local Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
+    my $dbh = $schema->storage->dbh;
+
+    # We need to map the table columns to field names for ordering
+    my @columns =
+       qw/ client.name user.username me.begin_time me.end_time /;
+
+    # Set up filters
+    my $filter = { 'me.instance' => $instance };
+
+    my $search_term = $c->request->param("sSearch");
+    if ($search_term) {
+        $filter->{-or} = [
+            'client.name'    => { 'like', "%$search_term%" },
+            'user.username'  => { 'like', "%$search_term%" },
+        ];
+    }
+
+    # Sorting options
+    my @sorting;
+    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+        push(
+            @sorting,
+            {
+                '-'
+                  . $c->request->param("sSortDir_$i") =>
+                  $columns[ $c->request->param("iSortCol_$i") ]
+            }
+        );
+    }
+
+    # May need editing with a filter if the table contains records for other items
+    # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
+    # in this case, we'd only want the count of notes affecting the specific item,
+    # not *all* items
+    my $total_records =
+      $c->model('DB::Reservation')->search( { instance => $instance } )->count;
+
+    # In case of pagination, we need to know how many records match in total
+    my $count = $c->model('DB::Reservation')->count(
+        $filter,
+        {
+            prefetch => [ 'client', 'user' ]
+        }
+    );
+
+    # Do the search, including any required sorting and pagination.
+    my @reservations = $c->model('DB::Reservation')->search(
+        $filter,
+        {
+            order_by => \@sorting,
+            rows     => $c->request->param('iDisplayLength'),
+            offset   => $c->request->param('iDisplayStart'),
+            prefetch => [ 'client', 'user' ],
+        }
+    );
+
+    my @results;
+    foreach my $r (@reservations) {
+        my $begin = $r->begin_time->stringify();
+        $begin =~ s/T/ /;
+        my $end = $r->end_time->stringify();
+        $end =~ s/T/ /;
+
+        my @reservationValues = (
+            $r->client->name,
+            $r->user->username,
+            $begin,
+            $end,
+        );
+
+        my $row;
+        my $reservationValuesCounter = 0;
+        $row->{'DT_RowId'} = $r->user->username;
+
+        foreach my $reservationValue (@reservationValues) {
+            $row->{$reservationValuesCounter} = $reservationValue;
+            $reservationValuesCounter++;
+        }
+
+        push( @results, $row );
+    }
+
+    $c->stash(
+        {
+            'iTotalRecords'        => $total_records,
+            'iTotalDisplayRecords' => $count,
+            'sEcho'                => $c->request->param('sEcho') || undef,
+            'aaData'               => \@results,
+        }
+    );
+    $c->forward( $c->view('JSON') );
+
 }
 
 =head1 AUTHOR

@@ -7,25 +7,27 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="v-pills-basic-settings-tab" data-toggle="pill" href="#v-pills-basic-settings" role="tab" aria-controls="v-pills-basic-settings" aria-selected="true"> [% c.loc("Basic settings") %]</a>
-                    <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
-                    <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
-                    <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
+                    <a class="nav-link active" id="v-pills-time-settings-tab" data-toggle="pill" href="#v-pills-time-settings" role="tab" aria-controls="v-pills-time-settings" aria-selected="true"> [% c.loc("Time settings") %]</a>
                     <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
-                    <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
+                    <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
                     <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
+                    <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
+                    <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
                     <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
                     <a class="nav-link" id="v-pills-ils-integration-tab" data-toggle="pill" href="#v-pills-ils-integration" role="tab" aria-controls="v-pills-ils-integration" aria-selected="false">[% c.loc("ILS integration") %]</a>
                     <a class="nav-link" id="v-pills-print-management-tab" data-toggle="pill" href="#v-pills-print-management" role="tab" aria-controls="v-pills-print-management" aria-selected="false">[% c.loc("Print management") %]</a>
-                    <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
+                    <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
+                    <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
+                    <a class="nav-link" id="v-pills-user-settings-tab" data-toggle="pill" href="#v-pills-user-settings" role="tab" aria-controls="v-pills-user-settings" aria-selected="false">[% c.loc("User settings") %]</a>
+                    <a class="nav-link" id="v-pills-advanced-settings-tab" data-toggle="pill" href="#v-pills-advanced-settings" role="tab" aria-controls="v-pills-advanced-settings" aria-selected="false">[% c.loc("Advanced settings") %]</a>
                 </div>
             </div>
 
             <div class="col-lg">
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="v-pills-basic-settings" role="tabpanel" aria-labelledby="v-pills-basic-settings-tab">
+                    <div class="tab-pane fade show active" id="v-pills-time-settings" role="tabpanel" aria-labelledby="v-pills-time-settings-tab">
                         <fieldset>
-                            <legend>[% c.loc("Basic settings") %]</legend>
+                            <legend>[% c.loc("Time settings") %]</legend>
 
                             <div class="form-group">
                                 <label for="DefaultTimeAllowance">[% c.loc("Default time allowance per day") %]</label>
@@ -70,17 +72,6 @@
                                  </div>
                                  <small class="form-text text-muted">[% c.loc("Amount of time a guest user is given per session.") %]</small>
                              </div>
-                        
-                            <div class="form-group">
-                                <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">[% c.loc("Minutes") %]</span>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
-                            </div>
                         </fieldset>
                     </div>
 
@@ -210,6 +201,19 @@
                         <small class="form-text text-muted">[% c.loc("Set list of category authorized to login to clients located in :") %] [% t.location %] , [% c.loc("Example:") %] Biblio,JR or all</small>
                     </div>
                     [% END %]
+                <fieldset>
+                    <legend>[% c.loc("Client registration") %]</legend>
+
+                    <div class="form-group">
+                        <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 
@@ -225,14 +229,35 @@
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled. If left blank, the default is 15 minutes.") %]</small>
                     </div>
 
+                    <div class="form-group">
+                        <label for="MinimumReservationMinutes">[% c.loc("Minimum reservation time required") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="MinimumReservationMinutes" name="MinimumReservationMinutes" value="[% MinimumReservationMinutes %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Minimum minutes required for a reservation. If left blank, the default is 1 minute.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DisplayReservationStatusWithin">[% c.loc("Display the status of the first reservation within:") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="DisplayReservationStatusWithin" name="DisplayReservationStatusWithin" value="[% DisplayReservationStatusWithin %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes.") %]</small>
+                    </div>
 
                     <div class="form-group">
                         <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
-                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display usernames") %]</label>
-                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the username of the person it is waiting for.") %]</small>
+                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display the status of the first reservation") %]</label>
+                        <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the reservation status of the person it is waiting for.") %]</small>
                     </div>
                     <script type="text/javascript">
                         $(document).ready(function() {
@@ -307,6 +332,25 @@
                             $("#AutomaticTimeExtensionUseAllotment").val("[% AutomaticTimeExtensionUseAllotment %]");
                         });
                     </script>
+                    <div class="form-group">
+                        <input id="AutomaticTimeExtensionRenewal" name="AutomaticTimeExtensionRenewal" type="checkbox" [% IF AutomaticTimeExtensionRenewal %]checked="checked"[% END %]>
+                        <label for="AutomaticTimeExtensionRenewal">[% c.loc("Renew the time allotment when it reaches zero") %]</label>
+                        <small class="form-text text-muted">[% c.loc("When a user's time allotment reaches zero, it's automatically renewed with the value of Extension length. This makes it possible for the user to log in again.") %]</small>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#AutomaticTimeExtensionRenewalCheckbox").attr('checked', Boolean( [% AutomaticTimeExtensionRenewal %] ) );
+
+                            $("#AutomaticTimeExtensionRenewalCheckbox").change( function() {
+                                if ( $(this).attr('checked') == 'checked') {
+                                    $("#AutomaticTimeExtensionRenewal").val( 1 );
+                                } else {
+                                    $("#AutomaticTimeExtensionRenewal").val( 0 );
+                                }
+                            });
+                        });
+                    </script>
+
                 </fieldset>
             </div>
 
@@ -321,6 +365,46 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]</small>
                     </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-user-settings" role="tabpanel" aria-labelledby="v-pills-user-settings-tab">
+                <fieldset>
+                    <legend>[% c.loc("User settings") %]</legend>
+
+                    <div class="form-group">
+                        <label for="UserCategories">[% c.loc("User categories") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="UserCategories" name="UserCategories" rows="10">[% UserCategories %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Add your list of user categories here as a list in YAML syntax.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Example:") %]
+                            <pre>
+---
+- 'Category 1'
+- 'Category 2'
+- 'Category 3'
+                            </pre>
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <input  id="ShowFirstLastNames" name="ShowFirstLastNames" type="checkbox" [% IF ShowFirstLastNames %]checked="checked"[% END %]>
+                        <label for="ShowFirstLastNamesCheckbox">[% c.loc("Display first and last names") %]</label>
+                        <small class="form-text text-muted">[% c.loc("If not checked, the possibility to enter users' first and last name will disappear.") %]</small>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#ShowFirstLastNamesCheckbox").attr('checked', Boolean( [% ShowFirstLastNames %] ) );
+
+                            $("#ShowFirstLastNamesCheckbox").change( function() {
+                                if ( $(this).attr('checked') == 'checked') {
+                                    $("#ShowFirstLastNames").val( 1 );
+                                } else {
+                                    $("#ShowFirstLastNames").val( 0 );
+                                }
+                            });
+                        });
+                    </script>
                 </fieldset>
             </div>
 
@@ -525,6 +609,23 @@
                             <textarea class="form-control" id="CustomJsPublic" name="CustomJsPublic" rows="15">[% CustomJsPublic %]</textarea>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Add custom JavaScript for the public web interface here.") %]</small>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-advanced-settings" role="tabpanel" aria-labelledby="v-pills-advanced-settings-tab">
+                <fieldset>
+                    <legend>[% c.loc("Advanced settings") %]</legend>
+
+                    <div class="form-group">
+                        <label for="AdvancedRules">[% c.loc("Advanced rules") %]</label>
+                        <div class="input-group">
+                            <div class="input-group">
+                                <textarea class="form-control" id="AdvancedRules" name="AdvancedRules" rows="30">[% AdvancedRules %]</textarea>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("These rules override the default time allowances") %]</small>
+                        <small class="form-text text-muted">[% c.loc("If no match is found, the default time allowances will be used.") %]</small>
                     </div>
                 </fieldset>
             </div>

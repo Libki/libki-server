@@ -75,6 +75,12 @@ __PACKAGE__->table("sessions");
   extra: {list => ["active","locked"]}
   is_nullable: 0
 
+=head2 minutes
+
+  data_type: 'integer'
+  default_value: 0
+  is_nullable: 0
+
 =head2 session_id
 
   data_type: 'char'
@@ -97,6 +103,8 @@ __PACKAGE__->add_columns(
     extra => { list => ["active", "locked"] },
     is_nullable => 0,
   },
+  "minutes",
+  { data_type => "integer", default_value => 0, is_nullable => 0 },
   "session_id",
   { data_type => "char", is_nullable => 1, size => 72 },
 );
@@ -174,8 +182,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 17:19:18
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ht8Z5Fjyyv7JAHFE/mXukQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1tm6iy5bj7hkIGF3hpDsIA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

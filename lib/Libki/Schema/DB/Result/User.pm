@@ -66,13 +66,13 @@ __PACKAGE__->table("users");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 password
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 minutes_allotment
 
@@ -80,21 +80,15 @@ __PACKAGE__->table("users");
   default_value: 0
   is_nullable: 1
 
-=head2 minutes
-
-  data_type: 'integer'
-  default_value: 0
-  is_nullable: 0
-
 =head2 status
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 notes
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 is_troublemaker
@@ -133,21 +127,24 @@ __PACKAGE__->table("users");
 
 =head2 firstname
 
- data_type: 'varchar'
- is_nullable: 1
- size: 255
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 1
+  size: 191
 
 =head2 lastname
 
- data_type: 'varchar'
- is_nullable: 1
- size: 255
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 1
+  size: 191
 
 =head2 category
 
- data_type: 'varchar'
- is_nullable: 1
- size: 255
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 1
+  size: 191
 
 =cut
 
@@ -157,17 +154,15 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "password",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "minutes_allotment",
   { data_type => "integer", default_value => 0, is_nullable => 1 },
-  "minutes",
-  { data_type => "integer", default_value => 0, is_nullable => 0 },
   "status",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "notes",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "is_troublemaker",
   {
     data_type => "enum",
@@ -199,11 +194,11 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "firstname",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "lastname",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "category",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
 );
 
 =head1 PRIMARY KEY
@@ -337,10 +332,10 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/lMNlEHAtTWfeCk0gSMIrg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QGHj8cSnZ7PiFp8Uzysrvg
 
-__PACKAGE__->numeric_columns(qw/minutes minutes_allotment/);
+__PACKAGE__->numeric_columns(qw/minutes_allotment/);
 
 __PACKAGE__->add_columns(
     'password' => {
@@ -368,7 +363,7 @@ sub has_role {
     my ($self, $role) = @_;
 
     # Does this user posses the required role?
-    return any(map { $_->role } $self->roles) eq $role;
+    return any( map { $_->role } $self->roles ) eq $role;
 }
 
 =head2 insert
@@ -376,6 +371,7 @@ sub has_role {
 Wrap DBIx::Class::Row::insert to handle daily vs session minutes
 
 =cut
+
 sub insert {
     my ( $self, @args ) = @_;
 
@@ -384,23 +380,11 @@ sub insert {
     my $is_guest = $self->is_guest || 'No';
 
     my $default_time_allowance_setting_name = $is_guest eq 'Yes' ? 'DefaultGuestTimeAllowance' : 'DefaultTimeAllowance';
-    my $default_session_time_allowance_setting_name = $is_guest eq 'Yes' ? 'DefaultGuestSessionTimeAllowance' : 'DefaultSessionTimeAllowance';
 
-    my $default_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
-    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
-
-    my $default_session_time_allowance_setting =
-      $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_session_time_allowance_setting_name });
-    my $default_session_time_allowance = $default_session_time_allowance_setting ? $default_session_time_allowance_setting->value : 0;
-
-    $self->minutes(0) unless $self->minutes();
-
-    while ($self->minutes() < $default_session_time_allowance
-        && $self->minutes_allotment() > 0 )
-    {
-        $self->decrease_minutes_allotment(1);
-        $self->increase_minutes(1);
+    unless ( $self->minutes_allotment ) {
+        my $default_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
+        my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
+        $self->minutes_allotment( $default_time_allowance );
     }
 
     $self->next::method(@args);
@@ -439,10 +423,6 @@ sub age {
     return $age;
 }
 
-__PACKAGE__->meta->make_immutable;
-
-1;
-
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info> 
@@ -465,3 +445,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 
 =cut
+
+__PACKAGE__->meta->make_immutable;
+1;

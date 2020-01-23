@@ -60,11 +60,11 @@ __PACKAGE__->table("settings");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 value
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 0
 
 =cut
@@ -73,9 +73,9 @@ __PACKAGE__->add_columns(
   "instance",
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "value",
-  { data_type => "text", is_nullable => 0 },
+  { data_type => "mediumtext", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -93,8 +93,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("instance", "name");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-11-16 06:45:10
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KFpGd1tFvAbzCVD93swNxA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GJPUyrduag8gSa1icoBpQg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

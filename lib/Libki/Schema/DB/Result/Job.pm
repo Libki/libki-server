@@ -66,25 +66,25 @@ __PACKAGE__->table("jobs");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 data
 
-  data_type: 'text'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 taken
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
 
 =head2 status
 
   data_type: 'varchar'
   default_value: 'QUEUED'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 created_on
 
@@ -108,17 +108,17 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "type",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "data",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "taken",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "status",
   {
     data_type => "varchar",
     default_value => "QUEUED",
     is_nullable => 0,
-    size => 255,
+    size => 191,
   },
   "created_on",
   {
@@ -149,8 +149,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aHk6LScQyqS2rV3fe+aR5g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6EXZ+lLlPlYka2CLOWeDQw
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

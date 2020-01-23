@@ -1,7 +1,5 @@
 [% USE LibkiDate %]
 
-[% USE UTF8Decode %]
-
 [% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
@@ -49,7 +47,7 @@
                     [% IF b == 'XXX__UNDEFINED__' %]
                         <i>[% c.loc("No location set") %]</i>
                     [% ELSE %]
-                        [% b |utf8_decode | utf8_decode %]
+                        [% b %]
                     [% END %]
                 </th>
             [% END %]

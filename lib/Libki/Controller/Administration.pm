@@ -2,8 +2,6 @@ package Libki::Controller::Administration;
 use Moose;
 use namespace::autoclean;
 
-use Encode qw(decode encode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -32,7 +30,7 @@ sub index : Path : Args(0) {
             instance => $instance,
         },
         {
-            columns  => decode('UTF-8',[qw/location/]),
+            columns  => [qw/location/],
             distinct => 1
         }
     )->get_column('location')->all();
@@ -41,6 +39,8 @@ sub index : Path : Args(0) {
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
         PrinterConfiguration   => $c->setting('PrinterConfiguration'),
+        ShowFirstLastNames     => $c->setting('ShowFirstLastNames'),
+        UserCategories	       => $c->setting('UserCategories'),
         locations              => \@locations,
     );
 }

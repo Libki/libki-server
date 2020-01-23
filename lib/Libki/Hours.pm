@@ -13,14 +13,14 @@ the return value will be a negative number of minutes *since* closing.
 =cut
 
 sub minutes_until_closing {
-    my ($c, $location_code, $instance) = @_;
+    my ($c, $location_code, $datetime, $instance) = @_;
 
     $instance ||= $c->instance;
 
-    my $now = $c->now();
+    my $now = defined($datetime) ? $datetime : $c->now();
 
-    my $today        = $now->ymd();
-    my $current_time = $now->hour() . ":" . $now->minute();
+    my $today        = defined($datetime) ? $datetime->ymd() : $now->ymd();
+    my $current_time = defined($datetime) ? ($datetime->hour() . ":" . $datetime->minute()) : ($now->hour() . ":" . $now->minute());
 
     my $location = $c->model('DB::Location')->single( { instance => $instance, code => $location_code } );
 

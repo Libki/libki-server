@@ -66,25 +66,31 @@ __PACKAGE__->table("statistics");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 client_name
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 client_location
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
+
+=head2 client_type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
 
 =head2 action
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
 
 =head2 created_on
 
@@ -112,13 +118,15 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "username",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "client_name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "client_location",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "client_type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "action",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "created_on",
   {
     data_type => "timestamp",
@@ -144,8 +152,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-11-27 16:10:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:xadXdVFgAKHRHOk6npS+pA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-11-01 12:22:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qtwYDmDIG9LqQJXnv1znpQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

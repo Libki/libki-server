@@ -1,6 +1,12 @@
 #!/bin/bash
 
-is_deb_stretch=false
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root."
+   exit 1
+fi
+
+is_debian_stretch=false
+is_debian_buster=false
 is_ubuntu_bionic=false
 
 if [ -e /etc/os-release ]; then
@@ -10,6 +16,12 @@ if [ -e /etc/os-release ]; then
   case "${dist}-${code}" in
     ubuntu-bionic)
       is_ubuntu_bionic=true
+      ;;
+    debian-buster)
+      is_debian_buster=true
+      ;;
+    debian-stretch)
+      is_debian_stretch=true
       ;;
     debian-9)
       is_debian_stretch=true
@@ -29,6 +41,8 @@ apt-get upgrade -y
 # Install packages depending on Stretch or Bionic.
 if [ "$is_debian_stretch" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus -y
+elif [ "$is_debian_buster" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mariadb-server pwgen ntp libxml-parser-perl libxml-libxml-perl libnet-ssleay-perl libxml-parser-perl cpanminus -y
 elif [ "$is_ubuntu_bionic" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
 fi
@@ -84,20 +98,20 @@ perl /home/libki/libki-server/installer/update_db.pl
 # Create administrator user
 while true; do
   echo
-  read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME
+  read -p "Creating the admin user for Libki. Please enter your desired username: " ADMINUSERNAME < /dev/tty
 
-  if [[ $ADMINUSERNAME = *[!\ ]* ]]; then
-    break 2
-  else
+  if [ -z $ADMINUSERNAME ]; then
     echo
     echo "Your username cannot be empty."
+  else
+    break 2
   fi
 done
 
 while true; do
-  read -s -p "Please enter your desired password: " ADMINPASSWORD
+  read -s -p "Please enter your desired password: " ADMINPASSWORD < /dev/tty
   echo
-  read -s -p "Please enter your desired password again: " ADMINPASSWORD2
+  read -s -p "Please enter your desired password again: " ADMINPASSWORD2 < /dev/tty
 
   if [[ $ADMINPASSWORD = $ADMINPASSWORD2 ]]; then
     if [[ $ADMINPASSWORD = *[!\ ]* ]]; then
@@ -146,7 +160,7 @@ select PROXYANSWER in "Yes" "No"; do
       cp /home/libki/libki-server/reverse_proxy.config /etc/apache2/sites-available/libki.conf
 
       # Set domain name
-      read -p "What domain name do you wish to use? " DOMAINNAME
+      read -p "What domain name do you wish to use? " DOMAINNAME < /dev/tty
 
       sed -i "s/libki.server.org/$DOMAINNAME/g" /etc/apache2/sites-available/libki.conf
 
@@ -160,7 +174,7 @@ select PROXYANSWER in "Yes" "No"; do
     No )
       # Set custom port if the user so desires
       while true; do
-        read -p "What port would you like to run Libki on? " -i "3000" -e PREFERREDPORT
+        read -p "What port would you like to run Libki on? " -i "3000" -e PREFERREDPORT < /dev/tty
         [[ $PREFERREDPORT =~ ^[0-9]+$ ]] && break
         echo
         echo "Your port number must be a number."
@@ -186,19 +200,32 @@ select PROXYANSWER in "Yes" "No"; do
       continue
   esac
   break
-done
+done < /dev/tty
 
 # Starting the Libki service
 service libki start
 
+# Wait for the service to start
+while (( $(ps -ef | grep -v grep | grep "libki" | wc -l) == 0 ))
+do
+  sleep 1
+done
+
 # Starting the Apache service
 if [[ $PROXYCHECKER = "yes" ]]; then
   service apache2 start
-fi
 
-# Copies the backup and the restore programs to /usr/local/bin
-cp script/utilities/backup_db.sh /usr/local/bin/libki-backup
-cp script/utilities/restore_db.sh /usr/local/bin/libki-restore
+  # Wait for the service to start
+  while (( $(ps -ef | grep -v grep | grep "apache2" | wc -l) == 0 ))
+  do
+    sleep 1
+  done
+fi
+# Copies the utilities to /usr/local/bin
+cp script/utilities/backup.sh /usr/local/bin/libki-backup
+cp script/utilities/restore.sh /usr/local/bin/libki-restore
+cp script/utilities/translate.sh /usr/local/bin/libki-translate
+cp script/utilities/update.sh /usr/local/bin/libki-update
 
 # Report all settings
 echo
@@ -222,5 +249,6 @@ echo "Your log files are located in /var/log/libki/"
 echo
 echo "Your server can be reached on the following address:"
 echo "$URL"
+echo
 
 exit 0

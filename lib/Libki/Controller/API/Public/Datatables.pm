@@ -2,8 +2,6 @@ package Libki::Controller::API::Public::Datatables;
 use Moose;
 use namespace::autoclean;
 
-use Encode qw(decode);
-
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -30,7 +28,7 @@ sub clients : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/ me.name me.location session.status user.minutes /;
+    my @columns = qw/ me.name me.location me.type session.status session.minutes /;
 
     # Set up filters
     my $filter = { instance => $instance};
@@ -40,6 +38,7 @@ sub clients : Local Args(0) {
         $filter->{-or} = [
             'me.name'     => { 'like', "%$search_term%" },
             'me.location' => { 'like', "%$search_term%" },
+            'me.type'     => { 'like', "%$search_term%" },
         ];
     }
 
@@ -78,18 +77,25 @@ sub clients : Local Args(0) {
         }
     );
 
+    my $client = $c;
     my @results;
     foreach my $c (@clients) {
-
-	my $enc = 'utf-8';
+        my $reservation= $client->model('DB::Reservation')->search(
+             { 'client_id' => $c->id},
+             {  order_by => { -asc => 'begin_time' } }
+             )->first || undef;
+        my $time = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
+        $time =~ s/T/ / if(defined($time));
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'}        = decode($enc,decode($enc,$c->name));
-        $r->{'1'}        = decode($enc,decode($enc,$c->location));
-        $r->{'2'}        = defined( $c->session ) ? $c->session->status : undef;
-        $r->{'3'} = defined( $c->session ) ? $c->session->user->minutes : undef;
-        $r->{'4'} = defined( $c->reservation ) ? $c->reservation->user->username : undef;
+        $r->{'0'} = $c->name;
+        $r->{'1'} = $c->location;
+        $r->{'2'} = $c->type;
+        $r->{'3'} = defined( $c->session ) ? $c->session->status : undef;
+        $r->{'4'} = defined( $c->session ) ? $c->session->minutes : undef;
+        $r->{'5'} = defined( $reservation ) ? $reservation->user->username : undef;
+        $r->{'6'} = $time;
 
         push( @results, $r );
     }

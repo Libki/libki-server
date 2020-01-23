@@ -1,4 +1,4 @@
-log4perl.rootLogger			= DEBUG, LOGFILE, SCREEN
+log4perl.rootLogger			= INFO, LOGFILE, SCREEN
 
 log4perl.appender.LOGFILE		= Log::Log4perl::Appender::File
 log4perl.appender.LOGFILE.filename	= /var/log/libki/libki.log

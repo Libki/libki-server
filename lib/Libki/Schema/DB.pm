@@ -11,8 +11,8 @@ extends 'DBIx::Class::Schema';
 __PACKAGE__->load_namespaces;
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-17 15:41:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NoN4DpNWQJan5m6llyALEg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:15:55
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:X34O4JQWWG8etW0oWyAG7g
 
 our $VERSION = '2.00.05.000';
 

@@ -66,13 +66,19 @@ __PACKAGE__->table("clients");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 255
+  size: 191
 
 =head2 location
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 191
+
+=head2 type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
 
 =head2 last_registered
 
@@ -88,9 +94,11 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
+  { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
   {
     data_type => "timestamp",
@@ -159,16 +167,16 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 reservation
+=head2 reservations
 
-Type: might_have
+Type: has_many
 
 Related object: L<Libki::Schema::DB::Result::Reservation>
 
 =cut
 
-__PACKAGE__->might_have(
-  "reservation",
+__PACKAGE__->has_many(
+  "reservations",
   "Libki::Schema::DB::Result::Reservation",
   { "foreign.client_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
@@ -190,8 +198,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07047 @ 2017-10-23 05:54:02
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NaCOX9ibm8QXCGWk8vCRSw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-14 07:30:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5gxuV3yJ/As2c615AL5SNQ
 
 =head2 can_user_use
 

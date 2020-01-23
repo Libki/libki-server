@@ -14,12 +14,8 @@ use DateTime::Format::MySQL;
 use Libki;
 
 my $c = Libki->new();
-
-my @default_time_allowances = $c->model('DB::Setting')->search( { name => 'DefaultTimeAllowance' } );
-my $default_time_allowances = { map { $_->instance => $_->value } @default_time_allowances };
-
-my @default_session_time_allowances = $c->model('DB::Setting')->search( { name => 'DefaultSessionTimeAllowance' } );
-my $default_session_time_allowances = { map { $_->instance => $_->value } @default_session_time_allowances };
+my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
+my $dbh = $schema->storage->dbh;
 
 ## Delete any guest accounts
 $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
@@ -27,22 +23,11 @@ $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
 ## Reset the guest counter
 $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { value => '1' } );
 
-## Reset user minutes, set to disabled if a troublemaker
-my $user_rs = $c->model('DB::User');
-while ( my $user = $user_rs->next() ) {
-    my $instance = $user->instance;
+## Reset user minutes
+$c->model('DB::User')->update( { minutes_allotment => undef } );
 
-    my $user_minutes = min( $default_time_allowances->{$instance}, $default_session_time_allowances->{$instance} ) // 0;
-
-    # Removes session minutes from daily allotment
-    my $user_minutes_allotment = $default_time_allowances->{$instance} // 0;
-    $user_minutes_allotment -= $user_minutes;
-
-    $user->minutes_allotment( $user_minutes_allotment );
-    $user->minutes($user_minutes);
-    $user->status('disabled') if ( $user->is_troublemaker eq 'Yes' );
-    $user->update();
-}
+## Set to disabled if a troublemaker
+$c->model('DB::User')->search( { is_troublemaker => 'Yes' } )->update( { status => 'disabled' } );
 
 ## Clear out statistics that are past the retention length
 my @data_retention_days = $c->model('DB::Setting')->search( { name => 'DataRetentionDays' } );
@@ -124,7 +109,8 @@ foreach my $prd (@print_retention_days) {
 
 ## Clear out expired sessions
 ## TODO: Should we delete sessions with no expiration periodically?
-$c->delete_expired_sessions();
+
+$c->model('DB::LoginSession')->delete();
 
 =head1 AUTHOR
 
