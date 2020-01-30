@@ -260,11 +260,11 @@ sub clients : Local Args(0) {
         );
 
         if ($userCategories eq '') {
-            splice @clientValues, 6, 1;
+            splice @clientValues, 7, 1;
         }
 
         if ($showFirstLastNames eq '0') {
-            splice @clientValues, 4, 2;
+            splice @clientValues, 5, 2;
         }
 
         my $r;
