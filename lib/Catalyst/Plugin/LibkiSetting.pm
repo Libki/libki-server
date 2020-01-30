@@ -313,7 +313,18 @@ sub check_login {
     # 2. Get the available minutes
     if(!$result{'error'}) {
         my $allotment = $user->minutes_allotment;
-        my $allowance = $user->is_guest() eq 'Yes'
+        # Get advanced rule if there is one
+        my $allowance = $c->get_rule(
+                             {
+                                 rule            => $user->is_guest eq 'Yes' ? 'guest_session' : 'session',
+                                 client_location => $client->location,
+                                 client_type     => $client->type,
+                                 client_name     => $client->name,
+                                 client_type     => $client->type,
+                                 user_category   => $user->category,
+                             }
+                         );
+        $allowance //= $user->is_guest() eq 'Yes'
               ? $c->setting('DefaultGuestSessionTimeAllowance')
               : $c->setting('DefaultSessionTimeAllowance');
 

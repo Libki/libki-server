@@ -366,32 +366,6 @@ sub has_role {
     return any( map { $_->role } $self->roles ) eq $role;
 }
 
-=head2 insert
-
-Wrap DBIx::Class::Row::insert to handle daily vs session minutes
-
-=cut
-
-sub insert {
-    my ( $self, @args ) = @_;
-
-    my $schema = $self->result_source->schema;
-
-    my $is_guest = $self->is_guest || 'No';
-
-    my $default_time_allowance_setting_name = $is_guest eq 'Yes' ? 'DefaultGuestTimeAllowance' : 'DefaultTimeAllowance';
-
-    unless ( $self->minutes_allotment ) {
-        my $default_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $self->instance, name => $default_time_allowance_setting_name });
-        my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
-        $self->minutes_allotment( $default_time_allowance );
-    }
-
-    $self->next::method(@args);
-
-    return $self;
-}
-
 =head2 age
 
 Returns the age of the patron.
