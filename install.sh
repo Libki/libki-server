@@ -168,6 +168,7 @@ select PROXYANSWER in "Yes" "No"; do
       a2ensite libki
       a2enmod proxy
       a2enmod proxy_http
+      a2enmod headers
 
       URL="http://$DOMAINNAME/administration"
       ;;
