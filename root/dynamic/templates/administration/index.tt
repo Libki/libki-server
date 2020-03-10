@@ -129,6 +129,7 @@
             <thead>
                 <th>[% c.loc("Name") %]</th>
                 <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
                 [% IF ShowFirstLastNames %]
@@ -153,7 +154,7 @@
                 <button id="client-table-row-toolbar-time" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
                 [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
-                <button id="client-table-row-toolbar-cancel" class="btn btn-warning" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel") %]</button>
+                <button id="client-table-row-toolbar-cancel" class="btn btn-secondary" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
                 [% END %]
                 <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
             </div>

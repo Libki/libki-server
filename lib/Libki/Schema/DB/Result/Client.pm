@@ -74,6 +74,12 @@ __PACKAGE__->table("clients");
   is_nullable: 1
   size: 191
 
+=head2 type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =head2 last_registered
 
   data_type: 'timestamp'
@@ -90,6 +96,8 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "type",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
   {
@@ -189,8 +197,9 @@ __PACKAGE__->might_have(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mUK+CBKZWBONMnncvzfc9Q
+
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-14 07:30:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5gxuV3yJ/As2c615AL5SNQ
 
 =head2 can_user_use
 

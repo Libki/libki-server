@@ -20,6 +20,7 @@
     <thead>
         <th>[% c.loc("Client") %]</th>
         <th>[% c.loc("Location") %]</th>
+        <th>[% c.loc("Type") %]</th>
         <th>[% c.loc("Status") %]</th>
         <th>[% c.loc("Time remaining") %]</th>
         <th>[% c.loc("Reservation status") %]</th>
@@ -141,23 +142,23 @@ $(document).ready(function() {
             AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if ( aData[2] ) {
-                var status;
-                $("td:eq(1)", nRow).html( "[% c.loc("In use") %]" );
-            } else {
-                $("td:eq(1)", nRow).html( "[% c.loc("Available") %]" );
-            }
-
             if ( aData[3] ) {
-                $("td:eq(2)", nRow).html( aData[3] + " " + "[% c.loc("Minutes") %]" );
+                var status;
+                $("td:eq(2)", nRow).html( "[% c.loc("In use") %]" );
+            } else {
+                $("td:eq(2)", nRow).html( "[% c.loc("Available") %]" );
             }
 
-            if ( Boolean( aData[4] ) ) {
+            if ( aData[4] ) {
+                $("td:eq(3)", nRow).html( aData[4] + " " + "[% c.loc("Minutes") %]" );
+            }
+
+            if ( Boolean( aData[5] ) ) {
                 if ( [% Settings.ReservationShowUsername ? 1 : 0 %] ) {
-                    $("td:eq(3)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[4] + "</i>" +" at " + aData[5]);
+                    $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" +" at " + aData[5]);
                 }
                 else {
-                    $("td:eq(3)", nRow).html( "[% c.loc("Reserved") %]" );
+                    $("td:eq(4)", nRow).html( "[% c.loc("Reserved") %]" );
                 }
             }
         },
@@ -343,7 +344,7 @@ $(document).ready(function() {
     });
 
     $("#client-table-row-toolbar-cancel-reservation").click(function(){
-        if ( $("#" + window.selected_id).children(":nth(3)").text() ) {
+        if ( $("#" + window.selected_id).children(":nth(4)").text() ) {
             $("#cancel-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
 
             $("#client-table-row-toolbar").hide();

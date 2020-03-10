@@ -89,13 +89,11 @@ foreach my $version_dir (@version_dirs) {
                     $dbh->do($s);
                 }
                 catch {
-                    print "UPDATE FAILED: $_";
+                    print "UPDATE FAILED IN FILE $file: $_";
                 }
             }
         }
     }
-    
-    $version = '3.0.0';
 
     $schema->storage->dbh_do(
       sub {

@@ -17,7 +17,7 @@
 # Start with the previous image for speed,
 # it has all the dependencies installed already
 #FROM libki/libki-server:latest
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
@@ -27,6 +27,7 @@ ENV LIBKI_MAX_WORKERS 4
 # Install needed packages
 RUN apt-get update -y \
     && apt-get -y install \
+       curl \
        git \
        vim \
        build-essential \
@@ -39,10 +40,10 @@ RUN apt-get update -y \
        libxml2-dev \
        libssl-dev \
        libexpat1-dev \
-       mysql-client \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
+       default-mysql-client \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 
@@ -50,10 +51,10 @@ COPY . /app
 WORKDIR /app
 
 RUN cpanm -n Module::Install
-RUN cpanm -n --installdeps .
+RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
 
 # Comment out the deprecation warning, it cannot be supressed and is screwing things up
-RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /usr/local/share/perl/5.24.1/Any/Moose.pm
+RUN sed -i 's/warnings::warnif/#warnings::warnif/g' /usr/local/share/perl/5.28.1/Any/Moose.pm
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf

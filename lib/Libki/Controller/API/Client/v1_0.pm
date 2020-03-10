@@ -51,6 +51,7 @@ sub index : Path : Args(0) {
 
         my $node_name = $c->request->params->{'node_name'};
         my $location  = $c->request->params->{'location'};
+        my $type      = $c->request->params->{'type'};
 
         $c->model('DB::Location')->update_or_create(
             {
@@ -64,6 +65,7 @@ sub index : Path : Args(0) {
                 instance        => $instance,
                 name            => $node_name,
                 location        => $location ? $location : undef,
+                type            => $type     ? $type     : undef,
                 last_registered => $now,
             }
         );
@@ -132,6 +134,7 @@ sub index : Path : Args(0) {
         my $password        = $c->request->params->{'password'};
         my $client_name     = $c->request->params->{'node'};
         my $client_location = $c->request->params->{'location'};
+        my $client_type     = $c->request->params->{'type'};
 
         my $units;
         my $user = $c->model('DB::User')
@@ -219,9 +222,11 @@ sub index : Path : Args(0) {
                         $minutes_allotment = $c->get_rule(
                             {
                                 rule            => $is_guest ? 'guest_daily' : 'daily',
-                                user_category   => $user->category,
                                 client_location => $client->location,
+                                client_type     => $client->type,
                                 client_name     => $client_name,
+                                client_type     => $client_type,
+                                user_category   => $user->category,
                             }
                         );
 
@@ -264,9 +269,11 @@ sub index : Path : Args(0) {
                             my $no_reservation_required = $c->get_rule(
                                 {
                                     rule            => 'no_reservation_required',
-                                    user_category   => $user->category,
                                     client_location => $client->location,
+                                    client_type     => $client->type,
                                     client_name     => $client_name,
+                                    client_type     => $client_type,
+                                    user_category   => $user->category,
                                 }
                             );
 
@@ -307,6 +314,7 @@ sub index : Path : Args(0) {
                                         username        => $username,
                                         client_name     => $client_name,
                                         client_location => $client_location,
+                                        client_type     => $client_type,
                                         action          => 'LOGIN',
                                         created_on      => $now,
                                         session_id      => $session_id,
@@ -356,9 +364,10 @@ sub index : Path : Args(0) {
             $user->messages()->delete();
         }
         elsif ( $action eq 'logout' ) {
-            my $session = $user->session;
+            my $session    = $user->session;
             my $session_id = $session->session_id;
-            my $location = $session->client->location;
+            my $location   = $session->client->location;
+            my $type       = $session->client->type;
 
             my $success = $user->session->delete();
             $success &&= 1;
@@ -370,6 +379,7 @@ sub index : Path : Args(0) {
                     username        => $username,
                     client_name     => $client_name,
                     client_location => $client_location,
+                    client_type     => $client_type,
                     action          => 'LOGOUT',
                     created_on      => $now,
                     session_id      => $session_id,
@@ -401,6 +411,7 @@ sub print : Path('print') : Args(0) {
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
     my $location    = $c->request->params->{'location'};
+    my $type        = $c->request->params->{'type'};
 
     my $client = $c->model('DB::Client')
       ->single( { instance => $instance, name => $client_name } );
@@ -430,6 +441,7 @@ sub print : Path('print') : Args(0) {
                 client_id       => $client->id,
                 client_name     => $client_name,
                 client_location => $client->location,
+                client_type     => $client->type,
                 user_id         => $user->id,
                 username        => $username,
                 created_on      => $now,

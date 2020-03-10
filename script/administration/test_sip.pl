@@ -34,6 +34,7 @@ my $r = Libki::SIP::authenticate_via_sip( $c, $user, $opt->username, $opt->passw
 
 say "Libki::SIP::authenticate_via_sip: ";
 say "SUCCESS: $r->{success}";
+say "ERROR MESSAGE: $r->{error}" unless $r->{success};
 say "SIP FIELDS: " . Data::Dumper::Dumper( $r->{sip_fields} );
 
 =head1 AUTHOR
