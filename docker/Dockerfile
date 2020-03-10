@@ -40,10 +40,10 @@ RUN apt-get update -y \
        libxml2-dev \
        libssl-dev \
        libexpat1-dev \
+       default-mysql-client \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
-       default-mysql-client \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 
