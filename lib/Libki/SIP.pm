@@ -47,7 +47,9 @@ sub authenticate_via_sip {
         Proto    => 'tcp',
         Timeout  => $timeout,
         Type     => SOCK_STREAM
-    ) or $log->fatal("ERROR in Socket Creation : $!\n");
+        )
+        or $log->fatal("ERROR in Socket Creation : $!\n")
+        && ( $test_mode && die "ERROR in Socket Creation : $!\n" );
 
     ## Set location to empty string if not set
     $config->{SIP}->{location} //= q{};
