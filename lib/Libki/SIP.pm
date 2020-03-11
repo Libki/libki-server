@@ -208,8 +208,6 @@ sub authenticate_via_sip {
         $user->update();
     }
     else {          ## User authenticated and does not exits in Libki
-        my $minutes =
-          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
         my($lastname, $firstname) = split($c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE});
         $lastname=~ s/^\s+//;
         $firstname =~ s/^\s+//;
@@ -220,7 +218,7 @@ sub authenticate_via_sip {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes,
+                minutes_allotment => undef,
                 status            => 'enabled',
                 birthdate         => $birthdate,
                 lastname          => $lastname,
@@ -263,6 +261,8 @@ sub authenticate_via_sip {
 
             if ( $value ) {
                 if ( $sip_fields->{$field} eq $value ) {
+                    return { success => 0, error => $message, user => $user };
+                }elsif( $sip_fields->{$field} =~ /$value/ ) {
                     return { success => 0, error => $message, user => $user };
                 }
             } else {
