@@ -26,6 +26,10 @@
     deny_on excessive_outstanding_fines # The full listing is defined in the SIP2 protocol specification
     deny_on_field AB:This is the reason we are denying you  # You can require arbitrary SIP fields to have a value of Y for patrons to be allowed to log in.
                                                             # The format of the setting is Field:Message
+    deny_on_field AF:EXPIRED_CARD:EXPIRED                   # Handling of card expiration cases
+                                                            # You can change the field that contains the expiration information (AF in my case)
+                                                            # Change the value that indicates that the card has expired according to the SIP response, in my case, the response contains EXPIRED
+                                                            # Leave EXPIRED_CARD unchanged
     category_field PC          # Category field in SIP response
     pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
 </SIP>
