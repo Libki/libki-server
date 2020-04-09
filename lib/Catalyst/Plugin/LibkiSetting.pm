@@ -192,7 +192,7 @@ sub get_rule {
     RULE: foreach my $rule (@$rules) {
         next if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
 
-        foreach my $r (qw{ user_category client_location client_name }) {
+        foreach my $r (qw{ user_category client_location client_name client_type }) {
             my $criteria_is_used  = $params->{$r} && 1;
             my $criteria          = $rule->{criteria}->{$r};
             my $rule_has_criteria = exists $rule->{criteria}->{$r};
@@ -313,7 +313,18 @@ sub check_login {
     # 2. Get the available minutes
     if(!$result{'error'}) {
         my $allotment = $user->minutes_allotment;
-        my $allowance = $user->is_guest() eq 'Yes'
+        # Get advanced rule if there is one
+        my $allowance = $c->get_rule(
+                             {
+                                 rule            => $user->is_guest eq 'Yes' ? 'guest_session' : 'session',
+                                 client_location => $client->location,
+                                 client_type     => $client->type,
+                                 client_name     => $client->name,
+                                 client_type     => $client->type,
+                                 user_category   => $user->category,
+                             }
+                         );
+        $allowance //= $user->is_guest() eq 'Yes'
               ? $c->setting('DefaultGuestSessionTimeAllowance')
               : $c->setting('DefaultSessionTimeAllowance');
 

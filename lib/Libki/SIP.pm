@@ -47,7 +47,9 @@ sub authenticate_via_sip {
         Proto    => 'tcp',
         Timeout  => $timeout,
         Type     => SOCK_STREAM
-    ) or $log->fatal("ERROR in Socket Creation : $!\n");
+        )
+        or $log->fatal("ERROR in Socket Creation : $!\n")
+        && ( $test_mode && die "ERROR in Socket Creation : $!\n" );
 
     ## Set location to empty string if not set
     $config->{SIP}->{location} //= q{};
@@ -200,25 +202,28 @@ sub authenticate_via_sip {
     $birthdate = ( join( '-', unpack( "A4A2A2", $birthdate ) ) )
       if $birthdate;
 
+    my ( $lastname, $firstname )
+        = split( $c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE} );
+    $lastname  =~ s/^\s+//;
+    $firstname =~ s/^\s+//;
+    my $category = $sip_fields->{ $c->config->{SIP}->{category_field} };
+    $c->add_user_category($category) if $category;
+
     if ($user) {    ## User authenticated and exists in Libki
-        $user->set_column( 'password', $password );
+        $user->set_column( 'lastname',  $lastname );
+        $user->set_column( 'firstname', $firstname );
+        $user->set_column( 'category',  $category );
+        $user->set_column( 'password',  $password );
         $user->set_column( 'birthdate', $birthdate );
         $user->update();
     }
     else {          ## User authenticated and does not exits in Libki
-        my $minutes =
-          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
-        my($lastname, $firstname) = split($c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE});
-        $lastname=~ s/^\s+//;
-        $firstname =~ s/^\s+//;
-        my $category = $sip_fields->{$c->config->{SIP}->{category_field} };
-        $c->add_user_category( $category ) if $category;
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes,
+                minutes_allotment => undef,
                 status            => 'enabled',
                 birthdate         => $birthdate,
                 lastname          => $lastname,
@@ -261,6 +266,8 @@ sub authenticate_via_sip {
 
             if ( $value ) {
                 if ( $sip_fields->{$field} eq $value ) {
+                    return { success => 0, error => $message, user => $user };
+                }elsif( $sip_fields->{$field} =~ /$value/ ) {
                     return { success => 0, error => $message, user => $user };
                 }
             } else {

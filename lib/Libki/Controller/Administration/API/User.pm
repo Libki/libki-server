@@ -200,13 +200,14 @@ sub batch_create_guest : Local : Args(0) {
             }
         );
 
-        $file_contents .= "\n<span class='guest-pass'>";
+        $file_contents .= "\n<div class='guest-pass'>";
         $file_contents .= "\n<span class='guest-pass-username'>";
         $file_contents .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
         $file_contents .= "</span>";
         $file_contents .= "\n\n<span class='guest-pass-password'>";
         $file_contents .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
         $file_contents .= "</span>";
+        $file_contents .= "</div>";
         $file_contents .= "</body>";
 
         $success = $success + 1 if ($user);
@@ -300,14 +301,32 @@ sub delete : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
-    my $user    = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user    = $c->model('DB::User')->find( { instance => $instance, id => $id } );
     my $success = 0;
 
-    if ( $user->delete() ) {
-        $success = 1;
+    my $msg;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                if ( $user->delete() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CANNOT_DELETE_USER};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 
@@ -375,14 +394,33 @@ sub change_password : Local : Args(0) {
 
     my $now = $c->now();
 
-    $user->set_column( 'password', $password );
-    $user->set_column( 'updated_on', $now );
+    my $msg;
 
-    if ( $user->update() ) {
-        $success = 1;
+    if ($user) {
+        my $user_is_superadmin = $user->has_role(q{superadmin});
+        my $i_am_superadmin    = $c->user->has_role(qw{superadmin});
+        my $i_am_admin         = $c->user->has_role(qw{admin});
+
+        if ( $i_am_admin || $i_am_superadmin ) {
+            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                $user->set_column( 'password', $password );
+                $user->set_column( 'updated_on', $now );
+
+                if ( $user->update() ) {
+                    $success = 1;
+                }
+            }
+            elsif ( $i_am_admin && $user_is_superadmin ) {
+                $msg = q{ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD};
+            }
+        }
+        else {
+            $msg = q{NOT_ADMIN_CHANGE_PASSWORD};
+        }
     }
 
     $c->stash( 'success' => $success );
+    $c->stash( 'message' => $msg );
     $c->forward( $c->view('JSON') );
 }
 
