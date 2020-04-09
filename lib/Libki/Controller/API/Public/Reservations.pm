@@ -24,26 +24,34 @@ Catalyst Controller.
 
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
-
     my $instance = $c->instance;
 
     my $config = $c->instance_config;
 
-    my $username  = $c->request->params->{'username'};
-    my $password  = $c->request->params->{'password'};
+    my $username  = $c->request->params->{'username'} || undef;
+    my $password  = $c->request->params->{'password'} || undef;
     my $client_id = $c->request->params->{'id'};
     my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
     my $client = $c->model('DB::Client')->find( $client_id );
-
     my $log = $c->log();
     $log->debug("Creating reservation for $username / $client_id");
+    my ( $user, $session ) = (undef, 0);
 
-    my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+    if( $c->user_exists()) {
+        $user = $c->user();
+        $session = 1;
+    }
+    else {
+        $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+    }
 
     my ( $success, $error_code, $details ) = ( 1, undef, undef );    # Defaults for non-sip using systems
 
     unless ( $user && $user->is_guest eq 'Yes' ) {
-        if ( $config->{SIP}->{enable} ) {
+        if( $session ) {
+            $success = 1;
+        }
+        elsif ( $config->{SIP}->{enable} ) {
             $log->debug("Calling Libki::SIP::authenticate_via_sip( $c, $user, $username, $password )");
             my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
             $success    = $ret->{success};
@@ -71,16 +79,16 @@ sub create : Local : Args(0) {
         }
     }
 
-    if (
-        $success
-        && $c->authenticate(
-            {
-                username => $username,
-                password => $password,
-                instance => $instance,
-            }
-        )
-      )
+    if( $success ) {
+        if( $c->user_exists()) {
+            $success =1;
+        }
+        else {
+            $success = $c->authenticate({username => $username,password => $password,instance => $instance});
+        }
+    }
+
+    if ( $success )
     {
         my $client = $c->model('DB::Client')->find( $client_id );
         my $error = {};
@@ -110,7 +118,7 @@ sub create : Local : Args(0) {
     else {
         $c->stash( 'success' => 0, 'reason' => $error_code || $check{'error'} || 'INVALID_USER', details => $details );
     }
-    $c->logout();
+    $c->logout() if ( !$session );
 
     $c->forward( $c->view('JSON') );
 }
@@ -126,19 +134,18 @@ sub delete : Local : Args(0) {
     my $client_id = $c->request->params->{'id'};
     my $username = $c->request->params->{'username'};
     my $instance = $c->instance;
+    my ($user, $auth, $session ) = ( undef, 0, 0 );
+    if( $c->user_exists() ) {
+        $user = $c->user();
+        $auth = 1;
+        $session = 1;
+    }
+    else {
+        $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+        $auth = $c->authenticate({username => $user->username,password => $password,instance => $instance});
+    }
 
-    my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
-
-    if (
-        $user
-        && $c->authenticate(
-            {
-                username => $user->username,
-                password => $password,
-                instance => $instance,
-            }
-        )
-      )
+    if ( $user && $auth )
     {
 
         my $reservation = $c->model('DB::Reservation')->search( { user_id => $user->id(), client_id => $client_id } )->first;
@@ -156,7 +163,7 @@ sub delete : Local : Args(0) {
         }
     }
 
-    $c->logout();
+    $c->logout() if( !$session );
 
     $c->forward( $c->view('JSON') );
 }
