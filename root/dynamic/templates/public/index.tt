@@ -62,22 +62,26 @@
                 </select>
 
             </div>
+            [% IF !c.user_exists %]
             <div class="form-group">
                 <label for="make-reservation-username">[% c.loc("Username") %]</label>
                 <input type="text" class="form-control" id="make-reservation-username" name="username" />
                 <div class="invalid-feedback">
                      [% c.loc("Username is required") %]
                 </div>
-            </div>
 
-            <div class="form-group">
                 <label for="make-reservation-password">[% c.loc("Password") %]</label>
                 <input type="password" class="form-control" id="make-reservation-password" name="password" />
                 <div class="invalid-feedback">
                      [% c.loc("Password is required") %]
                 </div>
             </div>
-        </form>
+            [% END %]
+
+            [% IF c.user_exists %]
+                <input id="make-reservation-session" type="hidden" value="true"/>
+            [% END %]
+       </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" data-dismiss="modal">[% c.loc("Cancel") %]</button>
@@ -99,7 +103,7 @@
       <div class="modal-body">
         <form id="cancel-reservation-modal-form" class="form-horizontal">
             <input id="cancel-reservation-modal-form-id" name="id" type="hidden" />
-
+            [% IF !c.user_exists %]
             <div class="form-group">
                 <label for="cancel-reservation-username">[% c.loc("Username") %]</label>
                 <input type="text" class="form-control" id="cancel-reservation-username" name="username" />
@@ -112,6 +116,11 @@
                      [% c.loc("Password is required") %]
                 </div>
             </div>
+            [% END  %]
+
+            [% IF c.user_exists %]
+                <input id="cancel-reservation-session" type="hidden" value="true"/>
+            [% END %]
         </form>
       </div>
       <div class="modal-footer">
@@ -240,13 +249,13 @@ $(document).ready(function() {
         $("#make-reservation-username").removeClass("is-invalid");
         $("#make-reservation-password").removeClass("is-invalid");
 
-        if ( ! $("#make-reservation-password").val() ) {
+        if ( ! $("#make-reservation-password").val() && ! $("#make-reservation-session").val()) {
             errors = true;
             $("#make-reservation-password").addClass("is-invalid");
             $("#make-reservation-password").focus();
         }
  
-       if ( ! $("#make-reservation-username").val() ) {
+       if ( ! $("#make-reservation-username").val()  && ! $("#make-reservation-session").val()) {
             errors = true;
             $("#make-reservation-username").addClass("is-invalid");
             $("#make-reservation-username").focus();
@@ -376,13 +385,13 @@ $(document).ready(function() {
         var errors = false;
         $("#cancel-reservation-password").removeClass("is-invalid");
 
-        if ( ! $("#cancel-reservation-username").val() ) {
+        if ( ! $("#cancel-reservation-username").val() && ! $("#cancel-reservation-session").val()) {
              errors = true;
              $("#cancel-reservation-username").addClass("is-invalid");
              $("#cancel-reservation-username").focus();
          }
 
-        if ( ! $("#cancel-reservation-password").val() ) {
+        if ( ! $("#cancel-reservation-password").val() && ! $("#cancel-reservation-session").val()) {
             errors = true;
             $("#cancel-reservation-password").addClass("is-invalid");
             $("#cancel-reservation-password").focus();
