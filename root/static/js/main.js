@@ -32,7 +32,7 @@ function isToday() {
 function setHour() {
     $("#reservation-hour").empty();
     var selecthour = document.getElementById("reservation-hour");
-    var hours = ["00", "01", "02", "03", "04" , "05", "06", "07", "08", "09", "10", "11", "12",      "13", "14" , "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+    var hours = ["00", "01", "02", "03", "04" , "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" , "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     var date = new Date();
     var minute = date.getMinutes();
     var i=0;
@@ -82,4 +82,58 @@ function setMinute() {
 function setTime() {
     setHour();
     setMinute();
+}
+
+var minutes = ["00", "05", "10", "15", "20" , "25", "30", "35", "40", "45", "50", "55"];
+var hours = ["00", "01", "02", "03", "04" , "05", "06", "07", "08", "09", "10", "11", "12","13", "14" , "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+var mlist;
+
+function getMinute() {
+    $("#reservation-minute").empty();
+    var selectminute = document.getElementById("reservation-minute");
+    var selecthour = document.getElementById("reservation-hour");
+    var hour=selecthour.value;
+    minutes = mlist[hour];
+    for(var i=0;i<12;i++)
+    {
+        var opt = minutes[i];
+        if(opt != 'hide'){
+            var el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt;
+            selectminute.appendChild(el);
+        }
+    }
+}
+
+function getTime(url) {
+    $.post(url, $("#make-reservation-modal-form").serialize(), function(data){
+        if(data.success) {
+            $("#reservation-hour").empty();
+            var selecthour = document.getElementById("reservation-hour");
+            var hours = data.hlist;
+            mlist = data.mlist;
+            for(var i=0;i<24;i++)
+            {
+                var opt = hours[i];
+                var n = 0;
+                var h = 0;
+                if(opt != 'hide'){
+                    if(n==0){
+                        minutes = data.mlist[i];
+                        h = i;
+                    }
+                    var el = document.createElement("option");
+                    el.textContent = opt;
+                    el.value = i;
+                    selecthour.appendChild(el);
+                    n++;
+                }
+            }
+            getMinute();
+        }
+        else {
+            setTime();
+        }
+    });
 }

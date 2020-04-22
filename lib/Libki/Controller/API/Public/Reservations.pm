@@ -168,6 +168,24 @@ sub delete : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 gettimelist
+
+=cut
+
+sub gettimelist : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    my $client_id = $c->request->params->{'id'};
+    my $date = $c->request->params->{'reservation_date'};
+    my %result = $c->get_time_list($client_id,$date);
+    if ($result{'error'}) {
+        $c->stash( 'success' => 0, 'reason' => $result{'error'} );
+    }
+    else {
+        $c->stash( 'success' => 1, 'hlist' => $result{'hlist'}, 'mlist' => $result{'mlist'});
+    }
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 libki,,,
