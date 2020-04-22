@@ -1,5 +1,7 @@
 [% meta.title = c.loc("Administration / Settings") %]
 [% SET active_class = 'administration__settings' %]
+[% SET Hours = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] %]
+[% SET Minutes = ['0','15''30'] %]
 
 <form id="settings-form" class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
     <br/>
@@ -241,6 +243,27 @@
                             <div class="input-group-append">
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ReservationOpeningTime">[% c.loc("Configure the opening time for reservation:") %]</label>
+                        <div class="input-group  form-inline">
+					        <select id="ReservationOpeningHour" name="ReservationOpeningHour" class="form-control" style="width:100px;">
+						        [% FOREACH h IN Hours %]
+							        <option value="[% h %]" [% IF h == ReservationOpeningHour %] selected="selected" [% END %]>[% h %]</option>
+						        [% END %]
+					        </select>
+					        &nbsp;H&nbsp;
+					        :
+					        &nbsp;
+					        <select id="ReservationOpeningMinute" name="ReservationOpeningMinute" class="form-control">
+						        [% FOREACH m IN Minutes %]
+							        <option value="[% m %]" [% IF m == ReservationOpeningMinute %] selected="selected" [% END %]>[% m %]</option>
+						        [% END %]
+					        </select>
+                            &nbsp;M&nbsp;
                         </div>
                         <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes.") %]</small>
                     </div>

@@ -30,7 +30,7 @@
 <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
     <div class="btn-group" role="group">
     [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="setTime()">
+        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="getHourList()">
             <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
         </button>
 
@@ -54,8 +54,8 @@
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
             <div class="form-group">
-               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="setTime()">
-               <select id="reservation-hour" name="reservation_hour" onchange="setMinute()">
+               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList()">
+               <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
                </select>
                 :
                <select id="reservation-minute" name="reservation_minute">
@@ -132,8 +132,12 @@
 </div>
 <script>
     $('#cancel-reservation-modal').on('shown.bs.modal', function () {
-      $('#cancel-reservation-username').trigger('focus')
-    })
+      $('#cancel-reservation-username').trigger('focus');
+    });
+
+    $('#make-reservation-modal').on('shown.bs.modal', function () {
+      $('#datepicker').trigger('change');
+    });
 </script>
 
 <script type="text/javascript">
@@ -443,5 +447,9 @@ $('#datepicker').datepicker({
  });
 
 $("#datepicker").datepicker("setDate", new Date());
-setTime();
+
+function getHourList() {
+    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
+}
+
 </script>

@@ -609,8 +609,8 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
-                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="setTime()">
-                <select id="reservation-hour" name="reservation_hour" onchange="setMinute()">
+                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList()">
+                <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
                 </select>
                  :
                 <select id="reservation-minute" name="reservation_minute">
@@ -666,8 +666,9 @@
 
 <script>
     $('#make-reservation-modal').on('shown.bs.modal', function () {
-      $('#make-reservation-modal-form-username').trigger('focus')
-    })
+      $('#make-reservation-modal-form-username').trigger('focus');
+      $('#datepicker').trigger('change');
+    });
 </script>
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1437,11 +1438,18 @@ function postForm(url, fields) {
     $form.submit();
 }
 
+function getHourList() {
+    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
+}
+
 $('#datepicker').datepicker({
     dateFormat:'yy-mm-dd',
     minDate:'%y-%M-%d',
     gotoCurrent: true,
 });
 $("#datepicker").datepicker("setDate", new Date());
-setTime();
+
+function getHourList() {
+    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
+}
 </script>
