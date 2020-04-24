@@ -514,6 +514,13 @@ sub get_time_list {
                 for(my $min=0;$min<12;$min++){
                     my $stamp = str2time(strftime("%Y",localtime($opentime)).'-'.strftime("%m",localtime($opentime)).'-'.strftime("%d",localtime($opentime)).' '.$h.':'.$minus[$min]);
 
+                    $minus[$min]='hide' if($stamp < time());
+
+                    if($minutes_to_closing){
+                        my $closetime = $opentime + $minutes_to_closing * 60;
+                        $minus[$min]='hide' if $closetime < $stamp;
+                    }
+
                     foreach my $reservation (@reservations){
                         if ( (str2time($reservation->begin_time) <= $stamp && $stamp <= str2time($reservation->end_time) )
                             || $stamp < $opentime
