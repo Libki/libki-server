@@ -609,12 +609,13 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
-                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList()">
+                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
                 <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
                 </select>
                  :
                 <select id="reservation-minute" name="reservation_minute">
                 </select>
+                <a id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></a>
             </div>
 
             <div class="form-group">
@@ -669,6 +670,15 @@
       $('#make-reservation-modal-form-username').trigger('focus');
       $('#datepicker').trigger('change');
     });
+
+    $('#datepicker').on('change', function(){
+        $("#make-reservation-ampm-label").text('');
+    });
+
+    $('#reservation-hour').on('change',function(){
+        formatHour("reservation-hour","make-reservation-ampm-label");
+    });
+
 </script>
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1438,10 +1448,6 @@ function postForm(url, fields) {
     $form.submit();
 }
 
-function getHourList() {
-    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
-}
-
 $('#datepicker').datepicker({
     dateFormat:'yy-mm-dd',
     minDate:'%y-%M-%d',
@@ -1449,7 +1455,7 @@ $('#datepicker').datepicker({
 });
 $("#datepicker").datepicker("setDate", new Date());
 
-function getHourList() {
-    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
+function getHourList(format) {
+    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
 }
 </script>

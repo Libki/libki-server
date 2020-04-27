@@ -93,10 +93,10 @@ function getMinute() {
     var selectminute = document.getElementById("reservation-minute");
     var selecthour = document.getElementById("reservation-hour");
     var hour=selecthour.value;
-    minutes = mlist[hour];
+    var minutes = mlist[hour];
     for(var i=0;i<12;i++)
     {
-        var opt = minutes[i];
+        opt = minutes[i];
         if(opt != 'hide'){
             var el = document.createElement("option");
             el.textContent = opt;
@@ -106,28 +106,45 @@ function getMinute() {
     }
 }
 
-function getTime(url) {
+function getTime(url,format) {
     $.post(url, $("#make-reservation-modal-form").serialize(), function(data){
         if(data.success) {
             $("#reservation-hour").empty();
             var selecthour = document.getElementById("reservation-hour");
             var hours = data.hlist;
             mlist = data.mlist;
+            var am = 0;
+            var pm = 0;
+            var hour12 = (format==12 ? true:false);
             for(var i=0;i<24;i++)
             {
                 var opt = hours[i];
-                var n = 0;
-                var h = 0;
                 if(opt != 'hide'){
-                    if(n==0){
-                        minutes = data.mlist[i];
-                        h = i;
+                    if(am==0 && i<13 && hour12){
+                        var amgroup=document.createElement('OPTGROUP');
+                        amgroup.label = "-am-";
+                        selecthour.appendChild(amgroup);
+                        am=1;
                     }
+
+                    if(pm==0 && i>12 && hour12){
+                        var pmgroup=document.createElement('OPTGROUP');
+                        pmgroup.label = "-pm-";
+                        selecthour.appendChild(pmgroup);
+                        pm=1;
+                    }
+
                     var el = document.createElement("option");
                     el.textContent = opt;
+                    if(i>12 && hour12){
+                        el.textContent = i-12;
+                    }
+                    else {
+                        el.textContent = i;
+                    }
                     el.value = i;
                     selecthour.appendChild(el);
-                    n++;
+
                 }
             }
             getMinute();
@@ -136,4 +153,15 @@ function getTime(url) {
             setTime();
         }
     });
+}
+
+function formatHour(hourSelect,ampmLabel){
+    var sh = document.getElementById(hourSelect);
+    var ampm = document.getElementById(ampmLabel);
+    if(sh.value>12){
+        ampm.textContent="pm";
+    }
+    else{
+        ampm.textContent="am";
+    }
 }
