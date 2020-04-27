@@ -1,7 +1,7 @@
 [% meta.title = c.loc("Administration / Settings") %]
 [% SET active_class = 'administration__settings' %]
 [% SET Hours = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] %]
-[% SET AM = ['0','1','2','3','4','5','6','7','8','9','10','11','12','1','2','3','4','5','6','7','8','9','10','11'] %]
+[% SET AM = ['12','1','2','3','4','5','6','7','8','9','10','11','12','1','2','3','4','5','6','7','8','9','10','11'] %]
 [% SET Minutes = ['0','15''30'] %]
 
 <form id="settings-form" class="form-horizontal" action="[% c.uri_for('update') %]" method="post">
@@ -264,11 +264,11 @@
                         <div class="input-group" style="width:200px;">
 					        <select id="ReservationOpeningHour" name="ReservationOpeningHour" class="form-control" style="width:50px;">
 						        [% FOREACH h IN Hours %]
-                                    [% IF h == 13 %]
+                                    [% IF h == 12 && Settings.TimeDisplayFormat == 12 %]
                                         <optgroup label="-pm-"></optgroup>
                                     [% END %]
 							            <option value="[% h %]" [% IF h == ReservationOpeningHour %] selected="selected" [% END %]>
-                                        [% IF h>12 && Settings.TimeDisplayFormat == 12%]
+                                        [% IF Settings.TimeDisplayFormat == 12 %]
                                             [% AM.$h %]
                                         [% ELSE %]
                                             [% h %]
@@ -285,7 +285,7 @@
 						        [% END %]
 					        </select>
                             &nbsp;&nbsp;<a id="opening-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];">
-                                [% IF ReservationOpeningHour>12 %]
+                                [% IF ReservationOpeningHour>11 %]
                                     pm
                                 [% ELSE %]
                                     am

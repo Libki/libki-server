@@ -120,14 +120,14 @@ function getTime(url,format) {
             {
                 var opt = hours[i];
                 if(opt != 'hide'){
-                    if(am==0 && i<13 && hour12){
+                    if(am==0 && i<12 && hour12){
                         var amgroup=document.createElement('OPTGROUP');
                         amgroup.label = "-am-";
                         selecthour.appendChild(amgroup);
                         am=1;
                     }
 
-                    if(pm==0 && i>12 && hour12){
+                    if(pm==0 && i>11 && hour12){
                         var pmgroup=document.createElement('OPTGROUP');
                         pmgroup.label = "-pm-";
                         selecthour.appendChild(pmgroup);
@@ -136,7 +136,10 @@ function getTime(url,format) {
 
                     var el = document.createElement("option");
                     el.textContent = opt;
-                    if(i>12 && hour12){
+                    if(i==0 && hour12){
+                        el.textContent = 12;
+                    }
+                    else if(i>12 && hour12){
                         el.textContent = i-12;
                     }
                     else {
@@ -158,7 +161,7 @@ function getTime(url,format) {
 function formatHour(hourSelect,ampmLabel){
     var sh = document.getElementById(hourSelect);
     var ampm = document.getElementById(ampmLabel);
-    if(sh.value>12){
+    if(sh.value>11){
         ampm.textContent="pm";
     }
     else{

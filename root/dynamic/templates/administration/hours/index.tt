@@ -6,7 +6,7 @@
 [% SET DaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %]
 [% SET Hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] %]
 [% SET Minutes = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59'] %]
-[% SET AM = ['0','1','2','3','4','5','6','7','8','9','10','11','12','1','2','3','4','5','6','7','8','9','10','11'] %]
+[% SET AM = ['12','1','2','3','4','5','6','7','8','9','10','11','12','1','2','3','4','5','6','7','8','9','10','11'] %]
 
 <div class="container">
 <form id="updateform" class="form-horizontal" action="[% c.uri_for('update_days') %]" method="post">
@@ -33,7 +33,7 @@
 						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control" onclick="formatHour('[% d %]-hour-all','[% d %]-show-ampm-label')">
 							<option value=""></option>
 							[% FOREACH h IN Hours %]
-                                [% IF h == 13 && Settings.TimeDisplayFormat == 12 %]
+                                [% IF h == 12 && Settings.TimeDisplayFormat == 12 %]
                                     <optgroup label="-pm-"></optgroup>
                                 [% END %]
 							    <option value="[% h %]" [% IF h == days.all.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>
@@ -57,7 +57,7 @@
                         &nbsp;
                         <a id="[% d %]-show-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];">
                         [% IF days.all.$d.closing_time.substr(0,2) %]
-                            [% IF days.all.$d.closing_time.substr(0,2)>12 %]
+                            [% IF days.all.$d.closing_time.substr(0,2)>11 %]
                                 pm
                             [% ELSE %]
                                 am
@@ -78,7 +78,7 @@
 							<select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="form-control" onclick="formatHour('[% d %]-hour-[% l.id %]','[% d %]-show-ampm-label-[% l.id %]')">
 								<option value=""></option>
 								[% FOREACH h IN Hours %]
-                                    [% IF h == 13 && Settings.TimeDisplayFormat == 12 %]
+                                    [% IF h == 12 && Settings.TimeDisplayFormat == 12 %]
                                         <optgroup label="-pm-"></optgroup>
                                     [% END %]
 							        <option value="[% h %]" [% IF h == days.$location_id.$d.closing_time.substr(0,2) %] selected="selected" [% END %]>
@@ -102,7 +102,7 @@
                             &nbsp;
                             <a id="[% d %]-show-ampm-label-[% l.id %]" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];">
                             [% IF days.$location_id.$d.closing_time.substr(0,2) %]
-                                [% IF days.$location_id.$d.closing_time.substr(0,2)>12 %]
+                                [% IF days.$location_id.$d.closing_time.substr(0,2)>11 %]
                                     pm
                                 [% ELSE %]
                                     am
