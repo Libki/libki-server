@@ -30,7 +30,7 @@
 <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
     <div class="btn-group" role="group">
     [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="getHourList()">
+        <button id="client-table-row-toolbar-make-reservation" class="btn btn-primary" onclick="getHourList([% Settings.TimeDisplayFormat %])">
             <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
         </button>
 
@@ -54,13 +54,13 @@
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
             <div class="form-group">
-               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList()">
+               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
                <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
                </select>
                 :
                <select id="reservation-minute" name="reservation_minute">
                 </select>
-
+               <a id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></a>
             </div>
             [% IF !c.user_exists %]
             <div class="form-group">
@@ -132,11 +132,23 @@
 </div>
 <script>
     $('#cancel-reservation-modal').on('shown.bs.modal', function () {
-      $('#cancel-reservation-username').trigger('focus');
+        $('#cancel-reservation-username').trigger('focus');
     });
 
     $('#make-reservation-modal').on('shown.bs.modal', function () {
-      $('#datepicker').trigger('change');
+        $('#datepicker').trigger('change');
+    });
+
+    $('#datepicker').on('change', function(){
+        $("#make-reservation-ampm-label").text('');
+    });
+
+    $('#reservation-hour').on('change',function(){
+        formatHour("reservation-hour","make-reservation-ampm-label");
+    });
+
+    $('#reservation-hour').on('click',function(){
+        formatHour("reservation-hour","make-reservation-ampm-label");
     });
 </script>
 
@@ -448,8 +460,8 @@ $('#datepicker').datepicker({
 
 $("#datepicker").datepicker("setDate", new Date());
 
-function getHourList() {
-    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]");
+function getHourList(format) {
+    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
 }
 
 </script>
