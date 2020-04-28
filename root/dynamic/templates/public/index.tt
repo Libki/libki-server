@@ -179,8 +179,8 @@ $(document).ready(function() {
             }
 
             if ( Boolean( aData[5] ) ) {
-                if ( [% Settings.ReservationShowUsername ? 1 : 0 %] ) {
-                    $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" +" at " + aData[5]);
+                if ( [% Settings.ReservationShowUsername %] ) {
+                    $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" + " [% c.loc('starting') %] " + moment(aData[6]).format('lll') );
                 }
                 else {
                     $("td:eq(4)", nRow).html( "[% c.loc("Reserved") %]" );
