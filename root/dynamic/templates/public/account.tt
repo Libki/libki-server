@@ -5,14 +5,14 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="v-pills-reservation-management-tab" data-toggle="pill" href="#v-pills-reservation-management" role="tab" aria-controls="v-pills-reservation-management" aria-selected="true"> [% c.loc("Reservation management") %]</a>
+                    <a class="nav-link active" id="v-pills-reservation-management-tab" data-toggle="pill" href="#v-pills-reservation-management" role="tab" aria-controls="v-pills-reservation-management" aria-selected="true"> [% c.loc("My reservation") %]</a>
                 </div>
             </div>
 
             <div class="col-lg">
 
                 <div class="tab-content" id="v-pills-tabContent" style="display:[% IF reservation %]none[% ELSE %]inline[% END %];">
-                    <div class="alert alert-info" role="alert">You don't have any reservation.</div>
+                    <div class="alert alert-info" role="alert">[% c.loc("You don't have a reservation.") %]</div>
                     <a class="btn btn-success" href="/"><i class="fas fa-tag"></i>[% c.loc("Make reservation") %]</a>
                 </div>
                 <div class="tab-content" id="v-pills-tabContent" style="display:[% IF reservation %]inline[% ELSE %]none[% END %];">
@@ -20,11 +20,11 @@
                         <table class="table table-striped table-bordered" id="orders-table">
                             <thead>
                                 <tr>
-                                    <th>Client</th>
-                                    <th>Location</th>
-                                    <th>From</th>
-                                    <th>To</th>
-                                    <th>Duration</th>
+                                    <th>[% c.loc("Client") %]</th>
+                                    <th>[% c.loc("Location") %]</th>
+                                    <th>[% c.loc("From") %]</th>
+                                    <th>[% c.loc("To") %]</th>
+                                    <th>[% c.loc("Duration") %]</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,7 +54,7 @@
             </div>
             <form id="cancel-reservation-modal-form" class="form-horizontal" action="[% c.uri_for('cancel') %]">
                 <div class="modal-body">
-                    <a> Would you like to cancel your reservation?</a>
+                    [% c.loc("Would you like to cancel your reservation?") %]
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal">[% c.loc("No") %]</button>
