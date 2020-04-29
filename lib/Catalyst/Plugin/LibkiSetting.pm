@@ -422,11 +422,11 @@ sub check_reservation
     }
 
     #6. Check minutes_allotment
-    if(!$result{'error'}) {
+    if(!$result{'error'}  && defined($user->minutes_allotment)) {
         if( $user->minutes_allotment > 0 ) {
             push(@array, $user->minutes_allotment);
         }
-        elsif( $user->minutes_allotment <= 0 && defined($user->minutes_allotment)) {
+        elsif( $user->minutes_allotment <= 0) {
             $result{'error'}  = 'NO_TIME';
         }
     }
