@@ -22,6 +22,8 @@
 
     <script src="https://cdn.rawgit.com/Libki/Hullabaloo/d4e6b08a/js/hullabaloo.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js" integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=" crossorigin="anonymous"></script>
+
     <script type="text/javascript" src="[% c.uri_for('/static/js/main.js') %]"></script>
     <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
 
