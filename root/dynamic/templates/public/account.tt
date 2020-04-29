@@ -1,0 +1,74 @@
+[% meta.title = c.loc("Public / Account") %]
+[% SET active_class = 'public__account' %]
+    <br/>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-reservation-management-tab" data-toggle="pill" href="#v-pills-reservation-management" role="tab" aria-controls="v-pills-reservation-management" aria-selected="true"> [% c.loc("Reservation management") %]</a>
+                </div>
+            </div>
+
+            <div class="col-lg">
+
+                <div class="tab-content" id="v-pills-tabContent" style="display:[% IF reservation %]none[% ELSE %]inline[% END %];">
+                    <div class="alert alert-info" role="alert">You don't have any reservation.</div>
+                    <a class="btn btn-success" href="/"><i class="fas fa-tag"></i>[% c.loc("Make reservation") %]</a>
+                </div>
+                <div class="tab-content" id="v-pills-tabContent" style="display:[% IF reservation %]inline[% ELSE %]none[% END %];">
+                   <div class="tab-pane fade show active" id="v-pills-reservation-management-tab" role="tabpanel" aria-labelledby="v-pills-reservation-management-tab">
+                        <table class="table table-striped table-bordered" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Location</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="CaseRow">
+                                    <td>[% reservation.client.name %]</td>
+                                    <td>[% reservation.client.location %]</td>
+                                    <td>[% begin %]</td>
+                                    <td>[% end %]</td>
+                                    <td>[% duration %]&nbsp;minutes</td>                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="cancel-user-reservation" type="submit" class="btn btn-danger"><i class="fas fa-minus-square"></i> [% c.loc("Cancel this reservation") %]</button>
+                </div>
+            </div><!-- /div.col-lg -->
+        </div><!-- /div.row -->
+    </div><!-- /div.container-fluid -->
+
+    <div class="modal fade" id="cancel-reservation-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-reservation-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancel-reservation-modal-label"><i class="fas fa-minus-square"></i> [% c.loc("Cancel your reservation") %]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="cancel-reservation-modal-form" class="form-horizontal" action="[% c.uri_for('cancel') %]">
+                <div class="modal-body">
+                    <a> Would you like to cancel your reservation?</a>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">[% c.loc("No") %]</button>
+                    [% IF c.user_exists %]
+                        <button id="cancel-reservation-modal-form-submit" class="btn btn-danger">[% c.loc("Cancel the reservation") %]</button>
+                    [% END %]
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    $("#cancel-user-reservation").click(function(){
+        $("#cancel-reservation-modal").modal();
+    });
+</script>
