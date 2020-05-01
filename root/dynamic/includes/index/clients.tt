@@ -162,7 +162,7 @@
 $(document).ready(function() {
     // Initialize the Clients table as a datatable
     cTable = $("#client-table").dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bPaginate": false,
         "bFilter": false, // Hide the search form
         "bProcessing": false,  // Indicate when the table is processing data
