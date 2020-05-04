@@ -274,7 +274,7 @@ Check the time and the user, return the available time if possible.
 
 sub check_login {
     my($c,$client,$user) = @_;
-    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c,$client->location );
+    my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client->location });
     my $timeout = $c->setting('ReservationTimeout') ? $c->setting('ReservationTimeout') : 15 ;
     my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
@@ -357,7 +357,13 @@ sub check_reservation
     my %result     = ('error' => 0, 'detail' => 0, 'minutes' => 0,'allotment' => 0, 'end_time' => $parser->parse_datetime($begin_time));
     my $datetime = $parser->parse_datetime($begin_time);
     my @array;
-    my $minutes_to_closing = Libki::Hours::minutes_until_closing( $c,$client->location,$parser->parse_datetime($begin_time) );
+    my $minutes_to_closing = Libki::Hours::minutes_until_closing(
+        {
+            c        => $c,
+            location => $client->location,
+            datetime => $parser->parse_datetime($begin_time),
+        }
+    );
     my ( $minutes_left, $minutes ) = ( 0, 0);
 
     #1. Check to see if the time has been past
@@ -493,7 +499,13 @@ sub get_time_list {
         my $closehour = 23;
         my $closeminute = 59;
 
-        my $minutes_to_closing = Libki::Hours::minutes_until_closing( $c,$client->location(),$parser->parse_datetime("$date $openhour:$openminute") );
+        my $minutes_to_closing = Libki::Hours::minutes_until_closing(
+            {
+                c        => $c,
+                location => $client->location(),
+                datetime => $parser->parse_datetime("$date $openhour:$openminute"),
+            }
+        );
         if ($minutes_to_closing) {
             my $closetime = $opentime + $minutes_to_closing * 60;
             $closehour = strftime("%H",localtime($closetime));

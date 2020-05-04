@@ -212,7 +212,7 @@ sub index : Path : Args(0) {
                         }
                     );
 
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing( $c, $client_location );
+                    my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
 
                     #TODO: Move this to a unified sub, see TODO below
                     # Get advanced rule if there is one
