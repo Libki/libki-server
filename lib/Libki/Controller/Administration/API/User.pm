@@ -68,7 +68,7 @@ sub create : Local : Args(0) {
     my $lastname  = $params->{lastname};
     my $category  = $params->{category};
     my $password  = $params->{password};
-    my $minutes   = $params->{minutes};
+    my $minutes   = $params->{minutes} || $c->setting('DefaultTimeAllowance') || 0;
 
     my $success = 0;
 
