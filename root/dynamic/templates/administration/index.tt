@@ -49,13 +49,9 @@
         <table id="user-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>[% c.loc("Username") %]</th>
-                [% IF ShowFirstLastNames %]
-                <th>[% c.loc("Lastname") %] </th>
-                <th>[% c.loc("Firstname") %] </th>
-                [% END %]
-                [% IF UserCategories %]
+                <th>[% c.loc("Lastname") %]</th>
+                <th>[% c.loc("Firstname") %]</th>
                 <th>[% c.loc("Category") %]</th>
-                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("Status") %]</th>
@@ -789,15 +785,31 @@ $(document).ready(function() {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            var col = 8;
+            [% UNLESS ShowFirstLastNames %]
+                col = col - 2;
+            [% END %]
+            [% UNLESS UserCategories %]
+                col = col - 1;
+            [% END %]
             [% IF Settings.ThirdPartyURL %]
                 if ( aData[0] ) {
                     $('td:eq(0)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[0] + '">' + aData[0] + '</b>' );
                 }
             [% END %]
             if ( aData[8] == 'Yes') {
-                    $('td:eq(8)', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[11]).format('lll') + '</a>' );
+                    $('td:eq('+col+')', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[11]).format('lll') + '</a>' );
             }
-        }
+        },
+        "aoColumnDefs": [
+            [% UNLESS Settings.ShowFirstLastNames %]
+                { "bVisible": false, "aTargets": [ 1 ] },
+                { "bVisible": false, "aTargets": [ 2 ] },
+            [% END %]
+            [% UNLESS UserCategories %]
+                { "bVisible": false, "aTargets": [ 3 ] },
+            [% END %]
+        ],
     } );
 
     /* Add a click handler to the rows */
@@ -1170,14 +1182,22 @@ $(document).ready(function() {
 
     /* Toggle troublemaker */
     $('#user-table-row-toolbar-troublemaker').click(function(){
-        if ($("#" + window.selected_id).children(":nth(8)").text() !='No'){
+        var col=8;
+        [% UNLESS ShowFirstLastNames %]
+            col = col - 2;
+        [% END %]
+        [% UNLESS UserCategories %]
+            col = col - 1;
+        [% END %]
+
+        if ($("#" + window.selected_id).children(":nth("+col+")").text() !='No'){
             var url = '[% c.uri_for("api/user/toggle_troublemaker") %]/' + window.selected_id+'/0/0';
             UpdateTroublemaker(url);
         }
         else {
             $("#troublemaker-user-id").val( window.selected_id );
             $("#troublemaker-username").text($("#" + window.selected_id).children(":nth(0)").text());
-            $("#troublemaker-user-notes").val($("#" + window.selected_id).children(":nth(7)").text());
+            $("#troublemaker-user-notes").val($("#" + window.selected_id).children(":nth("+(col - 1)+")").text());
             $('#modify-troublemaker-modal').modal();
         }
     });

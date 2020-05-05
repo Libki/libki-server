@@ -48,7 +48,7 @@ sub get : Local : Args(1) {
             status          => $user->status,
             notes           => $user->notes,
             is_troublemaker => $user->is_troublemaker,
-            troublemaker_until => $user->troublemaker_until,
+            troublemaker_until => defined($user->troublemaker_until) ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
             roles           => \@roles,
         }
     );

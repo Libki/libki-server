@@ -29,20 +29,8 @@ sub users : Local Args(0) {
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
     my $dbh = $schema->storage->dbh;
 
-    # Get settings
-    my $userCategories = $c->setting('UserCategories');
-    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
-
     # We need to map the table columns to field names for ordering
     my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
-
-    if ($userCategories eq '') {
-        splice @columns, 3, 1;
-    }
-
-    if ($showFirstLastNames eq '0') {
-        splice @columns, 1, 2;
-    }
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -115,14 +103,6 @@ sub users : Local Args(0) {
             defined( $u->session ) ? $u->session->status : undef,
             defined($u->troublemaker_until) ? $u->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
         );
-
-        if ($userCategories eq '') {
-            splice @userValues, 3, 1;
-        }
-
-        if ($showFirstLastNames eq '0') {
-            splice @userValues, 1, 2;
-        }
 
         my $r;
         my $userValuesCounter = 0;
