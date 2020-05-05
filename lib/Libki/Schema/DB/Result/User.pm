@@ -98,6 +98,12 @@ __PACKAGE__->table("users");
   extra: {list => ["Yes","No"]}
   is_nullable: 0
 
+=head2 troublemaker_until
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
+
 =head2 is_guest
 
   data_type: 'enum'
@@ -169,6 +175,12 @@ __PACKAGE__->add_columns(
     default_value => "No",
     extra => { list => ["Yes", "No"] },
     is_nullable => 0,
+  },
+  "troublemaker_until",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    is_nullable => 1,
   },
   "is_guest",
   {

@@ -712,6 +712,41 @@
   </div>
 </div>
 
+<div class="modal fade" id="modify-troublemaker-modal" tabindex="-1" role="dialog" aria-labelledby="modify-troublemaker-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="modify-troublemaker-modal-label"><i class="fas fa-lock"></i> [% c.loc("Modify troublemaker:") %]&nbsp;&nbsp;<a id="troublemaker-username"></a></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="form-group">
+                <input id="troublemaker-user-id" name="id" type="hidden" />
+                <h4 style="display:inline;"><span class="badge badge-info">[% c.loc("Duration") %]&nbsp;&nbsp;</span></h4>
+                <select id="troublemaker-duration">
+                    <option value="1">[% c.loc("1 day") %]</option>
+                    <option value="7">[% c.loc("1 week") %]</option>
+                    <option value="30">[% c.loc("1 month") %]</option>
+                    <option value="90">[% c.loc("3 months") %]</option>
+                    <option value="365">[% c.loc("1 year") %]</option>
+                    <option value="36500">[% c.loc("forever") %]</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="troublemaker-user-notes">[% c.loc("Notes") %]</label>
+                <textarea class="form-control" id="troublemaker-user-notes" name="troublemaker-user-notes"></textarea>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+        <button type="button" class="btn btn-primary" id="update-troublemaker">[% c.loc("Update troublemaker") %]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
@@ -759,6 +794,9 @@ $(document).ready(function() {
                     $('td:eq(0)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[0] + '">' + aData[0] + '</b>' );
                 }
             [% END %]
+            if ( aData[8] == 'Yes') {
+                    $('td:eq(8)', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[11]).format('lll') + '</a>' );
+            }
         }
     } );
 
@@ -1132,15 +1170,34 @@ $(document).ready(function() {
 
     /* Toggle troublemaker */
     $('#user-table-row-toolbar-troublemaker').click(function(){
-        $.getJSON('[% c.uri_for("api/user/toggle_troublemaker") %]/' + window.selected_id, function(data) {
+        if ($("#" + window.selected_id).children(":nth(8)").text() !='No'){
+            var url = '[% c.uri_for("api/user/toggle_troublemaker") %]/' + window.selected_id+'/0/0';
+            UpdateTroublemaker(url);
+        }
+        else {
+            $("#troublemaker-user-id").val( window.selected_id );
+            $("#troublemaker-username").text($("#" + window.selected_id).children(":nth(0)").text());
+            $("#troublemaker-user-notes").val($("#" + window.selected_id).children(":nth(7)").text());
+            $('#modify-troublemaker-modal').modal();
+        }
+    });
+
+    $('#update-troublemaker').click(function(){
+        var url = '[% c.uri_for("api/user/toggle_troublemaker") %]/' + $("#troublemaker-user-id").val()+'/'+$("#troublemaker-duration").val()+'/'+$("#troublemaker-user-notes").val()+' /';
+        UpdateTroublemaker(url);
+        $("#modify-troublemaker-modal").modal("hide");
+    });
+
+    function UpdateTroublemaker(url){
+        $.getJSON(url, function(data) {
             if ( parseInt( data.success ) ) {
-                    DisplayMessage( "success", "[% c.loc("Troublemaker status switched.") %]" );
-                    $("#user-table").dataTable().fnDraw(true);
+                DisplayMessage( "success", "[% c.loc("Troublemaker status updated.") %]" );
+                $("#user-table").dataTable().fnDraw(true);
             } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to switch troublemaker status.") %]" );
+                DisplayMessage( "error", "[% c.loc("Unable to update troublemaker status.") %]" );
             }
         });
-    });
+    }
 
     /*********** Client Table ***********/
     /* Modify Time */
