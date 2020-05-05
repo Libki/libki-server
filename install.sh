@@ -50,7 +50,7 @@ elif [ "$is_debian_buster" = true ]; then
 elif [ "$is_ubuntu_bionic" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
 elif [ "$is_ubuntu_bionic" = true ]; then
-  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev -y
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen -y
 
 fi
 
