@@ -292,7 +292,6 @@
                                 [% END %]
                             </a>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes.") %]</small>
                     </div>
 
                     <div class="form-group">
