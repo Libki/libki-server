@@ -13,7 +13,12 @@ the return value will be a negative number of minutes *since* closing.
 =cut
 
 sub minutes_until_closing {
-    my ($c, $location_code, $datetime, $instance) = @_;
+    my ($params) = @_;
+
+    my $c             = $params->{c};
+    my $location_code = $params->{location};
+    my $datetime      = $params->{datetime};
+    my $instance      = $params->{instance};
 
     $instance ||= $c->instance;
 

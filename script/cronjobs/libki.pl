@@ -92,6 +92,7 @@ my $sessions = $dbh->selectall_arrayref(
     q{
         SELECT users.*, 
                sessions.*, 
+               clients.location,
                AutomaticTimeExtensionAt.value           AS 'AutomaticTimeExtensionAt', 
                AutomaticTimeExtensionLength.value       AS 'AutomaticTimeExtensionLength', 
                AutomaticTimeExtensionUnless.value       AS 'AutomaticTimeExtensionUnless', 
@@ -99,6 +100,9 @@ my $sessions = $dbh->selectall_arrayref(
                Count(any_reserved.instance)             AS 'AnyReservedCount', 
                Count(this_reserved.client_id)           AS 'ThisReservedCount' 
         FROM   sessions 
+        LEFT JOIN clients
+              ON ( clients.instance = sessions.instance 
+                   AND clients.id = sessions.client_id ) 
         LEFT JOIN users 
               ON ( users.instance = sessions.instance 
                    AND users.id = sessions.user_id ) 
@@ -150,7 +154,13 @@ foreach my $s ( @$sessions ) {
     # If we are nearing closing time, we need to only add minutes up to the cloasing time
     # TODO We could possibly integrate this into the main query, or at least speed it up with raw SQL
     $all_minutes_until_closing->{ $s->{instance} }->{ $s->{location} }
-        ||= Libki::Hours::minutes_until_closing( $c, $s->{location}, $s->{instance} );
+        ||= Libki::Hours::minutes_until_closing(
+            {
+                c        => $c,
+                location => $s->{location},
+                instance => $s->{instance}
+            }
+        );
 
     my $minutes_until_closing = $all_minutes_until_closing->{ $s->{instance} }->{ $s->{location} };
 
@@ -171,17 +181,17 @@ foreach my $s ( @$sessions ) {
         }
     }
 
-        $message_rs->create(
-            {
-                instance => $s->{instance},
-                user_id  => $s->{id},
-                content  => $c->loc(
-                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
-                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
-                    $minutes_to_add_to_session
-                ),
-            }
-        );
+    $message_rs->create(
+        {
+            instance => $s->{instance},
+            user_id  => $s->{id},
+            content  => $c->loc(
+                "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                $minutes_to_add_to_session
+            ),
+        }
+    );
 
     ## Now we can store the changes
     my $minutes_to_add_to_daily_allotment = $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? 0 : $minutes_to_add_to_session;
