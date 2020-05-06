@@ -4,6 +4,8 @@ use Moose;
 use String::Random qw(random_string);
 
 use namespace::autoclean;
+use Date::Parse;
+use POSIX;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -46,6 +48,7 @@ sub get : Local : Args(1) {
             status          => $user->status,
             notes           => $user->notes,
             is_troublemaker => $user->is_troublemaker,
+            troublemaker_until => defined($user->troublemaker_until) ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
             roles           => \@roles,
         }
     );
@@ -354,8 +357,8 @@ sub is_username_unique : Local : Args(1) {
 
 =cut
 
-sub toggle_troublemaker : Local : Args(1) {
-    my ( $self, $c, $id ) = @_;
+sub toggle_troublemaker : Local : Args(3) {
+    my ( $self, $c, $id, $until, $notes ) = @_;
     my $instance = $c->instance;
 
     my $success = 0;
@@ -368,6 +371,12 @@ sub toggle_troublemaker : Local : Args(1) {
 
     $user->set_column( 'is_troublemaker', $is_troublemaker );
     $user->set_column( 'updated_on', $now );
+    $user->set_column( 'troublemaker_until', undef );
+    if ( $until != 0 && $is_troublemaker eq 'Yes'){
+        my $trouble_maker = str2time($now) + $until * 86400;
+        $user->set_column( 'troublemaker_until', strftime("%Y-%m-%d %H:%M:%S", localtime($trouble_maker)) );
+        $user->set_column( 'notes', $notes eq '' ? undef : $notes ); 
+    }
 
     if ( $user->update() ) {
         $success = 1;

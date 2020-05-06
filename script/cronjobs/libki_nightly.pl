@@ -10,6 +10,7 @@ use Modern::Perl;
 use List::Util qw(max min);
 use DateTime;
 use DateTime::Format::MySQL;
+use Date::Parse;
 
 use Libki;
 
@@ -26,8 +27,16 @@ $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { 
 ## Reset user minutes
 $c->model('DB::User')->update( { minutes_allotment => undef } );
 
-## Set to disabled if a troublemaker
-$c->model('DB::User')->search( { is_troublemaker => 'Yes' } )->update( { status => 'disabled' } );
+## Set troublemaker status
+my @troublemakers = $c->model('DB::user')->search( { is_troublemaker => 'Yes' } );
+foreach my $troublemaker (@troublemakers) {
+    if(str2time( $troublemaker->troublemaker_until ) <= time()) {
+        $troublemaker->update( { is_troublemaker => 'No', troublemaker_until => undef } );
+    }
+    else {
+        $troublemaker->update( { status => 'disabled' } );
+    }
+}
 
 ## Clear out statistics that are past the retention length
 my @data_retention_days = $c->model('DB::Setting')->search( { name => 'DataRetentionDays' } );
