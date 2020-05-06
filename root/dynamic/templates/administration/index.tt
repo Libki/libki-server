@@ -468,6 +468,7 @@
       <div class="modal-header">
           <h5 class="modal-title" id="edit-user-modal-label">
             <i class="fas fa-edit"></i> [% c.loc("Edit user") %]
+            <span class="badge badge-secondary" id="edit-user-username"></span>
           </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -680,7 +681,11 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="change-password-modal-label"><i class="fas fa-unlock"></i> [% c.loc("Change password") %]</h5>
+          <h5 class="modal-title" id="change-password-modal-label">
+              <i class="fas fa-unlock"></i>
+              [% c.loc("Change password") %]
+              <span class="badge badge-secondary" id="change-password-username"></span>
+          </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -712,7 +717,11 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="modify-troublemaker-modal-label"><i class="fas fa-lock"></i> [% c.loc("Modify troublemaker:") %]&nbsp;&nbsp;<a id="troublemaker-username"></a></h5>
+          <h5 class="modal-title" id="modify-troublemaker-modal-label">
+              <i class="fas fa-lock"></i>
+              [% c.loc("Set as troublemaker") %]
+              <span class="badge badge-secondary" id="troublemaker-username"></span>
+          </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -720,15 +729,17 @@
       <div class="modal-body">
             <div class="form-group">
                 <input id="troublemaker-user-id" name="id" type="hidden" />
-                <h4 style="display:inline;"><span class="badge badge-info">[% c.loc("Duration") %]&nbsp;&nbsp;</span></h4>
-                <select id="troublemaker-duration">
-                    <option value="1">[% c.loc("1 day") %]</option>
-                    <option value="7">[% c.loc("1 week") %]</option>
-                    <option value="30">[% c.loc("1 month") %]</option>
-                    <option value="90">[% c.loc("3 months") %]</option>
-                    <option value="365">[% c.loc("1 year") %]</option>
-                    <option value="36500">[% c.loc("forever") %]</option>
-                </select>
+                <div class="form-group">
+                    <label for="change-password-modal-form-password">[% c.loc("Duration") %]</label>
+                    <select class="form-control" id="troublemaker-duration">
+                        <option value="1">[% c.loc("1 day") %]</option>
+                        <option value="7">[% c.loc("1 week") %]</option>
+                        <option value="30">[% c.loc("1 month") %]</option>
+                        <option value="90">[% c.loc("3 months") %]</option>
+                        <option value="365">[% c.loc("1 year") %]</option>
+                        <option value="36500">[% c.loc("forever") %]</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="troublemaker-user-notes">[% c.loc("Notes") %]</label>
@@ -1099,6 +1110,8 @@ $(document).ready(function() {
         $('#edit-user-modal-tabs a:last').tab('show'); // Fixes display bug where both tabs content shows on first tab.
         $('#edit-user-modal-tabs a:first').tab('show');
 
+        $("#edit-user-username").text($("#" + window.selected_id).children(":nth(0)").text());
+
         $('#edit-user-modal').modal();
     });
 
@@ -1140,6 +1153,8 @@ $(document).ready(function() {
         $('#change-password-modal-form-password-confirm').val('');
 
         $('#change-password-modal-form-submit').removeAttr('disabled');
+
+        $("#change-password-username").text($("#" + window.selected_id).children(":nth(0)").text());
 
         $('#change-password-modal').modal();
     });
@@ -1198,6 +1213,7 @@ $(document).ready(function() {
             $("#troublemaker-user-id").val( window.selected_id );
             $("#troublemaker-username").text($("#" + window.selected_id).children(":nth(0)").text());
             $("#troublemaker-user-notes").val($("#" + window.selected_id).children(":nth("+(col - 1)+")").text());
+            $('#user-table-row-toolbar').hide();
             $('#modify-troublemaker-modal').modal();
         }
     });
