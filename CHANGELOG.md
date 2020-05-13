@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Begin using semantic versioning for Libki Server ( version has been fixed at 0.01 since the move to Perl Catalyst ).
 - Bump server version to 4.0.0 to indicate breaking changes with r19.08. Before this, Libki Server was considered to be on version 3 since the addition of multi-tenancy.
 - Update install.sh to support Ubuntu 20.04
+### Removed
+- Removed the system setting GuestPassFile from the database, the feature hasn't existed for a long time now. It was replaced with the ability to print batch guest passes on demand directly from the web browser.
 
 ## [4.0.0] - 2020-05-05
 ### Changed
