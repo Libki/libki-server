@@ -372,7 +372,6 @@ INSERT INTO `settings` VALUES
     ('','DefaultSessionTimeAllowance','45'),
     ('','DefaultTimeAllowance','45'),
     ('','GuestBatchCount','40'),
-    ('','GuestPassFile','/mnt/share/guestpasses.txt'),
     ('','PostCrashTimeout','5'),
     ('','PrintJobRetentionDays','0'),
     ('','ReservationShowUsername','0'),

@@ -8,6 +8,7 @@ fi
 is_debian_stretch=false
 is_debian_buster=false
 is_ubuntu_bionic=false
+is_ubuntu_focal=false
 
 if [ -e /etc/os-release ]; then
   source /etc/os-release
@@ -16,6 +17,9 @@ if [ -e /etc/os-release ]; then
   case "${dist}-${code}" in
     ubuntu-bionic)
       is_ubuntu_bionic=true
+      ;;
+    ubuntu-focal)
+      is_ubuntu_focal=true
       ;;
     debian-buster)
       is_debian_buster=true
@@ -40,11 +44,14 @@ apt-get upgrade -y
 
 # Install packages depending on Stretch or Bionic.
 if [ "$is_debian_stretch" = true ]; then
-  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus -y
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev -y
 elif [ "$is_debian_buster" = true ]; then
-  apt-get install sudo openssl curl perl make build-essential unzip mariadb-server pwgen ntp libxml-parser-perl libxml-libxml-perl libnet-ssleay-perl libxml-parser-perl cpanminus -y
+  apt-get install sudo openssl curl perl make build-essential unzip mariadb-server pwgen ntp libxml-parser-perl libxml-libxml-perl libnet-ssleay-perl libxml-parser-perl cpanminus cups libcups2-dev -y
 elif [ "$is_ubuntu_bionic" = true ]; then
-  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus -y
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev -y
+elif [ "$is_ubuntu_focal" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen -y
+
 fi
 
 # Auto-created passwords
