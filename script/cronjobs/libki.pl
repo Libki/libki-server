@@ -209,8 +209,8 @@ foreach my $pct (@post_crash_timeouts) {
     );
 
     $c->model('DB::Client')
-      ->search( { instance => $pct->instance, last_registered => { '<', $timestamp } } )
-      ->delete();
+      ->search( { instance => $pct->instance, last_registered => { '<', $timestamp }, status => 'online' } )
+      ->update( { status => 'offline' } );
 }
 
 ## Clear out any expired reservations
