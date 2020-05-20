@@ -31,7 +31,7 @@ sub clients : Local Args(0) {
     my @columns = qw/ me.name me.location me.type session.status session.minutes /;
 
     # Set up filters
-    my $filter = { instance => $instance};
+    my $filter = { instance => $instance, status => "online" };
 
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {

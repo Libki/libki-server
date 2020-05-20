@@ -147,7 +147,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker/;
+      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker me.status/;
 
     if ($userCategories eq '') {
         splice @columns, 6, 1;
@@ -165,6 +165,7 @@ sub clients : Local Args(0) {
         $filter->{-or} = [
             'me.name'       => { 'like', "%$search_term%" },
             'me.location'   => { 'like', "%$search_term%" },
+            'me.status'     => { 'like', "%$search_term%" },
             'me.type'       => { 'like', "%$search_term%" },
             'user.username' => { 'like', "%$search_term%" },
         ];
@@ -238,6 +239,7 @@ sub clients : Local Args(0) {
             defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
             defined( $reservation ) ? $reservation->user->username : undef,
             defined( $reservation ) ? $begin : undef,
+            $c->status,
         );
 
         if ($userCategories eq '') {

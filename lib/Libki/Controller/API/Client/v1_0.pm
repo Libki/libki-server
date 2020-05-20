@@ -69,6 +69,8 @@ sub index : Path : Args(0) {
                 last_registered => $now,
             }
         );
+        my $client_s = $c->model('DB::Client')->find( { name => $node_name } );
+        $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspension' );
         $log->debug( "Client Registered: " . $client->name() );
 
         my $reserved_for = $c->get_reservation_status( $client );
@@ -115,17 +117,19 @@ sub index : Path : Args(0) {
         my $client_name  = $c->request->params->{'node'};
         my $client = $c->model('DB::Client')->find( { name => $client_name } ) || undef;
 
-        my $reservation = $c->model('DB::Reservation')->search(
-            {
-                instance => $instance,
-                client_id => $client->id
-            },
-            { order_by => { -asc => 'begin_time' } }
-        )->first;
+        if( $client ) {
+            my $reservation = $c->model('DB::Reservation')->search(
+                {
+                    instance => $instance,
+                    client_id => $client->id
+                },
+                { order_by => { -asc => 'begin_time' } }
+            )->first;
 
-        if ($reservation) {
-            if ( str2time($reservation->end_time) < str2time($c->now) ) {
-                $reservation->delete();
+            if ($reservation) {
+                if ( str2time($reservation->end_time) < str2time($c->now) ) {
+                    $reservation->delete();
+                }
             }
         }
     }

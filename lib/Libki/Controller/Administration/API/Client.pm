@@ -135,6 +135,50 @@ sub reservation : Local : Args(1) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 toggle_status
+
+ Switch client status.
+
+=cut
+
+sub toggle_status : Local : Args(1) {
+    my ( $self, $c, $id ) = @_;
+    my $instance = $c->instance;
+
+    my $success = 0;
+    my $client = $c->model('DB::Client')->find({ instance => $instance, id => $id });
+    if($client) {
+        my $status = ( $client->status eq 'suspension' ) ? 'offline' : 'suspension';
+        $client->set_column( 'status', $status );
+
+        if ( $client->update() ) {
+            $success = 1;
+        }
+    }
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 delete_client
+
+ Delete client.
+
+=cut
+
+sub delete_client : Local : Args(1) {
+    my ( $self, $c, $id ) = @_;
+    my $instance = $c->instance;
+
+    my $success = 0;
+    my $client = $c->model('DB::Client')->find({ instance => $instance, id => $id });
+    if($client) {
+        $c->model('DB::Reservation')->search({ client_id => $id })->delete();
+        $success = 1 if ( $client->delete() );
+    }
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>

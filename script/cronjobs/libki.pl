@@ -53,7 +53,7 @@ foreach my $s (@$sessions_to_delete) {
             username    => $s->{username},
             client_name => $s->{name},
             action      => 'SESSION_DELETED',
-            when        => $when,
+            created_on  => $when,
         }
     );
 }
@@ -209,8 +209,8 @@ foreach my $pct (@post_crash_timeouts) {
     );
 
     $c->model('DB::Client')
-      ->search( { instance => $pct->instance, last_registered => { '<', $timestamp } } )
-      ->delete();
+      ->search( { instance => $pct->instance, last_registered => { '<', $timestamp }, status => 'online' } )
+      ->update( { status => 'offline' } );
 }
 
 ## Clear out any expired reservations

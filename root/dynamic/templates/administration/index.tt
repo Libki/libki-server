@@ -142,6 +142,7 @@
                 <th>[% c.loc("Troublemaker") %]</th>
                 <th>[% c.loc("Reserved") %]</th>
                 <th>[% c.loc("From") %]</th>
+                <th>[% c.loc("Status") %]</th>
             </thead>
         </table> 
 
@@ -153,6 +154,8 @@
                 <button id="client-table-row-toolbar-cancel" class="btn btn-secondary" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
                 [% END %]
                 <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+                <button id="client-table-row-toolbar-status" class="btn btn-secondary"><i class="fas fa-tag"></i> [% c.loc("Switch suspension") %]</button>
+                <button id="client-table-row-toolbar-delete" class="btn btn-warning" onclick="LibkiDeleteClient( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
             </div>
         </div>
   </div>
@@ -1273,6 +1276,18 @@ $(document).ready(function() {
         }
     });
 
+    /* Toggle client status */
+    $('#client-table-row-toolbar-status').click(function(){
+        $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + window.selected_id, function(data) {
+            if ( parseInt( data.success ) ) {
+                    DisplayMessage( "success", "[% c.loc("Client status switched.") %]" );
+                    $("#client-table").dataTable().fnDraw(true);
+            } else {
+                    DisplayMessage( "error", "[% c.loc("Unable to switch client status.") %]" );
+            }
+        });
+    });
+
     /* Make reservation */
     $('#make-reservation-modal-form-submit').click(function(){
         let username = $('#make-reservation-modal-form-username').val();
@@ -1389,6 +1404,21 @@ function LibkiDeleteUser( id ) {
              } else {
                  DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
              }
+         }
+    });
+  }
+}
+
+function LibkiDeleteClient( id ) {
+  if ( confirm("[% c.loc("Once deleted, all the reservations of this client will be removed at the same time.") %]") ) {
+    $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + id, function( data ) {
+         if ( data.success ) {
+             DisplayMessage( "success", "[% c.loc("Client deleted.") %]" );
+             // Refresh the table to remove the deleted row
+             $("#client-table").dataTable().fnDraw(true);
+             $("#reservation-table").dataTable().fnDraw(true);
+         } else {
+             DisplayMessage( "error", "[% c.loc("Unable to delete client.") %]" );
          }
     });
   }
