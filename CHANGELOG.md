@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0] - 2020-05-20
+### Added
+- Add client status field. Rather than delete clients from the database when they no longer respond, the new client status field is set to "offline" which is functionally equivilent. Clients may also be suspended to take them out of use without shutting down the Libki client. New buttons have been added to toggle between suspended and online, and to delete offline clients permanently.
+
 ## [4.0.1] - 2020-05-06
 ### Added
 - Add ability to set expiration for troublemaker setting, adds modal with build in notes editor ( for existing user notes ).
