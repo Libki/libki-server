@@ -153,6 +153,7 @@
                 <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
                 <button id="client-table-row-toolbar-cancel" class="btn btn-secondary" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
                 [% END %]
+                <button id="client-table-row-toolbar-unlock" class="btn btn-primary" onclick="LibkiUnlockClient( window.selected_id )"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
                 <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
                 <button id="client-table-row-toolbar-status" class="btn btn-secondary"><i class="fas fa-tag"></i> [% c.loc("Switch suspension") %]</button>
                 <button id="client-table-row-toolbar-delete" class="btn btn-warning" onclick="LibkiDeleteClient( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
@@ -1433,6 +1434,19 @@ function LibkiLogOutClient( id ) {
              $("#client-table").dataTable().fnDraw(true);
          } else {
              DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
+         }
+     });
+  }
+}
+
+function LibkiUnlockClient( id ) {
+  if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
+    $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + id, function(data) {
+         if ( data.success ) {
+             DisplayMessage( "success", "[% c.loc("Client unlocked.") %]" );
+             $("#client-table").dataTable().fnDraw(true);
+         } else {
+             DisplayMessage( "error", "[% c.loc("Unable to unlock client.") %]" );
          }
      });
   }
