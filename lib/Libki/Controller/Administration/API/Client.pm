@@ -74,6 +74,88 @@ sub logout : Local : Args(1) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 unlock
+
+Unlocks a client by creating a session for a guest account.
+
+=cut
+
+sub unlock : Local : Args(1) {
+    my ( $self, $c, $client_id ) = @_;
+
+    my $success = 0;
+    my $client = $c->model('DB::Client')->find($client_id);
+
+    if ( defined($client) && $client->status eq 'online' && ! defined( $client->session ) ) {
+        # get guest user for this client
+        my $prefix_setting = $c->setting('GuestPassPrefix');
+        my $prefix = $prefix_setting || 'guest';
+
+        my $username = $prefix . "_" . $client->name;
+        my $user = $c->model('DB::User')->find( { username => $username } );
+
+        unless ( $user ) {
+            my $password = String::Random::random_string("nnnn");
+            my $now = $c->now();
+
+            $user = $c->model('DB::User')->create(
+                {
+                    instance          => $c->instance,
+                    username          => $username,
+                    password          => $password,
+                    status            => 'enabled',
+                    is_guest          => 'Yes',
+                    created_on        => $now,
+                    updated_on        => $now,
+                }
+            );
+        }
+
+        # reset allowance and calculate session time
+        my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
+        $minutes_allotment = 0 unless $minutes_allotment > 0;
+        $user->update( { minutes_allotment => $minutes_allotment } );
+
+        my %result = $c->check_login($client,$user);
+
+        # create session
+        if ( ! $result{'error'} && $result{'minutes'} > 0 ) {
+            my $session_id = $c->sessionid;
+            my $session = $c->model('DB::Session')->create(
+                {
+                    instance   => $c->instance,
+                    user_id    => $user->id,
+                    client_id  => $client->id,
+                    status     => 'active',
+                    minutes    => $result{'minutes'},
+                    session_id => $session_id,
+                }
+            );
+
+            if ( $session ) {
+                $client->update( { status => 'unlock' } );
+                $success = 1;
+
+                $c->model('DB::Statistic')->create(
+                    {
+                        instance        => $c->instance,
+                        username        => $c->user->username,
+                        client_name     => $client->name,
+                        client_location => $client->location,
+                        client_type     => $client->type,
+                        action          => 'UNLOCK',
+                        created_on      => $c->now,
+                        session_id      => $session_id,
+                    }
+                );
+            }
+        }
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 reservation
 
 Creates or cancels a reservation for the given client and user.

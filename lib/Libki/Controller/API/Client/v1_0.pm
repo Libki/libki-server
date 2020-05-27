@@ -70,6 +70,15 @@ sub index : Path : Args(0) {
             }
         );
         my $client_s = $c->model('DB::Client')->find( { name => $node_name } );
+
+        if ($client_s->status eq "unlock") {
+            $c->stash(
+                unlock   => 1,
+                minutes  => $client_s->session->minutes,
+                username => $client_s->session->user->username,
+            );
+        }
+
         $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspension' );
         $log->debug( "Client Registered: " . $client->name() );
 
