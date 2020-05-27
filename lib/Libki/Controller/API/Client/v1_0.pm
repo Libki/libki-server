@@ -228,11 +228,10 @@ sub index : Path : Args(0) {
                     my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
 
                     #TODO: Move this to a unified sub, see TODO below
-                    # Get advanced rule if there is one
                     my $minutes_allotment = $user->minutes_allotment;
 
-                    unless ( defined($minutes_allotment) ) {
-                        $minutes_allotment = $c->get_rule(
+                    # Get advanced rule if there is one
+                    my $advanced_rule = $c->get_rule(
                             {
                                 rule            => $is_guest ? 'guest_daily' : 'daily',
                                 client_location => $client->location,
@@ -241,8 +240,14 @@ sub index : Path : Args(0) {
                                 client_type     => $client_type,
                                 user_category   => $user->category,
                             }
-                        );
+                    );
 
+                    # Use advanced rule if there is one
+                    if ( defined($advanced_rule) ) {
+                        $minutes_allotment = $advanced_rule if ( $minutes_allotment > $advanced_rule );
+                    }
+
+                    unless ( defined( $minutes_allotment ) ) {
                         # Use 'simple' rules if no advanced rule exists
                         $minutes_allotment //=
                               $is_guest
@@ -274,7 +279,7 @@ sub index : Path : Args(0) {
                     }
                     else {
                         if ($client) {
-                            $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
+                            $user->update({ minutes_allotment => $minutes_allotment }) if defined $minutes_allotment;
                             my %result = $c->check_login($client,$user);
                             my $reservation = $result{'reservation'};
 

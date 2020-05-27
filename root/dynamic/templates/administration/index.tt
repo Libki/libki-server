@@ -421,6 +421,11 @@
                 <label for="new-guest-modal-form-minutes">[% c.loc("Minutes") %]</label>
                 <input id="new-guest-modal-form-minutes" class="form-control" readonly></input>
             </div>
+
+            <div class="form-group">
+                <label for="new-guest-modal-form-category">[% c.loc("Category") %]</label>
+                <input id="new-guest-modal-form-category" class="form-control" readonly></input>
+            </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -454,6 +459,11 @@
             <div class="form-group" readonly>
                 <label for="multi-guest-modal-form-minutes">[% c.loc("Minutes") %]</label>
                 <input id="multi-guest-modal-form-minutes" class="form-control" readonly></input>
+            </div>
+
+            <div class="form-group" readonly>
+                <label for="multi-guest-modal-form-category">[% c.loc("Category") %]</label>
+                <input id="multi-guest-modal-form-category" class="form-control" readonly></input>
             </div>
 
             <a href="#" id="multi-guest-modal-form-print" class="btn btn-secondary"><i class="fa fa-print"></i> [% c.loc("View & print guest passes") %]</a>
@@ -758,6 +768,50 @@
   </div>
 </div>
 
+<div class="modal fade" id="create-new-guest-modal" tabindex="-1" role="dialog" aria-labelledby="create-new-guest-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="create-new-guest-modal-label">
+                <div id="one-guest-title">
+                    <i class="fas fa-user"></i>
+                    [% c.loc("New guest") %]
+                    <span class="badge badge-secondary">1</span>
+                </div>
+                <div id="multi-guest-title">
+                    <i class="fas fa-users"></i>
+                    [% c.loc("Multiple guests") %]
+                    <span class="badge badge-secondary" id="count-of-guests-label">[% Settings.GuestBatchCount %]</span>
+                </div>
+          </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="form-group">
+                [% IF UserCategories %]
+                    <div class="form-group">
+                        <label for="new-guest-modal-form-category">[% c.loc("Category") %]</label>
+                        <select class="form-control" id="create-new-guest-category" name="category">
+                            <option value=""></option>
+                        [% FOREACH category IN c.user_categories %]
+                            <option value="[% category %]">[% category %]</option>
+                        [% END %]
+                        </select>
+                    </div>
+                [% END %]
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">[% c.loc("Cancel") %]</button>
+        <button type="button" class="btn btn-primary" id="create-new-guest-modal-button">[% c.loc("Create") %]</button>
+        <button type="button" class="btn btn-primary" id="create-multi-guest-modal-button">[% c.loc("Create") %]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
@@ -1030,10 +1084,38 @@ $(document).ready(function() {
         }
     });
 
-    // Set up the 'new guest' button
+    // new guest, multi guests modal
     $('.new-guest-button').click(function(){
-        $.getJSON('[% c.uri_for("api/user/create_guest") %]/', function(data) {
+        $('#user-table-row-toolbar').hide();
+        $('#client-table-row-toolbar').hide();
+
+        $('#one-guest-title').show();
+        $('#create-new-guest-modal-button').show();
+
+        $('#multi-guest-title').hide();
+        $('#create-multi-guest-modal-button').hide();
+
+        $('#create-new-guest-modal').modal();
+    });
+
+    $('.multi-guest-button').click(function(){
+        $('#user-table-row-toolbar').hide();
+        $('#client-table-row-toolbar').hide();
+
+        $('#one-guest-title').hide();
+        $('#create-new-guest-modal-button').hide();
+
+        $('#multi-guest-title').show();
+        $('#create-multi-guest-modal-button').show();
+
+        $('#create-new-guest-modal').modal();
+    });
+
+    // Set up the 'new guest' button
+    $('#create-new-guest-modal-button').click(function(){
+        $.getJSON('[% c.uri_for("api/user/create_guest") %]/?category='+$('#create-new-guest-category').val(), function(data) {
             if ( parseInt( data.success ) ) {
+                $('#create-new-guest-modal').modal('hide');
                 $("#user-table").dataTable().fnDraw(true);
                 ForceClientTableRefresh();
 
@@ -1043,6 +1125,7 @@ $(document).ready(function() {
                 $('#new-guest-modal-form-username').val( data.username );
                 $('#new-guest-modal-form-password').val( data.password );
                 $('#new-guest-modal-form-minutes').val( data.minutes );
+                $('#new-guest-modal-form-category').val( $('#create-new-guest-category').val() );
 
                 $('#new-guest-modal').modal();
             } else {
@@ -1052,9 +1135,10 @@ $(document).ready(function() {
     });
 
     // Set up the 'multi guest' button
-    $('.multi-guest-button').click(function(){
-        $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/', function(data) {
+    $('#create-multi-guest-modal-button').click(function(){
+        $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/?category='+$('#create-new-guest-category').val(), function(data) {
             if ( parseInt( data.success ) ) {
+                $('#create-new-guest-modal').modal('hide');
                 $("#user-table").dataTable().fnDraw(true);
                 ForceClientTableRefresh();
 
@@ -1064,8 +1148,9 @@ $(document).ready(function() {
                 $('#multi-guest-modal-form-highest').val( data.highest );
                 $('#multi-guest-modal-form-number').val( data.number );
                 $('#multi-guest-modal-form-minutes').val( data.minutes );
+                $('#multi-guest-modal-form-category').val( $('#create-new-guest-category').val() );
 
-                guest_pass_file_contents = data.contents;
+                guest_pass_file_contents =  $('#create-new-guest-category').val() + '</br>' + data.contents;
 
                 $('#multi-guest-modal').modal();
             } else {

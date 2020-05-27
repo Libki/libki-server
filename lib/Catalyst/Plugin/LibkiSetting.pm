@@ -203,7 +203,7 @@ sub get_rule {
                 $rule_matches_criteria = any { $_ eq $params->{$r} } @$criteria;
             }
             else {
-                $rule_matches_criteria = $rule->{criteria}->{$r} eq $params->{$r};
+                $rule_matches_criteria = $rule->{criteria}->{$r} eq $params->{$r} if($params->{$r} && $rule->{criteria}->{$r});
             }
 
             my $skip_rule = $criteria_is_used && $rule_has_criteria && !$rule_matches_criteria;
