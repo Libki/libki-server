@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2020-05-27
+### Added
+- Add ability to remotely log a Libki client in as a guest from the admin interface. Feature requires client version 2.1.0 or later.
+### Changed
+- Updated Swedish translation for the new remote unlock feature.
+
 ## [4.1.1] - 2020-05-27
 ### Changed
-- Updated Swedish translation
+- Updated Swedish translation.
 
 ## [4.1.0] - 2020-05-20
 ### Added
