@@ -104,8 +104,9 @@ sub create : Local : Args(0) {
 sub create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
+    my $params   = $c->request->params;
 
-    my $params = $c->request->params;
+    my $category = $params->{category};
 
     my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
     my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
@@ -135,6 +136,7 @@ sub create_guest : Local : Args(0) {
             is_guest          => 'Yes',
             created_on        => $now,
             updated_on        => $now,
+            category          => $category,
         }
     );
 
@@ -158,7 +160,7 @@ sub batch_create_guest : Local : Args(0) {
     my $instance = $c->instance;
 
     my $params = $c->request->params;
-
+    my $category = $params->{category};
     my $prefix_setting = $c->setting('GuestPassPrefix');
     my $prefix = $prefix_setting || 'guest';
 
@@ -199,6 +201,7 @@ sub batch_create_guest : Local : Args(0) {
                 is_guest          => 'Yes',
                 created_on        => $now,
                 updated_on        => $now,
+                category          => $category,
             }
         );
 
