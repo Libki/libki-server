@@ -64,12 +64,12 @@
 
         <div id="user-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
-                <button id="user-table-row-toolbar-edit" class="btn btn-secondary"><i class="fas fa-edit"></i> [% c.loc("Edit") %]</button>
+                <button id="user-table-row-toolbar-edit" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-edit"></i> [% c.loc("Edit") %]</button>
                 [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                    <button id="user-table-row-toolbar-password" class="btn btn-primary"><i class="fas fa-unlock"></i> [% c.loc("Password") %]</button>
+                    <button id="user-table-row-toolbar-password" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-unlock"></i> [% c.loc("Password") %]</button>
                 [% END %]
-                <button id="user-table-row-toolbar-troublemaker" class="btn btn-dark"><i class="fas fa-exclamation-triangle"></i> [% c.loc("Troublemaker") %]</button>
-                <button id="user-table-row-toolbar-delete" class="btn btn-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="fas fa-trash-alt"></i> [% c.loc("Delete") %]</button>
+                <button id="user-table-row-toolbar-troublemaker" class="btn libki-toolbar-btn btn-outline-dark"><i class="fas fa-exclamation-triangle"></i> [% c.loc("Troublemaker") %]</button>
+                <button id="user-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="fas fa-trash-alt"></i> [% c.loc("Delete") %]</button>
             </div>
         </div>
   </div>
@@ -148,15 +148,15 @@
 
         <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
-                <button id="client-table-row-toolbar-time" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+                <button id="client-table-row-toolbar-time" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
                 [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                <button id="client-table-row-toolbar-reserve" class="btn btn-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
-                <button id="client-table-row-toolbar-cancel" class="btn btn-secondary" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+                <button id="client-table-row-toolbar-reserve" class="btn libki-toolbar-btn btn-outline-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                <button id="client-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
                 [% END %]
-                <button id="client-table-row-toolbar-unlock" class="btn btn-primary" onclick="LibkiUnlockClient( window.selected_id )"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
-                <button id="client-table-row-toolbar-logout" class="btn btn-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
-                <button id="client-table-row-toolbar-status" class="btn btn-secondary"><i class="fas fa-tag"></i> [% c.loc("Switch suspension") %]</button>
-                <button id="client-table-row-toolbar-delete" class="btn btn-warning" onclick="LibkiDeleteClient( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
+                <button id="client-table-row-toolbar-unlock" class="btn libki-toolbar-btn btn-outline-primary" onclick="LibkiUnlockClient( window.selected_id )"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
+                <button id="client-table-row-toolbar-logout" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+                <button id="client-table-row-toolbar-status" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</button>
+                <button id="client-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiDeleteClient( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
             </div>
         </div>
   </div>
@@ -226,7 +226,7 @@
             <div class="btn-group" role="group">
                 <button
                     id="print-table-row-toolbar-release"
-                    class="btn btn-primary"
+                    class="btn libki-toolbar-btn btn-outline-primary"
                     onclick="LibkiReleasePrint( window.selected_id )"
                 >
                     <i class="fas fa-print"></i> [% c.loc("Print") %]
@@ -234,7 +234,7 @@
 
                 <button
                     id="print-table-row-toolbar-refresh"
-                    class="btn btn-info"
+                    class="btn libki-toolbar-btn btn-outline-info"
                     onclick="LibkiRefreshPrint( window.selected_id )"
                 >
                     <i class="fas fa-sync"></i> [% c.loc("Refresh") %]
@@ -242,7 +242,7 @@
 
                 <button
                     id="print-table-row-toolbar-download"
-                    class="btn btn-secondary"
+                    class="btn libki-toolbar-btn btn-outline-secondary"
                     onclick="window.open('/administration/api/printjob/view?type=download&id=' + window.selected_id, '_blank' )"
                 >
                     <i class="fas fa-download"></i> [% c.loc("Download") %]
@@ -250,7 +250,7 @@
 
                 <button
                     id="print-table-row-toolbar-view"
-                    class="btn btn-info"
+                    class="btn libki-toolbar-btn btn-outline-info"
                     onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"
                 >
                     <i class="fas fa-eye"></i> [% c.loc("View") %]
@@ -258,7 +258,7 @@
 
                 <button
                     id="print-table-row-toolbar-logout"
-                    class="btn btn-danger"
+                    class="btn libki-toolbar-btn btn-outline-danger"
                     onclick="LibkiCancelPrint( window.selected_id )"
                 >
                     <i class="fa fa-ban"></i> [% c.loc("Cancel") %]
@@ -309,8 +309,8 @@
 
         <div id="reservation-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
-                <button id="reservation-table-row-toolbar-info" class="btn btn-secondary"><i class="fas fa-clock"></i> [% c.loc("Operation: ") %]</button>
-                <button id="reservation-table-row-toolbar-cancel" class="btn btn-danger" onclick="LibkiShowCancelReservationTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+                <button id="reservation-table-row-toolbar-info" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-clock"></i> [% c.loc("Operation: ") %]</button>
+                <button id="reservation-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiShowCancelReservationTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
             </div>
         </div>
 
