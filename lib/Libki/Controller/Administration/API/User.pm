@@ -107,10 +107,10 @@ sub create_guest : Local : Args(0) {
 
     my $params = $c->request->params;
 
-    my $current_guest_number_setting = $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value + 1;
+    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
-    $current_guest_number_setting->update();
+    $current_guest_number_setting->update_or_insert();
 
     my $prefix_setting = $c->setting('GuestPassPrefix');
     my $prefix = $prefix_setting || 'guest';
@@ -173,9 +173,8 @@ sub batch_create_guest : Local : Args(0) {
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
     $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
 
-    my $current_guest_number_setting =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value() + 1;
+    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
 
     my $file_contents = q{};
 
@@ -216,8 +215,8 @@ sub batch_create_guest : Local : Args(0) {
         $success = $success + 1 if ($user);
     }
 
-    $current_guest_number_setting->value($current_guest_number);
-    $current_guest_number_setting->update();
+    $current_guest_number_setting->set_column( 'value', $current_guest_number );
+    $current_guest_number_setting->update_or_insert();
 
     $c->stash(
         'success'  => $success,
