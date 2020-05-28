@@ -237,7 +237,7 @@ sub toggle_status : Local : Args(1) {
             $success = 1;
         }
     }
-    $c->stash( 'success' => $success );
+    $c->stash( 'success' => $success, status => $client->status );
     $c->forward( $c->view('JSON') );
 }
 

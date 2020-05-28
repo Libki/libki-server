@@ -893,7 +893,7 @@ $(document).ready(function() {
     });
 
     // Initalize the Clients table as a datatable
-    cTable = $('#client-table').dataTable( {
+    cTable = $('#client-table').DataTable( {
         [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "bProcessing": true,  // Indicate when the table is processing data
         "bServerSide": true,  // Indicate that the datatable gets data from a
@@ -1401,13 +1401,21 @@ $(document).ready(function() {
     $('#client-table-row-toolbar-status').click(function(){
         $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + window.selected_id, function(data) {
             if ( parseInt( data.success ) ) {
-                    DisplayMessage( "success", "[% c.loc("Client status switched.") %]" );
+                    const status = TranslateStatus( data.status );
+                    DisplayMessage( "success", "[% c.loc("Client status change to: ") %]" + status );
                     $("#client-table").dataTable().fnDraw(true);
             } else {
                     DisplayMessage( "error", "[% c.loc("Unable to switch client status.") %]" );
             }
         });
     });
+
+    function TranslateStatus( status ) {
+        return status == 'suspended' ? '[% c.loc("Suspended") %]' : 
+               status == 'offline'   ? '[% c.loc("Offline") %]'   :
+               status == 'online'    ? '[% c.loc("Online") %]'    :
+               [% c.loc("Unknown") %];
+    }
 
     /* Make reservation */
     $('#make-reservation-modal-form-submit').click(function(){
