@@ -48,7 +48,7 @@ __PACKAGE__->apply_request_class_roles(qw/
     Catalyst::TraitFor::Request::ProxyBase
 /);
 
-our $VERSION = '4.2.0';
+our $VERSION = '4.2.1';
 
 # Configure the application.
 #
