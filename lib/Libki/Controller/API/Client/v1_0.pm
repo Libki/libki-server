@@ -79,7 +79,7 @@ sub index : Path : Args(0) {
             );
         }
 
-        $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspension' );
+        $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
         $log->debug( "Client Registered: " . $client->name() );
 
         my $reserved_for = $c->get_reservation_status( $client );

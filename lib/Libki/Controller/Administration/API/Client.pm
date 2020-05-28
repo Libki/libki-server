@@ -230,7 +230,7 @@ sub toggle_status : Local : Args(1) {
     my $success = 0;
     my $client = $c->model('DB::Client')->find({ instance => $instance, id => $id });
     if($client) {
-        my $status = ( $client->status eq 'suspension' ) ? 'offline' : 'suspension';
+        my $status = ( $client->status eq 'suspended' ) ? 'offline' : 'suspended';
         $client->set_column( 'status', $status );
 
         if ( $client->update() ) {
