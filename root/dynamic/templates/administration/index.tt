@@ -922,7 +922,11 @@ $(document).ready(function() {
             { data: 'is_troublemaker' },
             { data: 'reservation' },
             { data: 'reservation_start' },
-            { data: 'client_status' }
+            { // Client status
+                data: function( row, type, val, meta ) {
+                    return TranslateStatus( row.client_status );
+                }
+            }
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             [% IF Settings.ThirdPartyURL %]
