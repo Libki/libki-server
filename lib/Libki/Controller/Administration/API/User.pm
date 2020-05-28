@@ -146,6 +146,7 @@ sub create_guest : Local : Args(0) {
         'success'  => $success,
         'username' => $username,
         'password' => $password,
+        'category' => $category,
         'minutes'  => $minutes_allotment,
     );
     $c->forward( $c->view('JSON') );
@@ -226,6 +227,7 @@ sub batch_create_guest : Local : Args(0) {
         'highest'  => $current_guest_number,
         'number'   => $guest_count,
         'minutes'  => $minutes_allotment,
+        'category' => $category,
         'contents' => $file_contents,
     );
 

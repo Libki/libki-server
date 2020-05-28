@@ -1086,78 +1086,113 @@ $(document).ready(function() {
 
     // new guest, multi guests modal
     $('.new-guest-button').click(function(){
-        $('#user-table-row-toolbar').hide();
-        $('#client-table-row-toolbar').hide();
+        [% IF UserCategories %]
+            $('#user-table-row-toolbar').hide();
+            $('#client-table-row-toolbar').hide();
 
-        $('#one-guest-title').show();
-        $('#create-new-guest-modal-button').show();
+            $('#one-guest-title').show();
+            $('#create-new-guest-modal-button').show();
 
-        $('#multi-guest-title').hide();
-        $('#create-multi-guest-modal-button').hide();
+            $('#multi-guest-title').hide();
+            $('#create-multi-guest-modal-button').hide();
 
-        $('#create-new-guest-modal').modal();
-    });
-
-    $('.multi-guest-button').click(function(){
-        $('#user-table-row-toolbar').hide();
-        $('#client-table-row-toolbar').hide();
-
-        $('#one-guest-title').hide();
-        $('#create-new-guest-modal-button').hide();
-
-        $('#multi-guest-title').show();
-        $('#create-multi-guest-modal-button').show();
-
-        $('#create-new-guest-modal').modal();
+            $('#create-new-guest-modal').modal();
+        [% ELSE %]
+            $.getJSON('[% c.uri_for("api/user/create_guest") %]/', function(data) {
+                if ( parseInt( data.success ) ) {
+                    ShowCreatedGuest( data );
+                } else {
+                    DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
+                }
+            });
+        [% END %]
     });
 
     // Set up the 'new guest' button
     $('#create-new-guest-modal-button').click(function(){
         $.getJSON('[% c.uri_for("api/user/create_guest") %]/?category='+$('#create-new-guest-category').val(), function(data) {
             if ( parseInt( data.success ) ) {
-                $('#create-new-guest-modal').modal('hide');
-                $("#user-table").dataTable().fnDraw(true);
-                ForceClientTableRefresh();
-
-                $('#user-table-row-toolbar').hide();
-                $('#client-table-row-toolbar').hide();
-
-                $('#new-guest-modal-form-username').val( data.username );
-                $('#new-guest-modal-form-password').val( data.password );
-                $('#new-guest-modal-form-minutes').val( data.minutes );
-                $('#new-guest-modal-form-category').val( $('#create-new-guest-category').val() );
-
-                $('#new-guest-modal').modal();
+                ShowCreatedGuest( data );
             } else {
                 DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
             }
         });
+    });
+
+    function ShowCreatedGuest( data ) {
+        $('#create-new-guest-modal').modal('hide');
+
+        $("#user-table").dataTable().fnDraw(true);
+        ForceClientTableRefresh();
+
+        $('#new-guest-modal-form-username').val( data.username );
+        $('#new-guest-modal-form-password').val( data.password );
+        $('#new-guest-modal-form-minutes').val( data.minutes );
+        $('#new-guest-modal-form-category').val( data.category );
+
+        $('#new-guest-modal').modal();
+
+        if ( !data.category ) {
+            $('#new-guest-modal-form-category').parent().hide();
+        }
+    }
+
+    $('.multi-guest-button').click(function(){
+        [% IF UserCategories %]
+            $('#user-table-row-toolbar').hide();
+            $('#client-table-row-toolbar').hide();
+
+            $('#one-guest-title').hide();
+            $('#create-new-guest-modal-button').hide();
+
+            $('#multi-guest-title').show();
+            $('#create-multi-guest-modal-button').show();
+
+            $('#create-new-guest-modal').modal();
+        [% ELSE %]
+            $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/', function(data) {
+                if ( parseInt( data.success ) ) {
+                    ShowCreatedGuestBatch( data );
+                } else {
+                    DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
+                }
+            });
+        [% END %]
     });
 
     // Set up the 'multi guest' button
     $('#create-multi-guest-modal-button').click(function(){
         $.getJSON('[% c.uri_for("api/user/batch_create_guest") %]/?category='+$('#create-new-guest-category').val(), function(data) {
             if ( parseInt( data.success ) ) {
-                $('#create-new-guest-modal').modal('hide');
-                $("#user-table").dataTable().fnDraw(true);
-                ForceClientTableRefresh();
-
-                $('#user-table-row-toolbar').hide();
-                $('#client-table-row-toolbar').hide();
-
-                $('#multi-guest-modal-form-highest').val( data.highest );
-                $('#multi-guest-modal-form-number').val( data.number );
-                $('#multi-guest-modal-form-minutes').val( data.minutes );
-                $('#multi-guest-modal-form-category').val( $('#create-new-guest-category').val() );
-
-                guest_pass_file_contents =  $('#create-new-guest-category').val() + '</br>' + data.contents;
-
-                $('#multi-guest-modal').modal();
+                ShowCreatedGuestBatch( data );
             } else {
                 DisplayMessage( "error", "[% c.loc("Unable to create guest user.") %]" );
             }
         });
     });
+
+    function ShowCreatedGuestBatch( data ) {
+        $('#create-new-guest-modal').modal('hide');
+        $("#user-table").dataTable().fnDraw(true);
+        ForceClientTableRefresh();
+
+        $('#user-table-row-toolbar').hide();
+        $('#client-table-row-toolbar').hide();
+
+        $('#multi-guest-modal-form-highest').val( data.highest );
+        $('#multi-guest-modal-form-number').val( data.number );
+        $('#multi-guest-modal-form-minutes').val( data.minutes );
+        $('#multi-guest-modal-form-category').val( data.category );
+
+        guest_pass_file_contents = data.category ? `${data.category}<br/>${data.contents}` : data.contents;
+
+        $('#multi-guest-modal').modal();
+
+        if ( ! data.category ) {
+            $('#multi-guest-modal-form-category').hide();
+        }
+    }
+
     $('#multi-guest-modal-form-print').click(function(){
         var guestPassWindow = window.open();
         guestPassWindow.document.write(guest_pass_file_contents);
