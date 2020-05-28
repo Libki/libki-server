@@ -221,45 +221,34 @@ sub clients : Local Args(0) {
              { 'client_id' => $c->id},
              {  order_by => { -asc => 'begin_time' } }
              )->first || undef;
+
         my $begin = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
         $begin =~ s/T/ / if(defined($begin));
-        my @clientValues = (
-            $c->name,
-            $c->location,
-            $c->type,
-            defined( $c->session ) ? $c->session->status : undef,
-            defined( $c->session ) ? $c->session->user->username : undef,
-            defined( $c->session ) ? $c->session->user->lastname : undef,
-            defined( $c->session ) ? $c->session->user->firstname : undef,
-            defined( $c->session ) ? $c->session->user->category : undef,
-            defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
-            defined( $c->session ) ? $c->session->minutes : undef,
-            defined( $c->session ) ? $c->session->user->status  : undef,
-            defined( $c->session ) ? $c->session->user->notes : undef,
-            defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
-            defined( $reservation ) ? $reservation->user->username : undef,
-            defined( $reservation ) ? $begin : undef,
-            $c->status,
-        );
 
-        if ($userCategories eq '') {
-            splice @clientValues, 7, 1;
-        }
-
-        if ($showFirstLastNames eq '0') {
-            splice @clientValues, 5, 2;
-        }
+        my $clientValues = {
+            name => $c->name,
+            location => $c->location,
+            type => $c->type,
+            session_status => defined( $c->session ) ? $c->session->status : undef,
+            username => defined( $c->session ) ? $c->session->user->username : undef,
+            lastname => defined( $c->session ) ? $c->session->user->lastname : undef,
+            firstname => defined( $c->session ) ? $c->session->user->firstname : undef,
+            category => defined( $c->session ) ? $c->session->user->category : undef,
+            minutes_allotment => defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
+            minutes => defined( $c->session ) ? $c->session->minutes : undef,
+            user_status => defined( $c->session ) ? $c->session->user->status  : undef,
+            notes => defined( $c->session ) ? $c->session->user->notes : undef,
+            is_troublemaker => defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
+            reservation => defined( $reservation ) ? $reservation->user->username : undef,
+            reservation_start => defined( $reservation ) ? $begin : undef,
+            client_status => $c->status,
+        };
 
         my $r;
         my $clientValuesCounter = 0;
-        $r->{'DT_RowId'} = $c->id;
+        $clientValues->{'DT_RowId'} = $c->id;
 
-        foreach my $clientValue (@clientValues) {
-            $r->{$clientValuesCounter} = $clientValue;
-            $clientValuesCounter++;
-        }
-
-        push( @results, $r );
+        push( @results, $clientValues );
     }
 
     $c->stash(
@@ -267,7 +256,7 @@ sub clients : Local Args(0) {
             'iTotalRecords'        => $total_records,
             'iTotalDisplayRecords' => $count,
             'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'data'               => \@results,
         }
     );
     $c->forward( $c->view('JSON') );

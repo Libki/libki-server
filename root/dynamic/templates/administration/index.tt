@@ -902,6 +902,28 @@ $(document).ready(function() {
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
         },
+        columns: [
+            { data: 'name' },
+            { data: 'location' },
+            { data: 'type' },
+            { data: 'session_status' },
+            { data: 'username' },
+            [% IF ShowFirstLastNames %]
+                { data: 'lastname' },
+                { data: 'firstname' },
+            [% END %]
+            [% IF UserCategories %]
+                { data: 'category' },
+            [% END %]
+            { data: 'minutes_allotment' },
+            { data: 'minutes' },
+            { data: 'user_status' },
+            { data: 'notes' },
+            { data: 'is_troublemaker' },
+            { data: 'reservation' },
+            { data: 'reservation_start' },
+            { data: 'client_status' }
+        ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             [% IF Settings.ThirdPartyURL %]
                 if ( aData[3] ) {
