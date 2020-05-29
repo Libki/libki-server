@@ -7,7 +7,7 @@ use DateTime;
 use DateTime::Format::DateParse;
 use DateTime::Format::MySQL;
 
-our $VERSION = '4.2.3';
+our $VERSION = '4.2.4';
 
 # Set flags and add plugins for the application.
 #

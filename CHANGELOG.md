@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.2.3] - 2020-05-28
+### Added
+- Add ability for a user to temporarily lock session. This feature is off by default and is enabled via a server setting. Requires Libki client 2.2.0 or later.
+
+## [4.2.3] - 2020-05-28
 ### Changed
 - Switch clients table to new DataTables api to reference columns by key/value in order to:
 - Enable translation of client statuses ( Online, Offline, Suspended )
