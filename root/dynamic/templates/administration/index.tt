@@ -1462,6 +1462,8 @@ $(document).ready(function() {
                          DisplayMessage( "error", "[% c.loc('Unable to make reservation: User not found.') %]" );
                      } else if ( data.reason == 'NO_TIME' ) {
                          DisplayMessage( "error", "[% c.loc('Unable to make reservation: The user has no time remaining..') %]" );
+                     } else if ( data.reason == 'MINIMUM_TIME' ) {
+                         DisplayMessage( "error", "[% c.loc('Unable to make reservation: This user has not enough time left.') %]" );
                      } else if ( data.reason == 'INVALID_TIME' ) {
                          DisplayMessage( "error", "[% c.loc('Unable to make reservation: The time you choose is not available.') %]" );
                      } else if ( data.reason == 'CLOSING_TIME' ) {

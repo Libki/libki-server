@@ -428,7 +428,11 @@ sub check_reservation
     }
 
     #6. Check minutes_allotment
-    if(!$result{'error'}  && defined($user->minutes_allotment)) {
+    my $date = $parser->parse_datetime("$begin_time 0:0");
+    my $today = strftime("%Y",localtime(time)).strftime("%m",localtime(time)).strftime("%d",localtime(time));
+    my $datecompare = $date->year.($date->month < 10 ? '0' : '').$date->month.($date->day < 10 ? '0' : '').$date->day;
+
+    if(!$result{'error'}  && defined($user->minutes_allotment) && ($today eq $datecompare)) {
         if( $user->minutes_allotment > 0 ) {
             push(@array, $user->minutes_allotment);
         }
@@ -443,7 +447,7 @@ sub check_reservation
         $minimum = 1 unless $minimum;
         $minutes = min @array;
         if($minutes <  $minimum) {
-           $result{'error'}  = 'INVALID_TIME';
+           $result{'error'}  = 'MINIMUM_TIME';
         }
         else{
            $result{'minutes'} = $minutes;
