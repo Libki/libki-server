@@ -200,6 +200,16 @@
                 </fieldset>
 
                 <fieldset>
+                    <legend>[% c.loc("Client session pausing") %]</legend>
+
+                    <div class="form-group">
+                        <input  id="EnableClientSessionLocking" name="EnableClientSessionLocking" type="checkbox" [% IF EnableClientSessionLocking %]checked="checked"[% END %]>
+                        <label for="EnableClientSessionLocking">[% c.loc("Enable session locking for clients") %]</label>
+                        <small class="form-text text-muted">[% c.loc("Allows client user to lock the session which returns Libki to a locked screen. This allows the user to walk away from the client and return to resume the session. While the client is lockd, session minutes continue to count down.") %]</small>
+                    </div>
+                </fieldset>
+
+                <fieldset>
                     <legend>[% c.loc("Client registration") %]</legend>
 
                     <div class="form-group">

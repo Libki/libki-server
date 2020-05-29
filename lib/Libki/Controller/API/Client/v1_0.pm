@@ -104,22 +104,22 @@ sub index : Path : Args(0) {
         }
 
         $c->stash(
-            registered              => !!$client,
-            ClientBehavior          => $c->stash->{'Settings'}->{'ClientBehavior'},
-            ReservationShowUsername => $c->stash->{'Settings'}->{'ReservationShowUsername'},
-            TermsOfService          => $c->stash->{'Settings'}->{'TermsOfService'},
+            registered                 => !!$client,
+            ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
+            ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
+            EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
+            TermsOfService             => $c->stash->{Settings}->{TermsOfService},
 
-            BannerTopURL    => $c->stash->{'Settings'}->{'BannerTopURL'},
-            BannerTopWidth  => $c->stash->{'Settings'}->{'BannerTopWidth'},
-            BannerTopHeight => $c->stash->{'Settings'}->{'BannerTopHeight'},
+            BannerTopURL               => $c->stash->{Settings}->{BannerTopURL},
+            BannerTopWidth             => $c->stash->{Settings}->{BannerTopWidth},
+            BannerTopHeight            => $c->stash->{Settings}->{BannerTopHeight},
 
-            BannerBottomURL    => $c->stash->{'Settings'}->{'BannerBottomURL'},
-            BannerBottomWidth  => $c->stash->{'Settings'}->{'BannerBottomWidth'},
-            BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
+            BannerBottomURL            => $c->stash->{Settings}->{BannerBottomURL},
+            BannerBottomWidth          => $c->stash->{Settings}->{BannerBottomWidth},
+            BannerBottomHeight         => $c->stash->{Settings}->{BannerBottomHeight},
 
-            inactivityWarning => $c->stash->{'Settings'}->{'ClientInactivityWarning'},
-            inactivityLogout  => $c->stash->{'Settings'}->{'ClientInactivityLogout'},
-
+            inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
+            inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
