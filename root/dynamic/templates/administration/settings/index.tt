@@ -296,22 +296,9 @@
 
                     <div class="form-group">
                         <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
-                        <label for="ReservationShowUsernameReservationShowUsernameCheckbox">[% c.loc("Display the status of the first reservation") %]</label>
+                        <label for="ReservationShowUsername">[% c.loc("Display the status of the first reservation") %]</label>
                         <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the reservation status of the person it is waiting for.") %]</small>
                     </div>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            $("#ReservationShowUsernameCheckbox").attr('checked', Boolean( [% ReservationShowUsername %] ) );
-
-                            $("#ReservationShowUsernameCheckbox").change( function() {
-                                if ( $(this).attr('checked') == 'checked') {
-                                    $("#ReservationShowUsername").val( 1 );
-                                } else {
-                                    $("#ReservationShowUsername").val( 0 );
-                                }
-                            });
-                        });
-                    </script>
                 </fieldset>
             </div>
 
