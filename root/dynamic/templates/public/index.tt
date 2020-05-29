@@ -285,6 +285,9 @@ $(document).ready(function() {
                     DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );
                     ForceClientTableRefresh();
                 }
+                else if ( data.reason == "MINIMUM_TIME" )  {
+                    DisplayMessage( "error", "[% c.loc("You don't have enough time for a minimum reservation.") %]" );
+                }
                 else if ( data.reason == "INVALID_TIME" )  {
                     DisplayMessage( "error", "[% c.loc("The time you chose is not available.") %]" );
                     $("#client-table-row-toolbar-make-reservation").click();
