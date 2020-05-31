@@ -213,9 +213,9 @@
                     <legend>[% c.loc("Client registration") %]</legend>
 
                     <div class="form-group">
-                        <label for="RetainHistoryDays">[% c.loc("Client registration update delay limit") %]</label>
+                        <label for="PostCrashTimeout">[% c.loc("Client registration update delay limit") %]</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="RetainHistoryDays" name="RetainHistoryDays" value="[% RetainHistoryDays %]">
+                            <input type="text" class="form-control" id="PostCrashTimeout" name="PostCrashTimeout" value="[% PostCrashTimeout %]">
                             <div class="input-group-append">
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
