@@ -88,6 +88,7 @@ sub create : Local : Args(0) {
             status            => 'enabled',
             created_on        => $now,
             updated_on        => $now,
+            creation_source   => 'local',
         }
     );
 
@@ -137,6 +138,7 @@ sub create_guest : Local : Args(0) {
             created_on        => $now,
             updated_on        => $now,
             category          => $category,
+            creation_source   => 'local',
         }
     );
 
@@ -203,6 +205,7 @@ sub batch_create_guest : Local : Args(0) {
                 created_on        => $now,
                 updated_on        => $now,
                 category          => $category,
+                creation_source   => 'local',
             }
         );
 

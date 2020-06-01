@@ -57,6 +57,7 @@ sub authenticate_via_ldap {
                 password          => $password,
                 minutes_allotment => $minutes,
                 status            => 'enabled',
+                creation_source   => 'LDAP',
             }
         );
     }

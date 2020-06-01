@@ -59,6 +59,7 @@
                 <th>[% c.loc("Troublemaker") %]</th>
                 <th>[% c.loc("Client") %]</th>
                 <th>[% c.loc("Client status") %]</th>
+                <th>[% c.loc("Creation source") %]</th>
             </thead>
         </table> 
 
@@ -867,7 +868,7 @@ $(document).ready(function() {
                 }
             [% END %]
             if ( aData[8] == 'Yes') {
-                    $('td:eq('+col+')', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[11]).format('lll') + '</a>' );
+                    $('td:eq('+col+')', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[12]).format('lll') + '</a>' );
             }
         },
         "aoColumnDefs": [

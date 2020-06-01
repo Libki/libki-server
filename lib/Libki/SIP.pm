@@ -229,6 +229,7 @@ sub authenticate_via_sip {
                 lastname          => $lastname,
                 firstname         => $firstname,
                 category          => $category,
+                creation_source   => 'SIP',
             }
         );
     }
