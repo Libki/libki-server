@@ -152,6 +152,12 @@ __PACKAGE__->table("users");
   is_nullable: 1
   size: 191
 
+=head2 creation_source
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -211,6 +217,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "category",
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
+  "creation_source",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
 );
 
 =head1 PRIMARY KEY

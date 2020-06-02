@@ -101,6 +101,7 @@ sub users : Local Args(0) {
             $u->is_troublemaker,
             defined( $u->session ) ? $u->session->client->name : undef,
             defined( $u->session ) ? $u->session->status : undef,
+            $u->creation_source,
             defined($u->troublemaker_until) ? $u->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
         );
 
