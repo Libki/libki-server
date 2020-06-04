@@ -223,7 +223,6 @@ sub authenticate_via_sip {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => undef,
                 status            => 'enabled',
                 birthdate         => $birthdate,
                 lastname          => $lastname,

@@ -279,6 +279,7 @@ sub check_login {
     my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
     my $reservation = $c->model('DB::Reservation')->search({ user_id => $user->id(), client_id => $client->id})->first || undef;
+    my $minutes_allotment = $user->minutes($c, $client);
 
     # 1. Check if the time is available and get the time_to_reservation
     if(!$result{'error'}) {
@@ -290,7 +291,7 @@ sub check_login {
                         { order_by => { -asc => 'begin_time' } }
                         )->first || undef;
 
-        my $minutes_timeout = $timeout < $user->minutes_allotment ? $timeout:$user->minutes_allotment;
+        my $minutes_timeout = $timeout < $minutes_allotment ? $timeout:$minutes_allotment;
         my $begin_time = $c->now;
 
         ## Calculate the time to the first reservation.
@@ -312,7 +313,6 @@ sub check_login {
 
     # 2. Get the available minutes
     if(!$result{'error'}) {
-        my $allotment = $user->minutes_allotment;
         # Get advanced rule if there is one
         my $allowance = $c->get_rule(
                              {
@@ -328,7 +328,7 @@ sub check_login {
               ? $c->setting('DefaultGuestSessionTimeAllowance')
               : $c->setting('DefaultSessionTimeAllowance');
 
-        my @array = ($allowance, $allotment);
+        my @array = ($allowance, $minutes_allotment);
         push(@array, $minutes_until_closing) if ($minutes_until_closing);
         push(@array, $time_to_reservation) if ($time_to_reservation > 0);
         my $min = min @array;
@@ -431,12 +431,13 @@ sub check_reservation
     my $date = $parser->parse_datetime("$begin_time 0:0");
     my $today = strftime("%Y",localtime(time)).strftime("%m",localtime(time)).strftime("%d",localtime(time));
     my $datecompare = $date->year.($date->month < 10 ? '0' : '').$date->month.($date->day < 10 ? '0' : '').$date->day;
+    my $minutes_allotment = $user->minutes($c, $client);
 
-    if(!$result{'error'}  && defined($user->minutes_allotment) && ($today eq $datecompare)) {
-        if( $user->minutes_allotment > 0 ) {
-            push(@array, $user->minutes_allotment);
+    if(!$result{'error'}  && defined($minutes_allotment) && ($today eq $datecompare)) {
+        if( $minutes_allotment > 0 ) {
+            push(@array, $minutes_allotment);
         }
-        elsif( $user->minutes_allotment <= 0) {
+        elsif( $minutes_allotment <= 0) {
             $result{'error'}  = 'NO_TIME';
         }
     }

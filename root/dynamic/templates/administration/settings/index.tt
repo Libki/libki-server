@@ -77,6 +77,12 @@
                              </div>
 
                             <div class="form-group">
+                                <input id="TimeAllowanceByLocation" name="TimeAllowanceByLocation" type="checkbox" [% IF TimeAllowanceByLocation %]checked="checked"[% END %]>
+                                <label for="TimeAllowanceByLocation">[% c.loc("Time allowance by location") %]</label>
+                                <small class="form-text text-muted">[% c.loc("If checked, each location has it's own time allowance shared between only the clients it contains.") %]</small>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="TimeDisplayFormat" style="margin-bottom:3px">[% c.loc("Time display format") %]</label>
                                 <div>
                                     <input type="radio" id="12hour" name="TimeDisplayFormat" value="12" style="margin-left:15px;" [% IF Settings.TimeDisplayFormat == '12' %]checked[% END %]>

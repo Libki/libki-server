@@ -27,23 +27,31 @@ my $dbh = $schema->storage->dbh;
 ## Gather sessions to delete, delete them, then log the deletions
 my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{LIBKI_TZ} ) );
 
+# strings depending on TimeAllowanceByLocation for queries using minutes allotments
+my $timeAllowanceByLocation = $c->setting('TimeAllowanceByLocation');
+my $location = ($timeAllowanceByLocation) ? "clients.location" : "''";
+my $join_clients_sessions     = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )" : "";
+my $join_clients_reservations = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = reservations.instance AND clients.id = reservations.client_id )" : "";
+
 # Gather the sessions to delete for statistical purposes
 my $sessions_to_delete = $dbh->selectall_arrayref(
-    q{
+    qq{
         SELECT * FROM sessions
         LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
         LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )
-        WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
+        LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
+        WHERE sessions.minutes <= 0 OR allotments.minutes <= 0
     },
     { Slice => {} }
 );
 
 # Delete sessions with a single query for efficiency
-$dbh->do(q{
+$dbh->do(qq{
     DELETE sessions
     FROM sessions
-    LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
-    WHERE sessions.minutes <= 0 OR users.minutes_allotment <= 0
+    $join_clients_sessions
+    LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
+    WHERE sessions.minutes <= 0 OR allotments.minutes <= 0
 });
 
 foreach my $s (@$sessions_to_delete) {
@@ -59,40 +67,41 @@ foreach my $s (@$sessions_to_delete) {
 }
 
 ## Decrement minutes for logged in users
-$dbh->do(q{
+$dbh->do(qq{
     UPDATE sessions
-    LEFT JOIN users ON (
-        users.instance = sessions.instance
-      AND
-        users.id = sessions.user_id
-    )
+    $join_clients_sessions
+    LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
     SET
         sessions.minutes = sessions.minutes - 1,
-        users.minutes_allotment = users.minutes_allotment - 1
+        allotments.minutes = allotments.minutes - 1
 });
 
-## Decrement minutes_allotment for reservation begins but not logged in users
-$dbh->do(q{
-    UPDATE users
+## Decrement minutes allotments for reservation begins but not logged in users
+$dbh->do(qq{
+    UPDATE allotments
     INNER JOIN reservations ON (
         reservations.begin_time < now()
       AND
         reservations.end_time > now()
       AND
-        reservations.user_id = users.id
+        reservations.user_id = allotments.user_id
       AND
-        users.minutes_allotment > 0
+        allotments.minutes > 0
     )
+    $join_clients_reservations
     SET
-        users.minutes_allotment = users.minutes_allotment -1
+        allotments.minutes = allotments.minutes -1
+    WHERE
+        allotments.location = $location
 });
 
 ## Handle automatic time extensions
 my $sessions = $dbh->selectall_arrayref(
-    q{
+    qq{
         SELECT users.*, 
                sessions.*, 
                clients.location,
+               allotments.minutes                       AS 'minutes_allotment',
                AutomaticTimeExtensionAt.value           AS 'AutomaticTimeExtensionAt', 
                AutomaticTimeExtensionLength.value       AS 'AutomaticTimeExtensionLength', 
                AutomaticTimeExtensionUnless.value       AS 'AutomaticTimeExtensionUnless', 
@@ -106,6 +115,10 @@ my $sessions = $dbh->selectall_arrayref(
         LEFT JOIN users 
               ON ( users.instance = sessions.instance 
                    AND users.id = sessions.user_id ) 
+        LEFT JOIN allotments
+              ON ( allotments.instance = sessions.instance
+                   AND allotments.user_id = sessions.user_id
+                   AND allotments.location = $location )
         LEFT JOIN settings AutomaticTimeExtensionAt 
               ON ( users.instance = AutomaticTimeExtensionAt.instance 
                    AND AutomaticTimeExtensionAt.name = 'AutomaticTimeExtensionAt' ) 
@@ -133,14 +146,11 @@ my $sessions = $dbh->selectall_arrayref(
     { Slice => {} }
 );
 
-my $update_user_sth = $dbh->prepare(q{
+my $update_user_sth = $dbh->prepare(qq{
     UPDATE sessions
-    LEFT JOIN users ON (
-        users.instance = sessions.instance
-      AND
-        users.id = sessions.user_id
-    )
-    SET minutes = minutes + ?, minutes_allotment = minutes_allotment + ? WHERE id = ?});
+    $join_clients_sessions
+    LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
+    SET sessions.minutes = sessions.minutes + ?, allotments.minutes = allotments.minutes + ? WHERE allotments.user_id = ?});
 
 my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
@@ -243,7 +253,7 @@ foreach my $instance ( @instances ) {
 
     if ($automaticTimeExtensionRenewal eq 1 && $automaticTimeExtensionLength ne undef) {
         $dbh->do(q{
-            UPDATE users SET minutes_allotment = ? WHERE instance = ? AND minutes_allotment IS NOT NULL AND minutes_allotment < 1
+            UPDATE allotments SET minutes = ? WHERE instance = ? AND minutes < 1
         }, undef, $instance, $automaticTimeExtensionLength);
     }
 }

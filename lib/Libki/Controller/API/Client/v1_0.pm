@@ -228,7 +228,7 @@ sub index : Path : Args(0) {
                     my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
 
                     #TODO: Move this to a unified sub, see TODO below
-                    my $minutes_allotment = $user->minutes_allotment;
+                    my $minutes_allotment = $user->minutes($c, $client);
 
                     # Get advanced rule if there is one
                     my $advanced_rule = $c->get_rule(
@@ -279,7 +279,16 @@ sub index : Path : Args(0) {
                     }
                     else {
                         if ($client) {
-                            $user->update({ minutes_allotment => $minutes_allotment }) if defined $minutes_allotment;
+                            if (defined $minutes_allotment) {
+                                $c->model('DB::Allotment')->update_or_create(
+                                    {
+                                        instance => $c->instance,
+                                        user_id  => $user->id,
+                                        location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location : '',
+                                        minutes  => $minutes_allotment,
+                                    }
+                                );
+                            }
                             my %result = $c->check_login($client,$user);
                             my $reservation = $result{'reservation'};
 

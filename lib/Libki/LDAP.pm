@@ -47,15 +47,11 @@ sub authenticate_via_ldap {
         $user->update();
     }
     else {          ## User authenticated and does not exist in Libki
-        my $minutes =
-          $c->model('DB::Setting')->find({ instance => $instance, name => 'DefaultTimeAllowance' })->value;
-
         $user = $c->model('DB::User')->create(
             {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes,
                 status            => 'enabled',
                 creation_source   => 'LDAP',
             }

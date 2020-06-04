@@ -44,7 +44,7 @@ sub get : Local : Args(1) {
             firstname       => $user->firstname,
             lastname        => $user->lastname,
             category        => $user->category,
-            minutes         => $user->minutes_allotment,
+            minutes         => $user->minutes($c),
             status          => $user->status,
             notes           => $user->notes,
             is_troublemaker => $user->is_troublemaker,
@@ -71,7 +71,7 @@ sub create : Local : Args(0) {
     my $lastname  = $params->{lastname};
     my $category  = $params->{category};
     my $password  = $params->{password};
-    my $minutes   = $params->{minutes} || $c->setting('DefaultTimeAllowance') || 0;
+    my $minutes   = $params->{minutes} || undef;
 
     my $success = 0;
 
@@ -84,13 +84,23 @@ sub create : Local : Args(0) {
             lastname          => $lastname,
             category          => $category,
             password          => $password,
-            minutes_allotment => $minutes,
             status            => 'enabled',
             created_on        => $now,
             updated_on        => $now,
             creation_source   => 'local',
         }
     );
+
+    if (defined $minutes) {
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $instance,
+                user_id  => $user->id,
+                location => '',
+                minutes  => $minutes,
+            }
+        );
+    }
 
     $success = 1 if ($user);
 
@@ -132,7 +142,6 @@ sub create_guest : Local : Args(0) {
             instance          => $instance,
             username          => $username,
             password          => $password,
-            minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
             created_on        => $now,
@@ -199,7 +208,6 @@ sub batch_create_guest : Local : Args(0) {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes',
                 created_on        => $now,
@@ -273,12 +281,24 @@ sub update : Local : Args(0) {
             firstname         => $firstname,
             lastname          => $lastname,
             category          => $category,
-            minutes_allotment => $minutes,
             notes             => $notes,
             status            => $status,
             updated_on        => $now,
         }
     );
+
+    if (defined $minutes) {
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $instance,
+                user_id  => $user->id,
+                location => '',
+                minutes  => $minutes,
+            }
+        );
+    } else {
+        $c->model('DB::Allotment')->find( { instance => $instance, user_id => $user->id } )->delete;
+    }
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
 

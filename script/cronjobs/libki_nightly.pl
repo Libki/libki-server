@@ -25,7 +25,7 @@ $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
 $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { value => '1' } );
 
 ## Reset user minutes
-$c->model('DB::User')->update( { minutes_allotment => undef } );
+$c->model('DB::Allotment')->delete();
 
 ## Set troublemaker status
 my @troublemakers = $c->model('DB::user')->search( { is_troublemaker => 'Yes' } );
