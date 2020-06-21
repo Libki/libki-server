@@ -14,6 +14,7 @@
                     <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
                     <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
                     <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
+                    <a class="nav-link" id="v-pills-client-power-options-tab" data-toggle="pill" href="#v-pills-client-power-options" role="tab" aria-controls="v-pills-client-power-options" aria-selected="false">[% c.loc("Client power options") %]</a>
                     <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
                     <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
                     <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
@@ -517,6 +518,34 @@
                         </div>
                     </fieldset>
                     
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-client-power-options" role="tabpanel" aria-labelledby="v-pills-client-power-options-tab">
+                <fieldset>
+                    <legend>[% c.loc("Client power off settings") %]</legend>
+
+                    <div class="form-group">
+                        <label for="ClientShutdownAction" style="margin-bottom:3px">[% c.loc("Power off action") %]</label>
+                        <div>
+                            <input type="radio" id="shutdown" name="ClientShutdownAction" value="shutdown" style="margin-left:15px;" [% IF !ClientShutdownAction || ClientShutdownAction == 'shutdown' %]checked[% END %]>
+                            <label for="shutdown" style="margin-bottom:3px;"> Shutdown</label>
+                            <input type="radio" id="suspend" name="ClientShutdownAction" value="suspend" style="margin-left:20px;" [% IF ClientShutdownAction == 'suspend' %]checked[% END %]>
+                            <label for="suspend" style="margin-bottom:3px;"> Suspend</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("Choose which action the automatic shutdown and turn off button perform. Depending on your setup, suspend may be necessary to correctly use together with the power on function.") %]</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientShutdownDelay">[% c.loc("Client automatic shutdown delay") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientShutdownDelay" name="ClientShutdownDelay" value="[% ClientShutdownDelay %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Automatically turn off clients this number of minutes after closing time. Leave empty to disable automatic shutdown.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 

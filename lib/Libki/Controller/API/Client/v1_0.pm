@@ -77,6 +77,21 @@ sub index : Path : Args(0) {
                 minutes  => $client_s->session->minutes,
                 username => $client_s->session->user->username,
             );
+        } elsif ($client_s->status eq "shutdown" || $client_s->status eq "suspend" || $client_s->status eq "restart") {
+            $c->stash(
+                $client_s->status => 1,
+            );
+        }
+
+        my $minutes_to_shutdown = $c->setting('ClientShutdownDelay');
+        if (length($minutes_to_shutdown)) {
+            my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_s->location });
+            if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) < 0 ) {
+                my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
+                $c->stash(
+                    $status => 1,
+                );
+            }
         }
 
         $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );

@@ -261,6 +261,96 @@ sub delete_client : Local : Args(1) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 shutdown
+
+Shutdown a specific client by changing it's status.
+The status change will send a message to the client to initiate shutdown.
+
+=cut
+
+sub shutdown : Local : Args(1) {
+    my ( $self, $c, $client_id ) = @_;
+
+    my $success = 0;
+    my $client = $c->model('DB::Client')->find($client_id);
+    my $status = $c->setting('ClientShutdownAction') || 'shutdown';
+
+    if ($client->status eq 'online') {
+        $success = 1 if $client->update( { status => $status } );
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 restart
+
+Restarts a specific client by changing it's status.
+The status change will send a message to the client to initiate reboot.
+
+=cut
+
+sub restart : Local : Args(1) {
+    my ( $self, $c, $client_id ) = @_;
+
+    my $success = 0;
+    my $client = $c->model('DB::Client')->find($client_id);
+
+    if ($client->status eq 'online') {
+        $success = 1 if $client->update( { status => 'restart' } );
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 shutdown_all
+
+Shutdown all clients by changing their statuses.
+The status change will send a message to each client to initiate shutdown.
+
+=cut
+
+sub shutdown_all : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $success = 0;
+    my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+    my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
+
+    while ( my $client = $clients->next() ) {
+        if ($client->status eq 'online') {
+            $success = 1 if $client->update( { status => $status } );
+        }
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 restart_all
+
+Restarts all clients by changing their statuses.
+The status change will send a message to each client to initiate reboot.
+
+=cut
+
+sub restart_all : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $success = 0;
+    my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+
+    while ( my $client = $clients->next() ) {
+        if ($client->status eq 'online') {
+            $success = 1 if $client->update( { status => 'restart' } );
+        }
+    }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
