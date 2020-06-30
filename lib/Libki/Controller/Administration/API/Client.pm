@@ -1,6 +1,7 @@
 package Libki::Controller::Administration::API::Client;
 use Moose;
 use namespace::autoclean;
+use Libki::Clients qw( wakeonlan );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -346,6 +347,21 @@ sub restart_all : Local : Args(0) {
             $success = 1 if $client->update( { status => 'restart' } );
         }
     }
+
+    $c->stash( 'success' => $success );
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 wakeup
+
+Wake up all clients using wake on lan.
+
+=cut
+
+sub wakeup : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $success = Libki::Clients::wakeonlan($c);
 
     $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );

@@ -128,6 +128,7 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="Client actions">
+                    <a href="#" class="turn-on-button btn btn-success"><i class="fas fa-power-off"></i> [% c.loc("Turn on all clients") %]</a>
                     <a href="#" class="restart-button btn btn-warning"><i class="fas fa-redo"></i> [% c.loc("Restart all clients") %]</a>
                     <a href="#" class="shutdown-button btn btn-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off all clients") %]</a>
                 </div>
@@ -1238,6 +1239,19 @@ $(document).ready(function() {
     $('#multi-guest-modal-form-print').click(function(){
         var guestPassWindow = window.open();
         guestPassWindow.document.write(guest_pass_file_contents);
+    });
+
+    $(".turn-on-button").click(function () {
+        if ( confirm("[% c.loc("Are you sure you want to turn on all clients?") %]") ) {
+            $.getJSON( '[% c.uri_for('/administration/api/client/wakeup') %]', function(data) {
+                if ( data.success ) {
+                    DisplayMessage( "success", "[% c.loc("Clients turned on.") %]" );
+                    $("#client-table").dataTable().fnDraw(true);
+                } else {
+                    DisplayMessage( "error", "[% c.loc("Unable to turn on all clients.") %]" );
+                }
+            });
+        }
     });
 
     $(".shutdown-button").click(function () {
