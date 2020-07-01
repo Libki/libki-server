@@ -14,6 +14,7 @@
                     <a class="nav-link" id="v-pills-automatic-time-extension-tab" data-toggle="pill" href="#v-pills-automatic-time-extension" role="tab" aria-controls="v-pills-automatic-time-extension" aria-selected="false">[% c.loc("Automatic time extension") %]</a>
                     <a class="nav-link" id="v-pills-client-behavior-tab" data-toggle="pill" href="#v-pills-client-behavior" role="tab" aria-controls="v-pills-client-behavior" aria-selected="false">[% c.loc("Client behavior") %]</a>
                     <a class="nav-link" id="v-pills-client-login-banners-tab" data-toggle="pill" href="#v-pills-client-login-banners" role="tab" aria-controls="v-pills-client-login-banners" aria-selected="false">[% c.loc("Client login banners") %]</a>
+                    <a class="nav-link" id="v-pills-client-power-options-tab" data-toggle="pill" href="#v-pills-client-power-options" role="tab" aria-controls="v-pills-client-power-options" aria-selected="false">[% c.loc("Client power options") %]</a>
                     <a class="nav-link" id="v-pills-custom-javascript-tab" data-toggle="pill" href="#v-pills-custom-javascript" role="tab" aria-controls="v-pills-custom-javascript" aria-selected="false">[% c.loc("Custom JavaScript") %]</a>
                     <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
                     <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
@@ -523,6 +524,103 @@
                         </div>
                     </fieldset>
                     
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-client-power-options" role="tabpanel" aria-labelledby="v-pills-client-power-options-tab">
+                <fieldset>
+                    <legend>[% c.loc("Client power off settings") %]</legend>
+
+                    <div class="form-group">
+                        <label for="ClientShutdownAction" style="margin-bottom:3px">[% c.loc("Power off action") %]</label>
+                        <div>
+                            <input type="radio" id="shutdown" name="ClientShutdownAction" value="shutdown" style="margin-left:15px;" [% IF !ClientShutdownAction || ClientShutdownAction == 'shutdown' %]checked[% END %]>
+                            <label for="shutdown" style="margin-bottom:3px;"> Shutdown</label>
+                            <input type="radio" id="suspend" name="ClientShutdownAction" value="suspend" style="margin-left:20px;" [% IF ClientShutdownAction == 'suspend' %]checked[% END %]>
+                            <label for="suspend" style="margin-bottom:3px;"> Suspend</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("Choose which action the automatic shutdown and turn off button perform. Depending on your setup, suspend may be necessary to correctly use together with the power on function.") %]</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientShutdownDelay">[% c.loc("Client automatic shutdown delay") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientShutdownDelay" name="ClientShutdownDelay" value="[% ClientShutdownDelay %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Automatically turn off clients this number of minutes after closing time. Leave empty to disable automatic shutdown.") %]</small>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>[% c.loc("Client power on settings") %]</legend>
+                    <small class="form-text text-muted">[% c.loc("To power on clients, wake on LAN must be enabled on the target computers. For more information, please refer to the Libki manual.") %]</small>
+                    <br/>
+
+                    <div class="form-group">
+                        <label for="WOLHost">[% c.loc("Host") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="WOLHost" name="WOLHost" value="[% WOLHost %]">
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("IP address or fully qualified domain name (FQDN) where to send the signal. Defaults to the limited broadcast address (255.255.255.255).") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="WOLPort">[% c.loc("Port") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="WOLPort" name="WOLPort" value="[% WOLPort %]">
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Port to send the signal. Defaults to the discard port (9).") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientMACAddresses">[% c.loc("MAC addresses") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="ClientMACAddresses" name="ClientMACAddresses" rows="10">[% ClientMACAddresses %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("A list of the network adapter's MAC addresses for the computers to wake up.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientWakeTime">[% c.loc("Automatic power on time") %]</label>
+                        <div class="input-group" style="width:200px;">
+					        <select id="ClientWakeHour" name="ClientWakeHour" class="form-control" style="width:50px;">
+                                <option value="" [% UNLESS ClientWakeHour %] selected="selected" [% END %]></option>
+						        [% FOREACH h IN Hours %]
+                                    [% IF h == 12 && TimeDisplayFormat == 12 %]
+                                        <optgroup label="-pm-"></optgroup>
+                                    [% END %]
+							            <option value="[% h %]" [% IF h == ClientWakeHour %] selected="selected" [% END %]>
+                                        [% IF TimeDisplayFormat == 12 %]
+                                            [% AM.$h %]
+                                        [% ELSE %]
+                                            [% h %]
+                                        [% END %]
+                                        </option>
+						        [% END %]
+					        </select>
+					        &nbsp;
+					        :
+					        &nbsp;
+                            [% SET Minutes = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59'] %]
+					        <select id="ClientWakeMinute" name="ClientWakeMinute" class="form-control"  style="width:50px;">
+                                <option value="" [% UNLESS ClientWakeMinute %] selected="selected" [% END %]></option>
+						        [% FOREACH m IN Minutes %]
+							        <option value="[% m %]" [% IF m == ClientWakeMinute %] selected="selected" [% END %]>[% m %]</option>
+						        [% END %]
+					        </select>
+                            &nbsp;&nbsp;<a id="opening-ampm-label" style="visibility:[% IF TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];">
+                                [% IF ClientWakeHour && ClientWakeHour > 11 %]
+                                    pm
+                                [% ELSE %]
+                                    am
+                                [% END %]
+                            </a>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("The time at which to automatically turn on the clients. Leave empty to disable.") %]</small>
+                    </div>
                 </fieldset>
             </div>
 
