@@ -30,7 +30,7 @@ sub users : Local Args(0) {
     my $dbh = $schema->storage->dbh;
 
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my @columns = qw/me.username me.lastname me.firstname me.category session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -88,13 +88,19 @@ sub users : Local Args(0) {
 
     my @results;
     foreach my $u (@users) {
+        my $minutes_allotment = $u->allotments->find({
+            'instance' => $instance,
+            'location' => ($c->setting('TimeAllowanceByLocation'))
+                ? ( ( defined($u->session) && defined($u->session->client->location) ) ? $u->session->client->location : '' )
+                : '',
+        });
 
         my @userValues = (
             $u->username,
             $u->lastname,
             $u->firstname,
             $u->category,
-            $u->minutes_allotment,
+            defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
             $u->session ? $u->session->minutes : undef,
             $u->status,
             $u->notes,
@@ -148,7 +154,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker me.status/;
+      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category session.minutes user.status user.notes user.is_troublemaker me.status/;
 
     if ($userCategories eq '') {
         splice @columns, 6, 1;
@@ -226,6 +232,14 @@ sub clients : Local Args(0) {
         my $begin = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
         $begin =~ s/T/ / if(defined($begin));
 
+        my $minutes_allotment = undef;
+        if ( defined($c->session) ) {
+            $minutes_allotment = $c->session->user->allotments->find({
+                'instance' => $instance,
+                'location' => ( $client->setting('TimeAllowanceByLocation') && defined($c->location) ) ? $c->location : '',
+            });
+        }
+
         my $clientValues = {
             name => $c->name,
             location => $c->location,
@@ -235,7 +249,7 @@ sub clients : Local Args(0) {
             lastname => defined( $c->session ) ? $c->session->user->lastname : undef,
             firstname => defined( $c->session ) ? $c->session->user->firstname : undef,
             category => defined( $c->session ) ? $c->session->user->category : undef,
-            minutes_allotment => defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
+            minutes_allotment => defined( $minutes_allotment ) ?$minutes_allotment->minutes : undef,
             minutes => defined( $c->session ) ? $c->session->minutes : undef,
             user_status => defined( $c->session ) ? $c->session->user->status  : undef,
             notes => defined( $c->session ) ? $c->session->user->notes : undef,

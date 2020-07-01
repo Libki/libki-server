@@ -140,18 +140,27 @@ sub create_user {
     }
     else {
         $r->{created} = 1;
-        my $default_time_allowance = $c->setting('DefaultTimeAllowance') || 0;
 
         $user = $user_rs->create(
             {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes || $default_time_allowance,
                 status            => 'enabled',
                 is_troublemaker   => 'No',
             }
         );
+
+        if (defined $minutes) {
+            $c->model('DB::Allotment')->update_or_create(
+                {
+                    instance => $user->instance,
+                    user_id  => $user->id,
+                    location => '',
+                    minutes  => $minutes,
+                }
+            );
+        }
     }
 
     if ( $admin || $superadmin ) {

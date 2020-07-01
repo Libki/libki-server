@@ -112,9 +112,28 @@ sub unlock : Local : Args(1) {
         }
 
         # reset allowance and calculate session time
-        my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-        $minutes_allotment = 0 unless $minutes_allotment > 0;
-        $user->update( { minutes_allotment => $minutes_allotment } );
+        my $advanced_rule = $c->get_rule(
+            {
+                rule            => 'guest_daily',
+                client_location => $client->location,
+                client_type     => $client->type,
+                client_name     => $client->name,
+                client_type     => $client->type,
+                user_category   => $user->category,
+            }
+        );
+
+        my $minutes_allotment = $advanced_rule if ( defined $advanced_rule );
+        $minutes_allotment = $c->setting('DefaultGuestTimeAllowance') unless ( defined( $minutes_allotment ) );
+
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $c->instance,
+                user_id  => $user->id,
+                location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location : '',
+                minutes  => $minutes_allotment,
+            }
+        );
 
         my %result = $c->check_login($client,$user);
 

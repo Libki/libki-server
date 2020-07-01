@@ -74,12 +74,6 @@ __PACKAGE__->table("users");
   is_nullable: 0
   size: 191
 
-=head2 minutes_allotment
-
-  data_type: 'integer'
-  default_value: 0
-  is_nullable: 1
-
 =head2 status
 
   data_type: 'varchar'
@@ -169,8 +163,6 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "password",
   { data_type => "varchar", is_nullable => 0, size => 191 },
-  "minutes_allotment",
-  { data_type => "integer", default_value => 0, is_nullable => 1 },
   "status",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "notes",
@@ -250,6 +242,21 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("unique_username", ["instance", "username"]);
 
 =head1 RELATIONS
+
+=head2 allotments
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Allotment>
+
+=cut
+
+__PACKAGE__->has_many(
+  "allotments",
+  "Libki::Schema::DB::Result::Allotment",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 =head2 messages
 
@@ -352,10 +359,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QGHj8cSnZ7PiFp8Uzysrvg
-
-__PACKAGE__->numeric_columns(qw/minutes_allotment/);
+# Created by DBIx::Class::Schema::Loader v0.07048 @ 2020-06-04 03:13:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JT64aUk50BWru7ihtwYOKA
 
 __PACKAGE__->add_columns(
     'password' => {
@@ -415,6 +420,25 @@ sub age {
     my $age = $duration->in_units('years');
 
     return $age;
+}
+
+=head2 minutes
+
+Returns the minutes allotment of the patron for a specific client.
+
+=cut
+
+sub minutes {
+    my ( $self, $c, $client ) = @_;
+
+    my $user_minutes = $self->allotments->find(
+        {
+            instance => $c->instance,
+            location => ( $c->setting('TimeAllowanceByLocation') && defined($client) && defined($client->location) ) ? $client->location : '',
+        }
+    ) || undef;
+
+    return (defined $user_minutes) ? $user_minutes->minutes : undef;
 }
 
 =head1 AUTHOR
