@@ -3,80 +3,201 @@
 [% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
-
-<p>
-    <form>
-      <div class="form-row align-items-center">
-        <div class="col-aufrom">
-          <label class="sr-only" for="inlineFormInputGroup">[% c.loc("From") %]</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">[% c.loc("From") %]</div>
-            </div>
-            <input type="date" class="form-control" id="from" name="from" value="[% from.ymd %]">
-          </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+        <div class="nav  nav-tabs flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link [% IF operation == 'location' %] active [% END %]" id="v-pills-statistics-location-tab" data-toggle="pill" href="#statistics-location" role="tab" aria-controls="v-pills-statistics-location" aria-selected="true"> [% c.loc("Location") %]</a>
+        <a class="nav-link [% IF operation == 'client' %] active [% END %]" id="v-pills-statistics-client-tab" data-toggle="pill" href="#statistics-client" role="tab" aria-controls="v-pills-statistics-client" aria-selected="true"> [% c.loc("Client") %]</a>
+        <a class="nav-link [% IF operation == 'reservation' %] active [% END %]" id="v-pills-statistics-reservation-tab" data-toggle="pill" href="#statistics-reservation" role="tab" aria-controls="v-pills-statistics-reservation" aria-selected="true"> [% c.loc("Reservation") %]</a>
         </div>
+    </div>
 
-        <div class="col-auto">
-          <label class="sr-only" for="inlineFormInputGroup">[% c.loc("To") %]</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">[% c.loc("To") %]</div>
-            </div>
-            <input type="date" class="form-control" id="to" name="to" value="[% to.ymd %]">
-          </div>
-        </div>
+    <div class="col-lg">
+      <div class="tab-content" id="v-pills-tabContent">
 
-        <div class="col-auto">
-          <button type="submit" class="btn btn-primary mb-2">[% c.loc("Limit") %]</button>
-        </div>
-      </div>
-    </form>
-</p>
+        <div class="tab-pane fade [% IF operation == 'location' %] show active [% END %]" id="statistics-location" role="tabpanel" aria-labelledby="v-pills-statistics-location-tab">
+          <p>
+            <form>
+              <div class="form-row align-items-center">
+                <div class="col-aufrom">
+                  <label class="sr-only" for="inlineFormInputGroup">[% c.loc("From") %]</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">[% c.loc("From") %]</div>
+                    </div>
+                    <input type="date" class="form-control" id="from" name="from" value="[% from.ymd %]">
+                  </div>
+                </div>
 
-<h5>[% c.loc("Daily usage") %]</h5>
-<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-    <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
-    <thead>
-        <tr>
-            <th>[% c.loc("Date") %]</th>
-            [% SET location_totals = {} %]
-            [% FOREACH b IN by_location_columns %]
-                [% SET location_totals.$b = '0' %]
-                <th>
-                    [% IF b == 'XXX__UNDEFINED__' %]
-                        <i>[% c.loc("No location set") %]</i>
-                    [% ELSE %]
-                        [% b %]
-                    [% END %]
-                </th>
-            [% END %]
-            <th>[% c.loc("Total by date") %]</th>
-        </tr>
-    </thead>
-    <tbody>
-        [% SET grand_total = 0 %]
-        [% FOREACH key IN by_location.keys.sort %]
-            <tr>
-                <td>[% LibkiDate.format(key) %]</td>
-                [% SET date_total = 0 %]
-                [% FOREACH b IN by_location_columns %]
-                    <td>[% by_location.$key.$b || '0' %]</td>
-                    [% SET date_total = date_total + by_location.$key.$b %]
-                    [% SET location_totals.$b = location_totals.$b + by_location.$key.$b %]
-                [% END %]
-                [% SET grand_total = grand_total + date_total %]
-                <th>[% date_total %]</th>
-            </tr>
-        [% END %]
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>[% c.loc("Total by location") %]</th>
-            [% FOREACH key IN by_location_columns %]
-                <th>[% location_totals.$key %]</th>
-            [% END %]
-            <th><i>[% grand_total %]</i></th>
-        </tr>
-    </tfoot>
-</table>
+                <div class="col-auto">
+                  <label class="sr-only" for="inlineFormInputGroup">[% c.loc("To") %]</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">[% c.loc("To") %]</div>
+                    </div>
+                    <input type="date" class="form-control" id="to" name="to" value="[% to.ymd %]">
+                  </div>
+                </div>
+
+                <div class="col-auto">
+                  <button type="submit" class="btn btn-primary mb-2">[% c.loc("Limit") %]</button>
+                </div>
+              </div>
+              <input type="hidden" name="operation" value="location">
+            </form>
+          </p>
+
+          <h5>[% c.loc("Daily usage by location") %]</h5>
+          <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+              <caption>[% c.loc("Daily usage, count of daily logins by location") %]</caption>
+              <thead>
+                  <tr>
+                      <th>[% c.loc("Date") %]</th>
+                      [% SET location_totals = {} %]
+                      [% FOREACH b IN by_location_columns %]
+                          [% SET location_totals.$b = '0' %]
+                          <th>
+                              [% IF b == 'XXX__UNDEFINED__' %]
+                                  <i>[% c.loc("No location set") %]</i>
+                              [% ELSE %]
+                                  [% b %]
+                              [% END %]
+                          </th>
+                      [% END %]
+                      <th>[% c.loc("Total by date") %]</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  [% SET grand_total = 0 %]
+                  [% FOREACH key IN by_location.keys.sort %]
+                      <tr>
+                          <td>[% LibkiDate.format(key) %]</td>
+                          [% SET date_total = 0 %]
+                          [% FOREACH b IN by_location_columns %]
+                              <td>[% by_location.$key.$b || '0' %]</td>
+                              [% SET date_total = date_total + by_location.$key.$b %]
+                              [% SET location_totals.$b = location_totals.$b + by_location.$key.$b %]
+                          [% END %]
+                          [% SET grand_total = grand_total + date_total %]
+                          <th>[% date_total %]</th>
+                      </tr>
+                  [% END %]
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <th>[% c.loc("Total by location") %]</th>
+                      [% FOREACH key IN by_location_columns %]
+                          <th>[% location_totals.$key %]</th>
+                      [% END %]
+                      <th><i>[% grand_total %]</i></th>
+                  </tr>
+              </tfoot>
+          </table>
+
+        </div> <!-- div.tab-pane -->
+        <div class="tab-pane fade [% IF operation == 'client' %] show active [% END %]" id="statistics-client" role="tabpanel" aria-labelledby="v-pills-statistics-client-tab">
+          <p>
+            <form>
+              <div class="form-row align-items-center">
+                <div class="col-aufrom">
+                  <label class="sr-only" for="inlineFormInputGroup">[% c.loc("From") %]</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">[% c.loc("From") %]</div>
+                    </div>
+                    <input type="date" class="form-control" id="from" name="from" value="[% from.ymd %]">
+                  </div>
+                </div>
+
+                <div class="col-auto">
+                  <label class="sr-only" for="inlineFormInputGroup">[% c.loc("To") %]</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">[% c.loc("To") %]</div>
+                    </div>
+                    <input type="date" class="form-control" id="to" name="to" value="[% to.ymd %]">
+                  </div>
+                </div>
+
+                <div class="col-auto">
+                  <button type="submit" class="btn btn-primary mb-2" onclick="refresh()">[% c.loc("Limit") %]</button>
+                </div>
+              </div>
+              <input type="hidden" name="operation" value="client">
+            </form>
+          </p>
+          <h5>[% c.loc("Daily usage by client") %]</h5>
+          <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+              <caption>[% c.loc("Daily usage, count of daily logins by client") %]</caption>
+              <thead>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Total") %]</th>
+              </thead>
+              <tbody>
+                  [% FOREACH client IN by_client %]
+                      <tr>
+                          <td>[% client.name %]</td>
+                          <td>[% client.location %]</td>
+                          <td>[% client.count || '0' %]</td>
+                      </tr>
+                  [% END %]
+              </tbody>
+          </table>
+        </div> <!-- div.tab-pane -->
+
+        <div class="tab-pane fade [% IF operation == 'reservation' %] show active [% END %]" id="statistics-reservation" role="tabpanel" aria-labelledby="v-pills-statistics-reservation-tab">
+          <p>
+             <form>
+               <div class="form-row align-items-center">
+                 <div class="col-aufrom">
+                   <label class="sr-only" for="inlineFormInputGroup">[% c.loc("From") %]</label>
+                   <div class="input-group mb-2">
+                     <div class="input-group-prepend">
+                       <div class="input-group-text">[% c.loc("From") %]</div>
+                     </div>
+                     <input type="date" class="form-control" id="reservation_from" name="reservation_from" value="[% reservation_from.ymd %]">
+                   </div>
+                 </div>
+
+                <div class="col-auto">
+                   <label class="sr-only" for="inlineFormInputGroup">[% c.loc("To") %]</label>
+                   <div class="input-group mb-2">
+                     <div class="input-group-prepend">
+                       <div class="input-group-text">[% c.loc("To") %]</div>
+                     </div>
+                     <input type="date" class="form-control" id="reservation_to" name="reservation_to" value="[% reservation_to.ymd %]">
+                   </div>
+                 </div>
+
+                 <div class="col-auto">
+                   <button type="submit" class="btn btn-primary mb-2">[% c.loc("Limit") %]</button>
+                 </div>
+                </div>
+                <input type="hidden" name="operation" value="reservation">
+             </form>
+          </p>
+          <h5>[% c.loc("Reservations") %]</h5>
+          <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+              <caption>[% c.loc("Available reservations") %]</caption>
+              <thead>
+                <th>[% c.loc("Client") %]</th>
+                <th>[% c.loc("Location") %]</th>
+                <th>[% c.loc("Total") %]</th>
+              </thead>
+              <tbody>
+                  [% FOREACH client IN by_reservation %]
+                      <tr>
+                          <td>[% client.client %]</td>
+                          <td>[% client.location %]</td>
+                          <td>[% client.count || '0' %]</td>
+                      </tr>
+                  [% END %]
+              </tbody>
+          </table>
+        </div> <!-- div.tab-pane -->
+      </div> <!-- div.tab-content -->
+    </div> <!-- div.col-lg-->
+  </div> <!-- div.row-->
+</div> <!-- div.container-fluid-->

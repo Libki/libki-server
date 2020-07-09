@@ -35,6 +35,7 @@ sub statistics : Local : Args(0) {
 
     my $instance = $c->instance;
 
+    my $operation = $c->request->params->{'operation'} || 'location';
     my $from = $c->request->params->{'from'};
     my $to   = $c->request->params->{'to'};
 
@@ -92,11 +93,90 @@ sub statistics : Local : Args(0) {
         $columns->{ $columns{'location'} } = 1;
     }
     my @columns = sort keys %$columns;
+
+    #statistics of client
+    my @client_result;
+    my @by_client = $c->model('DB::Statistic')->search(
+        {
+            instance => $instance,
+            created_on =>
+              { '>=' => $from, '<=' => $to, },
+            action => 'LOGIN',
+        },
+        {
+            select => [
+                'client_name',
+                { 'COUNT' => '*' },
+                'client_location',
+            ],
+            as       => [ 'name', 'count', 'location', ],
+            group_by => [
+                'client_name'
+            ],
+        }
+    );
+
+    foreach my $client (@by_client) {
+        push ( @client_result, $client->{'_column_data'});
+    }
+
+    #statistics of reservation
+    my $reservation_from = $c->request->params->{'reservation_from'};
+    my $reservation_to   = $c->request->params->{'reservation_to'};
+
+    $reservation_from ||= DateTime->today( time_zone => $c->tz )->ymd();
+    $reservation_to ||= DateTime->today( time_zone => $c->tz )->add( months => 1 )->ymd();
+
+    my $reservation_from_dt = DateTime::Format::DateParse->parse_datetime($reservation_from);
+    my $reservation_to_dt   = DateTime::Format::DateParse->parse_datetime($reservation_to);
+
+    $reservation_from = $reservation_from_dt->ymd();
+    $reservation_to   = $reservation_to_dt->ymd();
+
+    if ( $reservation_from gt $reservation_to ) {
+        ( $reservation_from, $reservation_to ) = ( $reservation_to, $reservation_from );
+    }
+
+    $reservation_from .= " 00:00:00";
+    $reservation_to .= " 23:59:59";
+    my @by_reservation = $c->model('DB::Reservation')->search(
+        {
+            instance => $instance,
+            begin_time =>
+              { 'BETWEEN' => [ $reservation_from, $reservation_to ], },
+        },
+        {
+            select => [
+                'client_id',
+                { 'COUNT' => '*' },
+            ],
+            as       => [ 'client_id', 'count', ],
+            group_by => [
+                'client_id'
+            ],
+        }
+    );
+
+    my @reservation_result;
+    foreach my $r (@by_reservation) {
+        my %reservation;
+        my $client_id = $r->{'_column_data'}->{'client_id'};
+        my $client = $c->model('DB::Client')->find($client_id);
+        $reservation{'count'} = $r->{'_column_data'}->{'count'};
+        $reservation{'client'} = $client->name;
+        $reservation{'location'} = $client->location;
+        push ( @reservation_result, \%reservation );
+    }
     $c->stash(
         'by_location'         => $results,
         'by_location_columns' => \@columns,
         'from'                => $from_dt,
         'to'                  => $to_dt,
+        'by_client'           => \@client_result,
+        'by_reservation'      => \@reservation_result,
+        'reservation_from'    => $reservation_from_dt,
+        'reservation_to'      => $reservation_to_dt,
+        'operation'           => $operation,
     );
 
 }
