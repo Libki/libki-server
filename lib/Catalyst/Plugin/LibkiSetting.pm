@@ -273,67 +273,67 @@ Check the time and the user, return the available time if possible.
 =cut
 
 sub check_login {
-    my($c,$client,$user) = @_;
-    my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client->location });
-    my $timeout = $c->setting('ReservationTimeout') ? $c->setting('ReservationTimeout') : 15 ;
-    my %result     = ('error' => 0, 'detail' => 0,'minutes' => 0, 'reservation' => undef );
+    my ( $c, $client, $user ) = @_;
+    my $minutes_until_closing = Libki::Hours::minutes_until_closing( { c => $c, location => $client->location } );
+    my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
+    my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
-    my $reservation = $c->model('DB::Reservation')->search({ user_id => $user->id(), client_id => $client->id})->first || undef;
-    my $minutes_allotment = $user->minutes($c, $client);
+    my $reservation = $c->model( 'DB::Reservation' )->search( { user_id => $user->id(), client_id => $client->id } )->first || undef;
+    my $minutes_allotment = $user->minutes( $c, $client );
 
     # 1. Check if the time is available and get the time_to_reservation
-    if(!$result{'error'}) {
+    if ( !$result{'error'} ) {
 
-        $result{'reservation'} = $reservation if($reservation);
+        $result{'reservation'} = $reservation if ( $reservation );
 
-        my $first_reservation = $c->model('DB::Reservation')->search(
-                        { client_id => $client->id },
-                        { order_by => { -asc => 'begin_time' } }
-                        )->first || undef;
+        my $first_reservation = $c->model( 'DB::Reservation' )->search(
+            { client_id => $client->id },
+            { order_by => { -asc => 'begin_time' } }
+        )->first || undef;
 
-        my $minutes_timeout = $timeout < $minutes_allotment ? $timeout:$minutes_allotment;
+        my $minutes_timeout = $timeout < $minutes_allotment ? $timeout : $minutes_allotment;
         my $begin_time = $c->now;
 
         ## Calculate the time to the first reservation.
-        if($first_reservation) {
-            if(
-              ( (str2time($first_reservation->begin_time) - 60 ) <= str2time($c->now)
-              && str2time($c->now) <= ( str2time($first_reservation->begin_time) + $minutes_timeout*60 )
-              && $user->id != $first_reservation->user_id
-              )
-             ) {
+        if ( $first_reservation ) {
+            if (
+                ( ( str2time( $first_reservation->begin_time ) - 60 ) <= str2time( $c->now )
+                    && str2time( $c->now ) <= ( str2time( $first_reservation->begin_time ) + $minutes_timeout * 60 )
+                    && $user->id != $first_reservation->user_id
+                )
+            ) {
                 $result{'error'} = 'RESERVED_FOR_OTHER';
             }
             else {
                 $begin_time = $first_reservation->begin_time;
-                $time_to_reservation = floor( (str2time($begin_time) - str2time($c->now))/60 );
+                $time_to_reservation = floor( ( str2time( $begin_time ) - str2time( $c->now ) ) / 60 );
             }
         }
     }
 
     # 2. Get the available minutes
-    if(!$result{'error'}) {
+    if ( !$result{'error'} ) {
         # Get advanced rule if there is one
         my $allowance = $c->get_rule(
-                             {
-                                 rule            => $user->is_guest eq 'Yes' ? 'guest_session' : 'session',
-                                 client_location => $client->location,
-                                 client_type     => $client->type,
-                                 client_name     => $client->name,
-                                 client_type     => $client->type,
-                                 user_category   => $user->category,
-                             }
-                         );
+            {
+                rule            => $user->is_guest eq 'Yes' ? 'guest_session' : 'session',
+                client_location => $client->location,
+                client_type     => $client->type,
+                client_name     => $client->name,
+                client_type     => $client->type,
+                user_category   => $user->category,
+            }
+        );
         $allowance //= $user->is_guest() eq 'Yes'
-              ? $c->setting('DefaultGuestSessionTimeAllowance')
-              : $c->setting('DefaultSessionTimeAllowance');
+            ? $c->setting( 'DefaultGuestSessionTimeAllowance' )
+            : $c->setting( 'DefaultSessionTimeAllowance' );
 
-        my @array = ($allowance, $minutes_allotment);
-        push(@array, $minutes_until_closing) if ($minutes_until_closing);
-        push(@array, $time_to_reservation) if ($time_to_reservation > 0);
+        my @array = ( $allowance, $minutes_allotment );
+        push( @array, $minutes_until_closing ) if ( $minutes_until_closing );
+        push( @array, $time_to_reservation ) if ( $time_to_reservation > 0 );
         my $min = min @array;
 
-        if($min > 0) {
+        if ( $min > 0 ) {
             $result{'minutes'} = $min;
         }
         else {
