@@ -1,11 +1,11 @@
 package Catalyst::Plugin::LibkiSetting;
 
 use Modern::Perl;
-use List::Util qw(any min max);
+use List::Util qw( any min max );
 use Date::Parse;
 use POSIX;
 
-use Encode qw/decode encode/;
+use Encode qw/ decode encode /;
 
 our $VERSION = 1;
 
@@ -23,14 +23,15 @@ sub setting {
 
     if ( ref $params eq 'HASH' ) {
         $instance = $params->{instance};
-        $name     = $params->{name};
-    } else {
+        $name = $params->{name};
+    }
+    else {
         $name = $params;
     }
 
     $instance ||= $c->instance;
 
-    my $setting = $c->model('DB::Setting')->find( { instance => $instance, name => $name } );
+    my $setting = $c->model( 'DB::Setting' )->find( { instance => $instance, name => $name } );
 
     return $setting ? $setting->value : q{};
 }
@@ -45,7 +46,7 @@ If neither is set, the instance name will be an empty string.
 =cut
 
 sub instance {
-    my ($c) = @_;
+    my ( $c ) = @_;
 
     my $header = $c->request->headers->{'libki-instance'} || q{};
     my $env = $ENV{LIBKI_INSTANCE} || q{};
@@ -62,20 +63,20 @@ Locates various parts of the Libki config and returns a unified hashref
 =cut
 
 sub instance_config {
-    my ($c) = @_;
+    my ( $c ) = @_;
 
     my $config = $c->config->{instances}->{ $c->instance } || $c->config;
 
     unless ( $config->{SIP} ) {
-        my $yaml = $c->setting('SIPConfiguration');
-        $yaml = encode('UTF-8',$yaml);
-        $config->{SIP} = YAML::XS::Load($yaml) if $yaml;
+        my $yaml = $c->setting( 'SIPConfiguration' );
+        $yaml = encode( 'UTF-8', $yaml );
+        $config->{SIP} = YAML::XS::Load( $yaml ) if $yaml;
     }
 
     unless ( $config->{LDAP} ) {
-        my $yaml = $c->setting('LDAPConfiguration');
-        $yaml = encode('UTF-8',$yaml);
-        $config->{LDAP} = YAML::XS::Load($yaml) if $yaml;
+        my $yaml = $c->setting( 'LDAPConfiguration' );
+        $yaml = encode( 'UTF-8', $yaml );
+        $config->{LDAP} = YAML::XS::Load( $yaml ) if $yaml;
     }
 
     return $config;
@@ -88,7 +89,7 @@ Returns a DataTime::now object corrected for the current timezone.
 =cut
 
 sub now {
-    my ($c) = @_;
+    my ( $c ) = @_;
 
     return DateTime->now( time_zone => $c->tz );
 }
@@ -112,11 +113,11 @@ Returns a list of user categories as defined in the system setting UserCategorie
 sub user_categories {
     my ( $c ) = @_;
 
-    my $yaml = $c->setting('UserCategories');
+    my $yaml = $c->setting( 'UserCategories' );
 
-    $yaml = encode('UTF-8',$yaml);
+    $yaml = encode( 'UTF-8', $yaml );
 
-    my $categories = YAML::XS::Load($yaml) if $yaml;
+    my $categories = YAML::XS::Load( $yaml ) if $yaml;
 
     return $categories;
 }
@@ -135,9 +136,9 @@ sub add_user_category {
 
     my $categories = $c->user_categories;
 
-    return if grep( /^$category$/, @$categories );
+    return if grep ( /^$category$/, @$categories );
 
-    my $setting = $c->model('DB::Setting')->find(
+    my $setting = $c->model( 'DB::Setting' )->find(
         {
             instance => $c->instance,
             name     => 'UserCategories',
@@ -163,9 +164,9 @@ sub get_rules {
     return $c->stash->{AdvancedRules} if defined $c->stash->{AdvancedRules};
 
     my $yaml = $c->setting( { instance => $instance, name => 'AdvancedRules' } );
-    $yaml = encode('UTF-8',$yaml);
+    $yaml = encode( 'UTF-8', $yaml );
 
-    my $data = YAML::XS::Load($yaml) if $yaml;
+    my $data = YAML::XS::Load( $yaml ) if $yaml;
 
     $c->stash->{AdvancedRules} = $data || q{};
 
@@ -181,29 +182,30 @@ Returns a rule value or undef if no matching rule is found
 sub get_rule {
     my ( $c, $params ) = @_;
 
-    my $instance  = $params->{instance};
+    my $instance = $params->{instance};
     my $rule_name = $params->{rule};
 
     return undef unless $rule_name;
 
-    my $rules = $c->get_rules($instance);
+    my $rules = $c->get_rules( $instance );
     return undef unless $rules;
 
-    RULE: foreach my $rule (@$rules) {
+    RULE:
+    foreach my $rule ( @$rules ) {
         next if !$rule->{rules}->{$rule_name}; # If this rule doesn't specify this particular 'subrule', just skip it
 
-        foreach my $r (qw{ user_category client_location client_name client_type }) {
-            my $criteria_is_used  = $params->{$r} && 1;
-            my $criteria          = $rule->{criteria}->{$r};
+        foreach my $r ( qw{ user_category client_location client_name client_type } ) {
+            my $criteria_is_used = $params->{$r} && 1;
+            my $criteria = $rule->{criteria}->{$r};
             my $rule_has_criteria = exists $rule->{criteria}->{$r};
-            my $criteria_is_list  = ref $criteria eq 'ARRAY';
+            my $criteria_is_list = ref $criteria eq 'ARRAY';
 
             my $rule_matches_criteria;
-            if ($criteria_is_list) {
+            if ( $criteria_is_list ) {
                 $rule_matches_criteria = any { $_ eq $params->{$r} } @$criteria;
             }
             else {
-                $rule_matches_criteria = $rule->{criteria}->{$r} eq $params->{$r} if($params->{$r} && $rule->{criteria}->{$r});
+                $rule_matches_criteria = $rule->{criteria}->{$r} eq $params->{$r} if ( $params->{$r} && $rule->{criteria}->{$r} );
             }
 
             my $skip_rule = $criteria_is_used && $rule_has_criteria && !$rule_matches_criteria;
@@ -227,10 +229,10 @@ sub get_printer_configuration {
 
     $params->{name} = 'PrinterConfiguration';
 
-    my $yaml   = $c->setting($params);
-    $yaml = encode('UTF-8',$yaml);
+    my $yaml = $c->setting( $params );
+    $yaml = encode( 'UTF-8', $yaml );
 
-    my $config = YAML::XS::Load($yaml);
+    my $config = YAML::XS::Load( $yaml );
     return $config;
 }
 
@@ -241,26 +243,26 @@ Get the status of the first reservation.
 =cut
 
 sub get_reservation_status {
-    my ($c,$client) = @_;
-    my $timeout = $c->setting('ReservationTimeout') ? $c->setting('ReservationTimeout') : 15 ;
-    my $display = $c->setting('DisplayReservationStatusWithin') ? $c->setting('DisplayReservationStatusWithin') : 60 ;
-    my $reservation= $c->model('DB::Reservation')->search(
-       { 'client_id' => $client->id},
-       { order_by => { -asc => 'begin_time' } }
-       )->first || undef;
+    my ( $c, $client ) = @_;
+    my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
+    my $display = $c->setting( 'DisplayReservationStatusWithin' ) ? $c->setting( 'DisplayReservationStatusWithin' ) : 60;
+    my $reservation = $c->model( 'DB::Reservation' )->search(
+        { 'client_id' => $client->id },
+        { order_by => { -asc => 'begin_time' } }
+    )->first || undef;
 
     my $status = undef;
-    if ($reservation) {
-        my $seconds = str2time($reservation->end_time) - str2time($reservation->begin_time);
-        my $time_left = ($timeout * 60) > $seconds ? $seconds : ($timeout * 60);
-        my $reserve = str2time($reservation->begin_time) + $time_left -time();
-        my $begin = str2time($reservation->begin_time) -time();
-        if($reserve >= 0 && $reserve <= $time_left) {
-            $status = $reservation->user->username.'  left '.floor($reserve/60).'m'.($reserve%60).'s';
+    if ( $reservation ) {
+        my $seconds = str2time( $reservation->end_time ) - str2time( $reservation->begin_time );
+        my $time_left = ( $timeout * 60 ) > $seconds ? $seconds : ( $timeout * 60 );
+        my $reserve = str2time( $reservation->begin_time ) + $time_left - time();
+        my $begin = str2time( $reservation->begin_time ) - time();
+        if ( $reserve >= 0 && $reserve <= $time_left ) {
+            $status = $reservation->user->username . '  left ' . floor( $reserve / 60 ) . 'm' . ( $reserve % 60 ) . 's';
         }
-        elsif($reserve > $time_left && $begin < $display * 60) {
+        elsif ( $reserve > $time_left && $begin < $display * 60 ) {
             my $willbereserved = $reserve - $time_left;
-            $status = $reservation->user->username().' in '.floor($willbereserved/60).'m'.($willbereserved%60).'s' ;
+            $status = $reservation->user->username() . ' in ' . floor( $willbereserved / 60 ) . 'm' . ( $willbereserved % 60 ) . 's';
         }
     }
     return $status;
@@ -350,109 +352,108 @@ Check if the time is available and return the available time if possible
 
 =cut
 
-sub check_reservation
-{
-    my ($c,$client,$user,$begin_time) = @_;
-    my $parser = DateTime::Format::Strptime->new( pattern =>'%Y-%m-%d %H:%M' );
-    my %result     = ('error' => 0, 'detail' => 0, 'minutes' => 0,'allotment' => 0, 'end_time' => $parser->parse_datetime($begin_time));
-    my $datetime = $parser->parse_datetime($begin_time);
+sub check_reservation {
+    my ( $c, $client, $user, $begin_time ) = @_;
+    my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
+    my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'allotment' => 0, 'end_time' => $parser->parse_datetime( $begin_time ) );
+    my $datetime = $parser->parse_datetime( $begin_time );
     my @array;
     my $minutes_to_closing = Libki::Hours::minutes_until_closing(
         {
             c        => $c,
             location => $client->location,
-            datetime => $parser->parse_datetime($begin_time),
+            datetime => $parser->parse_datetime( $begin_time ),
         }
     );
-    my ( $minutes_left, $minutes ) = ( 0, 0);
+    my ( $minutes_left, $minutes ) = ( 0, 0 );
 
     #1. Check to see if the time has been past
-    if(str2time($begin_time) < str2time($c->now)) {
+    if ( str2time( $begin_time ) < str2time( $c->now ) ) {
         $result{'error'} = 'INVALID_TIME';
     }
 
     #2. Check allowance
-    if(!$result{'error'}) {
-        my $allowance  = $c->model('DB::Setting')->find({ name => 'DefaultSessionTimeAllowance'})->value;
-        if($allowance <= 0) {
-           $result{'error'} = 'INVALID_TIME';
-           $result{'detail'} = 'SessionTimeAlowance is 0';
+    if ( !$result{'error'} ) {
+        my $allowance = $c->model( 'DB::Setting' )->find( { name => 'DefaultSessionTimeAllowance' } )->value;
+        if ( $allowance <= 0 ) {
+            $result{'error'} = 'INVALID_TIME';
+            $result{'detail'} = 'SessionTimeAlowance is 0';
         }
         else {
-           push(@array, $allowance);
+            push( @array, $allowance );
         }
     }
 
     #3. Check the closing time
-    if ( !$result{'error'} && defined($minutes_to_closing) ) {
-       if ($minutes_to_closing > 0 ) {
-          push(@array, $minutes_to_closing);
-       }
-       else {
-          $result{'error'} = 'CLOSING_TIME';
-       }
+    if ( !$result{'error'} && defined( $minutes_to_closing ) ) {
+        if ( $minutes_to_closing > 0 ) {
+            push( @array, $minutes_to_closing );
+        }
+        else {
+            $result{'error'} = 'CLOSING_TIME';
+        }
     }
 
     #4. Check the existing reservations
-    if(!$result{'error'}) {
-        my $reservations= $c->model('DB::Reservation')->search(
-        { 'client_id' => $client->id},
-        {
-              order_by   => { -asc => 'begin_time' },
-        }
+    if ( !$result{'error'} ) {
+        my $reservations = $c->model( 'DB::Reservation' )->search(
+            { 'client_id' => $client->id },
+            {
+                order_by => { -asc => 'begin_time' },
+            }
         ) || undef;
 
-        while(my $r = $reservations->next) {
-             $minutes_left = str2time($r->begin_time) - str2time($begin_time);
-             if( str2time($r->begin_time) <= str2time($begin_time) && str2time($begin_time) < str2time($r->end_time) ) {
+        while ( my $r = $reservations->next ) {
+            $minutes_left = str2time( $r->begin_time ) - str2time( $begin_time );
+            if ( str2time( $r->begin_time ) <= str2time( $begin_time ) && str2time( $begin_time ) < str2time( $r->end_time ) ) {
                 $result{'error'} = 'INVALID_TIME';
                 $result{'detail'} = 'Reserved';
-                 last;
-                }
-             elsif($minutes_left > 0) {
-               push(@array, floor($minutes_left/60));
-               last;
-             }
+                last;
+            }
+            elsif ( $minutes_left > 0 ) {
+                push( @array, floor( $minutes_left / 60 ));
+                last;
+            }
         }
     }
 
     #5. Check the session
-    if(!$result{'error'}) {
-        my $session =  $c->model('DB::Session')->find( {client_id => $client->id} );
-        if($session) {
-           if(str2time($begin_time) < (str2time($c->now)+$session->minutes*60)) {
-              $result{'error'} = 'INVALID_TIME';
-              $result{'detail'} = 'Someone else is using this client';
-           }
+    if ( !$result{'error'} ) {
+        my $session = $c->model( 'DB::Session' )->find( { client_id => $client->id } );
+        if ( $session ) {
+            if ( str2time( $begin_time ) < ( str2time( $c->now ) + $session->minutes * 60 ) ) {
+                $result{'error'} = 'INVALID_TIME';
+                $result{'detail'} = 'Someone else is using this client';
+            }
         }
     }
 
     #6. Check minutes_allotment
-    my $date = $parser->parse_datetime("$begin_time 0:0");
-    my $today = strftime("%Y",localtime(time)).strftime("%m",localtime(time)).strftime("%d",localtime(time));
-    my $datecompare = $date->year.($date->month < 10 ? '0' : '').$date->month.($date->day < 10 ? '0' : '').$date->day;
-    my $minutes_allotment = $user->minutes($c, $client);
+    my $date = $parser->parse_datetime( "$begin_time 0:0" );
+    my $today = strftime( "%Y", localtime( time )) . strftime( "%m", localtime( time )) . strftime( "%d", localtime( time ));
+    my $datecompare = $date->year . ( $date->month < 10 ? '0' : '' ) . $date->month . ( $date->day < 10 ? '0' : '' ) . $date->day;
+    my $minutes_allotment = $user->minutes( $c, $client );
 
-    if(!$result{'error'}  && defined($minutes_allotment) && ($today eq $datecompare)) {
-        if( $minutes_allotment > 0 ) {
-            push(@array, $minutes_allotment);
+    if ( !$result{'error'} && defined( $minutes_allotment ) && ( $today eq $datecompare ) ) {
+        if ( $minutes_allotment > 0 ) {
+            push( @array, $minutes_allotment );
         }
-        elsif( $minutes_allotment <= 0) {
-            $result{'error'}  = 'NO_TIME';
+        elsif ( $minutes_allotment <= 0 ) {
+            $result{'error'} = 'NO_TIME';
         }
     }
 
     #7. Check the minimum minutes limit preference
-    if(!$result{'error'}) {
-        my $minimum = $c->model('DB::Setting')->find({ name => 'MinimumReservationMinutes'})->value;
+    if ( !$result{'error'} ) {
+        my $minimum = $c->model( 'DB::Setting' )->find( { name => 'MinimumReservationMinutes' } )->value;
         $minimum = 1 unless $minimum;
         $minutes = min @array;
-        if($minutes <  $minimum) {
-           $result{'error'}  = 'MINIMUM_TIME';
+        if ( $minutes < $minimum ) {
+            $result{'error'} = 'MINIMUM_TIME';
         }
-        else{
-           $result{'minutes'} = $minutes;
-           $result{'end_time'}  = $result{'end_time'}->add(minutes => $minutes);
+        else {
+            $result{'minutes'} = $minutes;
+            $result{'end_time'} = $result{'end_time'}->add( minutes => $minutes );
         }
     }
 
