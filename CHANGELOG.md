@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add users.creation_source field to tell how a given user was created ( local, SIP, LDAP, etc )
 - Add ability to have separate minutes allotments per-location for each user
 - Add ability to remotely shutdown, restart, and wake-on-lan clients
+- Add ability to set a gap between reservations to give librarians time to disinfect computers between uses
 
 ## [4.2.3] - 2020-05-28
 ### Added
