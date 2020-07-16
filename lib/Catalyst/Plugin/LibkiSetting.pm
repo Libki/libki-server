@@ -466,39 +466,39 @@ sub check_reservation
 =cut
 
 sub get_time_list {
-    my ( $c ,$client_id, $date ) = @_;
-    my @reservations = $c->model('DB::Reservation')->search( { client_id => $client_id } );
-    my $client  = $c->model('DB::Client')->find($client_id);
-    my (@mlist,@start,%result);
-    my $ohour = $c->setting('ReservationOpeningHour') || 0;
-    my $ominute = $c->setting('ReservationOpeningMinute') || 0;
-    my $parser = DateTime::Format::Strptime->new( pattern =>'%Y-%m-%d %H:%M' );
-    my $datetime = $parser->parse_datetime("$date 0:0");
-    my $endtime = str2time("$date 23:59");
-    my @hours = ('00','01','02','03','04','05','06','07','08','09','10','11','12',
-                 '13','14','15','16','17','18','19','20','21','22','23');
-    my @minutes = ('00','05','10','15','20','25','30','35','40','45','50','55');
+    my ( $c, $client_id, $date ) = @_;
+    my @reservations = $c->model( 'DB::Reservation' )->search( { client_id => $client_id } );
+    my $client = $c->model( 'DB::Client' )->find( $client_id );
+    my ( @mlist, @start, %result );
+    my $ohour = $c->setting( 'ReservationOpeningHour' ) || 0;
+    my $ominute = $c->setting( 'ReservationOpeningMinute' ) || 0;
+    my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
+    my $datetime = $parser->parse_datetime( "$date 0:0" );
+    my $endtime = str2time( "$date 23:59" );
+    my @hours = ( '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
+        '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23' );
+    my @minutes = ( '00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55' );
 
     my $log = $c->log();
-    $log->debug($date);
-    if($client){
-        push (@start,str2time($datetime->year.'-'.$datetime->month.'-'.$datetime->day.' '.$ohour.':'.$ominute));
+    $log->debug( $date );
+    if ( $client ) {
+        push( @start, str2time( $datetime->year . '-' . $datetime->month . '-' . $datetime->day . ' ' . $ohour . ':' . $ominute ));
 
-        my $today = strftime("%Y",localtime(time)).strftime("%m",localtime(time)).strftime("%d",localtime(time));
-        my $datecompare = $datetime->year.($datetime->month < 10 ? '0' : '').$datetime->month.($datetime->day < 10 ? '0' : '').$datetime->day;
+        my $today = strftime( "%Y", localtime( time )) . strftime( "%m", localtime( time )) . strftime( "%d", localtime( time ));
+        my $datecompare = $datetime->year . ( $datetime->month < 10 ? '0' : '' ) . $datetime->month . ( $datetime->day < 10 ? '0' : '' ) . $datetime->day;
 
-        if( $today eq $datecompare ){
-            push (@start,time());
-            if ( defined($client) && defined( $client->session ) ) {
-                push (@start,(time() + $client->session->minutes*60));
+        if ( $today eq $datecompare ) {
+            push( @start, time());
+            if ( defined( $client ) && defined( $client->session ) ) {
+                push( @start, ( time() + $client->session->minutes * 60 ));
             }
         }
         my $opentime = max @start;
-        my $openhour = strftime("%H",localtime($opentime));
-        my $openminute = strftime("%M",localtime($opentime));
+        my $openhour = strftime( "%H", localtime( $opentime ));
+        my $openminute = strftime( "%M", localtime( $opentime ));
 
-        for (my $i=0; $i< $openhour; $i++){
-            $hours[$i]='hide';
+        for ( my $i = 0; $i < $openhour; $i++ ) {
+            $hours[$i] = 'hide';
         }
 
         my $closehour = 23;
@@ -508,54 +508,54 @@ sub get_time_list {
             {
                 c        => $c,
                 location => $client->location(),
-                datetime => $parser->parse_datetime("$date $openhour:$openminute"),
+                datetime => $parser->parse_datetime( "$date $openhour:$openminute" ),
             }
         );
-        if ($minutes_to_closing) {
+        if ( $minutes_to_closing ) {
             my $closetime = $opentime + $minutes_to_closing * 60;
-            $closehour = strftime("%H",localtime($closetime));
-            $closeminute = strftime("%M",localtime($closetime));
+            $closehour = strftime( "%H", localtime( $closetime ));
+            $closeminute = strftime( "%M", localtime( $closetime ));
 
-            if ($closehour < 23 ) {
-                for (my $j=$closehour + 1; $j<  24; $j++){
-                    $hours[$j]='hide';
+            if ( $closehour < 23 ) {
+                for ( my $j = $closehour + 1; $j < 24; $j++ ) {
+                    $hours[$j] = 'hide';
                 }
             }
-            $endtime = $closetime if ($minutes_to_closing > 0);
+            $endtime = $closetime if ( $minutes_to_closing > 0 );
         }
 
-        for (my $h=0;$h<24;$h++){
+        for ( my $h = 0; $h < 24; $h++ ) {
             my @minus = @minutes;
 
-            if ($hours[$h] ne 'hide'){
-                for(my $min=0;$min<12;$min++){
-                    my $stamp = str2time(strftime("%Y",localtime($opentime)).'-'.strftime("%m",localtime($opentime)).'-'.strftime("%d",localtime($opentime)).' '.$h.':'.$minus[$min]);
+            if ( $hours[$h] ne 'hide' ) {
+                for ( my $min = 0; $min < 12; $min++ ) {
+                    my $stamp = str2time( strftime( "%Y", localtime( $opentime )) . '-' . strftime( "%m", localtime( $opentime )) . '-' . strftime( "%d", localtime( $opentime )) . ' ' . $h . ':' . $minus[$min] );
 
-                    $minus[$min]='hide' if($stamp < time());
+                    $minus[$min] = 'hide' if ( $stamp < time() );
 
-                    if($minutes_to_closing){
+                    if ( $minutes_to_closing ) {
                         my $closetime = $opentime + $minutes_to_closing * 60;
-                        $minus[$min]='hide' if $closetime < $stamp;
+                        $minus[$min] = 'hide' if $closetime < $stamp;
                     }
 
-                    foreach my $reservation (@reservations){
-                        if ( (str2time($reservation->begin_time) <= $stamp && $stamp <= str2time($reservation->end_time) )
+                    foreach my $reservation ( @reservations ) {
+                        if ( ( str2time( $reservation->begin_time ) <= $stamp && $stamp <= str2time( $reservation->end_time ) )
                             || $stamp < $opentime
                             || $stamp > $endtime
-                        ){
-                            $minus[$min]='hide';
+                        ) {
+                            $minus[$min] = 'hide';
                             last;
                         }
                     }
                 }
             }
-            push (@mlist,\@minus);
+            push( @mlist, \@minus );
         }
-        $result{'hlist'}=\@hours;
-        $result{'mlist'}=\@mlist;
+        $result{'hlist'} = \@hours;
+        $result{'mlist'} = \@mlist;
     }
     else {
-        $result{'error'}="Couldn't find the client";
+        $result{'error'} = "Couldn't find the client";
     }
 
     return %result;
