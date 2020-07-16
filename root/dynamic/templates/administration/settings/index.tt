@@ -260,6 +260,17 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="ReservationGap">[% c.loc("Reservation gap") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ReservationGap" name="ReservationGap" value="[% ReservationGap %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Patrons will be unable to place reserations for this many minutes after the previous reservation has ended.") %]</small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="DisplayReservationStatusWithin">[% c.loc("Display the status of the first reservation within:") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="DisplayReservationStatusWithin" name="DisplayReservationStatusWithin" value="[% DisplayReservationStatusWithin %]">

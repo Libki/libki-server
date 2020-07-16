@@ -638,12 +638,16 @@
 
             <div class="form-group">
                 <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
-                <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
-                </select>
+
+                <select id="reservation-hour" name="reservation_hour" onchange="getMinute()"></select>
                  :
-                <select id="reservation-minute" name="reservation_minute">
-                </select>
-                <a id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></a>
+                <select id="reservation-minute" name="reservation_minute"></select>
+
+                <span id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></span>
+
+                <div id="reservation-time-invalid-feedback" class="invalid-feedback">
+                    [% c.loc("Selected time is invalid, no time blocks are available for this hour") %]
+                </div>
             </div>
 
             <div class="form-group">

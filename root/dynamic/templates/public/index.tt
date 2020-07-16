@@ -54,13 +54,20 @@
         <form id="make-reservation-modal-form" class="form-horizontal">
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
             <div class="form-group">
-               <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
-               <select id="reservation-hour" name="reservation_hour" onchange="getMinute()">
-               </select>
-                :
-               <select id="reservation-minute" name="reservation_minute">
-                </select>
-               <a id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></a>
+                <div id="reservation-time" class="is-invalid">
+                    <input id="datepicker" type="text" value="" width='400px' readonly="readonly"
+                           name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
+
+                    <select id="reservation-hour" name="reservation_hour" onchange="getMinute()" required></select>
+                    :
+                    <select id="reservation-minute" name="reservation_minute" required></select>
+
+                    <span id="make-reservation-ampm-label"
+                          style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></span>
+                </div>
+                <div id="reservation-time-invalid-feedback" class="invalid-feedback">
+                    [% c.loc("Selected time is invalid, no time blocks are available for this hour") %]
+                </div>
             </div>
             [% IF !c.user_exists %]
             <div class="form-group">
@@ -251,7 +258,6 @@ $(document).ready(function() {
             $("#make-reservation-modal").modal();
 
             $("#make-reservation-modal-form-submit").removeAttr("disabled");
-
     });
 
     $("#make-reservation-password").keypress(function(event) {
@@ -264,6 +270,11 @@ $(document).ready(function() {
         var errors = false;
         $("#make-reservation-username").removeClass("is-invalid");
         $("#make-reservation-password").removeClass("is-invalid");
+
+       if ( ! $("#reservation-hour").val() || ! $("#reservation-minute").val()) {
+            errors = true;
+            $("#reservation-minute").addClass("is-invalid");
+        }
 
         if ( ! $("#make-reservation-password").val() && ! $("#make-reservation-session").val()) {
             errors = true;
@@ -279,9 +290,9 @@ $(document).ready(function() {
 
         if ( ! errors ) {
             $("#make-reservation-modal-form-submit").attr("disabled","disabled");
-            $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
-                if ( data.success ) {
-                    $("#make-reservation-modal").modal("hide");
+                $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
+                    if ( data.success ) {
+                        $("#make-reservation-modal").modal("hide");
                     DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );
                     ForceClientTableRefresh();
                 }

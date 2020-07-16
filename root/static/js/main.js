@@ -1,3 +1,36 @@
+/* This js is valid for both staff and public interfaces */
+$(document).ready(function(){
+    const hourSelector = document.querySelector('#reservation-hour');
+    hourSelector.addEventListener('change', (event) => {
+        validateReservationTime();
+    });
+});
+
+function validateReservationTime() {
+    if ( isHourSlotReservable() ) {
+        enableMakeReservation();
+    } else {
+        disableMakeReservation();
+    }
+}
+
+function isHourSlotReservable() {
+    const reservation_minute = document.querySelector('#reservation-minute');
+    return reservation_minute.selectedIndex != -1;
+}
+
+function disableMakeReservation() {
+    const btn = document.querySelector('#make-reservation-modal-form-submit');
+    btn.setAttribute("disabled", "disabled");
+    document.querySelector('#reservation-time-invalid-feedback').style.display = "block";
+}
+
+function enableMakeReservation() {
+    const btn = document.querySelector('#make-reservation-modal-form-submit');
+    btn.removeAttribute("disabled");
+    document.querySelector('#reservation-time-invalid-feedback').style.display = "none";
+}
+
 function AddTableRowToolbar($toolbar, $table, $rows) {
     $rows.mouseenter(function() {
         $toolbar.slideDown().position({
@@ -80,6 +113,8 @@ function setMinute() {
 function setTime() {
     setHour();
     setMinute();
+    enableMakeReservation();
+    validateReservationTime();
 }
 
 var minutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];

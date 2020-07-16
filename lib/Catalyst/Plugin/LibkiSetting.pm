@@ -480,8 +480,6 @@ sub get_time_list {
         '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23' );
     my @minutes = ( '00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55' );
 
-    my $log = $c->log();
-    $log->debug( $date );
     if ( $client ) {
         push( @start, str2time( $datetime->year . '-' . $datetime->month . '-' . $datetime->day . ' ' . $ohour . ':' . $ominute ));
 
@@ -540,7 +538,23 @@ sub get_time_list {
                     }
 
                     foreach my $reservation ( @reservations ) {
-                        if ( ( str2time( $reservation->begin_time ) <= $stamp && $stamp <= str2time( $reservation->end_time ) )
+                        my $reservation_begin = $reservation->begin_time;
+                        my $reservation_end = $reservation->end_time;
+
+                        my $reservation_begin_unixtime = str2time( $reservation_begin );
+                        my $reservation_end_unixtime = str2time( $reservation_end );
+
+                        my $reservation_gap = $c->setting( 'ReservationGap' );
+                        if ( $reservation_gap ) {
+                            my $reservation_end_dt = DateTime->from_epoch(
+                                epoch     => $reservation_end_unixtime,
+                                time_zone => $c->tz,
+                            );
+                            $reservation_end_dt->add( minutes => $reservation_gap );
+                            $reservation_end_unixtime = $reservation_end_dt->epoch;
+                        }
+
+                        if ( ( $reservation_begin_unixtime <= $stamp && $stamp <= $reservation_end_unixtime )
                             || $stamp < $opentime
                             || $stamp > $endtime
                         ) {
