@@ -297,7 +297,7 @@ sub update : Local : Args(0) {
             }
         );
     } else {
-        $c->model('DB::Allotment')->find( { instance => $instance, user_id => $user->id } )->delete;
+        $c->model('DB::Allotment')->search( { instance => $instance, user_id => $user->id } )->delete;
     }
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
