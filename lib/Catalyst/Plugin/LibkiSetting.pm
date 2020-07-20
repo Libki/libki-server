@@ -3,6 +3,8 @@ package Catalyst::Plugin::LibkiSetting;
 use Modern::Perl;
 use List::Util qw( any min max );
 use Date::Parse;
+use DateTime;
+use DateTime::Span;
 use POSIX;
 
 use Encode qw/ decode encode /;
@@ -436,104 +438,113 @@ sub check_reservation {
 
 sub get_time_list {
     my ( $c, $client_id, $date ) = @_;
+
+    #FIXME Should we only search for reservations where the end time is in the future?
     my @reservations = $c->model( 'DB::Reservation' )->search( { client_id => $client_id } );
     my $client = $c->model( 'DB::Client' )->find( $client_id );
+
     my ( @mlist, @start, %result );
-    my $ohour = $c->setting( 'ReservationOpeningHour' ) || 0;
-    my $ominute = $c->setting( 'ReservationOpeningMinute' ) || 0;
+
     my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
-    my $datetime = $parser->parse_datetime( "$date 0:0" );
-    my $endtime = str2time( "$date 23:59" );
+    my $working_date_dt = $parser->parse_datetime( "$date 0:0" );
+    $working_date_dt->set_time_zone( $c->tz );
+
+    my $now_dt = DateTime->now( time_zone => $c->tz );
+
+    my $opening_hour = $c->setting( 'ReservationOpeningHour' ) || 0;
+    my $opening_minute = $c->setting( 'ReservationOpeningMinute' ) || 0;
+    my $opening_dt = $working_date_dt->clone;
+    $opening_dt->set(
+        hour   => $opening_hour,
+        minute => $opening_minute,
+    );
+
+    my $ending_dt = $working_date_dt->clone;
+    $ending_dt->set(
+        hour   => 23,
+        minute => 59,
+    );
+
     my @hours = ( '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
         '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23' );
     my @minutes = ( '00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55' );
 
     if ( $client ) {
-        push( @start, str2time( $datetime->year . '-' . $datetime->month . '-' . $datetime->day . ' ' . $ohour . ':' . $ominute ));
+        push( @start, $opening_dt );
 
-        my $today = strftime( "%Y", localtime( time )) . strftime( "%m", localtime( time )) . strftime( "%d", localtime( time ));
-        my $datecompare = $datetime->year . ( $datetime->month < 10 ? '0' : '' ) . $datetime->month . ( $datetime->day < 10 ? '0' : '' ) . $datetime->day;
+        if ( $now_dt->ymd eq $opening_dt->ymd ) {
+            push( @start, $now_dt );
 
-        if ( $today eq $datecompare ) {
-            push( @start, time());
             if ( defined( $client ) && defined( $client->session ) ) {
-                push( @start, ( time() + $client->session->minutes * 60 ));
+                my $session_end_dt = $now_dt->clone();
+                $session_end_dt->add( seconds => $client->session->minutes * 60 );
+                push( @start, $session_end_dt );
             }
         }
-        my $opentime = max @start;
-        my $openhour = strftime( "%H", localtime( $opentime ));
-        my $openminute = strftime( "%M", localtime( $opentime ));
 
-        for ( my $i = 0; $i < $openhour; $i++ ) {
+        my $start_dt = max @start;
+
+        for ( my $i = 0; $i < $start_dt->hour; $i++ ) {
             $hours[$i] = 'hide';
         }
-
-        my $closehour = 23;
-        my $closeminute = 59;
 
         my $minutes_to_closing = Libki::Hours::minutes_until_closing(
             {
                 c        => $c,
                 location => $client->location(),
-                datetime => $parser->parse_datetime( "$date $openhour:$openminute" ),
+                datetime => $start_dt,
             }
         );
-        if ( $minutes_to_closing ) {
-            my $closetime = $opentime + $minutes_to_closing * 60;
-            $closehour = strftime( "%H", localtime( $closetime ));
-            $closeminute = strftime( "%M", localtime( $closetime ));
 
-            if ( $closehour < 23 ) {
-                for ( my $j = $closehour + 1; $j < 24; $j++ ) {
-                    $hours[$j] = 'hide';
-                }
+        if ( $minutes_to_closing ) {
+            my $close_dt = $start_dt->clone;
+            $close_dt->add( minutes => $minutes_to_closing );
+
+            # Hide all the hours after closing
+            for ( my $j = $close_dt->hour + 1; $j < 24; $j++ ) {
+                $hours[$j] = 'hide';
             }
-            $endtime = $closetime if ( $minutes_to_closing > 0 );
+
+            $ending_dt = $close_dt if $minutes_to_closing > 0;
         }
 
         for ( my $h = 0; $h < 24; $h++ ) {
-            my @minus = @minutes;
+            my @minutes_availability = @minutes;
 
             if ( $hours[$h] ne 'hide' ) {
-                for ( my $min = 0; $min < 12; $min++ ) {
-                    my $stamp = str2time( strftime( "%Y", localtime( $opentime )) . '-' . strftime( "%m", localtime( $opentime )) . '-' . strftime( "%d", localtime( $opentime )) . ' ' . $h . ':' . $minus[$min] );
+                for ( my $min = 0; $min < scalar @minutes_availability; $min++ ) {
+                    my $time_to_check_dt = $start_dt->clone;
+                    $time_to_check_dt->set(
+                        hour   => $h,
+                        minute => $minutes_availability[$min]
+                    );
 
-                    $minus[$min] = 'hide' if ( $stamp < time() );
-
-                    if ( $minutes_to_closing ) {
-                        my $closetime = $opentime + $minutes_to_closing * 60;
-                        $minus[$min] = 'hide' if $closetime < $stamp;
-                    }
+                    $minutes_availability[$min] = 'hide' if $time_to_check_dt < $now_dt;
+                    $minutes_availability[$min] = 'hide' if $time_to_check_dt > $ending_dt;
 
                     foreach my $reservation ( @reservations ) {
-                        my $reservation_begin = $reservation->begin_time;
-                        my $reservation_end = $reservation->end_time;
-
-                        my $reservation_begin_unixtime = str2time( $reservation_begin );
-                        my $reservation_end_unixtime = str2time( $reservation_end );
+                        my $reservation_begin_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
+                        my $reservation_end_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
 
                         my $reservation_gap = $c->setting( 'ReservationGap' );
-                        if ( $reservation_gap ) {
-                            my $reservation_end_dt = DateTime->from_epoch(
-                                epoch     => $reservation_end_unixtime,
-                                time_zone => $c->tz,
-                            );
-                            $reservation_end_dt->add( minutes => $reservation_gap );
-                            $reservation_end_unixtime = $reservation_end_dt->epoch;
-                        }
+                        $reservation_end_dt->add( minutes => $reservation_gap ) if $reservation_gap;
 
-                        if ( ( $reservation_begin_unixtime <= $stamp && $stamp <= $reservation_end_unixtime )
-                            || $stamp < $opentime
-                            || $stamp > $endtime
+                        my $reservation_span = DateTime::Span->from_datetimes( start => $reservation_begin_dt, end => $reservation_end_dt );
+
+                        if ( $reservation_span->contains( $time_to_check_dt )
+                            || $time_to_check_dt < $start_dt
+                            || $time_to_check_dt > $ending_dt
                         ) {
-                            $minus[$min] = 'hide';
+                            $minutes_availability[$min] = 'hide';
                             last;
                         }
                     }
                 }
             }
-            push( @mlist, \@minus );
+
+            push( @mlist, \@minutes_availability );
         }
+
         $result{'hlist'} = \@hours;
         $result{'mlist'} = \@mlist;
     }
