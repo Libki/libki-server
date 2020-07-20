@@ -459,8 +459,8 @@ sub get_time_list {
         minute => $opening_minute,
     );
 
-    my $ending_dt = $working_date_dt->clone;
-    $ending_dt->set(
+    my $end_dt = $working_date_dt->clone;
+    $end_dt->set(
         hour   => 23,
         minute => 59,
     );
@@ -505,7 +505,7 @@ sub get_time_list {
                 $hours[$j] = 'hide';
             }
 
-            $ending_dt = $close_dt if $minutes_to_closing > 0;
+            $end_dt = $close_dt if $minutes_to_closing > 0;
         }
 
         for ( my $h = 0; $h < 24; $h++ ) {
@@ -520,7 +520,7 @@ sub get_time_list {
                     );
 
                     $minutes_availability[$min] = 'hide' if $time_to_check_dt < $now_dt;
-                    $minutes_availability[$min] = 'hide' if $time_to_check_dt > $ending_dt;
+                    $minutes_availability[$min] = 'hide' if $time_to_check_dt > $end_dt;
 
                     foreach my $reservation ( @reservations ) {
                         my $reservation_begin_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
@@ -533,7 +533,7 @@ sub get_time_list {
 
                         if ( $reservation_span->contains( $time_to_check_dt )
                             || $time_to_check_dt < $start_dt
-                            || $time_to_check_dt > $ending_dt
+                            || $time_to_check_dt > $end_dt
                         ) {
                             $minutes_availability[$min] = 'hide';
                             last;
