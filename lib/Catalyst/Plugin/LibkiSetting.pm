@@ -439,16 +439,26 @@ sub check_reservation {
 sub get_time_list {
     my ( $c, $client_id, $date ) = @_;
 
-    #FIXME Should we only search for reservations where the end time is in the future?
-    my @reservations = $c->model( 'DB::Reservation' )->search( { client_id => $client_id } );
-    my $client = $c->model( 'DB::Client' )->find( $client_id );
-
-    my ( @mlist, @start, %result );
-
     my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
     my $working_date_dt = $parser->parse_datetime( "$date 0:0" );
     $working_date_dt->set_time_zone( $c->tz );
 
+    # Find existing reservations for the date requested
+    my @reservations = $c->model( 'DB::Reservation' )->search(
+        {
+            -and => [
+                instance => $c->instance,
+                client_id => $client_id,
+                -or       => [
+                    \[ 'DATE(begin_time) = ?', $working_date_dt->ymd ],
+                    \[ 'DATE(end_time) = ?', $working_date_dt->ymd ],
+                ],
+            ]
+        }
+    );
+    my $client = $c->model( 'DB::Client' )->find( $client_id );
+
+    my ( @mlist, @start, %result );
     my $now_dt = DateTime->now( time_zone => $c->tz );
 
     my $opening_hour = $c->setting( 'ReservationOpeningHour' ) || 0;
@@ -525,6 +535,9 @@ sub get_time_list {
                     foreach my $reservation ( @reservations ) {
                         my $reservation_begin_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
                         my $reservation_end_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
+
+                        $reservation_begin_dt->set_time_zone( $c->tz );
+                        $reservation_end_dt->set_time_zone( $c->tz );
 
                         my $reservation_gap = $c->setting( 'ReservationGap' );
                         $reservation_end_dt->add( minutes => $reservation_gap ) if $reservation_gap;
