@@ -97,9 +97,6 @@ sub index : Path : Args(0) {
         $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
         $log->debug( "Client Registered: " . $client->name() );
 
-        my $reserved_for = $c->get_reservation_status( $client );
-        $c->stash( reserved_for => $reserved_for) if($reserved_for);
-
         my $age_limit = $c->request->params->{'age_limit'};
         if ($age_limit) {
             my @limits = split( /,/, $age_limit );
