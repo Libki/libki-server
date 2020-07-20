@@ -268,17 +268,25 @@ sub check_login {
 
         ## Calculate the time to the first reservation.
         if ( $first_reservation ) {
+            my $reservation_begin_dt = DateTime::Format::MySQL->parse_datetime( $first_reservation->begin_time );
+            $reservation_begin_dt->set_time_zone( $c->tz );
+
+            my $minute_before_reservation_begin_dt = $reservation_begin_dt->clone();
+            $minute_before_reservation_begin_dt->subtract( minutes => 1 );
+
+            my $reservation_begin_plus_timeout_dt = $reservation_begin_dt->clone();
+            $reservation_begin_plus_timeout_dt->add( minutes => $minutes_timeout );
+
             if (
-                ( ( str2time( $first_reservation->begin_time ) - 60 ) <= str2time( $c->now )
-                    && str2time( $c->now ) <= ( str2time( $first_reservation->begin_time ) + $minutes_timeout * 60 )
+                $minute_before_reservation_begin_dt <= $c->now # Reservation begins in the past
+                    && $reservation_begin_plus_timeout_dt >= $c->now # Reservation will time out in the future
                     && $user->id != $first_reservation->user_id
-                )
             ) {
                 $result{'error'} = 'RESERVED_FOR_OTHER';
             }
             else {
-                $begin_time = $first_reservation->begin_time;
-                $time_to_reservation = floor( ( str2time( $begin_time ) - str2time( $c->now ) ) / 60 );
+                my $duration = $reservation_begin_dt->subtract_datetime( $c->now );
+                $time_to_reservation =  $duration->seconds;
             }
         }
     }
