@@ -2,7 +2,6 @@ package Catalyst::Plugin::LibkiSetting;
 
 use Modern::Perl;
 use List::Util qw( any min max );
-use Date::Parse;
 use DateTime;
 use DateTime::Span;
 use POSIX;
