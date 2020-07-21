@@ -140,12 +140,7 @@ sub add_user_category {
 
     return if grep ( /^$category$/, @$categories );
 
-    my $setting = $c->model( 'DB::Setting' )->find(
-        {
-            instance => $c->instance,
-            name     => 'UserCategories',
-        }
-    );
+    my $setting = $c->setting( 'UserCategories' );
 
     push( @$categories, $category );
 
@@ -165,7 +160,7 @@ sub get_rules {
 
     return $c->stash->{AdvancedRules} if defined $c->stash->{AdvancedRules};
 
-    my $yaml = $c->setting( { instance => $instance, name => 'AdvancedRules' } );
+    my $yaml = $c->setting( 'AdvancedRules' );
     $yaml = encode( 'UTF-8', $yaml );
 
     my $data = YAML::XS::Load( $yaml ) if $yaml;
@@ -356,7 +351,7 @@ sub check_reservation {
 
     #2. Check allowance
     if ( !$result{'error'} ) {
-        my $allowance = $c->model( 'DB::Setting' )->find( { name => 'DefaultSessionTimeAllowance' } )->value;
+        my $allowance = $c->setting( 'DefaultSessionTimeAllowance' );
         if ( $allowance <= 0 ) {
             $result{'error'} = 'INVALID_TIME';
             $result{'detail'} = 'SessionTimeAlowance is 0';
@@ -438,7 +433,7 @@ sub check_reservation {
 
     #7. Check the minimum minutes limit preference
     if ( !$result{'error'} ) {
-        my $minimum = $c->model( 'DB::Setting' )->find( { name => 'MinimumReservationMinutes' } )->value;
+        my $minimum = $c->setting( 'MinimumReservationMinutes' );
         $minimum = 1 unless $minimum;
         $minutes = min @array;
         if ( $minutes < $minimum ) {
