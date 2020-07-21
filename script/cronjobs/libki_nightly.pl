@@ -10,7 +10,6 @@ use Modern::Perl;
 use List::Util qw(max min);
 use DateTime;
 use DateTime::Format::MySQL;
-use Date::Parse;
 
 use Libki;
 
@@ -29,8 +28,12 @@ $c->model('DB::Allotment')->delete();
 
 ## Set troublemaker status
 my @troublemakers = $c->model('DB::user')->search( { is_troublemaker => 'Yes' } );
-foreach my $troublemaker (@troublemakers) {
-    if(str2time( $troublemaker->troublemaker_until ) <= time()) {
+foreach my $troublemaker ( @troublemakers ) {
+    #FIXME This cronjob isn't instance timezone aware. We should move the timezone from the config/env to a database setting.
+    my $troublemaker_until_dt = DateTime::Format::MySQL->parse_datetime( $troublemaker->troublemaker_until );
+    #$troublemaker_until_dt->set_time_zone( $c->tz );
+
+    if ( $troublemaker_until_dt <= DateTime->now ) {
         $troublemaker->update( { is_troublemaker => 'No', troublemaker_until => undef } );
     }
     else {

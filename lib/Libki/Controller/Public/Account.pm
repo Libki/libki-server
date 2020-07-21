@@ -1,7 +1,6 @@
 package Libki::Controller::Public::Account;
 use Moose;
 use namespace::autoclean;
-use Date::Parse;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -23,20 +22,25 @@ Catalyst Controller.
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    if ($c->user_exists()) {
-        my $reservation = $c->model('DB::Reservation')->find({ user_id => $c->user->id()}) || 0;
-        my ($begin, $end, $duration) = (undef, undef, 0);
-        if($reservation){
-            $begin = $reservation->begin_time;
-            $end = $reservation->end_time;
-            $begin =~ s/T/ /;
-            $end   =~ s/T/ /;
-            $duration = ( str2time($end) - str2time($begin) ) / 60;
+
+    if ( $c->user_exists() ) {
+        my $reservation = $c->model( 'DB::Reservation' )->find( { user_id => $c->user->id() } ) || 0;
+        my ( $begin, $end, $duration ) = ( undef, undef, 0 );
+
+        if ( $reservation ) {
+            my $reservation_begin_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
+            $reservation_begin_time_dt->set_time_zone( $c->tz );
+
+            my $reservation_end_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
+            $reservation_end_time_dt->set_time_zone( $c->tz );
+
+            $duration = abs( $reservation_end_time_dt->subtract_datetime( $reservation_begin_time_dt )->in_units('minutes') );
         }
+
         $c->stash( 'reservation' => $reservation, 'template' => 'public/account.tt', 'begin' => $begin, 'end' => $end, 'duration' => $duration );
     }
     else {
-        $c->response->redirect( $c->uri_for('/public') );
+        $c->response->redirect( $c->uri_for( '/public' ));
     }
 }
 

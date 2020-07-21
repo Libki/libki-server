@@ -1,7 +1,6 @@
 package Libki::Controller::API::Public::Reservations;
 use Moose;
 use namespace::autoclean;
-use Date::Parse;
 #use POSIX;
 
 BEGIN { extends 'Catalyst::Controller'; }

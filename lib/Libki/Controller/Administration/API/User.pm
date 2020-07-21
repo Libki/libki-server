@@ -4,7 +4,6 @@ use Moose;
 use String::Random qw(random_string);
 
 use namespace::autoclean;
-use Date::Parse;
 use POSIX;
 
 BEGIN { extends 'Catalyst::Controller'; }
@@ -400,8 +399,10 @@ sub toggle_troublemaker : Local : Args(3) {
     $user->set_column( 'updated_on', $now );
     $user->set_column( 'troublemaker_until', undef );
     if ( $until != 0 && $is_troublemaker eq 'Yes'){
-        my $trouble_maker = str2time($now) + $until * 86400;
-        $user->set_column( 'troublemaker_until', strftime("%Y-%m-%d %H:%M:%S", localtime($trouble_maker)) );
+        my $troublemaker_until = $now->clone;
+        $troublemaker_until->add( days => $until );
+
+        $user->set_column( 'troublemaker_until', $troublemaker_until );
         $user->set_column( 'notes', $notes eq '' ? undef : $notes ); 
     }
 

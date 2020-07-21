@@ -13,7 +13,6 @@ use DateTime::Format::MySQL;
 use DateTime;
 use List::Util qw(min);
 use PDF::API2;
-use Date::Parse;
 
 =head1 NAME
 
@@ -148,7 +147,10 @@ sub index : Path : Args(0) {
             )->first;
 
             if ($reservation) {
-                if ( str2time($reservation->end_time) < str2time($c->now) ) {
+                my $reservation_end_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
+                $reservation_end_time_dt->set_time_zone( $c->tz );
+
+                if ( $reservation_end_time_dt < $c->now ) {
                     $reservation->delete();
                 }
             }
