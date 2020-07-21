@@ -387,7 +387,7 @@ sub check_reservation {
             $reservation_end_time_dt->set_time_zone( $c->tz );
 
             my $duration = $reservation_begin_time_dt->subtract_datetime( $begin_time_dt );
-            $minutes_left = $duration->minutes;
+            $minutes_left = abs( $duration->in_units( 'minutes' ));
 
             if ( $reservation_begin_time_dt <= $begin_time_dt && $begin_time_dt < $reservation_end_time_dt ) {
                 $result{'error'} = 'INVALID_TIME';
