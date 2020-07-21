@@ -332,21 +332,25 @@ Check if the time is available and return the available time if possible
 
 sub check_reservation {
     my ( $c, $client, $user, $begin_time ) = @_;
+
     my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
-    my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'allotment' => 0, 'end_time' => $parser->parse_datetime( $begin_time ) );
-    my $datetime = $parser->parse_datetime( $begin_time );
+    my $begin_time_dt = $parser->parse_datetime( $begin_time );
+    $begin_time_dt->set_time_zone( $c->tz );
+
+    my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'allotment' => 0, 'end_time' => $begin_time_dt->clone );
+
     my @array;
     my $minutes_to_closing = Libki::Hours::minutes_until_closing(
         {
             c        => $c,
             location => $client->location,
-            datetime => $parser->parse_datetime( $begin_time ),
+            datetime => $begin_time_dt,
         }
     );
     my ( $minutes_left, $minutes ) = ( 0, 0 );
 
     #1. Check to see if the time has been past
-    if ( str2time( $begin_time ) < str2time( $c->now ) ) {
+    if ( $begin_time_dt < $c->now ) {
         $result{'error'} = 'INVALID_TIME';
     }
 
@@ -382,14 +386,22 @@ sub check_reservation {
         ) || undef;
 
         while ( my $r = $reservations->next ) {
-            $minutes_left = str2time( $r->begin_time ) - str2time( $begin_time );
-            if ( str2time( $r->begin_time ) <= str2time( $begin_time ) && str2time( $begin_time ) < str2time( $r->end_time ) ) {
+            my $reservation_begin_time_dt = DateTime::Format::MySQL->parse_datetime( $r->begin_time );
+            $reservation_begin_time_dt->set_time_zone( $c->tz );
+
+            my $reservation_end_time_dt = DateTime::Format::MySQL->parse_datetime( $r->end_time );
+            $reservation_end_time_dt->set_time_zone( $c->tz );
+
+            my $duration = $reservation_begin_time_dt->subtract_datetime( $begin_time_dt );
+            $minutes_left = $duration->minutes;
+
+            if ( $reservation_begin_time_dt <= $begin_time_dt && $begin_time_dt < $reservation_end_time_dt ) {
                 $result{'error'} = 'INVALID_TIME';
                 $result{'detail'} = 'Reserved';
                 last;
             }
             elsif ( $minutes_left > 0 ) {
-                push( @array, floor( $minutes_left / 60 ));
+                push( @array, $minutes_left );
                 last;
             }
         }
@@ -399,7 +411,10 @@ sub check_reservation {
     if ( !$result{'error'} ) {
         my $session = $c->model( 'DB::Session' )->find( { client_id => $client->id } );
         if ( $session ) {
-            if ( str2time( $begin_time ) < ( str2time( $c->now ) + $session->minutes * 60 ) ) {
+            my $now_plus_session_minutes_dt = $c->now;
+            $now_plus_session_minutes_dt->add( minutes => $session->minutes );
+
+            if ( $begin_time_dt < $now_plus_session_minutes_dt ) {
                 $result{'error'} = 'INVALID_TIME';
                 $result{'detail'} = 'Someone else is using this client';
             }
@@ -407,12 +422,12 @@ sub check_reservation {
     }
 
     #6. Check minutes_allotment
-    my $date = $parser->parse_datetime( "$begin_time 0:0" );
-    my $today = strftime( "%Y", localtime( time )) . strftime( "%m", localtime( time )) . strftime( "%d", localtime( time ));
-    my $datecompare = $date->year . ( $date->month < 10 ? '0' : '' ) . $date->month . ( $date->day < 10 ? '0' : '' ) . $date->day;
     my $minutes_allotment = $user->minutes( $c, $client );
 
-    if ( !$result{'error'} && defined( $minutes_allotment ) && ( $today eq $datecompare ) ) {
+    if (   !$result{'error'}
+        && defined($minutes_allotment)
+        && $begin_time_dt->ymd eq $c->now->ymd )
+    {
         if ( $minutes_allotment > 0 ) {
             push( @array, $minutes_allotment );
         }
