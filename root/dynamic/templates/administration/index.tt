@@ -1617,6 +1617,9 @@ function LibkiDeleteUser( id ) {
                  if ( data.message == 'ADMIN_CANNOT_DELETE_SUPERADMIN' ) {
                      DisplayMessage( "error", "[% c.loc("Administrators cannot delete super administrators.") %]" );
                  }
+                 if ( data.message == 'CANNOT_DELETE_YOURSELF' ) {
+                     DisplayMessage( "error", "[% c.loc("You are logged in as this user.") %]" );
+                 }
              } else {
                  DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
              }

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Removed use of local unixtime for calculations, resolves issues where the server timezone differs from the Libki timezone
+- Users can no longer delete themselves #162
 
 ## [4.2.3] - 2020-05-28
 ### Added

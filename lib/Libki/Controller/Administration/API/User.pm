@@ -340,13 +340,16 @@ sub delete : Local : Args(1) {
         my $i_am_admin         = $c->user->has_role(qw{admin});
 
         if ( $i_am_admin || $i_am_superadmin ) {
-            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
-                if ( $user->delete() ) {
-                    $success = 1;
-                }
+            if ( $user->username eq $c->user->username ) {
+                $msg = q{CANNOT_DELETE_YOURSELF};
             }
             elsif ( $i_am_admin && $user_is_superadmin ) {
                 $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
+            }
+            elsif ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                if ( $user->delete() ) {
+                    $success = 1;
+                }
             }
         }
         else {
