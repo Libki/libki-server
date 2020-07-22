@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to remotely shutdown, restart, and wake-on-lan clients
 - Add ability to set a gap between reservations to give librarians time to disinfect computers between uses
 
+### Changed
+- Removed use of local unixtime for calculations, resolves issues where the server timezone differs from the Libki timezone
+
 ## [4.2.3] - 2020-05-28
 ### Added
 - Add ability for a user to temporarily lock session. This feature is off by default and is enabled via a server setting. Requires Libki client 2.2.0 or later.
