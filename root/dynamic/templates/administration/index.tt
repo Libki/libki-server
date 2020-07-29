@@ -1499,7 +1499,7 @@ $(document).ready(function() {
         return status == 'suspended' ? '[% c.loc("Suspended") %]' : 
                status == 'offline'   ? '[% c.loc("Offline") %]'   :
                status == 'online'    ? '[% c.loc("Online") %]'    :
-               [% c.loc("Unknown") %];
+               '[% c.loc("Unknown") %]';
     }
 
     /* Make reservation */
