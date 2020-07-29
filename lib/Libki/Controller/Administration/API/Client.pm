@@ -379,8 +379,19 @@ Wake up all clients using wake on lan.
 
 sub wakeup : Local : Args(0) {
     my ( $self, $c ) = @_;
+    my $success = 0;
 
-    my $success = Libki::Clients::wakeonlan($c);
+    my $wol_mode = $c->setting('WOLMode') || "server";
+    if ( $wol_mode eq "server" ) {
+        $success = Libki::Clients::wakeonlan($c);
+    } elsif ( $wol_mode eq "client" ) {
+        my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+        while ( my $client = $clients->next() ) {
+            if ($client->status eq 'online') {
+                $success = 1 if $client->update( { status => 'wakeup' } );
+            }
+        }
+    }
 
     $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );

@@ -263,7 +263,17 @@ my $wake_hour = $c->setting('ClientWakeHour');
 if ( $wake_hour || DateTime->now( time_zone => $ENV{LIBKI_TZ} )->hour == $wake_hour ) {
     my $wake_minutes = $c->setting('ClientWakeMinute') || 0;
     if ( DateTime->now( time_zone => $ENV{LIBKI_TZ} )->minute == $wake_minutes ) {
-        Libki::Clients::wakeonlan($c);
+        my $wol_mode = $c->setting('WOLMode') || "server";
+        if ( $wol_mode eq "server" ) {
+            Libki::Clients::wakeonlan($c);
+        } elsif ( $wol_mode eq "client" ) {
+            my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+            while ( my $client = $clients->next() ) {
+                if ($client->status eq 'online') {
+                    $client->update( { status => 'wakeup' } );
+                }
+            }
+        }
     }
 }
 

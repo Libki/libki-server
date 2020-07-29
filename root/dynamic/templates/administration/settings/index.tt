@@ -571,6 +571,17 @@
                     <br/>
 
                     <div class="form-group">
+                        <label for="WOLMode" style="margin-bottom:3px">[% c.loc("Send the signal using") %]</label>
+                        <div>
+                            <input type="radio" id="wol-server" name="WOLMode" value="server" style="margin-left:15px;" [% IF !WOLMode || WOLMode == 'server' %]checked[% END %]>
+                            <label for="server" style="margin-bottom:3px;"> [% c.loc("the server") %]</label>
+                            <input type="radio" id="wol-client" name="WOLMode" value="client" style="margin-left:20px;" [% IF WOLMode == 'client' %]checked[% END %]>
+                            <label for="client" style="margin-bottom:3px;"> [% c.loc("the client") %]</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("When using the client, at least one Libki client must be running at the time when the wake up signal is received.") %]</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="WOLHost">[% c.loc("Host") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="WOLHost" name="WOLHost" value="[% WOLHost %]">
