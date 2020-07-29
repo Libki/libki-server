@@ -546,9 +546,9 @@
                         <label for="ClientShutdownAction" style="margin-bottom:3px">[% c.loc("Power off action") %]</label>
                         <div>
                             <input type="radio" id="shutdown" name="ClientShutdownAction" value="shutdown" style="margin-left:15px;" [% IF !ClientShutdownAction || ClientShutdownAction == 'shutdown' %]checked[% END %]>
-                            <label for="shutdown" style="margin-bottom:3px;"> Shutdown</label>
+                            <label for="shutdown" style="margin-bottom:3px;"> [% c.loc("Shutdown") %]</label>
                             <input type="radio" id="suspend" name="ClientShutdownAction" value="suspend" style="margin-left:20px;" [% IF ClientShutdownAction == 'suspend' %]checked[% END %]>
-                            <label for="suspend" style="margin-bottom:3px;"> Suspend</label>
+                            <label for="suspend" style="margin-bottom:3px;"> [% c.loc("Suspend") %]</label>
                             <small class="form-text text-muted" style="margin-top:0px">[% c.loc("Choose which action the automatic shutdown and turn off button perform. Depending on your setup, suspend may be necessary to correctly use together with the power on function.") %]</small>
                         </div>
                     </div>
