@@ -80,6 +80,17 @@ sub index : Path : Args(0) {
             $c->stash(
                 $client_s->status => 1,
             );
+        } elsif ($client_s->status eq "wakeup") {
+            my $host = $c->setting('WOLHost') || '255.255.255.255';
+            my $port = $c->setting('WOLPort') || 9;
+            my @mac_addresses = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
+
+            $c->stash(
+                wakeup => 1,
+                wol_host => $host,
+                wol_port => $port,
+                wol_mac_addresses => \@mac_addresses,
+            );
         }
 
         my $minutes_to_shutdown = $c->setting('ClientShutdownDelay');
