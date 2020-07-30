@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Removed use of local unixtime for calculations, resolves issues where the server timezone differs from the Libki timezone
 - Users can no longer delete themselves #162
+- Add the possibility to use the client for sending wake on LAN packets
+- Administrator can now place a reservation for a patron that's never been authenticated when using SIP #192
 
 ## [4.2.3] - 2020-05-28
 ### Added
