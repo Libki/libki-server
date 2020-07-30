@@ -191,6 +191,20 @@ sub reservation : Local : Args(1) {
     my $action    = $c->request->params->{action}   || q{};
     my $username  = $c->request->params->{username} || q{};
     my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+
+    if ( !$user ) {
+        my $config = $c->instance_config;
+
+        if ( $config->{SIP}->{enable} ) {
+            my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, my $password = undef, my $test_mode = 0, my $admin_auth = 1 );
+            $user = $ret->{user} if $ret->{success};
+        }
+        elsif ( $config->{LDAP}->{enable} ) {
+            #TODO: Add the same ability to force create a user as long as the user exists if we don't have the users password, as we do for SIP
+            #my $ret = Libki::LDAP::authenticate_via_ldap( $c, $user, $username, q{} );
+        }
+    }
+
     my $reservation = undef;
     if ( $user ) {
         $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
