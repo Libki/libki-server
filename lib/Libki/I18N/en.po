@@ -26,6 +26,15 @@ msgstr "Fran&ccedil;ais"
 msgid "lang.sv"
 msgstr "Svenska"
 
+msgid "lang.es"
+msgstr "Spanish"
+
+msgid "lang.pt_PT"
+msgstr "Portuguese"
+
+msgid "lang.nb_NO"
+msgstr "Norwegian"
+
 #: root/dynamic/includes/language_menu.tt:0
 msgid "('lang.' _ lang)"
 msgstr "('lang.' _ lang)"
