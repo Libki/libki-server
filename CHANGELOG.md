@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to have separate minutes allotments per-location for each user
 - Add ability to remotely shutdown, restart, and wake-on-lan clients
 - Add ability to set a gap between reservations to give librarians time to disinfect computers between uses
+- Add Norwegian translation
 
 ### Changed
 - Removed use of local unixtime for calculations, resolves issues where the server timezone differs from the Libki timezone
