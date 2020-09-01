@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-03-14 18:02+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"PO-Revision-Date: 2020-08-27 09:39+0200\n"
+"Last-Translator: Geir Håkon Eikland\n"
+"Language-Team: ITG\n"
 "Language: nb_NO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: root/dynamic/includes/language_menu.tt:0
 msgid "('lang.' _ lang)"
-msgstr "('lang.' _ lang)"
+msgstr ""
 
 #: root/dynamic/templates/administration/history/index.tt:8
 msgid "Action"
@@ -30,10 +30,8 @@ msgid "Add"
 msgstr "Legg til"
 
 #: root/dynamic/templates/administration/index.tt:526
-msgid ""
-"Add a + or - sign to increment or decrement the existing amount of time."
-msgstr ""
-"Legg til tegnet + eller - for å utvide eller redusere den nåværende tiden."
+msgid "Add a + or - sign to increment or decrement the existing amount of time."
+msgstr "Legg til tegnet + eller - for å utvide eller redusere den nåværende tiden."
 
 #: root/dynamic/templates/administration/hours/index.tt:117
 msgid "Add closing hours for specific dates"
@@ -53,8 +51,7 @@ msgstr "Legg til eget javascript for den offentlige delen her."
 
 #: root/dynamic/templates/administration/settings/index.tt:349
 msgid "Add your list of user categories here as a list in YAML syntax."
-msgstr ""
-"Legg til en liste over bruker-kategorier her som en liste i YAML-format."
+msgstr "Legg til en liste over bruker-kategorier her som en liste i YAML-format."
 
 #: root/dynamic/templates/administration/index.tt:1
 msgid "Administration"
@@ -252,19 +249,19 @@ msgstr "Bekreft passord"
 
 #: root/dynamic/templates/administration/settings/index.tt:281
 msgid ""
-"Control whether a user's session is extended automatically unless that "
-"user's client is reserved, or any client at all is reserved."
+"Control whether a user's session is extended automatically unless that user's "
+"client is reserved, or any client at all is reserved."
 msgstr ""
 "Bestem om tilgangen ikke skal utvides automatiskt når PCen til brukeren er "
 "reservert eller ingen andre PCer er reservert."
 
 #: root/dynamic/templates/administration/settings/index.tt:297
 msgid ""
-"Control whether a user's time extension uses up minutes from the user's "
-"daily allotment, or if the minutes are \"free\"."
+"Control whether a user's time extension uses up minutes from the user's daily "
+"allotment, or if the minutes are \"free\"."
 msgstr ""
-"Bestem om utvidet tid til brukeren skal hentes fra dagskvoten til brukeren "
-"eller om de ekstra minuttene er \"gratis\"."
+"Bestem om utvidet tid til brukeren skal hentes fra dagskvoten til brukeren eller "
+"om de ekstra minuttene er \"gratis\"."
 
 #: root/dynamic/templates/administration/index.tt:336
 msgid "Create user"
@@ -330,19 +327,19 @@ msgstr "Standard tid til brukere pr. gang"
 
 #: root/dynamic/templates/administration/settings/index.tt:544
 msgid ""
-"Define LDAP configuration in YAML format. This setting may be overridden by "
-"a LDAP block in the Libki conf file."
+"Define LDAP configuration in YAML format. This setting may be overridden by a LDAP "
+"block in the Libki conf file."
 msgstr ""
-"Definere LDAP-konfigurasjon i YAML-format. Denne innstillingen kan bli "
-"overskrevet av en LDAP-blokk i conf-filen til Libki."
+"Definere LDAP-konfigurasjon i YAML-format. Denne innstillingen kan bli overskrevet "
+"av en LDAP-blokk i conf-filen til Libki."
 
 #: root/dynamic/templates/administration/settings/index.tt:536
 msgid ""
-"Define SIP configuration in YAML format. This setting may be overridden by a "
-"SIP block in the Libki conf file."
+"Define SIP configuration in YAML format. This setting may be overridden by a SIP "
+"block in the Libki conf file."
 msgstr ""
-"SIP-innstillinger i YAML-format. Disse innstillingene kan bli overskrevet av "
-"SIP-blokken i konfigurationsfilen til den offentlige PCen."
+"SIP-innstillinger i YAML-format. Disse innstillingene kan bli overskrevet av SIP-"
+"blokken i konfigurationsfilen til den offentlige PCen."
 
 #: root/dynamic/templates/administration/settings/index.tt:558
 msgid "Define printer configuration in YAML format."
@@ -399,13 +396,13 @@ msgstr "Aktivert"
 
 #: root/dynamic/templates/administration/settings/index.tt:524
 msgid ""
-"Entering a url here will cause a username to become a hyperlink with the "
-"user's username at the end. Make sure to add <i>http://</i> or <i>https://</"
-"i> at the beginning."
+"Entering a url here will cause a username to become a hyperlink with the user's "
+"username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the "
+"beginning."
 msgstr ""
-"Ved å skrive inn en url her, vil brukernavnet bli en lenke med "
-"brukernavnet til brukeren på slutten. NB. Husk å legge til <i>http://</i> eller "
-"<i>https://</i> i starten."
+"Ved å skrive inn en url her, vil brukernavnet bli en lenke med brukernavnet til "
+"brukeren på slutten. NB. Husk å legge til <i>http://</i> eller <i>https://</i> i "
+"starten."
 
 #: root/dynamic/includes/wrapper.tt:51
 msgid "Error:"
@@ -417,11 +414,11 @@ msgstr "Eksempel:"
 
 #: root/dynamic/templates/administration/settings/index.tt:270
 msgid ""
-"Extend the session time when a user has less than this number of session "
-"minutes remaining."
+"Extend the session time when a user has less than this number of session minutes "
+"remaining."
 msgstr ""
-"Når brukeren har mindre enn dette antall minutter igjen av tildelt bruk, "
-"utvid tildelt tid."
+"Når brukeren har mindre enn dette antall minutter igjen av tildelt bruk, utvid "
+"tildelt tid."
 
 #: root/dynamic/templates/administration/settings/index.tt:263
 msgid "Extend time at"
@@ -445,19 +442,16 @@ msgstr "Filnavn"
 
 #: root/dynamic/templates/administration/settings/index.tt:156
 msgid ""
-"First come first served, with option to place reservation. A patron may "
-"either walk up and use an open client, or may place a reservation on one "
-"( either open or in use )."
+"First come first served, with option to place reservation. A patron may either "
+"walk up and use an open client, or may place a reservation on one ( either open or "
+"in use )."
 msgstr ""
-"Førstemann til mølla med rett til å reservere en PC. En bruker kan enten "
-"sette seg ved en ledig PC eller reservere en (enten den er i bruk eller "
-" ledig)."
+"Førstemann til mølla med rett til å reservere en PC. En bruker kan enten sette seg "
+"ved en ledig PC eller reservere en (enten den er i bruk eller  ledig)."
 
 #: root/dynamic/templates/administration/settings/index.tt:142
-msgid ""
-"First come, first served. A patron walks up to an open client and logs in."
-msgstr ""
-"Førstemann til mølla. Brukeren setter seg ved en ledig PC og logger inn."
+msgid "First come, first served. A patron walks up to an open client and logs in."
+msgstr "Førstemann til mølla. Brukeren setter seg ved en ledig PC og logger inn."
 
 #: root/dynamic/templates/administration/index.tt:290
 #: root/dynamic/templates/administration/index.tt:449
@@ -472,8 +466,8 @@ msgstr "Fornavn"
 #: root/dynamic/templates/administration/settings/index.tt:527
 msgid ""
 "For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?"
-"quicksearch=1&searchmember=</i> will link to the Koha ILS's search function "
-"for the given username."
+"quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for "
+"the given username."
 msgstr ""
 "For eksempel <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?"
 "quicksearch=1&searchmember=</i> vil lenke til søkefunksjonen til Koha for "
@@ -525,29 +519,27 @@ msgstr "Integrere med biblioteksystem (ILS)"
 
 #: root/dynamic/templates/administration/settings/index.tt:205
 msgid ""
-"If a Libki client has not re-registered itself within this amount of time, "
-"it will be removed from the list of active clients."
+"If a Libki client has not re-registered itself within this amount of time, it will "
+"be removed from the list of active clients."
 msgstr ""
-"Dersom en Libki-PC ikke har snakket med serveren i løpet av dette tidsrommet, "
-"så vil den forsvinne fra listen med aktive PCer."
+"Dersom en Libki-PC ikke har snakket med serveren i løpet av dette tidsrommet, så "
+"vil den forsvinne fra listen med aktive PCer."
 
 #: root/dynamic/templates/administration/settings/index.tt:597
 msgid "If no match is found, the default time allowances will be used."
-msgstr ""
-"Dersom ingen treff, vil grunninnstillingen for tidsbruk bli benyttet."
+msgstr "Dersom ingen treff, vil grunninnstillingen for tidsbruk bli benyttet."
 
 #: root/dynamic/templates/administration/settings/index.tt:362
 msgid ""
-"If not checked, the possibility to enter users' first and last name will "
-"disappear."
+"If not checked, the possibility to enter users' first and last name will disappear."
 msgstr ""
 "Dersom ikke markert, vil valget for å legge inn for- og etternavn til brukeren "
 "ikke vises."
 
 #: root/dynamic/templates/administration/settings/index.tt:335
 msgid ""
-"If text is added here for terms of service, it will be displayed in click-"
-"though dialog on the client before allowing a login."
+"If text is added here for terms of service, it will be displayed in click-though "
+"dialog on the client before allowing a login."
 msgstr ""
 "Dersom tekst om <i>Vilkår for bruk</i> legges inn her, så vil den vises i et "
 "meldingsvindu før innloggingvinuet blir aktivert."
@@ -597,27 +589,27 @@ msgstr "Ikke endre standard innstillinger for tid."
 
 #: root/dynamic/templates/administration/settings/index.tt:127
 msgid ""
-"Length of time to retain print jobs. If not set, will default to 0 and print "
-"jobs will be removed nightly."
+"Length of time to retain print jobs. If not set, will default to 0 and print jobs "
+"will be removed nightly."
 msgstr ""
-"Hvor lenge skal utskriftsjobb lagres. Dersom ikke angitt, vil standard o bli "
-"brukt og jobbene vil slettes hver natt."
+"Hvor lenge skal utskriftsjobb lagres. Dersom ikke angitt, vil standard o bli brukt "
+"og jobbene vil slettes hver natt."
 
 #: root/dynamic/templates/administration/settings/index.tt:113
 msgid ""
-"Length of time to retain user data of inactive users. If not set, data will "
-"be kept indefinitely."
+"Length of time to retain user data of inactive users. If not set, data will be "
+"kept indefinitely."
 msgstr ""
-"Hvor lenge data skal lagres for inaktive brukere. Dersom ikke angitt, vil "
-"dataene ikke bli slettet."
+"Hvor lenge data skal lagres for inaktive brukere. Dersom ikke angitt, vil dataene "
+"ikke bli slettet."
 
 #: root/dynamic/templates/administration/settings/index.tt:101
 msgid ""
-"Length of time to retain user/client data for statistics and history. If not "
-"set, data will be kept indefinitely."
+"Length of time to retain user/client data for statistics and history. If not set, "
+"data will be kept indefinitely."
 msgstr ""
-"Hvor lenge data skal lagres for statistikk og historikk. Dersom ikke angitt, "
-"vil dataene ikke bli slettet."
+"Hvor lenge data skal lagres for statistikk og historikk. Dersom ikke angitt, vil "
+"dataene ikke bli slettet."
 
 #: root/dynamic/includes/navbar_administration.tt:4
 #: root/dynamic/includes/navbar_public.tt:4
@@ -631,8 +623,7 @@ msgstr "Begrense"
 #: root/dynamic/templates/administration/index.tt:128
 #: root/dynamic/templates/administration/index.tt:160
 #: root/dynamic/templates/administration/index.tt:82
-#: root/dynamic/templates/public/index.tt:22
-#: root/dynamic/templates/public/index.tt:6
+#: root/dynamic/templates/public/index.tt:22 root/dynamic/templates/public/index.tt:6
 msgid "Location"
 msgstr "Sted"
 
@@ -648,8 +639,7 @@ msgstr "Logg ut"
 
 #: root/dynamic/templates/administration/settings/index.tt:190
 msgid "Log user out automatically after this many minutes of inactivity."
-msgstr ""
-"Logg ut brukeren automatisk dersom ikke aktiv i antall minutter."
+msgstr "Logg ut brukeren automatisk dersom ikke aktiv i antall minutter."
 
 #: root/dynamic/templates/administration/index.tt:1137
 msgid "Logged user out."
@@ -763,8 +753,7 @@ msgstr "Antall kontoer som skal opprettes"
 #: root/dynamic/templates/administration/index.tt:590
 #: root/dynamic/templates/administration/index.tt:591
 #: root/dynamic/templates/administration/index.tt:70
-#: root/dynamic/templates/login.tt:45
-#: root/dynamic/templates/public/index.tt:100
+#: root/dynamic/templates/login.tt:45 root/dynamic/templates/public/index.tt:100
 #: root/dynamic/templates/public/index.tt:65
 msgid "Password"
 msgstr "Passord"
@@ -873,11 +862,10 @@ msgstr "Reservasjon for bruker opprettet."
 
 #: root/dynamic/templates/administration/settings/index.tt:149
 msgid ""
-"Reservation only. A patron must place a reservation for a client before "
-"logging in to it."
+"Reservation only. A patron must place a reservation for a client before logging in "
+"to it."
 msgstr ""
-"Reservasjon kreves. Brukeren må reservere en PC før det går ann å logge "
-"inn på den."
+"Reservasjon kreves. Brukeren må reservere en PC før det går ann å logge inn på den."
 
 #: root/dynamic/templates/public/index.tt:25
 msgid "Reservation status"
@@ -996,17 +984,16 @@ msgstr "Antall gjestebrukere som skal opprettes."
 
 #: root/dynamic/templates/administration/settings/index.tt:222
 msgid ""
-"The size of the time window a patron has to log in to a client. If the "
-"patron does not do so his or her reservation will be canceled."
+"The size of the time window a patron has to log in to a client. If the patron does "
+"not do so his or her reservation will be canceled."
 msgstr ""
-"Tidsvindu en bruker har for å logge seg inn på en reservert PC. Dersom "
-"brukeren ikke har logget seg inn innen utløpt tid, vil reservasjon fjernes."
+"Tidsvindu en bruker har for å logge seg inn på en reservert PC. Dersom brukeren "
+"ikke har logget seg inn innen utløpt tid, vil reservasjon fjernes."
 
 #: root/dynamic/templates/administration/settings/index.tt:500
 msgid ""
 "The text in this field will be prepended to the guest password, for example "
-"<i>Password:</i>. This field is displayed in monospace for ease of "
-"formatting."
+"<i>Password:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 "Teksten i dette feltet vil vises foran passordet til gjestekontoen, f.eks. "
 "<i>Passord:</i>. (Feltet bruker Monospace skrift for enklere formatering)"
@@ -1014,8 +1001,7 @@ msgstr ""
 #: root/dynamic/templates/administration/settings/index.tt:490
 msgid ""
 "The text in this field will be prepended to the guest username, for example "
-"<i>Username:</i>. This field is displayed in monospace for ease of "
-"formatting."
+"<i>Username:</i>. This field is displayed in monospace for ease of formatting."
 msgstr ""
 "Teksten i dette feltet vil vises foran brukernavnet til gjestekontoen, f.eks. "
 "<i>Brukernavn:</i>. (Feltet bruker Monospace skrift for enklere formatering)"
@@ -1115,8 +1101,7 @@ msgstr "Klarte ikke endre reservasjonen av ukjent årsak."
 msgid ""
 "Unable to modify reservation: User already has a reservation for a different "
 "client."
-msgstr ""
-"Klarte ikke endre reservasjonen fordi brukeren har reservert en annen PC."
+msgstr "Klarte ikke endre reservasjonen fordi brukeren har reservert en annen PC."
 
 #: root/dynamic/templates/administration/index.tt:1067
 msgid "Unable to modify reservation: User not found."
@@ -1153,10 +1138,8 @@ msgstr "Oppdater bruker"
 
 #: root/dynamic/templates/administration/settings/index.tt:114
 msgid ""
-"Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</"
-"a>"
-msgstr ""
-"Nyttig for å bruke <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
+"Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
+msgstr "Nyttig for å bruke <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
 
 #: root/dynamic/templates/administration/index.tt:211
 msgid "User"
@@ -1262,28 +1245,27 @@ msgstr "Vis og skriv ut gjestebruker"
 
 #: root/dynamic/templates/administration/settings/index.tt:179
 msgid ""
-"Warn user that they will be logged out automatically after this many minutes "
-"of inactivity."
+"Warn user that they will be logged out automatically after this many minutes of "
+"inactivity."
 msgstr ""
-"Advar bruker at de vil bli logget ut automatisk etter antall minutter igjen "
-"med inaktivitet."
+"Advar bruker at de vil bli logget ut automatisk etter antall minutter igjen med "
+"inaktivitet."
 
 #: root/dynamic/templates/administration/settings/index.tt:229
 msgid ""
-"When a Libki client is reserved and waiting, display the username of the "
-"person it is waiting for."
+"When a Libki client is reserved and waiting, display the username of the person it "
+"is waiting for."
 msgstr ""
-"Når en PC er reservert og venter på innlogging, vis brukernavnet til "
-"brukeren den venter på."
+"Når en PC er reservert og venter på innlogging, vis brukernavnet til brukeren den "
+"venter på."
 
 #: root/dynamic/templates/administration/settings/index.tt:307
 msgid ""
-"When a user's time allotment reaches zero, it's automatically renewed with "
-"the value of Extension length. This makes it possible for the user to log in "
-"again."
+"When a user's time allotment reaches zero, it's automatically renewed with the "
+"value of Extension length. This makes it possible for the user to log in again."
 msgstr ""
-"Når tildelt tid til en bruker er utløpt, vil brukeren automatisk få tildelt "
-"ny utvidet tid. Det gjør at brukeren kan logge seg inn på nytt."
+"Når tildelt tid til en bruker er utløpt, vil brukeren automatisk få tildelt ny "
+"utvidet tid. Det gjør at brukeren kan logge seg inn på nytt."
 
 #: root/dynamic/templates/administration/settings/index.tt:290
 msgid "When extending time"
@@ -1375,17 +1357,15 @@ msgid "Your reservation cancelation failed for an unknown reason."
 msgstr "Vi klarte ikke avbryte reservasjonen din av ukjent årsak."
 
 #: root/dynamic/templates/administration/hours/index.tt:0
-#, fuzzy
 msgid "d"
-msgstr "$d"
+msgstr "d"
 
 #: root/dynamic/templates/administration/hours/index.tt:140
 #: root/dynamic/templates/administration/hours/index.tt:99
 msgid "for"
 msgstr "for"
 
-#: root/dynamic/includes/breadcrumbs.tt:5
-#: root/dynamic/includes/breadcrumbs.tt:9
+#: root/dynamic/includes/breadcrumbs.tt:5 root/dynamic/includes/breadcrumbs.tt:9
 msgid "item.label"
 msgstr "item.label"
 
@@ -1397,17 +1377,20 @@ msgstr "Engelsk"
 msgid "lang.fr"
 msgstr "Fransk"
 
+# Spanish
+msgid "lang.es"
+msgstr "Spansk"
+
+# Portuguese
+msgid "lang.pt_PT"
+msgstr "Portugisisk"
+
 msgid "lang.sv"
 msgstr "Svensk"
 
-msgid "lang.nb_NO"
-msgstr "Norsk"
-
-msgid "lang.es"
-msgstr "Spanish"
-
-msgid "lang.pt_PT"
-msgstr "Portuguese"
+# Norwegian
+msgid "lang.nb-NO"
+msgstr "Norsk bokmål"
 
 # Days of the week
 msgid "Monday"
@@ -1439,24 +1422,136 @@ msgid "Login"
 msgstr "Innlogging"
 
 # Strings not autogenerated by xgettext
+
 # Language menu
 #~ msgid "lang.$lang"
 #~ msgstr "lang.$lang"
 
-#~ msgid "Amount of time a registered user is given per session."
-#~ msgstr "Tidskvote en gjestebruker får pr. gang."
+msgid "Amount of time a registered user is given per session."
+msgstr "Tidskvote en gjestebruker får pr. gang."
 
-#~ msgid "Reservation settings"
-#~ msgstr "Innstilling for reservasjon"
+msgid "Reservation settings"
+msgstr "Innstilling for reservasjon"
 
-#~ msgid "Third party integration"
-#~ msgstr "Integrasjon mot tredjepart"
+msgid "Third party integration"
+msgstr "Integrasjon mot tredjepart"
 
 #~ msgid "URL"
-#~ msgstr "URL"
+#~ msgstr ""
 
-#~ msgid "The URL for the source image or image service"
-#~ msgstr "URLen til bildet eller bildetjenesten"
+msgid "The URL for the source image or image service"
+msgstr "URLen til bildet eller bildetjenesten"
 
-#~ msgid "This client is already reserved"
-#~ msgstr "Denne PCen er reservert fra før"
+msgid "This client is already reserved"
+msgstr "Denne PCen er reservert fra før"
+
+msgid "12-hour"
+msgstr "12-timer"
+
+msgid "24-hour"
+msgstr "24-timer"
+
+msgid "Time allowance by location"
+msgstr "Tid tilordnet utfra sted"
+
+msgid "If checked, each location has it's own time allowance shared between only the clients it contains."
+msgstr "Hver lokasjon får sin egen tildelte tid delt mellom bare de PCene de har."
+
+msgid "Client session pausing"
+msgstr "Pause i tildelt tid"
+
+msgid "Enable session locking for clients"
+msgstr "Tillat at bruker kan låse PCen"
+
+msgid "Allows client user to lock the session which returns Libki to a locked screen. This allows the user to walk away from the client and return to resume the session. While the client is lockd, session minutes continue to count down."
+msgstr "Gir brukeren mulighet til å låse PCen slik at det vises et pause-vindu. Da kan brukeren forlate PCen og komme tilbake for å fortsette innenfor tildelt tid. Tildelt tid fortsetter å løpe mens brukeren er borte."
+
+msgid "Client power options"
+msgstr "Strømstyring"
+
+msgid "Client power off settings"
+msgstr "Valg for å avslutte"
+
+msgid "Power off action"
+msgstr "Type avslutning"
+
+msgid "Shutdown"
+msgstr "Avslutt"
+
+msgid "Suspend"
+msgstr "Hvilemodus"
+
+msgid "Choose which action the automatic shutdown and turn off button perform. Depending on your setup, suspend may be necessary to correctly use together with the power on function."
+msgstr "Velg hvilken handling automatisk avslutning eller avslutt-knappen skal utføre. Avhengig av oppsett, kan hvilemodus være nødvendig riktig sammen med type avslutning."
+
+msgid "Client automatic shutdown delay"
+msgstr "Forsinkelse av automatisk avslutning"
+
+msgid "Automatically turn off clients this number of minutes after closing time. Leave empty to disable automatic shutdown."
+msgstr "Slå av PCen automatisk etter angitte minutter etter bestemt tid for avlutning. La feltet være tomt for IKKE å bruke automatisk avslutning."
+
+msgid "Client power on settings"
+msgstr "Valg for oppstart av PC"
+
+msgid "To power on clients, wake on LAN must be enabled on the target computers. For more information, please refer to the Libki manual."
+msgstr "For å slå på PC, må Wake on LAN være aktivert på PCen. For mer informasjon, se i manualen til Libki."
+
+msgid "Host"
+msgstr "Vert"
+
+msgid "IP address or fully qualified domain name (FQDN) where to send the signal. Defaults to the limited broadcast address (255.255.255.255)."
+msgstr "IP-adresse eller fullt gyldig domene-navn (FQDN) som skal motta signalet. Standard til avgrenset broadcast-adresse (255.255.255.255)." 
+
+msgid "Port"
+msgstr "Port"
+
+msgid "Port to send the signal. Defaults to the discard port (9)."
+msgstr "Port som skal motta signalet. Standard til discard port (9)."
+
+msgid "MAC-addresses"
+msgstr "MAC-adresser"
+
+msgid "A list of the network adapter's MAC addresses for the computers to wake up."
+msgstr "En liste med MAC-adressene til nettverkkortane til PCene som skal vekkes."
+
+msgid "Automatic power on time"
+msgstr "Klokkeslett for automatisk oppstart"
+
+msgid "The time at which to automatically turn on the clients. Leave empty to disable."
+msgstr "Klokkeslettet PCene skal automatisk slås på. La være tomt for å ikke bruke."
+
+msgid "Turn on all clients"
+msgstr "Slå på alle PCene"
+
+msgid "Restart all clients"
+msgstr "Start PCene på nytt"
+
+msgid "Turn off all clients"
+msgstr "Slå av alle PCene"
+
+msgid "Creation source"
+msgstr "Opprettet av"
+
+msgid "Search"
+msgstr "Søk"
+
+msgid "Next"
+msgstr "Neste"
+
+msgid "Previous"
+msgstr "Forrige"
+
+msgid "Offline"
+msgstr "Avslått"
+
+msgid "Online"
+msgstr "Påslått"
+
+msgid "Show"
+msgstr "Vis"
+
+msgid "entries"
+msgstr "linjer"
+
+msgid "Showing $d to $d of $d entries"
+msgstr "Viser $d til $d av $d linjer"
