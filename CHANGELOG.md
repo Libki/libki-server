@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Client will now disable ability for patron to log in if the client is disabled from the server 
+
 ## [4.2.4] [r20.11]
 ### Added
 - Add users.creation_source field to tell how a given user was created ( local, SIP, LDAP, etc )
