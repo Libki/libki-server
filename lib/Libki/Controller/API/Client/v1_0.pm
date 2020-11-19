@@ -127,6 +127,7 @@ sub index : Path : Args(0) {
 
         $c->stash(
             registered                 => !!$client,
+            status                     => $client_s->status,
             ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
             EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
