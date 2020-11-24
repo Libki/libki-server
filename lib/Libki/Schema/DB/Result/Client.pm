@@ -78,7 +78,7 @@ __PACKAGE__->table("clients");
 
   data_type: 'varchar'
   default_value: 'online'
-  is_nullable: 0
+  is_nullable: 1
   size: 191
 
 =head2 type
@@ -105,7 +105,12 @@ __PACKAGE__->add_columns(
   "location",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "status",
-  { data_type => "varchar", default_value => "online", is_nullable => 0, size => 191 },
+  {
+    data_type => "varchar",
+    default_value => "online",
+    is_nullable => 1,
+    size => 191,
+  },
   "type",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
@@ -207,8 +212,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-14 07:30:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5gxuV3yJ/As2c615AL5SNQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-11-24 15:15:46
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jx+b0ZMRDBydlC3WFYHarg
 
 =head2 can_user_use
 
