@@ -83,3 +83,7 @@ table {
 .hullabaloo {
     width: 500px !important;
 }
+
+.libki-toolbar-btn {
+    background-color: white;
+}

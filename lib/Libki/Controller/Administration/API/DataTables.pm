@@ -29,20 +29,8 @@ sub users : Local Args(0) {
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
     my $dbh = $schema->storage->dbh;
 
-    # Get settings
-    my $userCategories = $c->setting('UserCategories');
-    my $showFirstLastNames = $c->setting('ShowFirstLastNames');
-
     # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.lastname me.firstname me.category me.minutes_allotment session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
-
-    if ($userCategories eq '') {
-        splice @columns, 3, 1;
-    }
-
-    if ($showFirstLastNames eq '0') {
-        splice @columns, 1, 2;
-    }
+    my @columns = qw/me.username me.lastname me.firstname me.category session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -100,28 +88,28 @@ sub users : Local Args(0) {
 
     my @results;
     foreach my $u (@users) {
+        my $minutes_allotment = $u->allotments->find({
+            'instance' => $instance,
+            'location' => ($c->setting('TimeAllowanceByLocation'))
+                ? ( ( defined($u->session) && defined($u->session->client->location) ) ? $u->session->client->location : '' )
+                : '',
+        });
 
         my @userValues = (
             $u->username,
             $u->lastname,
             $u->firstname,
             $u->category,
-            $u->minutes_allotment,
+            defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
             $u->session ? $u->session->minutes : undef,
             $u->status,
             $u->notes,
             $u->is_troublemaker,
             defined( $u->session ) ? $u->session->client->name : undef,
             defined( $u->session ) ? $u->session->status : undef,
+            $u->creation_source,
+            defined($u->troublemaker_until) ? $u->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
         );
-
-        if ($userCategories eq '') {
-            splice @userValues, 3, 1;
-        }
-
-        if ($showFirstLastNames eq '0') {
-            splice @userValues, 1, 2;
-        }
 
         my $r;
         my $userValuesCounter = 0;
@@ -166,7 +154,7 @@ sub clients : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns =
-      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category user.minutes_allotment session.minutes user.status user.notes user.is_troublemaker/;
+      qw/ me.name me.location me.type session.status user.username user.lastname user.firstname user.category session.minutes user.status user.notes user.is_troublemaker me.status/;
 
     if ($userCategories eq '') {
         splice @columns, 6, 1;
@@ -184,6 +172,7 @@ sub clients : Local Args(0) {
         $filter->{-or} = [
             'me.name'       => { 'like', "%$search_term%" },
             'me.location'   => { 'like', "%$search_term%" },
+            'me.status'     => { 'like', "%$search_term%" },
             'me.type'       => { 'like', "%$search_term%" },
             'user.username' => { 'like', "%$search_term%" },
         ];
@@ -239,44 +228,42 @@ sub clients : Local Args(0) {
              { 'client_id' => $c->id},
              {  order_by => { -asc => 'begin_time' } }
              )->first || undef;
+
         my $begin = defined( $reservation ) ? $reservation->begin_time()->stringify() : undef;
         $begin =~ s/T/ / if(defined($begin));
-        my @clientValues = (
-            $c->name,
-            $c->location,
-            $c->type,
-            defined( $c->session ) ? $c->session->status : undef,
-            defined( $c->session ) ? $c->session->user->username : undef,
-            defined( $c->session ) ? $c->session->user->lastname : undef,
-            defined( $c->session ) ? $c->session->user->firstname : undef,
-            defined( $c->session ) ? $c->session->user->category : undef,
-            defined( $c->session ) ? $c->session->user->minutes_allotment : undef,
-            defined( $c->session ) ? $c->session->minutes : undef,
-            defined( $c->session ) ? $c->session->user->status  : undef,
-            defined( $c->session ) ? $c->session->user->notes : undef,
-            defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
-            defined( $reservation ) ? $reservation->user->username : undef,
-            defined( $reservation ) ? $begin : undef,
-        );
 
-        if ($userCategories eq '') {
-            splice @clientValues, 7, 1;
+        my $minutes_allotment = undef;
+        if ( defined($c->session) ) {
+            $minutes_allotment = $c->session->user->allotments->find({
+                'instance' => $instance,
+                'location' => ( $client->setting('TimeAllowanceByLocation') && defined($c->location) ) ? $c->location : '',
+            });
         }
 
-        if ($showFirstLastNames eq '0') {
-            splice @clientValues, 5, 2;
-        }
+        my $clientValues = {
+            name => $c->name,
+            location => $c->location,
+            type => $c->type,
+            session_status => defined( $c->session ) ? $c->session->status : undef,
+            username => defined( $c->session ) ? $c->session->user->username : undef,
+            lastname => defined( $c->session ) ? $c->session->user->lastname : undef,
+            firstname => defined( $c->session ) ? $c->session->user->firstname : undef,
+            category => defined( $c->session ) ? $c->session->user->category : undef,
+            minutes_allotment => defined( $minutes_allotment ) ?$minutes_allotment->minutes : undef,
+            minutes => defined( $c->session ) ? $c->session->minutes : undef,
+            user_status => defined( $c->session ) ? $c->session->user->status  : undef,
+            notes => defined( $c->session ) ? $c->session->user->notes : undef,
+            is_troublemaker => defined( $c->session ) ? $c->session->user->is_troublemaker : undef,
+            reservation => defined( $reservation ) ? $reservation->user->username : undef,
+            reservation_start => defined( $reservation ) ? $begin : undef,
+            client_status => $c->status,
+        };
 
         my $r;
         my $clientValuesCounter = 0;
-        $r->{'DT_RowId'} = $c->id;
+        $clientValues->{'DT_RowId'} = $c->id;
 
-        foreach my $clientValue (@clientValues) {
-            $r->{$clientValuesCounter} = $clientValue;
-            $clientValuesCounter++;
-        }
-
-        push( @results, $r );
+        push( @results, $clientValues );
     }
 
     $c->stash(
@@ -284,7 +271,7 @@ sub clients : Local Args(0) {
             'iTotalRecords'        => $total_records,
             'iTotalDisplayRecords' => $count,
             'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'data'               => \@results,
         }
     );
     $c->forward( $c->view('JSON') );

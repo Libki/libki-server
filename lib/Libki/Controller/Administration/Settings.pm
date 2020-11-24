@@ -63,14 +63,16 @@ sub update :Local :Args(0) {
         );
     }
 
-    # ReservationShowUsername is a checkbox
-    $c->model('DB::Setting')->update_or_create(
-        {
-            instance => $instance,
-            name     => 'ReservationShowUsername',
-            value    => ( $c->request->params->{ReservationShowUsername} // 0 ) eq 'on' ? 1 : 0,
-        }
-    );
+    # Checkboxes need to be converted to boolean values 
+    foreach my $pref ( qw( ReservationShowUsername EnableClientSessionLocking TimeAllowanceByLocation ) ) {
+        $c->model('DB::Setting')->update_or_create(
+            {
+                instance => $instance,
+                name     => $pref,
+                value    => ( $c->request->params->{$pref} // 0 ) eq 'on' ? 1 : 0,
+            }
+        );
+    }
     
     # And so is AutomaticTimeExtensionRenewal
     $c->model('DB::Setting')->update_or_create(

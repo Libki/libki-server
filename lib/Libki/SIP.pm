@@ -14,7 +14,9 @@ Returns a hashref with keys 'success' and 'ERROR' among other data.
 =cut
 
 sub authenticate_via_sip {
-    my ( $c, $user, $username, $password, $test_mode ) = @_;
+    my ( $c, $user, $username, $password, $test_mode, $admin_auth ) = @_;
+
+    $password //= q{};
 
     my $instance = $c->instance;
     my $config = $c->instance_config;
@@ -183,7 +185,7 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verifies $username exists");
 
-    unless ( $config->{SIP}->{no_password_check} ) {
+    unless ( $config->{SIP}->{no_password_check} || $admin_auth ) {
         if ( CORE::index( $data, 'CQY' ) == -1 ) {
             return {
                 success => 0,
@@ -215,6 +217,7 @@ sub authenticate_via_sip {
         $user->set_column( 'category',  $category );
         $user->set_column( 'password',  $password );
         $user->set_column( 'birthdate', $birthdate );
+        $user->set_column( 'password',  $password ); # Set password in case user was created by staff reservation
         $user->update();
     }
     else {          ## User authenticated and does not exits in Libki
@@ -223,12 +226,12 @@ sub authenticate_via_sip {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => undef,
                 status            => 'enabled',
                 birthdate         => $birthdate,
                 lastname          => $lastname,
                 firstname         => $firstname,
                 category          => $category,
+                creation_source   => 'SIP',
             }
         );
     }

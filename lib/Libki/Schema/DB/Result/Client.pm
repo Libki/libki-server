@@ -74,6 +74,13 @@ __PACKAGE__->table("clients");
   is_nullable: 1
   size: 191
 
+=head2 status
+
+  data_type: 'varchar'
+  default_value: 'online'
+  is_nullable: 0
+  size: 191
+
 =head2 type
 
   data_type: 'varchar'
@@ -97,6 +104,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "status",
+  { data_type => "varchar", default_value => "online", is_nullable => 0, size => 191 },
   "type",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",

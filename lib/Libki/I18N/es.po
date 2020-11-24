@@ -1290,6 +1290,12 @@ msgstr "Svenska"
 msgid "lang.es"
 msgstr "Espa&ntilde;ol"
 
+msgid "lang.pt_PT"
+msgstr "Portuguese"
+
+msgid "lang.nb_NO"
+msgstr "Norwegian"
+
 # Days of the week
 msgid "Monday"
 msgstr "Lunes"

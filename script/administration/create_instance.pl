@@ -48,6 +48,7 @@ my $defaults = {
     'ReservationTimeout'                 => '15',
     'ThirdPartyURL'                      => '',
     'UserCategories'                     => '',
+    'EnableClientSessionPausing'         => 0,
 };
 
 while ( my ( $name, $value ) = each %$defaults ) {

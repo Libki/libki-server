@@ -4,6 +4,7 @@ use Moose;
 use String::Random qw(random_string);
 
 use namespace::autoclean;
+use POSIX;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -42,10 +43,11 @@ sub get : Local : Args(1) {
             firstname       => $user->firstname,
             lastname        => $user->lastname,
             category        => $user->category,
-            minutes         => $user->minutes_allotment,
+            minutes         => $user->minutes($c),
             status          => $user->status,
             notes           => $user->notes,
             is_troublemaker => $user->is_troublemaker,
+            troublemaker_until => defined($user->troublemaker_until) ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
             roles           => \@roles,
         }
     );
@@ -68,7 +70,7 @@ sub create : Local : Args(0) {
     my $lastname  = $params->{lastname};
     my $category  = $params->{category};
     my $password  = $params->{password};
-    my $minutes   = $params->{minutes} || $c->setting('DefaultTimeAllowance') || 0;
+    my $minutes   = $params->{minutes} || undef;
 
     my $success = 0;
 
@@ -81,12 +83,23 @@ sub create : Local : Args(0) {
             lastname          => $lastname,
             category          => $category,
             password          => $password,
-            minutes_allotment => $minutes,
             status            => 'enabled',
             created_on        => $now,
             updated_on        => $now,
+            creation_source   => 'local',
         }
     );
+
+    if (defined $minutes) {
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $instance,
+                user_id  => $user->id,
+                location => '',
+                minutes  => $minutes,
+            }
+        );
+    }
 
     $success = 1 if ($user);
 
@@ -101,13 +114,14 @@ sub create : Local : Args(0) {
 sub create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
+    my $params   = $c->request->params;
 
-    my $params = $c->request->params;
+    my $category = $params->{category};
 
-    my $current_guest_number_setting = $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value + 1;
+    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
-    $current_guest_number_setting->update();
+    $current_guest_number_setting->update_or_insert();
 
     my $prefix_setting = $c->setting('GuestPassPrefix');
     my $prefix = $prefix_setting || 'guest';
@@ -127,11 +141,12 @@ sub create_guest : Local : Args(0) {
             instance          => $instance,
             username          => $username,
             password          => $password,
-            minutes_allotment => $minutes_allotment,
             status            => 'enabled',
             is_guest          => 'Yes',
             created_on        => $now,
             updated_on        => $now,
+            category          => $category,
+            creation_source   => 'local',
         }
     );
 
@@ -141,6 +156,7 @@ sub create_guest : Local : Args(0) {
         'success'  => $success,
         'username' => $username,
         'password' => $password,
+        'category' => $category,
         'minutes'  => $minutes_allotment,
     );
     $c->forward( $c->view('JSON') );
@@ -155,7 +171,7 @@ sub batch_create_guest : Local : Args(0) {
     my $instance = $c->instance;
 
     my $params = $c->request->params;
-
+    my $category = $params->{category};
     my $prefix_setting = $c->setting('GuestPassPrefix');
     my $prefix = $prefix_setting || 'guest';
 
@@ -170,9 +186,8 @@ sub batch_create_guest : Local : Args(0) {
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
     $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
 
-    my $current_guest_number_setting =
-      $c->model('DB::Setting')->find({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value() + 1;
+    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
+    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
 
     my $file_contents = q{};
 
@@ -192,11 +207,12 @@ sub batch_create_guest : Local : Args(0) {
                 instance          => $instance,
                 username          => $username,
                 password          => $password,
-                minutes_allotment => $minutes_allotment,
                 status            => 'enabled',
                 is_guest          => 'Yes',
                 created_on        => $now,
                 updated_on        => $now,
+                category          => $category,
+                creation_source   => 'local',
             }
         );
 
@@ -213,14 +229,15 @@ sub batch_create_guest : Local : Args(0) {
         $success = $success + 1 if ($user);
     }
 
-    $current_guest_number_setting->value($current_guest_number);
-    $current_guest_number_setting->update();
+    $current_guest_number_setting->set_column( 'value', $current_guest_number );
+    $current_guest_number_setting->update_or_insert();
 
     $c->stash(
         'success'  => $success,
         'highest'  => $current_guest_number,
         'number'   => $guest_count,
         'minutes'  => $minutes_allotment,
+        'category' => $category,
         'contents' => $file_contents,
     );
 
@@ -263,12 +280,24 @@ sub update : Local : Args(0) {
             firstname         => $firstname,
             lastname          => $lastname,
             category          => $category,
-            minutes_allotment => $minutes,
             notes             => $notes,
             status            => $status,
             updated_on        => $now,
         }
     );
+
+    if (defined $minutes) {
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $instance,
+                user_id  => $user->id,
+                location => '',
+                minutes  => $minutes,
+            }
+        );
+    } else {
+        $c->model('DB::Allotment')->search( { instance => $instance, user_id => $user->id } )->delete;
+    }
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
 
@@ -311,13 +340,16 @@ sub delete : Local : Args(1) {
         my $i_am_admin         = $c->user->has_role(qw{admin});
 
         if ( $i_am_admin || $i_am_superadmin ) {
-            if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
-                if ( $user->delete() ) {
-                    $success = 1;
-                }
+            if ( $user->username eq $c->user->username ) {
+                $msg = q{CANNOT_DELETE_YOURSELF};
             }
             elsif ( $i_am_admin && $user_is_superadmin ) {
                 $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
+            }
+            elsif ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
+                if ( $user->delete() ) {
+                    $success = 1;
+                }
             }
         }
         else {
@@ -354,8 +386,8 @@ sub is_username_unique : Local : Args(1) {
 
 =cut
 
-sub toggle_troublemaker : Local : Args(1) {
-    my ( $self, $c, $id ) = @_;
+sub toggle_troublemaker : Local : Args(3) {
+    my ( $self, $c, $id, $until, $notes ) = @_;
     my $instance = $c->instance;
 
     my $success = 0;
@@ -368,6 +400,14 @@ sub toggle_troublemaker : Local : Args(1) {
 
     $user->set_column( 'is_troublemaker', $is_troublemaker );
     $user->set_column( 'updated_on', $now );
+    $user->set_column( 'troublemaker_until', undef );
+    if ( $until != 0 && $is_troublemaker eq 'Yes'){
+        my $troublemaker_until = $now->clone;
+        $troublemaker_until->add( days => $until );
+
+        $user->set_column( 'troublemaker_until', $troublemaker_until );
+        $user->set_column( 'notes', $notes eq '' ? undef : $notes ); 
+    }
 
     if ( $user->update() ) {
         $success = 1;

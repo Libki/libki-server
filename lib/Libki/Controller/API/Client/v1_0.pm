@@ -13,7 +13,6 @@ use DateTime::Format::MySQL;
 use DateTime;
 use List::Util qw(min);
 use PDF::API2;
-use Date::Parse;
 
 =head1 NAME
 
@@ -69,10 +68,44 @@ sub index : Path : Args(0) {
                 last_registered => $now,
             }
         );
-        $log->debug( "Client Registered: " . $client->name() );
+        my $client_s = $c->model('DB::Client')->find( { name => $node_name } );
 
-        my $reserved_for = $c->get_reservation_status( $client );
-        $c->stash( reserved_for => $reserved_for) if($reserved_for);
+        if ($client_s->status eq "unlock") {
+            $c->stash(
+                unlock   => 1,
+                minutes  => $client_s->session->minutes,
+                username => $client_s->session->user->username,
+            );
+        } elsif ($client_s->status eq "shutdown" || $client_s->status eq "suspend" || $client_s->status eq "restart") {
+            $c->stash(
+                $client_s->status => 1,
+            );
+        } elsif ($client_s->status eq "wakeup") {
+            my $host = $c->setting('WOLHost') || '255.255.255.255';
+            my $port = $c->setting('WOLPort') || 9;
+            my @mac_addresses = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
+
+            $c->stash(
+                wakeup => 1,
+                wol_host => $host,
+                wol_port => $port,
+                wol_mac_addresses => \@mac_addresses,
+            );
+        }
+
+        my $minutes_to_shutdown = $c->setting('ClientShutdownDelay');
+        if (length($minutes_to_shutdown)) {
+            my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_s->location });
+            if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) < 0 ) {
+                my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
+                $c->stash(
+                    $status => 1,
+                );
+            }
+        }
+
+        $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
+        $log->debug( "Client Registered: " . $client->name() );
 
         my $age_limit = $c->request->params->{'age_limit'};
         if ($age_limit) {
@@ -93,39 +126,45 @@ sub index : Path : Args(0) {
         }
 
         $c->stash(
-            registered              => !!$client,
-            ClientBehavior          => $c->stash->{'Settings'}->{'ClientBehavior'},
-            ReservationShowUsername => $c->stash->{'Settings'}->{'ReservationShowUsername'},
-            TermsOfService          => $c->stash->{'Settings'}->{'TermsOfService'},
+            registered                 => !!$client,
+            status                     => $client_s->status,
+            ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
+            ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
+            EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
+            TermsOfService             => $c->stash->{Settings}->{TermsOfService},
 
-            BannerTopURL    => $c->stash->{'Settings'}->{'BannerTopURL'},
-            BannerTopWidth  => $c->stash->{'Settings'}->{'BannerTopWidth'},
-            BannerTopHeight => $c->stash->{'Settings'}->{'BannerTopHeight'},
+            BannerTopURL               => $c->stash->{Settings}->{BannerTopURL},
+            BannerTopWidth             => $c->stash->{Settings}->{BannerTopWidth},
+            BannerTopHeight            => $c->stash->{Settings}->{BannerTopHeight},
 
-            BannerBottomURL    => $c->stash->{'Settings'}->{'BannerBottomURL'},
-            BannerBottomWidth  => $c->stash->{'Settings'}->{'BannerBottomWidth'},
-            BannerBottomHeight => $c->stash->{'Settings'}->{'BannerBottomHeight'},
+            BannerBottomURL            => $c->stash->{Settings}->{BannerBottomURL},
+            BannerBottomWidth          => $c->stash->{Settings}->{BannerBottomWidth},
+            BannerBottomHeight         => $c->stash->{Settings}->{BannerBottomHeight},
 
-            inactivityWarning => $c->stash->{'Settings'}->{'ClientInactivityWarning'},
-            inactivityLogout  => $c->stash->{'Settings'}->{'ClientInactivityLogout'},
-
+            inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
+            inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
         my $client_name  = $c->request->params->{'node'};
         my $client = $c->model('DB::Client')->find( { name => $client_name } ) || undef;
 
-        my $reservation = $c->model('DB::Reservation')->search(
-            {
-                instance => $instance,
-                client_id => $client->id
-            },
-            { order_by => { -asc => 'begin_time' } }
-        )->first;
+        if( $client ) {
+            my $reservation = $c->model('DB::Reservation')->search(
+                {
+                    instance => $instance,
+                    client_id => $client->id
+                },
+                { order_by => { -asc => 'begin_time' } }
+            )->first;
 
-        if ($reservation) {
-            if ( str2time($reservation->end_time) < str2time($c->now) ) {
-                $reservation->delete();
+            if ($reservation) {
+                my $reservation_end_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
+                $reservation_end_time_dt->set_time_zone( $c->tz );
+
+                if ( $reservation_end_time_dt < $c->now ) {
+                    $reservation->delete();
+                }
             }
         }
     }
@@ -215,11 +254,10 @@ sub index : Path : Args(0) {
                     my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
 
                     #TODO: Move this to a unified sub, see TODO below
-                    # Get advanced rule if there is one
-                    my $minutes_allotment = $user->minutes_allotment;
+                    my $minutes_allotment = $user->minutes($c, $client);
 
-                    unless ( defined($minutes_allotment) ) {
-                        $minutes_allotment = $c->get_rule(
+                    # Get advanced rule if there is one
+                    my $advanced_rule = $c->get_rule(
                             {
                                 rule            => $is_guest ? 'guest_daily' : 'daily',
                                 client_location => $client->location,
@@ -228,8 +266,14 @@ sub index : Path : Args(0) {
                                 client_type     => $client_type,
                                 user_category   => $user->category,
                             }
-                        );
+                    );
 
+                    # Use advanced rule if there is one
+                    if ( defined($advanced_rule) ) {
+                        $minutes_allotment = $advanced_rule if ( $minutes_allotment > $advanced_rule );
+                    }
+
+                    unless ( defined( $minutes_allotment ) ) {
                         # Use 'simple' rules if no advanced rule exists
                         $minutes_allotment //=
                               $is_guest
@@ -261,7 +305,16 @@ sub index : Path : Args(0) {
                     }
                     else {
                         if ($client) {
-                            $user->update({ minutes_allotment => $minutes_allotment }) unless defined $user->minutes_allotment();
+                            if (defined $minutes_allotment) {
+                                $c->model('DB::Allotment')->update_or_create(
+                                    {
+                                        instance => $c->instance,
+                                        user_id  => $user->id,
+                                        location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location : '',
+                                        minutes  => $minutes_allotment,
+                                    }
+                                );
+                            }
                             my %result = $c->check_login($client,$user);
                             my $reservation = $result{'reservation'};
 

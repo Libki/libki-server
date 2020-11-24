@@ -41,11 +41,21 @@ else {
             instance          => $opt->instance,
             username          => $opt->username,
             password          => $opt->password,
-            minutes_allotment => $opt->minutes || $default_time_allowance,
             status          => 'enabled',
             is_troublemaker => 'No',
         }
     );
+
+    if (defined $opt->minutes) {
+        $c->model('DB::Allotment')->update_or_create(
+            {
+                instance => $user->instance,
+                user_id  => $user->id,
+                location => '',
+                minutes  => $opt->minutes,
+            }
+        );
+    }
 }
 
 if ( $opt->superadmin ) {

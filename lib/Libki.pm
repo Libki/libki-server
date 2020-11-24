@@ -7,6 +7,8 @@ use DateTime;
 use DateTime::Format::DateParse;
 use DateTime::Format::MySQL;
 
+our $VERSION = '4.2.4';
+
 # Set flags and add plugins for the application.
 #
 # Note that ORDERING IS IMPORTANT here as plugins are initialized in order,
@@ -47,8 +49,6 @@ extends 'Catalyst';
 __PACKAGE__->apply_request_class_roles(qw/
     Catalyst::TraitFor::Request::ProxyBase
 /);
-
-our $VERSION = '0.01';
 
 # Configure the application.
 #

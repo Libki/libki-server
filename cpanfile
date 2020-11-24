@@ -37,6 +37,7 @@ requires 'DBIx::Class::TimeStamp';
 requires 'Data::Printer';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
+requires 'DateTime::Span';
 requires 'Encode';
 requires 'File::Find::Rule';
 requires 'File::Slurp';

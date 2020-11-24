@@ -24,10 +24,22 @@ $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();
 $c->model('DB::Setting')->search( { name => 'CurrentGuestNumber' } )->update( { value => '1' } );
 
 ## Reset user minutes
-$c->model('DB::User')->update( { minutes_allotment => undef } );
+$c->model('DB::Allotment')->delete();
 
-## Set to disabled if a troublemaker
-$c->model('DB::User')->search( { is_troublemaker => 'Yes' } )->update( { status => 'disabled' } );
+## Set troublemaker status
+my @troublemakers = $c->model('DB::user')->search( { is_troublemaker => 'Yes' } );
+foreach my $troublemaker ( @troublemakers ) {
+    #FIXME This cronjob isn't instance timezone aware. We should move the timezone from the config/env to a database setting.
+    my $troublemaker_until_dt = DateTime::Format::MySQL->parse_datetime( $troublemaker->troublemaker_until );
+    #$troublemaker_until_dt->set_time_zone( $c->tz );
+
+    if ( $troublemaker_until_dt <= DateTime->now ) {
+        $troublemaker->update( { is_troublemaker => 'No', troublemaker_until => undef } );
+    }
+    else {
+        $troublemaker->update( { status => 'disabled' } );
+    }
+}
 
 ## Clear out statistics that are past the retention length
 my @data_retention_days = $c->model('DB::Setting')->search( { name => 'DataRetentionDays' } );
