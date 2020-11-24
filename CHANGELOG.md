@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Client will now disable ability for patron to log in if the client is disabled from the server 
+- Remove Google Cloud Print support for print management
+- Add Libki Print Manager support for print management
 
 ## [4.2.4] [r20.11]
 ### Added
