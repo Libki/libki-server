@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <fieldset class="">
+                <legend class="">Upload file to print</legend>
+                <form action="[% c.uri_for('upload_print_file') %]" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="form-control custom-file-input" name="print_file" id="print_file"
+                                    aria-describedby="inputGroupFileAddon01" required/>
+                                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p/>
+
+                    <div class="form-group">
+                        <label for="exampleRadios">Select a printer</label>
+                        [% FOREACH p IN c.get_printer_configuration.printers %]
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
+                                <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name %]</label>
+                            </div>
+                        [% END %]
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-file-upload"></i> Upload</button>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+
+<script>
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>

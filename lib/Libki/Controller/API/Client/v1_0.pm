@@ -8,11 +8,11 @@ BEGIN { extends 'Catalyst::Controller'; }
 use Libki::SIP qw( authenticate_via_sip );
 use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
+use Libki::Utils::Printing qw( create_print_job_and_file );
 
 use DateTime::Format::MySQL;
 use DateTime;
 use List::Util qw(min);
-use PDF::API2;
 
 =head1 NAME
 
@@ -455,67 +455,34 @@ sub print : Path('print') : Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
-    my $config   = $c->config->{instances}->{$instance} || $c->config;
-    my $log      = $c->log();
-
-    my $now = $c->now();
 
     my $client_name = $c->request->params->{'client_name'};
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
     my $location    = $c->request->params->{'location'};
-    my $type        = $c->request->params->{'type'};
 
     my $client = $c->model('DB::Client')
-      ->single( { instance => $instance, name => $client_name } );
+        ->single( { instance => $instance, name => $client_name } );
 
     my $user = $c->model('DB::User')
-      ->single( { instance => $instance, username => $username } );
+        ->single( { instance => $instance, username => $username } );
 
     if ( $client && $user ) {
         my $print_file = $c->req->upload('print_file');
-        my $pdf_string = $print_file->decoded_slurp;
-        my $pdf        = PDF::API2->open_scalar($pdf_string);
-        my $pages      = $pdf->pages();
 
         $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
         my $copies = $1 || 1;
 
-        my $printers = $c->get_printer_configuration;
-        my $printer  = $printers->{printers}->{$printer_id};
-
-        $print_file = $c->model('DB::PrintFile')->create(
-            {
-                instance        => $instance,
-                filename        => $print_file->filename,
-                content_type    => $print_file->type,
-                data            => $pdf_string,
-                pages           => $pages,
-                client_id       => $client->id,
-                client_name     => $client_name,
-                client_location => $client->location,
-                client_type     => $client->type,
-                user_id         => $user->id,
-                username        => $username,
-                created_on      => $now,
-                updated_on      => $now,
-            }
-        );
-
-        my $print_job = $c->model('DB::PrintJob')->create(
-            {
-                instance      => $instance,
-                type          => $printer->{type},
-                status        => 'Pending',
-                data          => undef,
-                copies        => $copies,
-                printer       => $printer_id,
-                user_id       => $user->id,
-                print_file_id => $print_file->id,
-                created_on    => $now,
-                updated_on    => $now,
-            }
-        );
+        Libki::Utils::Printing::create_print_job_and_file($c, {
+            client      => $client,
+            client_name => $client_name,
+            copies      => $copies,
+            location    => $location,
+            print_file  => $print_file,
+            printer_id  => $printer_id,
+            user        => $user,
+            username    => $username,
+        });
 
         $c->stash( success => 1 );
     }

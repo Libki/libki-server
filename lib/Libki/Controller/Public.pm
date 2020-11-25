@@ -1,7 +1,9 @@
 package Libki::Controller::Public;
+
 use Moose;
 use namespace::autoclean;
 
+use Libki::Utils::Printing;
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -21,14 +23,41 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
+sub index :Path {
+    my ( $self, $c, $tab ) = @_;
 
     my $instance = $c->instance;
 
+    $tab ||= 'clients';
+    $tab = 'clients' if $tab ne 'printing';
+
     $c->stash(
+        tab => $tab,
         CustomJsPublic => $c->setting('CustomJsPublic'),
     );
+}
+
+=head2 upload_print_file
+
+=cut
+
+sub upload_print_file :Local :Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $user = $c->user();
+    my $print_file = $c->req->upload('print_file');
+    my $printer_id  = $c->req->params->{printer_id};
+
+    Libki::Utils::Printing::create_print_job_and_file($c, {
+        client_name => Libki::Utils::Printing::PRINT_FROM_WEB,
+        copies      => 1,
+        print_file  => $print_file,
+        printer_id  => $printer_id,
+        user        => $user,
+        username    => $user->username,
+    });
+
+    $c->response->redirect( $c->uri_for('/public/printing') );
 }
 
 =head2 auto
