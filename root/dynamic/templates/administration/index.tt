@@ -1008,14 +1008,18 @@ $(document).ready(function() {
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
         },
-        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                // Type column
-                $('td:eq(0)', nRow).html( aData[0].replace('google_cloud_print', 'Google Cloud Print') );
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            // Type column
+            $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
 
-                // Status column
-                $('td:eq(1)', nRow).html( aData[1].replace('In_progress', 'In progress') );
+            // Status column
+            $('td:eq(1)', nRow).html(aData[1].replace('In_progress', `[% c.loc("In progress") %]`));
 
-                $('td:eq(7)', nRow).html( aData[7].replace('T', ' ') );
+            // Client column
+            $('td:eq(6)', nRow).html(aData[6].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
+
+            // DateTime created
+            $('td:eq(8)', nRow).html(aData[8].replace('T', ' '));
         },
         "fnServerData": function ( sSource, aoData, fnCallback ) {
             if ( window.location_filter ) {
