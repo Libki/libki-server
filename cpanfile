@@ -2,8 +2,6 @@ requires 'namespace::autoclean';
 
 requires 'Module::Install';
 
-requires 'IO::Socket::SSL';
-
 requires 'Archive::Zip';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
@@ -45,7 +43,6 @@ requires 'Gazelle';
 requires 'Getopt::Long';
 requires 'Getopt::Long::Descriptive';
 requires 'HTTP::Request::Common';
-requires 'IO::Socket::INET';
 requires 'JSON';
 requires 'LWP::Simple';
 requires 'Log::Log4perl::Catalyst';
