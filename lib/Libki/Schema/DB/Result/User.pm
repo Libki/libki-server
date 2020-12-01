@@ -152,6 +152,13 @@ __PACKAGE__->table("users");
   is_nullable: 1
   size: 191
 
+=head2 funds
+
+  data_type: 'decimal'
+  default_value: 0.0000
+  is_nullable: 0
+  size: [13,4]
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -211,6 +218,13 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "creation_source",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "funds",
+  {
+    data_type => "decimal",
+    default_value => "0.0000",
+    is_nullable => 0,
+    size => [13, 4],
+  },
 );
 
 =head1 PRIMARY KEY
@@ -359,8 +373,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-11-24 15:15:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MSgjGtiMj0m4N8inKyYtIA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-12-01 08:31:01
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ygznGTrHROF+bRG/xfu0wQ
 
 __PACKAGE__->add_columns(
     'password' => {
