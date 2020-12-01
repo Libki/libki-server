@@ -39,6 +39,8 @@ RUN apt-get update -y \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
+# Print uploads filetype detection
+       shared-mime-info \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 

@@ -41,7 +41,7 @@ sub create_print_job_and_file {
             ->single( { instance => $instance, name => $client_name } );
     }
 
-    my $user ||= $c->model( 'DB::User' ) # Fetch the user if they were not passed in
+    $user ||= $c->model( 'DB::User' ) # Fetch the user if they were not passed in
         ->single( { instance => $instance, username => $username } );
 
     if ( $user ) {

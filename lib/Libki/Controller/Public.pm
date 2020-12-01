@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use Libki::Utils::Printing;
+
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -48,16 +49,24 @@ sub upload_print_file :Local :Args(0) {
     my $print_file = $c->req->upload('print_file');
     my $printer_id  = $c->req->params->{printer_id};
 
-    Libki::Utils::Printing::create_print_job_and_file($c, {
-        client_name => Libki::Utils::Printing::PRINT_FROM_WEB,
-        copies      => 1,
-        print_file  => $print_file,
-        printer_id  => $printer_id,
-        user        => $user,
-        username    => $user->username,
-    });
+    my $mime = $print_file->mimetype;
+    my $ext = $print_file->extension;
 
-    $c->response->redirect( $c->uri_for('/public/printing') );
+    if ( $mime eq "application/pdf" && $ext eq "pdf" ) {
+        Libki::Utils::Printing::create_print_job_and_file( $c, {
+            client_name => Libki::Utils::Printing::PRINT_FROM_WEB,
+            copies      => 1,
+            print_file  => $print_file,
+            printer_id  => $printer_id,
+            user        => $user,
+            username    => $user->username,
+        } );
+
+        $c->response->redirect( $c->uri_for('/public/printing') );
+    } else {
+        $c->response->redirect( $c->uri_for( '/public/printing', undef, { error => 'INVALID_FILETYPE' } ));
+    }
+
 }
 
 =head2 auto

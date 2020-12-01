@@ -18,6 +18,7 @@ requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::StatusMessage';
+requires 'Catalyst::Plugin::Upload::MIME';
 requires 'Catalyst::Runtime';
 requires 'Catalyst::TraitFor::Request::ProxyBase';
 requires 'Catalyst::View::TT';

@@ -22,7 +22,7 @@ our $VERSION = '4.2.4';
 #                 directory
 use Log::Log4perl::Catalyst;
 
-use Catalyst qw/
+use Catalyst qw(
   ConfigLoader
   Static::Simple
 
@@ -41,7 +41,9 @@ use Catalyst qw/
   LibkiSetting
 
   I18N
-  /;
+
+  Upload::MIME
+);
 # add -Debug to this list for debugging purposes
 
 extends 'Catalyst';
