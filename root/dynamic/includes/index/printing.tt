@@ -5,14 +5,14 @@
                 <legend class="">[% c.loc("Upload file to print") %]</legend>
                 [% IF c.req.params.error == "INVALID_FILETYPE" %]
                     <div class="alert alert-danger" role="alert">
-                        Filetype was invalid, file uploads must be PDF.
-                        If your file is not a PDF, you may use a PDF printer such as <a href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,
-                        or a <a href="https://www.freepdfconvert.com/">web based PDF converter</a>.
+                        [% c.loc('Filetype was invalid, file uploads must be PDF.') %]
+                        [% c.loc('If your file is not a PDF, you may use a PDF printer such as <a class="alert-link" href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,') %]
+                        [% c.loc('or a <a class="alert-link" href="https://www.freepdfconvert.com/">web based PDF converter</a>.') %]
                     </div>
                 [% ELSE %]
                     <div class="alert alert-info" role="alert">
-                        If your file is not a PDF, you may use a PDF printer such as <a href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,
-                        or a <a href="https://www.freepdfconvert.com/">web based PDF converter</a>.
+                        [% c.loc('If your file is not a PDF, you may use a PDF printer such as <a class="alert-link" href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,') %]
+                        [% c.loc('or a <a class="alert-link" href="https://www.freepdfconvert.com/">web based PDF converter</a>.') %]
                     </div>
                 [% END %]
                 <form action="[% c.uri_for('upload_print_file') %]" method="post" enctype="multipart/form-data">
