@@ -143,13 +143,9 @@
                 <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
-                [% IF ShowFirstLastNames %]
                 <th>[% c.loc("Lastname") %] </th>
                 <th>[% c.loc("Firstname") %] </th>
-                [% END %]
-                [% IF UserCategories %]
                 <th>[% c.loc("Category") %]</th>
-                [% END %]
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("User status") %]</th>
@@ -865,41 +861,40 @@ $(document).ready(function() {
 
     /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
-    uTable = $('#user-table').dataTable( {
+    uTable = $('#user-table').DataTable( {
         [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
-                              // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
+            "type": "POST"
+        },
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
         },
-        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            var col = 8;
-            [% UNLESS ShowFirstLastNames %]
-                col = col - 2;
-            [% END %]
-            [% UNLESS UserCategories %]
-                col = col - 1;
-            [% END %]
-            [% IF Settings.ThirdPartyURL %]
-                if ( aData[0] ) {
-                    $('td:eq(0)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[0] + '">' + aData[0] + '</b>' );
-                }
-            [% END %]
-            if ( aData[8] == 'Yes') {
-                    $('td:eq('+col+')', nRow).html( '<a><i class="fas fa-lock"></i>&nbsp;'+moment(aData[12]).format('lll') + '</a>' );
-            }
-        },
-        "aoColumnDefs": [
-            [% UNLESS Settings.ShowFirstLastNames %]
-                { "bVisible": false, "aTargets": [ 1 ] },
-                { "bVisible": false, "aTargets": [ 2 ] },
-            [% END %]
-            [% UNLESS UserCategories %]
-                { "bVisible": false, "aTargets": [ 3 ] },
-            [% END %]
-        ],
+        "columns": [
+            { "data": "username" },
+            {
+                "data": "firstname",
+                "visible": [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
+            },
+            {
+                "data": "lastname",
+                "visible": [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
+            },
+            {
+                "data": "category",
+                "visible": [% IF UserCategories %]true[% ELSE %]false[% END %]
+            },
+            { "data": "minutes_allotment" }, // Daily minutes
+            { "data": "minutes" }, // Session minutes
+            { "data": "status" }, // User stats
+            { "data": "notes" },
+            { "data": "is_troublemaker" },
+            { "data": "client_name" },
+            { "data": "session_status" },
+            { "data": "creation_source" }
+        ]
     } );
 
     /* Add a click handler to the rows */

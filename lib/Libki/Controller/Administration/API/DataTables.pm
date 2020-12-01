@@ -29,10 +29,12 @@ sub users : Local Args(0) {
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
     my $dbh = $schema->storage->dbh;
 
-    # We need to map the table columns to field names for ordering
-    my @columns = qw/me.username me.lastname me.firstname me.category session.minutes me.status me.notes me.is_troublemaker client.name session.status/;
+    my $params = $c->req->params;
 
-    my $search_term = $c->request->param("sSearch");
+    # We need to map the table columns to field names for ordering
+    my @columns = qw/me.username me.lastname me.firstname me.category allotments.minutes session.minutes me.status me.notes me.is_troublemaker client.name session.status me.creation_source/;
+
+    my $search_term = $params->{"search[value]"};
     my $filter;
     if ($search_term) {
         $filter = {
@@ -50,15 +52,36 @@ sub users : Local Args(0) {
         $filter = { 'me.instance' => $instance };
     }
 
-    # Sorting options
+    my $dt_sorting_columns = {};
+    foreach my $key ( keys %$params ) {
+        if ( $key =~ /^order/ ) {
+            my $data = $params->{$key};
+
+            my ( undef, $key1, $key2, $key3 ) = split(/\[/, $key );
+
+            $key1 =~ s/\]//g if $key1;
+            $key2 =~ s/\]//g if $key2;
+            $key3 =~ s/\]//g if $key3;
+
+            if ( $key3 ) {
+                $dt_sorting_columns->{$key1}->{$key2}->{$key3} = $data;
+            } elsif ( $key2 ) {
+                $dt_sorting_columns->{$key1}->{$key2} = $data;
+            } else {
+                $dt_sorting_columns->{$key1} = $data;
+            }
+        }
+    }
+
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+    for ( my $i = 0; $i < scalar keys %$dt_sorting_columns; $i++ ) {
+        my $sort = $dt_sorting_columns->{$i};
+        my $dir = $sort->{dir};
+        my $index = $sort->{column};
         push(
             @sorting,
             {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
+                "-$dir" => $columns[ $index ]
             }
         );
     }
@@ -78,11 +101,12 @@ sub users : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => ( $c->request->param('iDisplayLength') > 0 )
-            ? $c->request->param('iDisplayLength')
-            : undef,
-            offset   => $c->request->param('iDisplayStart'),
-            prefetch => { session => 'client' },
+            rows     => ( $params->{length} > 0 )
+                ? $params->{length}
+                : undef,
+            offset   => $params->{start},
+            prefetch => [ { session => 'client' }, 'allotments' ],
+            group_by => 'me.id',
         }
     );
 
@@ -95,39 +119,31 @@ sub users : Local Args(0) {
                 : '',
         });
 
-        my @userValues = (
-            $u->username,
-            $u->lastname,
-            $u->firstname,
-            $u->category,
-            defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
-            $u->session ? $u->session->minutes : undef,
-            $u->status,
-            $u->notes,
-            $u->is_troublemaker,
-            defined( $u->session ) ? $u->session->client->name : undef,
-            defined( $u->session ) ? $u->session->status : undef,
-            $u->creation_source,
-            defined($u->troublemaker_until) ? $u->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
-        );
+        my $userValues = {
+            username           => $u->username,
+            lastname           => $u->lastname,
+            firstname          => $u->firstname,
+            category           => $u->category,
+            minutes_allotment  => defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
+            minutes            => $u->session ? $u->session->minutes : undef,
+            status             => $u->status,
+            notes              => $u->notes,
+            is_troublemaker    => $u->is_troublemaker,
+            client_name        => defined( $u->session ) ? $u->session->client->name : undef,
+            session_status     => defined( $u->session ) ? $u->session->status : undef,
+            creation_source    => $u->creation_source,
+            troublemaker_until => defined( $u->troublemaker_until ) ? $u->troublemaker_until->strftime( '%Y-%m-%d 23:59' ) : undef,
+            DT_RowId           => $u->id,
+        };
 
-        my $r;
-        my $userValuesCounter = 0;
-        $r->{'DT_RowId'} = $u->id;
-
-        foreach my $userValue (@userValues) {
-            $r->{$userValuesCounter} = $userValue;
-            $userValuesCounter++;
-        }
-
-        push( @results, $r );
+        push( @results, $userValues );
     }
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
+            'recordsTotal'         => $total_records,
+            'recordsFiltered'      => $count,
+            'draw'                 => $params->{draw},
             'aaData'               => \@results,
         }
     );
