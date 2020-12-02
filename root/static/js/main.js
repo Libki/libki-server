@@ -1,9 +1,11 @@
 /* This js is valid for both staff and public interfaces */
 $(document).ready(function(){
     const hourSelector = document.querySelector('#reservation-hour');
-    hourSelector.addEventListener('change', (event) => {
-        validateReservationTime();
-    });
+    if ( hourSelector ) {
+        hourSelector.addEventListener('change', (event) => {
+            validateReservationTime();
+        });
+    }
 });
 
 function validateReservationTime() {
