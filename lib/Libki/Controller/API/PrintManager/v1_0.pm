@@ -46,9 +46,9 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
 
     my $job = $c->model('DB::PrintJob')->search(
         {
-            instance  => $instance,
-            status    => 'Pending',
-            type      => 'PrintManager',
+            instance => $instance,
+            status   => 'Pending',
+            type     => 'PrintManager',
         },
         {
             order_by => { -asc => 'released_on' }
@@ -58,7 +58,7 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
     my $data;
     if ($job) {
         my $printer_configuration = $c->get_printer_configuration;
-        my $printer = $printer_configuration->{printers}->{ $job->printer };
+        my $printer               = $printer_configuration->{printers}->{ $job->printer };
 
         if ( $job->update( { status => 'Queued', queued_on => $now, queued_to => $queued_to } ) ) {
             $data = {
@@ -68,8 +68,8 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
                 user_id               => $job->user_id,
                 print_file_id         => $job->print_file_id,
                 physical_printer_name => $printer->{physical_printer_name},
-                plexing               => $printer->{plexing} || 'simplex', # simplex or duplex
-                chroming              => $print->{chroming} || 'polychrome', # monochrome or polychrome
+                plexing               => $printer->{plexing} || 'simplex',    # simplex or duplex
+                chroming => $print->{chroming} || 'polychrome',    # monochrome or polychrome
             };
 
             $c->stash( { job => $data } );
@@ -90,17 +90,18 @@ sub get_file : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
-    my $print_file = $c->model('DB::PrintFile')->find({ id => $id, instance => $instance });
+    my $print_file = $c->model('DB::PrintFile')->find( { id => $id, instance => $instance } );
 
-    if ( $print_file ) {
+    if ($print_file) {
         my $filename = $print_file->filename;
 
         $c->response->content_type('application/octet-stream');
         $c->response->header( 'Content-Disposition', qq[attachment; filename="$id.pdf"] );
-        $c->response->header( 'File-Id', $id );
+        $c->response->header( 'File-Id',             $id );
         $c->response->body( $print_file->data );
-    } else {
-        $c->response->body( 'File not found' );
+    }
+    else {
+        $c->response->body('File not found');
         $c->response->status(404);
     }
 }
@@ -118,11 +119,11 @@ including setting a job to:
 
 =cut
 
-sub job :Path('job') :Args(2) {
+sub job : Path('job') : Args(2) {
     my ( $self, $c, $job_id, $status ) = @_;
     my $instance = $c->instance;
 
-    my $job = $c->model( 'DB::PrintJob' )->search(
+    my $job = $c->model('DB::PrintJob')->search(
         {
             id       => $job_id,
             instance => $instance,
@@ -130,21 +131,21 @@ sub job :Path('job') :Args(2) {
     )->next();
 
     if ( none { $_ eq $status } qw( Queued InProgress Done Error Submitted Held ) ) {
-        $c->response->body( 'Invalid job status' );
-        $c->response->status( 400 );
+        $c->response->body('Invalid job status');
+        $c->response->status(400);
     }
-    elsif ( $job ) {
+    elsif ($job) {
         $job->update( { status => $status } );
 
         my %data = $job->get_columns;
         $c->stash( { job => \%data } );
 
         delete( $c->stash->{'Settings'} );
-        $c->forward( $c->view( 'JSON' ));
+        $c->forward( $c->view('JSON') );
     }
     else {
-        $c->response->body( 'Print job not found' );
-        $c->response->status( 404 );
+        $c->response->body('Print job not found');
+        $c->response->status(404);
     }
 }
 
