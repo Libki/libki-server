@@ -62,12 +62,14 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
 
         if ( $job->update( { status => 'Queued', queued_on => $now, queued_to => $queued_to } ) ) {
             $data = {
-                job_id        => $job->id,
-                copies        => $job->copies,
-                printer       => $job->printer,
-                user_id       => $job->user_id,
-                print_file_id => $job->print_file_id,
+                job_id                => $job->id,
+                copies                => $job->copies,
+                printer               => $job->printer,
+                user_id               => $job->user_id,
+                print_file_id         => $job->print_file_id,
                 physical_printer_name => $printer->{physical_printer_name},
+                plexing               => $printer->{plexing} || 'simplex', # simplex or duplex
+                chroming              => $print->{chroming} || 'polychrome', # monochrome or polychrome
             };
 
             $c->stash( { job => $data } );
