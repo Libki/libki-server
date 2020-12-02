@@ -120,20 +120,21 @@ sub users : Local Args(0) {
         });
 
         my $userValues = {
-            username           => $u->username,
-            lastname           => $u->lastname,
-            firstname          => $u->firstname,
-            category           => $u->category,
-            minutes_allotment  => defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
-            minutes            => $u->session ? $u->session->minutes : undef,
-            status             => $u->status,
-            notes              => $u->notes,
-            is_troublemaker    => $u->is_troublemaker,
-            client_name        => defined( $u->session ) ? $u->session->client->name : undef,
-            session_status     => defined( $u->session ) ? $u->session->status : undef,
-            creation_source    => $u->creation_source,
-            troublemaker_until => defined( $u->troublemaker_until ) ? $u->troublemaker_until->strftime( '%Y-%m-%d 23:59' ) : undef,
             DT_RowId           => $u->id,
+            category           => $u->category,
+            client_name        => defined( $u->session ) ? $u->session->client->name : undef,
+            creation_source    => $u->creation_source,
+            firstname          => $u->firstname,
+            funds              => $u->funds,
+            is_troublemaker    => $u->is_troublemaker,
+            lastname           => $u->lastname,
+            minutes            => $u->session ? $u->session->minutes : undef,
+            minutes_allotment  => defined( $minutes_allotment ) ? $minutes_allotment->minutes : undef,
+            notes              => $u->notes,
+            session_status     => defined( $u->session ) ? $u->session->status : undef,
+            status             => $u->status,
+            troublemaker_until => defined( $u->troublemaker_until ) ? $u->troublemaker_until->strftime( '%Y-%m-%d 23:59' ) : undef,
+            username           => $u->username,
         };
 
         push( @results, $userValues );

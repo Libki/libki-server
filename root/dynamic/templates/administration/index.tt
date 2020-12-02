@@ -54,6 +54,7 @@
                 <th>[% c.loc("Category") %]</th>
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
+                <th>[% c.loc("Funds") %]</th>
                 <th>[% c.loc("Status") %]</th>
                 <th>[% c.loc("Notes") %]</th>
                 <th>[% c.loc("Troublemaker") %]</th>
@@ -888,6 +889,13 @@ $(document).ready(function() {
             },
             { "data": "minutes_allotment" }, // Daily minutes
             { "data": "minutes" }, // Session minutes
+            {
+                "data": function(data) {
+                    //FIXME: We should allow the currency to be selectable via a system setting
+                    return new Intl.NumberFormat('[% c.language %]', { style: 'currency', currency: 'USD' }).format(data.funds);
+                },
+                "visible": [% IF PrinterConfiguration %]true[% ELSE %]false[% END %]
+            },
             { "data": "status" }, // User stats
             { "data": "notes" },
             { "data": "is_troublemaker" },
