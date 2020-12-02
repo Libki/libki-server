@@ -6,6 +6,8 @@ use String::Random qw(random_string);
 use namespace::autoclean;
 use POSIX;
 
+use Libki::Utils::Printing;
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -276,6 +278,8 @@ sub update : Local : Args(0) {
 
     my $now = $c->now();
 
+    my $funds_changed = $funds != $user->funds;
+
     $success = 1 if $user->update(
         {
 
@@ -319,6 +323,10 @@ sub update : Local : Args(0) {
                   ->search( { user_id => $id, role_id => $lr->id } )->delete();
             }
         }
+    }
+
+    if ( $funds_changed ) {
+        Libki::Utils::Printing::reevaluate_print_jobs_with_insufficient_funds( $c, { user => $user } );
     }
 
     $c->stash( 'success' => $success );

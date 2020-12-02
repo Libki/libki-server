@@ -45,7 +45,8 @@ sub index :Path {
 sub upload_print_file :Local :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $user = $c->user();
+    my $user = $c->model('DB::User')->find({ instance => $c->instance, username => $c->user->username });
+
     my $print_file = $c->req->upload('print_file');
     my $printer_id  = $c->req->params->{printer_id};
 

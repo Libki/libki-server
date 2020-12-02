@@ -1,4 +1,5 @@
 -pbp     # Start with Perl Best Practices
+-nst     # Allows using -b with -pbp
 -w       # Show all warnings
 -l=100   # 100 characters per line
 -mbl=2   # No more than 2 blank lines
