@@ -69,7 +69,7 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
                 print_file_id         => $job->print_file_id,
                 physical_printer_name => $printer->{physical_printer_name},
                 plexing               => $printer->{plexing} || 'simplex',    # simplex or duplex
-                chroming => $print->{chroming} || 'polychrome',    # monochrome or polychrome
+                chroming => $print->{chroming} || 'color',    # monochrome or polychrome
             };
 
             $c->stash( { job => $data } );
