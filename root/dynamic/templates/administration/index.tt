@@ -553,6 +553,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="edit-user-modal-form-funds">[% c.loc("Funds") %]</label>
+                    <input class="form-control" id="edit-user-modal-form-funds" name="funds" class="input-mini" type="text">
+                    <small class="form-text text-muted">[% c.loc("Use period as separator when editing funds.") %]</small>
+                </div>
+
+                <div class="form-group">
                     <label for="edit-user-modal-form-status">[% c.loc("Status") %]</label>
                     <select class="form-control" id="edit-user-modal-form-status" name="status">
                         <option value="enabled">[% c.loc("Enabled") %]</option>
@@ -1306,6 +1312,7 @@ $(document).ready(function() {
             $('#edit-user-modal-form-lastname').val( data.lastname );
             $('#edit-user-modal-form-category').val( data.category );
             $('#edit-user-modal-form-minutes').val( data.minutes );
+            $('#edit-user-modal-form-funds').val( Number.parseFloat(data.funds).toFixed(2) );
             $('#edit-user-modal-form-status').val( data.status );
             $('#edit-user-modal-form-notes').val( data.notes );
 

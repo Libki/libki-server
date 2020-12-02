@@ -46,6 +46,7 @@ sub get : Local : Args(1) {
             minutes         => $user->minutes($c),
             status          => $user->status,
             notes           => $user->notes,
+            funds           => $user->funds,
             is_troublemaker => $user->is_troublemaker,
             troublemaker_until => defined($user->troublemaker_until) ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
             roles           => \@roles,
@@ -259,6 +260,7 @@ sub update : Local : Args(0) {
     my $lastname  = $c->request->params->{lastname};
     my $category  = $c->request->params->{category};
     my $minutes   = $c->request->params->{'minutes'};
+    my $funds     = $c->request->params->{'funds'};
     my $notes     = $c->request->params->{'notes'};
     my $status    = $c->request->params->{'status'};
     my @roles     = $c->request->params->{'roles'} || [];
@@ -277,12 +279,13 @@ sub update : Local : Args(0) {
     $success = 1 if $user->update(
         {
 
-            firstname         => $firstname,
-            lastname          => $lastname,
-            category          => $category,
-            notes             => $notes,
-            status            => $status,
-            updated_on        => $now,
+            firstname  => $firstname,
+            lastname   => $lastname,
+            category   => $category,
+            funds      => $funds,
+            notes      => $notes,
+            status     => $status,
+            updated_on => $now,
         }
     );
 
