@@ -11,6 +11,7 @@ use constant PRINT_STATUS_PROCESSING => 'Processing';   # Needs to be evaluated 
 use constant PRINT_STATUS_INSUFFICIENT_FUNDS => 'Insufficient Funds'; # User doesn't have funds to cover printing
 use constant PRINT_STATUS_IN_PROGRESS => 'InProgress'; # Print job is being sent to printer
 use constant PRINT_STATUS_DONE => 'Done'; # Printer has accepted the print job
+
 =head2 create_print_job_and_file
 
 Helper function to create a print_job and print_file entry from the given PDF and data.
