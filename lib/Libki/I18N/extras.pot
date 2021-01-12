@@ -23,6 +23,10 @@ msgstr "Espa&ntilde;ol"
 msgid "lang.pt_PT"
 msgstr "Portugu&ecirc;s"
 
+# Norwegian
+msgid "lang.nb_NO"
+msgstr "Norsk bokmål"
+
 # Days of the week
 
 msgid "Monday"
