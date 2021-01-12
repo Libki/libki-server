@@ -58,14 +58,14 @@ sub index : Path : Args(0) {
         else {
 
             # Set an error message
-            $c->stash( error_message => "Bad username or password." );
+            $c->stash( error => "BAD_LOGIN" );
         }
     }
     else {
         if ($submitted) {
 
             # Set an error message
-            $c->stash( error_message => "Empty username or password." );
+            $c->stash( error => "EMPTY_LOGIN" );
         }
     }
 
