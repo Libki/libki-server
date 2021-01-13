@@ -134,7 +134,7 @@
                     	&nbsp;
 						<label class="form-check-label" for="[% date.day %]">
 							[% DatePlugin.format( date.date _ " 00:00:00" ) %]
-							@
+							[% c.loc("@") %]
 							[% date.closing_time.substr(0,5) %] [% c.loc("for") %] [% date.location.code || c.loc("All locations") %]
 						</label>
                     </div>
@@ -160,7 +160,7 @@
                     <label for="[% date.day %]">[% c.loc("Date and time") %] &nbsp;</label>
 					<input name="date" type="text" class="date datepicker input-medium" placeholder="[% DatePlugin.format('00:00:00 12-12-1999') %]">
 					&nbsp;
-					@
+					[% c.loc("@") %]
 					&nbsp;
 					<select id="hour" name="hour" class="form-control">
 						[% FOREACH h IN Hours %]

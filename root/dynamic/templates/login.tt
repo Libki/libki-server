@@ -66,3 +66,15 @@
     </div>
 </form>
 </div>
+
+[% IF error %]
+<script type="text/javascript">
+    $(document).ready(function() {
+        [% IF error == "BAD_LOGIN" %]
+            DisplayMessage( "error", "[% c.loc("Bad username or password.") %]" );
+        [% ELSIF error == "EMPTY_LOGIN" %]
+            DisplayMessage( "error", "[% c.loc("Empty username or password.") %]" );
+        [% END %]
+    });
+</script>
+[% END %]
