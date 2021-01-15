@@ -520,7 +520,7 @@
 
                 <div class="form-group">
                     <label for="edit-user-modal-form-username">[% c.loc("Username") %]</label>
-                    <input class="form-control" id="edit-user-modal-form-username" name="username" type="text" placeholder="Username" readonly>
+                    <input class="form-control" id="edit-user-modal-form-username" name="username" type="text" placeholder="[% c.loc("Username") %]" readonly>
                     <small class="form-text text-muted">[% c.loc("Username may not be edited.") %]</small>
                 </div>
 
@@ -613,7 +613,7 @@
                 <input type="text" class="form-control" id="modify-time-modal-form-minutes" name="minutes">
                 <small class="form-text text-muted">[% c.loc("Add a + or - sign to increment or decrement the existing amount of time.") %]</small>
                 <div class="invalid-feedback">
-                    The time entered is invalid
+                    [% c.loc("The time entered is invalid") %]
                 </div>
             </div>
         </form>
@@ -1816,13 +1816,13 @@ console.log( data.data );
 }
 
 function LibkiCancelPrint( print_job_id ) {
-    if ( confirm('Are you sure you want to cancel this print job?')){
+    if ( confirm("[% c.loc("Are you sure you want to cancel this print job?") %]")){
         $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: print_job_id }, function(data) {
             if ( data.success ) {
-                DisplayMessage( 'success', 'Print job has been canceled.' );
+                DisplayMessage( 'success', "[% c.loc("Print job has been canceled.") %]" );
                 ForcePrintTableRefresh();
             } else {
-                DisplayMessage( 'error', 'Failed to cancel print job.');
+                DisplayMessage( 'error', "[% c.loc("Failed to cancel print job.") %]");
             }
         });
     }
