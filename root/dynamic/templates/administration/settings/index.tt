@@ -87,9 +87,9 @@
                                 <label for="TimeDisplayFormat" style="margin-bottom:3px">[% c.loc("Time display format") %]</label>
                                 <div>
                                     <input type="radio" id="12hour" name="TimeDisplayFormat" value="12" style="margin-left:15px;" [% IF Settings.TimeDisplayFormat == '12' %]checked[% END %]>
-                                    <label for="12hour" style="margin-bottom:3px;">12-hour</label>
+                                    <label for="12hour" style="margin-bottom:3px;">[% c.loc("12-hour") %]</label>
                                     <input type="radio" id="24hour" name="TimeDisplayFormat" value="24" style="margin-left:20px;" [% IF Settings.TimeDisplayFormat == '24' %]checked[% END %]>
-                                    <label for="12hour" style="margin-bottom:3px;">24-hour</label>
+                                    <label for="12hour" style="margin-bottom:3px;">[% c.loc("24-hour") %]</label>
                                     <small class="form-text text-muted" style="margin-top:0px">[% c.loc("When you switch to the 12-hour format, the am/pm unit will display.") %]</small>
                                 </div>
                              </div>

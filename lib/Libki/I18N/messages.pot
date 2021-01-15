@@ -35,6 +35,14 @@ msgstr ""
 msgid "1 year"
 msgstr ""
 
+#: root/dynamic/templates/administration/settings/index.tt:90
+msgid "12-hour"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:92
+msgid "24-hour"
+msgstr ""
+
 #: root/dynamic/templates/administration/index.tt:776
 msgid "3 months"
 msgstr ""
@@ -161,6 +169,10 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:358
 msgid "Any client is reserved"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1819
+msgid "Are you sure you want to cancel this print job?"
 msgstr ""
 
 #: root/dynamic/templates/administration/index.tt:1623
@@ -347,7 +359,7 @@ msgstr ""
 msgid "Client unlocked."
 msgstr ""
 
-#: root/dynamic/templates/administration/index.tt:9
+#: root/dynamic/templates/administration/index.tt:9 root/dynamic/templates/public/index.tt:5
 msgid "Clients"
 msgstr ""
 
@@ -569,6 +581,10 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:332
 msgid "Extension length"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1825
+msgid "Failed to cancel print job."
 msgstr ""
 
 #: root/dynamic/templates/administration/index.tt:1799
@@ -875,7 +891,7 @@ msgstr ""
 msgid "Passes to create per batch"
 msgstr ""
 
-#: root/dynamic/includes/index/clients.tt:118 root/dynamic/includes/index/clients.tt:78 root/dynamic/templates/administration/index.tt:382 root/dynamic/templates/administration/index.tt:383 root/dynamic/templates/administration/index.tt:430 root/dynamic/templates/administration/index.tt:71 root/dynamic/templates/administration/index.tt:736 root/dynamic/templates/administration/index.tt:737 root/dynamic/templates/login.tt:45 root/dynamic/templates/public/login.tt:45
+#: root/dynamic/includes/index/clients.tt:118 root/dynamic/includes/index/clients.tt:78 root/dynamic/templates/administration/index.tt:382 root/dynamic/templates/administration/index.tt:383 root/dynamic/templates/administration/index.tt:430 root/dynamic/templates/administration/index.tt:71 root/dynamic/templates/administration/index.tt:736 root/dynamic/templates/administration/index.tt:737 root/dynamic/templates/login.tt:45 root/dynamic/templates/login.tt:49 root/dynamic/templates/public/login.tt:45 root/dynamic/templates/public/login.tt:49
 msgid "Password"
 msgstr ""
 
@@ -943,6 +959,10 @@ msgstr ""
 msgid "Print Manager"
 msgstr ""
 
+#: root/dynamic/templates/administration/index.tt:1822
+msgid "Print job has been canceled."
+msgstr ""
+
 #: root/dynamic/templates/administration/index.tt:1808
 msgid "Print job refreshed"
 msgstr ""
@@ -961,6 +981,10 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:742
 msgid "Printer configuration"
+msgstr ""
+
+#: root/dynamic/templates/public/index.tt:9
+msgid "Printing"
 msgstr ""
 
 #: root/dynamic/templates/administration/index.tt:16
@@ -1161,6 +1185,10 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:644
 msgid "The time at which to automatically turn on the clients. Leave empty to disable."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:616
+msgid "The time entered is invalid"
 msgstr ""
 
 #: root/dynamic/includes/index/clients.tt:302
@@ -1439,7 +1467,7 @@ msgstr ""
 msgid "User's time updated."
 msgstr ""
 
-#: root/dynamic/includes/index/clients.tt:113 root/dynamic/includes/index/clients.tt:72 root/dynamic/templates/administration/history/index.tt:6 root/dynamic/templates/administration/index.tt:146 root/dynamic/templates/administration/index.tt:345 root/dynamic/templates/administration/index.tt:346 root/dynamic/templates/administration/index.tt:425 root/dynamic/templates/administration/index.tt:51 root/dynamic/templates/administration/index.tt:522 root/dynamic/templates/administration/index.tt:657 root/dynamic/templates/administration/index.tt:687 root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27 root/dynamic/templates/public/login.tt:23 root/dynamic/templates/public/login.tt:27
+#: root/dynamic/includes/index/clients.tt:113 root/dynamic/includes/index/clients.tt:72 root/dynamic/templates/administration/history/index.tt:6 root/dynamic/templates/administration/index.tt:146 root/dynamic/templates/administration/index.tt:345 root/dynamic/templates/administration/index.tt:346 root/dynamic/templates/administration/index.tt:425 root/dynamic/templates/administration/index.tt:51 root/dynamic/templates/administration/index.tt:522 root/dynamic/templates/administration/index.tt:523 root/dynamic/templates/administration/index.tt:657 root/dynamic/templates/administration/index.tt:687 root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27 root/dynamic/templates/public/login.tt:23 root/dynamic/templates/public/login.tt:27
 msgid "Username"
 msgstr ""
 
@@ -1681,7 +1709,7 @@ msgstr "Portugu&ecirc;s"
 
 # Norwegian
 msgid "lang.nb_NO"
-msgstr "Norsk"
+msgstr "Norsk bokmål"
 
 # Days of the week
 
