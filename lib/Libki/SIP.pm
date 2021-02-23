@@ -173,7 +173,7 @@ sub authenticate_via_sip {
     $log->debug("READ: $data");
     say "READ: $data" if $test_mode;
 
-    if ( CORE::index( $data, 'BLY' ) == -1 ) {
+    if ( CORE::index( $data, 'BLN' ) != -1 ) {
         ## This user may have existed in SIP, but is now deleted
         ## In this case, we don't want the now deleted user to be
         ## able to log into Libki, so let's attempt to delete that
