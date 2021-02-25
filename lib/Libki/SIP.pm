@@ -179,7 +179,11 @@ sub authenticate_via_sip {
         ## able to log into Libki, so let's attempt to delete that
         ## username before we try to authenticate.
         my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
-        $user->delete if ( $user && !$c->check_any_user_role( $user, qw/admin superadmin/ ) );
+        if ( $user ) {
+            my $is_admin = $c->check_any_user_role( $user, qw/admin superadmin/ );
+            $log->debug(sprintf("User %s is admin account and should not be deleted: %s", $user->id, $is_admin ));
+            $user->delete unless $is_admin;
+        }
         return { success => 0, error => 'INVALID_USER', user => $user };
     }
 
