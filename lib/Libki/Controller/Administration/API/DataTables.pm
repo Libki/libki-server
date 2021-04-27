@@ -5,6 +5,8 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
+use Encode qw(decode);
+
 =head1 NAME
 
 Libki::Controller::Administration::API::DataTables - Catalyst Controller
@@ -258,9 +260,9 @@ sub clients : Local Args(0) {
         }
 
         my $clientValues = {
-            name => $c->name,
-            location => $c->location,
-            type => $c->type,
+            name => decode( 'UTF-8', $c->name ),
+            location => decode( 'UTF-8', $c->location ),
+            type => decode( 'UTF-8', $c->type ),
             session_status => defined( $c->session ) ? $c->session->status : undef,
             username => defined( $c->session ) ? $c->session->user->username : undef,
             lastname => defined( $c->session ) ? $c->session->user->lastname : undef,
