@@ -36,6 +36,8 @@ RUN apt-get update -y \
        libdbd-mysql-perl \
 # for DBD::mysql
        default-libmysqlclient-dev \
+# for 'ldb' alias
+       mariadb-client \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
