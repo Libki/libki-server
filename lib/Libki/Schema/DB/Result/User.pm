@@ -82,7 +82,7 @@ __PACKAGE__->table("users");
 
 =head2 notes
 
-  data_type: 'mediumtext'
+  data_type: 'longtext'
   is_nullable: 1
 
 =head2 is_troublemaker
@@ -173,7 +173,7 @@ __PACKAGE__->add_columns(
   "status",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "notes",
-  { data_type => "mediumtext", is_nullable => 1 },
+  { data_type => "longtext", is_nullable => 1 },
   "is_troublemaker",
   {
     data_type => "enum",
@@ -373,8 +373,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-12-01 08:31:01
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ygznGTrHROF+bRG/xfu0wQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OEcNHEQWgqAPGQoP1hKlUA
 
 __PACKAGE__->add_columns(
     'password' => {

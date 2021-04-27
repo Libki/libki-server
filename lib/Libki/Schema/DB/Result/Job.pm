@@ -70,7 +70,7 @@ __PACKAGE__->table("jobs");
 
 =head2 data
 
-  data_type: 'mediumtext'
+  data_type: 'longtext'
   is_nullable: 1
 
 =head2 taken
@@ -110,7 +110,7 @@ __PACKAGE__->add_columns(
   "type",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "data",
-  { data_type => "mediumtext", is_nullable => 1 },
+  { data_type => "longtext", is_nullable => 1 },
   "taken",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "status",
@@ -149,8 +149,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SztReotZ4mJ4D1Rl6qAMag
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:D2SKTWMAT1jwHSux1UE7qQ
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

@@ -81,7 +81,7 @@ __PACKAGE__->table("print_jobs");
 
 =head2 data
 
-  data_type: 'mediumtext'
+  data_type: 'longtext'
   is_nullable: 1
 
 =head2 printer
@@ -148,7 +148,7 @@ __PACKAGE__->add_columns(
   "copies",
   { data_type => "integer", is_nullable => 1 },
   "data",
-  { data_type => "mediumtext", is_nullable => 1 },
+  { data_type => "longtext", is_nullable => 1 },
   "printer",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "user_id",
@@ -240,8 +240,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CZUbxsGury02GqAfh4MFnw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0R/zbwcCaWwfsBAzhxo4YA
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(

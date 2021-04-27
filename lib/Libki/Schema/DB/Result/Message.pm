@@ -70,7 +70,7 @@ __PACKAGE__->table("messages");
 
 =head2 content
 
-  data_type: 'mediumtext'
+  data_type: 'longtext'
   is_nullable: 0
 
 =cut
@@ -83,7 +83,7 @@ __PACKAGE__->add_columns(
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "content",
-  { data_type => "mediumtext", is_nullable => 0 },
+  { data_type => "longtext", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -116,8 +116,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-10-08 11:06:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AVZd32taHsvKuKowHkLCpg
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hn49kjZD6Hzpl6FiOXBHww
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

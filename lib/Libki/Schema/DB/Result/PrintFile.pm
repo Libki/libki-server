@@ -64,7 +64,7 @@ __PACKAGE__->table("print_files");
 
 =head2 filename
 
-  data_type: 'mediumtext'
+  data_type: 'longtext'
   is_nullable: 0
 
 =head2 content_type
@@ -141,7 +141,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "filename",
-  { data_type => "mediumtext", is_nullable => 0 },
+  { data_type => "longtext", is_nullable => 0 },
   "content_type",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "data",
@@ -246,8 +246,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:r6y9Y6/U2FRNqvjVIUiPHA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZSaupo1syB4s7CEsz/sxew
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
