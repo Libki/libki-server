@@ -1,8 +1,11 @@
 package Libki::Controller::Administration::Settings;
+
 use Moose;
 use namespace::autoclean;
 
 BEGIN {extends 'Catalyst::Controller'; }
+
+use Encode qw(decode);
 
 =head1 NAME
 
@@ -38,7 +41,7 @@ sub index :Path :Args(0) {
     my $settings = $c->model('DB::Setting')->search({ instance => $instance });
     
     while ( my $s = $settings->next() ) {
-        $c->stash( $s->name => $s->value );
+        $c->stash( $s->name => decode( 'UTF-8', $s->value ) );
     }
 }
 
