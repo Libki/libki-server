@@ -12,6 +12,7 @@ use Libki::Utils::Printing qw( create_print_job_and_file );
 
 use DateTime::Format::MySQL;
 use DateTime;
+use Encode qw(decode);
 use List::Util qw(min);
 
 =head1 NAME
@@ -131,7 +132,7 @@ sub index : Path : Args(0) {
             ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
             EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
-            TermsOfService             => $c->stash->{Settings}->{TermsOfService},
+            TermsOfService             => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfService} ),
 
             BannerTopURL               => $c->stash->{Settings}->{BannerTopURL},
             BannerTopWidth             => $c->stash->{Settings}->{BannerTopWidth},
