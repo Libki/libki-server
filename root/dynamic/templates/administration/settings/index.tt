@@ -24,6 +24,7 @@
                     <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
                     <a class="nav-link" id="v-pills-user-settings-tab" data-toggle="pill" href="#v-pills-user-settings" role="tab" aria-controls="v-pills-user-settings" aria-selected="false">[% c.loc("User settings") %]</a>
                     <a class="nav-link" id="v-pills-advanced-settings-tab" data-toggle="pill" href="#v-pills-advanced-settings" role="tab" aria-controls="v-pills-advanced-settings" aria-selected="false">[% c.loc("Advanced settings") %]</a>
+                    <a class="nav-link" id="v-pills-api-keys-tab" data-toggle="pill" href="#v-pills-api-keys" role="tab" aria-controls="v-pills-api-keys" aria-selected="false">[% c.loc("API keys") %]</a>
                 </div>
             </div>
 
@@ -787,6 +788,58 @@
                 </fieldset>
             </div>
 
+            <div class="tab-pane fade" id="v-pills-api-keys" role="tabpanel" aria-labelledby="v-pills-api-keys-tab">
+                <fieldset>
+                    <legend>[% c.loc("API keys") %]</legend>
+
+                    <div class="form-group">
+                        <div id="api-keys-table-container">
+                            <table id="api-keys-table"></table>
+                        </div>
+                    </div>
+
+                    <div class="input-group form-inline">
+                        <input type="hidden" id="ApiKeys" name="ApiKeys" value='[% ApiKeys %]'>
+
+                        <label class="sr-only" for="apiKeyNote">Create API key</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Note</div>
+                            </div>
+                            <input type="text" class="form-control" id="apiKeyNote" pattern="([a-zA-Z0-9 ]+){2,}" placeholder="What is this api key for?">
+                            <script lang="text/javascript">
+                                $(document).on("input", "#apiKeyNote", function (event) {
+                                    if (this.checkValidity()) {
+                                        document.getElementById("generate-api-key").disabled = false;
+                                        document.getElementById("apiKeyNote").classList.remove("text-danger");
+                                    }
+                                    else {
+                                        document.getElementById("generate-api-key").disabled = true; 
+                                        document.getElementById("apiKeyNote").classList.add("text-danger");
+                                    }
+                                });
+                            </script>
+
+                        </div>
+
+                        <label class="sr-only" for="apiKeyType">API key type</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Type</div>
+                            </div>
+                            <select class="form-control" id="apiKeyType">
+                                <option value="Jamex">[% c.loc("Jamex") %]</option>
+                                <!-- <option value="PrintManager">[% c.loc("Print Manager") %]</option> -->
+                                <!-- <option value="Client">[% c.loc("Client") %]</option> -->
+                            </select>
+                        </div>
+
+                        <button id="generate-api-key" type="button" class="btn btn-secondary" disabled="disabled"><i class="fas fa-key"></i> [% c.loc("Create key") %]</button>
+                    </div>
+                    <p/>
+                </fieldset>
+            </div>
+
             <div class="form-group">
                 <div class="input-group">
                     <button id="update-settings" type="submit" class="btn btn-primary"><i class="fas fa-save"></i> [% c.loc("Update") %]</button>
@@ -810,10 +863,164 @@ $('#update-settings').on('click', function(e){
 });
 
 $('#ReservationOpeningHour').on('change',function(){
-        formatHour('ReservationOpeningHour','opening-ampm-label');
+    formatHour('ReservationOpeningHour','opening-ampm-label');
 });
 
 $('#ReservationOpeningHour').on('click',function(){
-        formatHour('ReservationOpeningHour','opening-ampm-label');
+    formatHour('ReservationOpeningHour','opening-ampm-label');
 });
+
+
+let api_keys = [];
+$(document).ready(function() {
+    const json = $('#ApiKeys').val();
+    if ( json ) {
+        api_keys = JSON.parse(json);
+        updateApiKeysTable();
+    }
+});
+
+$('#generate-api-key').on('click', function(){
+    const api_key_note = $('#apiKeyNote').val();
+    const api_key_type = $('#apiKeyType').val();
+    const api_key = generateUUID();
+    const key = { key: api_key, note: api_key_note, type: api_key_type };
+    api_keys.push( key );
+    copyTextToClipboard( api_key );
+
+    updateApiKeys();
+    DisplayMessage( "success", "[% c.loc("New API key copied to clipboard!") %]" );
+    $('#apiKeyNote').val("");
+    $('#apiKeyNote').focus();
+});
+
+function updateApiKeys() {
+    updateApiKeysTable();
+
+    $('#ApiKeys').val( JSON.stringify(api_keys) );
+    console.log( JSON.stringify(api_keys) );
+    $('#update-settings').click();
+
+}
+
+function updateApiKeysTable() {
+    let table = document.createElement('table');
+    table.id = 'api-keys-table';
+    table.classList.add('table', 'table-striped');
+    let thead = document.createElement('thead');
+    let tbody = document.createElement('tbody');
+
+    let theadTr = document.createElement('tr');
+    let theadTh;
+
+    theadTh = document.createElement('th');
+    theadTh.innerHTML = "[% c.loc('Note') %]";;
+    theadTr.appendChild(theadTh);
+
+    theadTh = document.createElement('th');
+    theadTh.innerHTML = "[% c.loc('Key') %]";;
+    theadTr.appendChild(theadTh);
+
+    theadTh = document.createElement('th');
+    theadTh.innerHTML = "[% c.loc('Type') %]";;
+    theadTr.appendChild(theadTh);
+
+    theadTh = document.createElement('th');
+    theadTh.innerHTML = "[% c.loc('&nbsp;') %]";;
+    theadTr.appendChild(theadTh);
+
+    thead.appendChild(theadTr);
+    table.appendChild(thead);
+
+    for (i = 0; i < api_keys.length; i++) {
+        var tbodyTr = document.createElement('tr');
+        let tbodyTd;
+
+        tbodyTd = document.createElement('td');
+        tbodyTd.innerHTML = api_keys[i]['note'];
+        tbodyTr.appendChild(tbodyTd);
+
+        tbodyTd = document.createElement('td');
+        tbodyTd.innerHTML = api_keys[i]['key'];
+        tbodyTr.appendChild(tbodyTd);
+
+        tbodyTd = document.createElement('td');
+        tbodyTd.innerHTML = api_keys[i]['type'];
+        tbodyTr.appendChild(tbodyTd);
+
+        tbodyTd = document.createElement('td');
+        tbodyTd.innerHTML = `<a class="btn btn-danger" style="color:white" onClick="delApiKey('${api_keys[i]['key']}')"><i class="fas fa-trash"></i> [% c.loc("Delete") %]</a>`;
+        tbodyTr.appendChild(tbodyTd);
+
+
+        tbody.appendChild(tbodyTr);
+    }
+    table.appendChild(tbody);
+
+    let container = document.getElementById('api-keys-table-container');
+    let old_table = document.getElementById('api-keys-table');
+    container.replaceChild(table, old_table);
+}
+
+function delApiKey(key) {
+    for (i = 0; i < api_keys.length; i++) {
+        if ( api_keys[i]['key'] == key ) {
+            api_keys.splice(i, 1);
+            updateApiKeys();
+            break;
+        }
+    }
+}
+
+function generateUUID() {
+    var d = new Date().getTime();
+
+    if (window.performance && typeof window.performance.now === "function") {
+        d += performance.now();
+    }
+
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+
+    return uuid;
+}
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+        console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+    });
+}
 </script>
