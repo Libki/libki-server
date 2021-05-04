@@ -1,10 +1,11 @@
 package Libki::SIP;
 
-use Socket qw(:crlf);
+use feature 'say';
+
+use Data::Dumper;
 use IO::Socket::INET;
 use POSIX qw(strftime);
-use Data::Dumper;
-use feature 'say';
+use Socket qw(:crlf);
 
 =head2 authenticate_via_sip
 
@@ -68,7 +69,7 @@ sub authenticate_via_sip {
         my $str_93 = checksum($string);
         $str_93 = $string . $str_93 . $terminator;
         $log->debug("SEND: $str_93");
-       say "SEND: $str_93" if $test_mode;
+        say "SEND: $str_93" if $test_mode;
         $socket->send($str_93);
 
         my $response;
@@ -81,7 +82,7 @@ sub authenticate_via_sip {
             $response .= $split;
         }
         $log->debug("READ: $response");
-       say "READ: $response" if $test_mode;
+        say "READ: $response" if $test_mode;
 
         my $auth    = substr( $response, 2, 1 );
         my $run_num = substr( $response, 5, 1 );
@@ -91,7 +92,7 @@ sub authenticate_via_sip {
             my $final  = checksum( $string, $run_num );
             my $send99 = $string . $final . $terminator;
             $log->debug("SEND: $send99");
-           say "SEND: $send99" if $test_mode;
+            say "SEND: $send99" if $test_mode;
             $socket->send($send99);
 
             my ( $response, $split );
@@ -105,7 +106,7 @@ sub authenticate_via_sip {
             }
 
             $log->debug("READ: $response");
-           say "READ: $response" if $test_mode;
+            say "READ: $response" if $test_mode;
 
             if ( ( substr $response, 0, 3 ) eq '98Y' ) {
                 my ( $chk, $end ) = split /\|AY/, $response;
@@ -133,7 +134,7 @@ sub authenticate_via_sip {
         my $final   = checksum( $string, $run_num );
         my $send99  = $string . $final . $terminator;
         $log->debug("SEND: $send99");
-       say "SEND: $send99" if $test_mode;
+        say "SEND: $send99" if $test_mode;
         $socket->send($send99);
 
         my ( $response, $split );
@@ -147,7 +148,7 @@ sub authenticate_via_sip {
         }
 
         $log->debug("READ: $response");
-       say "READ: $response" if $test_mode;
+        say "READ: $response" if $test_mode;
 
         if ( ( substr $response, 0, 3 ) eq '98Y' ) {
             my ( $chk, $end ) = split /\|AY/, $response;

@@ -3,11 +3,17 @@ package Libki::Controller::API::Public;
 use Moose;
 use namespace::autoclean;
 
+use Libki::Auth qw(authenticate_user);
+
 BEGIN { extends 'Catalyst::Controller'; }
+
+use JSON;
+
+use Libki::Auth;
 
 =head1 NAME
 
-Libki::Controller::API::Public::Reservations - Catalyst Controller
+Libki::Controller::API::Public - Catalyst Controller
 
 =head1 DESCRIPTION
 
@@ -17,60 +23,61 @@ Catalyst Controller.
 
 =cut
 
-=head2 client
+=head2 authenticate
 
-/api/public/client/TestClient?username=admin&password=mypass
+/api/public/authenticate/<api_key>?username=admin&password=mypass
 
-returns JSON hash containing the username as a key value pair
+Returns JSON with keys for success and error.
 
 =cut
 
-sub client : Local : Args(1) {
-    my ( $self, $c, $name ) = @_;
+sub authenticate : Local : Args(1) {
+    my ( $self, $c, $api_key ) = @_;
 
-    my $instance = $c->instance;
+    my $api_key_validated = Libki::Auth::validate_api_key(
+        {
+            context => $c,
+            key     => $api_key,
+            type    => '*',
+        }
+    );
 
     my $username = $c->request->params->{'username'};
     my $password = $c->request->params->{'password'};
 
-    $c->log()->debug("API::Public::client( name => $name, username => $username, password => $password");
+    $c->log()->debug("API::Public::authenticate( username => $username, username => $username");
 
-    delete $c->stash->{Settings};
-
-    if (   $c->authenticate( { username => $username, password => $password, instance => $instance } )
-        && $c->check_user_roles(qw/admin/) )
-    {
-
-        my $client = $c->model('DB::Client')->single( { instance => $instance, name => $name } );
-
-        if ($client) {
-            my $session = $client->session();
-
-            if ($session) {
-
-                my $user = $session->user();
-
-                $c->stash(
-                    username   => $user->username(),
-                    clientname => $client->name(),
-                    instance   => $instance,
-                );
-                $c->log()->debug( "API::Public::client returning ( username => " . $user->username() . ", clientname => " . $client->name() . " )" );
-
-            }
-
+    my $data =
+      ( $api_key_validated && $username && $password )
+      ? Libki::Auth::authenticate_user(
+        {
+            context  => $c,
+            username => $username,
+            password => $password,
         }
+      )
+      : undef;
 
-        if ( $name eq 'TEST_IN' ) {
-            $c->stash( username => 'TEST_OUT', clientname => 'TEST_CLIENTNAME' );
-            $c->log()->debug("API::Public::client returning ( username => TEST_OUT, clientname => TEST_CLIENTNAME ) for testing mode");
-        }
-
+    if ($data) {
+        $c->stash(
+            success => $data->{success} ? JSON::true : JSON::false,
+            error   => $data->{error},
+        );
+    }
+    elsif ( !$api_key_validated ) {
+        $c->stash(
+            success => JSON::false,
+            error   => "Invalid API key.",
+        );
     }
     else {
-        $c->stash( error => 'authentication' );
+        $c->stash(
+            success => JSON::false,
+            error   => "Parameters username and password are required.",
+        );
     }
 
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 
