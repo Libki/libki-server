@@ -23,7 +23,7 @@ Catalyst Controller.
 
 =cut
 
-=head2 authenticate
+=head2 authenticate_user
 
 /api/public/authenticate?api_key=API_KEY&username=admin&password=mypass
 
@@ -84,7 +84,7 @@ sub authenticate_user : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
-=head2 funds
+=head2 user_funds
 
 GET /api/public/funds?api_key=API_KEY&username=someuser
 
