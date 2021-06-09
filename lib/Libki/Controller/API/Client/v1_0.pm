@@ -45,7 +45,7 @@ sub index : Path : Args(0) {
 
     my $now = $c->now();
 
-    my $action = $c->request->params->{'action'};
+    my $action = $c->request->params->{'action'} || q{};
 
     if ( $action eq 'register_node' ) {
 

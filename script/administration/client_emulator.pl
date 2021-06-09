@@ -8,29 +8,22 @@ use LWP::Simple;
 
 my ( $opt, $usage ) = describe_options(
     '%c %o',
-    [
-        'scheme|s=s',
-        'the scheme to use ( http or https )',
-        { default => 'http' }
-    ],
-    [ 'host|h=s', 'the host server address', { required => 1 } ],
-    [ 'port|p=s', 'the host server port',    { default  => 80 } ],
+    [ 'scheme|s=s', 'the scheme to use ( http or https )', { default => 'http' } ],
+    [ 'host|h=s',   'the host server address',             { default => '127.0.0.1' } ],
+    [ 'port|p=s',   'the host server port',                { default => '3000' } ],
     [
         'action|a=s',
-        'action to take ( options: register_node )',
-        { default => 'register_node' }
+        'action to take ( options: register_client, client_login, print )',
+        { default => 'register_client' }
     ],
     [],
-    [
-        'name|node-name|n=s',
-        'name for the mocked client',
-        { default => 'test_client' }
-    ],
-    [
-        'location|loc|l=s',
-        'location code for the mocked client',
-        { default => 'TEST' }
-    ],
+    [ 'name|node-name|n=s', 'name for the mocked client',          { default => 'test_client' } ],
+    [ 'type|t=s',           'the client type',                     { default => '' } ],
+    [ 'location|loc|l=s',   'location code for the mocked client', { default => 'TEST' } ],
+    [],
+    [ 'username|un|u=s', 'username for action=client_login' ],
+    [ 'password|pw=s',   'password for action=client_login' ],
+    [],
     [ 'print=s', 'Send file as print job for node' ],
     [],
     [ 'verbose|v+', 'print extra stuff', { default => 0 } ],
@@ -40,38 +33,74 @@ my $base_url = $opt->scheme . '://' . $opt->host . ':' . $opt->port;
 say "BASE URL: $base_url" if $opt->verbose;
 my $api_url = "$base_url/api/client/v1_0";
 say "API URL: $api_url" if $opt->verbose > 1;
-my $url = $api_url . '?action=' . $opt->action;
 
-if ( $opt->action eq 'register_node' ) {
-    say 'ACTION: register_node' if $opt->verbose;
-    $url .= '&node_name=' . $opt->name;
-    $url .= '&location=' . $opt->location;
+my $ua = LWP::UserAgent->new();
 
-    say "GET URL: $url" if $opt->verbose;
+if ( $opt->action eq 'register_client' || $opt->action eq 'client_login' ) {
+    say 'ACTION: register_client' if $opt->verbose;
 
-    my $res = get($url);
+    die "MISSING PARAMETER: name"     unless $opt->name;
+    die "MISSING PARAMETER: location" unless $opt->location;
 
-    say $res ? 'SUCCESS' : 'FAILED' if $opt->verbose;
+    my $response = $ua->post(
+        $api_url,
+        Content => [
+            action    => 'register_node',
+            node_name => $opt->name,
+            location  => $opt->location,
+        ],
+    );
 
-    say "RESULTS: $res" if $opt->verbose > 2;
+    if ( $response->is_success ) {
+        say "REGISTER succeeded!";
+    }
+    else {
+        say "REGISTER failed!";
+        say $response->status_line . " - " . $response->message;
+    }
+
 }
-elsif ( $opt->action eq 'print' ) {
+if ( $opt->action eq 'client_login' ) {
+    say 'ACTION: client_login' if $opt->verbose;
+
+    die "MISSING PARAMETER: name"     unless $opt->name;
+    die "MISSING PARAMETER: location" unless $opt->location;
+    die "MISSING PARAMETER: username" unless $opt->username;
+    die "MISSING PARAMETER: password" unless $opt->password;
+
+    my $response = $ua->post(
+        $api_url,
+        Content => [
+            action   => 'login',
+            node     => $opt->name,
+            location => $opt->location,
+            username => $opt->username,
+            password => $opt->password,
+            type     => $opt->type,
+        ],
+    );
+
+    if ( $response->is_success ) {
+        say "LOGIN Response: " . $response->decoded_content;
+    }
+    else {
+        say "LOGIN failed!";
+        say $response->status_line . " - " . $response->message;
+    }
+}
+if ( $opt->action eq 'print' ) {
     my $print_url = "$api_url/print";
     say "ACTION: print" if $opt->verbose;
-    say "   URL: $print_url" if $opt->verbose > 1;
 
-    my $ua = LWP::UserAgent->new();
-    my $response   = $ua->post( $print_url,
-      Content_Type => 'multipart/form-data',
-      Content      => [
-        node       => $opt->name,
-        print_file => [ $opt->print ],
-      ] );
+    my $response = $ua->post(
+        $print_url,
+        Content_Type => 'multipart/form-data',
+        Content      => [
+            node       => $opt->name,
+            print_file => [ $opt->print ],
+        ]
+    );
     print $response->error_as_HTML . "\n" if $response->is_error;
-}
-else {
-    say 'Unknown action "' . $opt->action . '" requested.';
-    say $usage;
 }
 
 =head1 AUTHOR
