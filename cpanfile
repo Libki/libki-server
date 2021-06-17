@@ -34,6 +34,7 @@ requires 'DBIx::Class::Numeric';
 requires 'DBIx::Class::Schema::Loader';
 requires 'DBIx::Class::TimeStamp';
 requires 'Data::Printer';
+requires 'Date::Parse';
 requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 requires 'DateTime::Span';
