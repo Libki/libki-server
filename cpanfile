@@ -33,7 +33,6 @@ requires 'DBIx::Class::InflateColumn::Serializer::JSON';
 requires 'DBIx::Class::Numeric';
 requires 'DBIx::Class::Schema::Loader';
 requires 'DBIx::Class::TimeStamp';
-requires 'Data::Parse';
 requires 'Data::Printer';
 requires 'Date::Parse';
 requires 'DateTime';
