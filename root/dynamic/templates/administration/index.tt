@@ -938,13 +938,18 @@ $(document).ready(function() {
             { data: 'type' },
             { data: 'session_status' },
             { data: 'username' },
-            [% IF ShowFirstLastNames %]
-                { data: 'lastname' },
-                { data: 'firstname' },
-            [% END %]
-            [% IF UserCategories %]
-                { data: 'category' },
-            [% END %]
+            {
+                data: "firstname",
+                visible: [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
+            },
+            {
+                data: "lastname",
+                visible: [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
+            },
+            {
+                "data": "category",
+                "visible": [% IF UserCategories %]true[% ELSE %]false[% END %]
+            },
             { data: 'minutes_allotment' },
             { data: 'minutes' },
             { data: 'user_status' },
