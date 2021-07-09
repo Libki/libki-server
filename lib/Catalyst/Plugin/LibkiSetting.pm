@@ -310,8 +310,14 @@ sub check_login {
                 $result{'error'} = 'RESERVED_FOR_OTHER';
             }
             else {
-                my $duration = $reservation_begin_dt->subtract_datetime( $c->now );
-                $time_to_reservation =  $duration->seconds;
+                my $duration        = $reservation_begin_dt->subtract_datetime( $c->now );
+                my $reservation_gap = $c->setting('ReservationGap');
+
+                $time_to_reservation = ( abs( $duration->in_units('minutes') ) - $reservation_gap );
+
+                if ( $time_to_reservation < 1 ) {
+                    $result{'error'} = 'RESERVED_FOR_OTHER';
+                }
             }
         }
     }
