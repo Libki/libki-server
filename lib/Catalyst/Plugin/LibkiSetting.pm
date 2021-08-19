@@ -315,7 +315,7 @@ sub check_login {
 
                 $time_to_reservation = ( abs( $duration->in_units('minutes') ) - $reservation_gap );
 
-                if ( $time_to_reservation < 1 ) {
+                if ( $time_to_reservation < 1 && $user->id != $first_reservation->user_id ) {
                     $result{'error'} = 'RESERVED_FOR_OTHER';
                 }
             }
