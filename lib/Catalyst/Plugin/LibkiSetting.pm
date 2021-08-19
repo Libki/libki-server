@@ -510,6 +510,17 @@ sub get_time_list {
             ]
         }
     );
+
+    # Find existing sessions for the client
+    my @sessions = $c->model('DB::Session')->search(
+        {
+            -and => [
+                instance  => $c->instance,
+                client_id => $client_id,
+            ]
+        }
+    );
+
     my $client = $c->model( 'DB::Client' )->find( $client_id );
 
     my ( @mlist, @start, %result );
@@ -599,6 +610,27 @@ sub get_time_list {
                         my $reservation_span = DateTime::Span->from_datetimes( start => $reservation_begin_dt, end => $reservation_end_dt );
 
                         if ( $reservation_span->contains( $time_to_check_dt )
+                            || $time_to_check_dt < $start_dt
+                            || $time_to_check_dt > $end_dt
+                        ) {
+                            $minutes_availability[$min] = 'hide';
+                            last;
+                        }
+                    }
+
+
+                    # Remove hour/minutes selection based on current sessions the same as we do for existing reservations above
+                    # Reduces the ability to select an invalid time for a new reservation. GitHub Issue #211
+                    foreach my $session ( @sessions ) {
+                        my $session_begin_dt = DateTime->now( time_zone => $c->tz );
+                        my $session_end_dt = $session_begin_dt + DateTime::Duration->new( minutes => $session->minutes );
+
+                        my $session_gap = $c->setting( 'ReservationGap' );
+                        $session_end_dt->add( minutes => $session_gap ) if $session_gap;
+
+                        my $session_span = DateTime::Span->from_datetimes( start => $session_begin_dt, end => $session_end_dt );
+
+                        if ( $session_span->contains( $time_to_check_dt )
                             || $time_to_check_dt < $start_dt
                             || $time_to_check_dt > $end_dt
                         ) {
