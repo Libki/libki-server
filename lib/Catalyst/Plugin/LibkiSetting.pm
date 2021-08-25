@@ -140,11 +140,12 @@ sub add_user_category {
 
     return if grep ( /^$category$/, @$categories );
 
-    my $setting = $c->setting( 'UserCategories' );
+    my $setting = $c->model('DB::Setting')
+        ->find_or_create( { instance => $c->instance, name => 'UserCategories' } );
 
     push( @$categories, $category );
 
-    my $yaml = YAML::XS::Dump( $categories );
+    my $yaml = YAML::XS::Dump($categories);
 
     return $setting->update( { value => $yaml } );
 }
