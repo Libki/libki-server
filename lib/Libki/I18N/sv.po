@@ -1057,6 +1057,10 @@ msgstr "Reservera"
 msgid "Reserved"
 msgstr "Reserverad"
 
+#: root/dynamic/templates/administration/index.tt:160
+msgid "Restart"
+msgstr "Starta om"
+
 #: root/dynamic/templates/administration/index.tt:489
 msgid "Roles"
 msgstr "Roller"
@@ -1241,6 +1245,10 @@ msgstr "Tidsstämpel"
 msgid "To"
 msgstr "Till"
 
+#: root/dynamic/templates/administration/index.tt:158
+msgid "Toggle status"
+msgstr "Växla status"
+
 #: root/dynamic/templates/administration/settings/index.tt:456
 msgid "Top banner"
 msgstr "Övre banner"
@@ -1262,6 +1270,10 @@ msgstr "Problem"
 #: root/dynamic/templates/administration/index.tt:1234
 msgid "Troublemaker status updated."
 msgstr "Problemstatus ändrad."
+
+#: root/dynamic/templates/administration/index.tt:161
+msgid "Turn off"
+msgstr "Stäng av"
 
 #: root/dynamic/templates/administration/index.tt:128
 #: root/dynamic/templates/administration/index.tt:213
