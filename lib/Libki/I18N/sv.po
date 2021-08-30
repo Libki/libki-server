@@ -1061,6 +1061,10 @@ msgstr "Reserverad"
 msgid "Restart"
 msgstr "Starta om"
 
+#: root/dynamic/templates/administration/index.tt:123
+msgid "Restart all clients"
+msgstr "Starta om alla klienter"
+
 #: root/dynamic/templates/administration/index.tt:489
 msgid "Roles"
 msgstr "Roller"
@@ -1274,6 +1278,14 @@ msgstr "Problemstatus ändrad."
 #: root/dynamic/templates/administration/index.tt:161
 msgid "Turn off"
 msgstr "Stäng av"
+
+#: root/dynamic/templates/administration/index.tt:124
+msgid "Turn off all clients"
+msgstr "Stäng av alla klienter"
+
+#: root/dynamic/templates/administration/index.tt:122
+msgid "Turn on all clients"
+msgstr "Starta alla klienter"
 
 #: root/dynamic/templates/administration/index.tt:128
 #: root/dynamic/templates/administration/index.tt:213
