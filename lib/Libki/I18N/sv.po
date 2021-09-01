@@ -768,6 +768,10 @@ msgstr "Från"
 msgid "Funds"
 msgstr "Medel"
 
+#: root/dynamic/templates/administration/index.tt:1191
+msgid "Guest accound created"
+msgstr "Gästkonto skapat"
+
 #: root/dynamic/templates/administration/settings/index.tt:693
 msgid "Guest pass CSS"
 msgstr "Gästpass CSS"
@@ -1154,6 +1158,7 @@ msgstr "Konton att skapa per grupp"
 #: root/dynamic/templates/administration/index.tt:71
 #: root/dynamic/templates/administration/index.tt:736
 #: root/dynamic/templates/administration/index.tt:737
+#: root/dynamic/templates/administration/index.tt:1191
 #: root/dynamic/templates/login.tt:45 root/dynamic/templates/login.tt:49
 #: root/dynamic/templates/public/login.tt:45
 #: root/dynamic/templates/public/login.tt:49
@@ -1846,6 +1851,7 @@ msgstr "Användarens tid har uppdaterats."
 #: root/dynamic/templates/administration/index.tt:523
 #: root/dynamic/templates/administration/index.tt:657
 #: root/dynamic/templates/administration/index.tt:687
+#: root/dynamic/templates/administration/index.tt:1191
 #: root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27
 #: root/dynamic/templates/public/login.tt:23
 #: root/dynamic/templates/public/login.tt:27
@@ -1913,6 +1919,10 @@ msgid ""
 msgstr ""
 "Varna användaren att hen kommer loggas ut automatiskt efter så här många "
 "minuter av inaktivitet."
+
+#: root/dynamic/templates/administration/index.tt:1191
+msgid "Welcome"
+msgstr "Välkommen"
 
 #: root/dynamic/templates/administration/settings/index.tt:322
 msgid ""

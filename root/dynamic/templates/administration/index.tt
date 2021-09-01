@@ -62,7 +62,7 @@
                 <th>[% c.loc("Client status") %]</th>
                 <th>[% c.loc("Creation source") %]</th>
             </thead>
-        </table> 
+        </table>
 
         <div id="user-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
@@ -156,7 +156,7 @@
                 <th>[% c.loc("From") %]</th>
                 <th>[% c.loc("Status") %]</th>
             </thead>
-        </table> 
+        </table>
 
         <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
@@ -234,7 +234,7 @@
                 <th>[% c.loc("User") %]</th>
                 <th>[% c.loc("Created") %]</th>
             </thead>
-        </table> 
+        </table>
 
         <div id="print-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
@@ -443,6 +443,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button type="button" id="printslip" class="btn" data-dismiss="modal">[% c.loc("Print") %]</button>
         <button type="button" class="btn" data-dismiss="modal">[% c.loc("Dismiss") %]</button>
       </div>
     </div>
@@ -513,7 +514,7 @@
                     <a class="nav-link" id="edit-user-roles-tab" data-toggle="tab" href="#edit-user-roles" role="tab" aria-controls="edit-user-roles" aria-selected="false">[% c.loc("Roles") %]</a>
                   </li>
             </ul>
-                    
+
             <div class="tab-content">
               <div class="tab-pane active" id="edit-user-details" role="tabpanel" aria-labelledby="edit-user-details-tab">
                 <input id="edit-user-modal-form-id" name="id" type="hidden" />
@@ -846,7 +847,7 @@ $(document).ready(function() {
     // Set up the manual refresh buttons for each table
     $('#client-table-refresh-button').on( 'click', function() {
         ForceClientTableRefresh();
-        return false; 
+        return false;
     });
     $('#user-table-refresh-button').on('click', function() {
         ForceUserTableRefresh();
@@ -975,7 +976,7 @@ $(document).ready(function() {
                 aoData.push( { "name": "location_filter", "value": window.location_filter } );
             }
 
-            $.getJSON( sSource, aoData, function (json) { 
+            $.getJSON( sSource, aoData, function (json) {
                 fnCallback(json)
             } );
         },
@@ -1040,7 +1041,7 @@ $(document).ready(function() {
                 aoData.push( { "name": "location_filter", "value": window.location_filter } );
             }
 
-            $.getJSON( sSource, aoData, function (json) { 
+            $.getJSON( sSource, aoData, function (json) {
                 fnCallback(json)
             } );
         },
@@ -1049,7 +1050,7 @@ $(document).ready(function() {
         }
     } );
 
-    setInterval( function(){ 
+    setInterval( function(){
         // Only update print job states if the Prints tab is active
         if ( $("#prints-tab").hasClass("active") ) {
             let data = pTable.rows().data();
@@ -1194,6 +1195,15 @@ $(document).ready(function() {
         $('#new-guest-modal-form-password').val( data.password );
         $('#new-guest-modal-form-minutes').val( data.minutes );
         $('#new-guest-modal-form-category').val( data.category );
+
+        $('#printslip').on('click', function() {
+            myWindow=window.open('','','width=500,height=400');
+            myWindow.document.write('<h3>[% c.loc("Guest accound created") %]</h3><h4>[% c.loc("Username") %]: ' + data.username + '</h4><h4>[% c.loc("Password") %]: ' + data.password + '</h4><p>[% c.loc("Welcome") %]!</p>');
+            myWindow.document.close(); //missing code
+            myWindow.focus();
+            myWindow.print();
+            myWindow.close();
+          });
 
         $('#new-guest-modal').modal();
 
@@ -1515,7 +1525,7 @@ $(document).ready(function() {
     });
 
     function TranslateStatus( status ) {
-        return status == 'suspended' ? '[% c.loc("Suspended") %]' : 
+        return status == 'suspended' ? '[% c.loc("Suspended") %]' :
                status == 'offline'   ? '[% c.loc("Offline") %]'   :
                status == 'online'    ? '[% c.loc("Online") %]'    :
                '[% c.loc("Unknown") %]';
