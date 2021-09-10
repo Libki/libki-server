@@ -718,6 +718,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="CardnumberPrefix">[% c.loc("Card number prefix") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="CardnumberPrefix" name="CardnumberPrefix" value="[% CardnumberPrefix %]">
+                        </div>
+                        <small class="form-text text-muted">
+                            [% c.loc("If all cardnumbers in your ILS have a prefix, Libki can automatically add this prefix if it is missing from the cardnumber as entered by the patron.") %]
+                        </small>
+                        <small class="form-text text-muted">
+                            [% c.loc("This feature only works for user ids that are numeric only. Alphanumeric ids will not be prefixed.") %]
+                        </small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="SIPConfiguration">[% c.loc("SIP configuration") %]</label>
                         <div class="input-group">
                             <textarea class="form-control" id="SIPConfiguration" name="SIPConfiguration" rows="15">[% SIPConfiguration %]</textarea>

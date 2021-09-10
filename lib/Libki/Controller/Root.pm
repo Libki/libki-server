@@ -67,9 +67,27 @@ sub auto : Private {
 
     my $instance = $c->instance;
 
-    my @settings = $c->model('DB::Setting')->search({ instance => $instance });
-    my %s = map { $_->name() => $_->value() } @settings;
+    my @settings = $c->model('DB::Setting')->search( { instance => $instance } );
+    my %s        = map { $_->name() => $_->value() } @settings;
+
+    if (my $prefix = $s{CardnumberPrefix}) {
+        my $username = $c->request->params->{username} || q{};
+        if ( $username && ( !_begins_with( $username, $prefix ) ) && $username =~ /^\d*$/ ) {
+            $c->request->params->{username} = $prefix . $username;
+        }
+    }
+
     $c->stash( 'Settings' => \%s );
+}
+
+=head2 _begins_with
+
+Fast method to tell if a string start with another given string
+
+=cut
+
+sub _begins_with {
+    return substr( $_[0], 0, length( $_[1] ) ) eq $_[1];
 }
 
 =head1 AUTHOR
