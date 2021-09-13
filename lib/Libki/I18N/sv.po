@@ -1380,7 +1380,7 @@ msgstr ""
 
 #: root/dynamic/templates/administration/settings/index.tt:574
 msgid "Send the signal using"
-msgstr "Säng signalen via"
+msgstr "Sänd signalen via"
 
 #: root/dynamic/templates/administration/index.tt:151
 #: root/dynamic/templates/administration/index.tt:56
