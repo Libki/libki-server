@@ -290,7 +290,9 @@ sub index : Path : Args(0) {
                     {
                         $c->stash( error => 'CLOSED' );
                     }
-                    elsif ( $user->session ) {
+                    elsif ( $user->session && $user->session->client_id ne $client->id ) {
+                        # If a user is logging into the same client they are currently "logged in" to according to the sessions table
+                        # don't block the login. We will "resume" the session instead.
                         $c->stash( error => 'ACCOUNT_IN_USE' );
                     }
                     elsif ( $user->status eq 'disabled' ) {
@@ -352,7 +354,12 @@ sub index : Path : Args(0) {
                                 # Solves issue with some browsers not parsing correctly
                                 $c->stash( units => "$result{'minutes'}" );
 
-                                my $session = $c->model('DB::Session')->create(
+                                # If a user is logging into the same client they are currently "logged in" to according to the sessions table
+                                # resume that session instead of creating a new session.
+                                my $session
+                                    = $user->session && $user->session->client_id eq $client->id
+                                    ? $user->session
+                                    : $c->model('DB::Session')->create(
                                     {
                                         instance   => $instance,
                                         user_id    => $user->id,
@@ -361,7 +368,7 @@ sub index : Path : Args(0) {
                                         minutes    => $result{'minutes'},
                                         session_id => $session_id,
                                     }
-                                );
+                                    );
 
                                 $c->stash( authenticated => $session && 1 );
 
