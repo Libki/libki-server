@@ -247,7 +247,7 @@ sub can_user_use {
 
         foreach my $age_limit ( @age_limits ) {
             my $comparison = $age_limit->comparison();
-            my $limit = $age_limit->age($c);
+            my $limit = $age_limit->age;
             $log->debug("Age comparison: $comparison");
             $log->debug("Age limit: $limit");
 
