@@ -1,11 +1,15 @@
 package Libki;
+
 use Moose;
 use namespace::autoclean;
+
 use Catalyst::Runtime 5.90011;
 use CatalystX::RoleApplicator;
-use DateTime;
+
 use DateTime::Format::DateParse;
 use DateTime::Format::MySQL;
+use DateTime;
+use File::Slurp;
 
 our $VERSION = '4.2.4';
 
@@ -109,15 +113,22 @@ __PACKAGE__->config(
 # Set the time zone
 $ENV{LIBKI_TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
 
-# Create a Log4perl object
-__PACKAGE__->log(Log::Log4perl::Catalyst->new( __PACKAGE__->path_to('log4perl.conf')->stringify ));
-# Handle warnings from Perl as fatal log messages
-$SIG{__WARN__} = sub { __PACKAGE__->log->fatal(@_); };
-
 # These envinronment variables will be overwritten by matching ones in the config files if they are set
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn}      = $ENV{LIBKI_DB_DSN};
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{user}     = $ENV{LIBKI_DB_USER};
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{password} = $ENV{LIBKI_DB_PASSWORD};
+
+# Create a Log4perl object
+my $dsn = __PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn};
+my $user = __PACKAGE__->config->{'Model::DB'}->{connect_info}->{user};
+my $password = __PACKAGE__->config->{'Model::DB'}->{connect_info}->{password};
+my $log4perl = read_file(__PACKAGE__->path_to('log4perl.conf')->stringify);
+$log4perl =~ s/__LIBKI_DB_DSN__/$dsn/g;
+$log4perl =~ s/__LIBKI_DB_USER__/$user/g;
+$log4perl =~ s/__LIBKI_DB_PASSWORD__/$password/g;
+__PACKAGE__->log(Log::Log4perl::Catalyst->new( \$log4perl ));
+# Handle warnings from Perl as fatal log messages
+$SIG{__WARN__} = sub { __PACKAGE__->log->fatal(@_); };
 
 # Start the application
 __PACKAGE__->setup();
