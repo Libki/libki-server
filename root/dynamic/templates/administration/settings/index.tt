@@ -149,6 +149,19 @@
                             [% c.loc("Length of time to retain print jobs. If not set, will default to 0 and print jobs will be removed nightly.") %]
                         </small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="LogRetentionDays">[% c.loc("Logs retention") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="LogRetentionDays" name="LogRetentionDays" value="[% LogRetentionDays %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Days") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            [% c.loc("Length of time to retain logs. If not set, will default to 0 and all logs will be removed nightly.") %]
+                        </small>
+                    </div>
                 </fieldset>
             </div>
 

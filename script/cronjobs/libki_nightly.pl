@@ -119,6 +119,23 @@ foreach my $prd (@print_retention_days) {
     }
 }
 
+## Clear out old logs
+my @log_retention_days = $c->model('DB::Setting')->search( { name => 'LogRetentionDays' } );
+foreach my $lrd (@log_retention_days) {
+    if ( $lrd->value ) {
+        my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
+        $dt->subtract( days => $lrd->value );
+        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+
+        $c->model('DB::Log')->search(
+            {
+                instance     => $lrd->instance,
+                'created_on' => { '<' => $timestamp },
+            }
+        )->delete();
+    }
+}
+
 ## Clear out expired sessions
 ## TODO: Should we delete sessions with no expiration periodically?
 
