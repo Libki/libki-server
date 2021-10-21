@@ -26,6 +26,8 @@ Endpoint that returns DataTables JSON with data about users.
 sub users : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->assert_user_roles( qw/admin/ );
+
     my $instance = $c->instance;
 
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
@@ -161,6 +163,8 @@ Endpoint that returns DataTables JSON about clients registered with the server.
 
 sub clients : Local Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->assert_user_roles( qw/admin/ );
 
     my $instance = $c->instance;
 
@@ -305,6 +309,8 @@ Endpoint that returns DataTables JSON about the statistics table.
 sub statistics : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->assert_user_roles( qw/admin/ );
+
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
@@ -384,6 +390,8 @@ Endpoint that returns DataTables JSON about print jobs and print file.
 
 sub prints : Local Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->assert_user_roles( qw/admin/ );
 
     my $instance = $c->instance;
 
@@ -488,6 +496,8 @@ Endpoint that returns DataTables JSON of reservations.
 sub reservations  : Local Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->assert_user_roles( qw/admin/ );
+
     my $instance = $c->instance;
 
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
@@ -583,6 +593,92 @@ sub reservations  : Local Args(0) {
     );
     $c->forward( $c->view('JSON') );
 
+}
+
+=head2 logs
+
+Endpoint that returns DataTables JSON about the logs table.
+
+=cut
+
+sub logs : Local Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->assert_user_roles(qw/superadmin/);
+
+    my $instance = $c->instance;
+
+    # We need to map the table columns to field names for ordering
+    my @columns = ( 'me.created_on', 'me.pid', 'me.hostname', 'me.level', 'me.message' );
+
+    my $search_term = $c->request->param("sSearch");
+    my $filter;
+    if ($search_term) {
+        $filter = {
+            instance => $instance,
+            -or      => [
+                'me.created_on' => { 'like', "%$search_term%" },
+                'me.pid'        => { 'like', "%$search_term%" },
+                'me.hostname'   => { 'like', "%$search_term%" },
+                'me.level'      => { 'like', "%$search_term%" },
+                'me.message'    => { 'like', "%$search_term%" },
+            ]
+        };
+    }
+    else {
+        $filter = { instance => $instance };
+    }
+
+    # Sorting options
+    my @sorting;
+    for ( my $i = 0; $i < $c->request->param('iSortingCols'); $i++ ) {
+        push(
+            @sorting,
+            {
+                '-'
+                    . $c->request->param("sSortDir_$i") =>
+                    $columns[ $c->request->param("iSortCol_$i") ]
+            }
+        );
+    }
+
+    my $total_records = $c->model('DB::Log')->search( { instance => $instance } )->count;
+
+    # In case of pagination, we need to know how many records match in total
+    my $count = $c->model('DB::Log')->count($filter);
+
+    # Do the search, including any required sorting and pagination.
+    my @logs = $c->model('DB::Log')->search(
+        $filter,
+        {
+            order_by => \@sorting,
+            rows     => $c->request->param('iDisplayLength'),
+            offset   => $c->request->param('iDisplayStart'),
+        }
+    );
+
+    my @results;
+    foreach my $s (@logs) {
+        my $r;
+        $r->{'DT_RowId'} = $s->id;
+        $r->{'0'}        = $s->created_on->strftime('%m/%d/%Y %I:%M %p');
+        $r->{'1'}        = $s->pid;
+        $r->{'2'}        = $s->hostname;
+        $r->{'3'}        = $s->level;
+        $r->{'4'}        = $s->message;
+
+        push( @results, $r );
+    }
+
+    $c->stash(
+        {
+            'iTotalRecords'        => $total_records,
+            'iTotalDisplayRecords' => $count,
+            'sEcho'                => $c->request->param('sEcho') || undef,
+            'aaData'               => \@results,
+        }
+    );
+    $c->forward( $c->view('JSON') );
 }
 
 =head1 AUTHOR

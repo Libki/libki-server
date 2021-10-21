@@ -67,6 +67,8 @@ sub auto : Private {
 
     my $instance = $c->instance;
 
+    Log::Log4perl::MDC->put('instance', $instance);
+
     my @settings = $c->model('DB::Setting')->search( { instance => $instance } );
     my %s        = map { $_->name() => $_->value() } @settings;
 

@@ -55,7 +55,14 @@ __PACKAGE__->table("logs");
   is_auto_increment: 1
   is_nullable: 0
 
-=head2 date
+=head2 instance
+
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 1
+  size: 32
+
+=head2 created_on
 
   data_type: 'datetime'
   datetime_undef_if_invalid: 1
@@ -94,7 +101,9 @@ __PACKAGE__->table("logs");
 __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "date",
+  "instance",
+  { data_type => "varchar", default_value => "", is_nullable => 1, size => 32 },
+  "created_on",
   {
     data_type => "datetime",
     datetime_undef_if_invalid => 1,
@@ -124,8 +133,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-10-21 10:39:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:el7zitv2zrK+/xWezyGI6g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-10-21 14:12:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MabsxZ3h9srohL4IUj7qcA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

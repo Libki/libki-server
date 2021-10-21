@@ -1,0 +1,33 @@
+[% meta.title = c.loc('Administration / Logs') %]
+[% SET active_class = 'administration__logs' %]
+
+<table id="logs-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <th>[% c.loc("Date") %]</th>
+        <th>[% c.loc("PID") %]</th>
+        <th>[% c.loc("Host") %]</th>
+        <th>[% c.loc("Level") %]</th>
+        <th>[% c.loc("Message") %]</th>
+    </thead>
+</table>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    /**** Initialize Datatables ****/
+    hTable = $('#logs-table').dataTable( {
+        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "bProcessing": true,  // Indicate when the table is processing data
+        "bServerSide": true,  // Indicate that the datatable gets data from a
+                              // HTTP GET request
+        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/logs') %]",
+        "aoColumnDefs": [
+            {
+                "mRender": function ( data, type, row ) {
+                    return "<pre>" + data + "</pre>";
+                },
+                "aTargets": [ 4 ]
+            },
+        ]
+    } );
+} );
+</script>
