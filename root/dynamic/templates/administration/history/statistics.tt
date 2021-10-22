@@ -1,5 +1,3 @@
-[% USE LibkiDate %]
-
 [% meta.title = c.loc("Administration / History / Statistics") %]
 [% SET active_class = 'administration__history__statistics' %]
 
@@ -72,7 +70,7 @@
                   [% SET grand_total = 0 %]
                   [% FOREACH key IN by_location.keys.sort %]
                       <tr>
-                          <td>[% LibkiDate.format(key) %]</td>
+                          <td>[% c.format_dt(key) %]</td>
                           [% SET date_total = 0 %]
                           [% FOREACH b IN by_location_columns %]
                               <td>[% by_location.$key.$b || '0' %]</td>

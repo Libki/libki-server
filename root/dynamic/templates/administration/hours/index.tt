@@ -1,5 +1,3 @@
-[% USE DatePlugin = date( format = '%m/%d/%Y', locale = 'en_US' ) %]
-
 [% meta.title = c.loc('Administration / Closing hours') %]
 [% SET active_class = 'administration__hours' %]
 
@@ -133,7 +131,7 @@
                     	<input type="checkbox" name="delete" class="delete" value="[% date.id %]">
                     	&nbsp;
 						<label class="form-check-label" for="[% date.day %]">
-							[% DatePlugin.format( date.date _ " 00:00:00" ) %]
+							[% c.format_dt( date.date ) %]
 							[% c.loc("@") %]
 							[% date.closing_time.substr(0,5) %] [% c.loc("for") %] [% date.location.code || c.loc("All locations") %]
 						</label>
@@ -158,7 +156,7 @@
             <div class="dateadd">
                 <div class="form-group form-inline">
                     <label for="[% date.day %]">[% c.loc("Date and time") %] &nbsp;</label>
-					<input name="date" type="text" class="date datepicker input-medium" placeholder="[% DatePlugin.format('00:00:00 12-12-1999') %]">
+					<input name="date" type="text" class="date datepicker input-medium" placeholder="[% c.format_dt( '1999-12-12 00:00:00', 'datetime' ) %]">
 					&nbsp;
 					[% c.loc("@") %]
 					&nbsp;

@@ -31,8 +31,8 @@
                                 <tr class="CaseRow">
                                     <td>[% reservation.client.name %]</td>
                                     <td>[% reservation.client.location %]</td>
-                                    <td>[% begin %]</td>
-                                    <td>[% end %]</td>
+                                    <td>[% c.format_dt({ dt => begin, include_time => 1 }) %]</td>
+                                    <td>[% c.format_dt({ dt => end,   include_time => 1 }) %]</td>
                                     <td>[% duration %]&nbsp;minutes</td>                                    
                                 </tr>
                             </tbody>

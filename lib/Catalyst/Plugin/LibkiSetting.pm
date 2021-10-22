@@ -1,10 +1,12 @@
 package Catalyst::Plugin::LibkiSetting;
 
 use Modern::Perl;
-use List::Util qw( any min max );
+
 use Date::Parse qw( str2time );
-use DateTime;
+use DateTime::Format::DateParse;
 use DateTime::Span;
+use DateTime;
+use List::Util qw( any min max );
 use POSIX;
 
 use Encode qw/ decode encode /;
@@ -654,4 +656,43 @@ sub get_time_list {
 
     return %result;
 }
+
+=head2 format_dt
+
+  my $formatted = $c->format_dt($DateTime);
+  my $formatted = $c->format_dt($iso_string);
+  my $formatted = $c->format_dt( { dt => $dt_or_string, include_time => 1 || 0, format => '%Y-%m-%d' } );
+
+ Stringify a DateTime object using the formatted supplied by the setting DateTimeFormat.
+ Accepts standard strftime arguments.
+
+=cut
+
+sub format_dt {
+    my ( $c, $dt ) = @_;
+
+    my $include_time = 0;
+    my $format       = $c->setting('DateDisplayFormat') || '%m/%d/%Y';
+
+    if ( ref $dt eq 'HASH' ) {
+        $include_time = $dt->{include_time} if $dt->{include_time};
+        $format       = $dt->{format}       if $dt->{format};
+        $dt           = $dt->{dt};
+    }
+
+    return {} unless $dt;
+
+    if ($include_time) {
+        my $TimeDisplayFormat = $c->setting('TimeDisplayFormat') || '12';
+        warn "TimeDisplayFormat: $TimeDisplayFormat";
+        $format .= " %I:%M %p" if $TimeDisplayFormat eq '12';
+        $format .= " %H:%M"    if $TimeDisplayFormat eq '24';
+    }
+
+    $dt = DateTime::Format::DateParse->parse_datetime($dt)
+        if ( $dt && ref $dt ne 'DateTime' );
+
+    return $dt->strftime($format);
+}
+
 1;
