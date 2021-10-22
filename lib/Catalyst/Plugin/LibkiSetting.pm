@@ -684,7 +684,6 @@ sub format_dt {
 
     if ($include_time) {
         my $TimeDisplayFormat = $c->setting('TimeDisplayFormat') || '12';
-        warn "TimeDisplayFormat: $TimeDisplayFormat";
         $format .= " %I:%M %p" if $TimeDisplayFormat eq '12';
         $format .= " %H:%M"    if $TimeDisplayFormat eq '24';
     }

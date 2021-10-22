@@ -119,7 +119,6 @@ sub validate_api_key {
     return 0 unless $json;
 
     my $data = decode_json( $json );
-    warn "API KEYS: " . Data::Dumper::Dumper( $data );
     foreach my $k ( @$data ) {
         next if $k->{key} ne $api_key;
         next if $type ne '*' && $k->{type} ne $type;
