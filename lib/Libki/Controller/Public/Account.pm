@@ -27,19 +27,17 @@ sub index :Path :Args(0) {
         my $reservation = $c->model( 'DB::Reservation' )->find( { user_id => $c->user->id() } ) || 0;
         my ( $begin, $end, $duration ) = ( undef, undef, 0 );
 
-    if ( $reservation ) {
-        my $reservation_begin_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
-        $reservation_begin_time_dt->set_time_zone( $c->tz );
-        $begin = DateTime::Format::MySQL->parse_datetime($reservation->begin_time);
-        $begin =~ s/T/ /g;
+        if ($reservation) {
+            $begin = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
+            $begin->set_time_zone( $c->tz );
+            $begin =~ s/T/ /g;
 
-        my $reservation_end_time_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
-        $reservation_end_time_dt->set_time_zone( $c->tz );
-        $end = DateTime::Format::MySQL->parse_datetime($reservation->end_time);
-        $end =~ s/T/ /g;
-        
-        $duration = abs( $reservation_end_time_dt->subtract_datetime( $reservation_begin_time_dt )->in_units('minutes') );
-    }
+            $end = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
+            $end->set_time_zone( $c->tz );
+            $end =~ s/T/ /g;
+
+            $duration = abs( $end->subtract_datetime($begin)->in_units('minutes') );
+        }
 
         $c->stash( 'reservation' => $reservation, 'template' => 'public/account.tt', 'begin' => $begin, 'end' => $end, 'duration' => $duration );
     }
