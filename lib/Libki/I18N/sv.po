@@ -7,91 +7,108 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-31 15:11+0200\n"
+"PO-Revision-Date: 2021-10-23 12:02+0200\n"
+"Last-Translator: johan.sahlberg@tidaholm.se\n"
 "Language-Team: Swedish\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.0\n"
-"Last-Translator: <johan.sahlberg@tidaholm.se>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: sv\n"
+
+#: root/dynamic/templates/administration/settings/index.tt:964
+msgid "&nbsp;"
+msgstr ""
 
 #: root/dynamic/includes/language_menu.tt:0
 msgid "('lang.' _ lang)"
 msgstr "('lang.' _ lang)"
 
-#: root/dynamic/templates/administration/index.tt:773
+#: root/dynamic/templates/administration/index.tt:776
 msgid "1 day"
 msgstr "1 dag"
 
-#: root/dynamic/templates/administration/index.tt:775
+#: root/dynamic/templates/administration/index.tt:778
 msgid "1 month"
 msgstr "1 månad"
 
-#: root/dynamic/templates/administration/index.tt:774
+#: root/dynamic/templates/administration/index.tt:777
 msgid "1 week"
 msgstr "1 vecka"
 
-#: root/dynamic/templates/administration/index.tt:777
+#: root/dynamic/templates/administration/index.tt:780
 msgid "1 year"
 msgstr "1 år"
 
-#: root/dynamic/templates/administration/settings/index.tt:90
+#: root/dynamic/templates/administration/settings/index.tt:100
 msgid "12-hour"
 msgstr "12-timmars"
 
-#: root/dynamic/templates/administration/settings/index.tt:92
+#: root/dynamic/templates/administration/settings/index.tt:102
 msgid "24-hour"
 msgstr "24-timmars"
 
-#: root/dynamic/templates/administration/index.tt:776
+#: root/dynamic/templates/administration/index.tt:779
 msgid "3 months"
 msgstr "3 månader"
 
-#: root/dynamic/templates/administration/hours/index.tt:137
-#: root/dynamic/templates/administration/hours/index.tt:163
+#: root/dynamic/templates/administration/hours/index.tt:135
+#: root/dynamic/templates/administration/hours/index.tt:161
 msgid "@"
 msgstr "@"
 
-#: root/dynamic/templates/administration/settings/index.tt:605
+#: root/dynamic/templates/administration/settings/index.tt:628
 msgid ""
 "A list of the network adapter's MAC addresses for the computers to wake up."
 msgstr ""
 "En lista över nätverkskortens MAC-adresser för att kunna väcka dom från "
 "Viloläge."
 
+#: root/dynamic/templates/administration/settings/index.tt:27
+#: root/dynamic/templates/administration/settings/index.tt:828
+msgid "API keys"
+msgstr "API-nycklar"
+
+#: root/dynamic/templates/administration/settings/index.tt:92
+msgid ""
+"Accepts standard <a href='https://man7.org/linux/man-pages/man3/strftime.3."
+"html'>strftime</a> arguments."
+msgstr ""
+"Acceptera standard <a href='https://man7.org/linux/man-pages/man3/strftime.3."
+"html'>strftime</a>-argument."
+
 #: root/dynamic/templates/administration/history/index.tt:8
 msgid "Action"
 msgstr "Händelse"
 
-#: root/dynamic/templates/administration/hours/index.tt:190
+#: root/dynamic/templates/administration/hours/index.tt:188
 msgid "Add"
 msgstr "Lägg till"
 
-#: root/dynamic/templates/administration/index.tt:614
+#: root/dynamic/templates/administration/index.tt:617
 msgid ""
 "Add a + or - sign to increment or decrement the existing amount of time."
 msgstr ""
 "Lägg till ett + eller - tecken för att öka eller minska den befintliga tiden."
 
-#: root/dynamic/templates/administration/hours/index.tt:156
+#: root/dynamic/templates/administration/hours/index.tt:154
 msgid "Add closing hours for specific dates"
 msgstr "Lägg till stängningstid för specifika datum"
 
-#: root/dynamic/templates/administration/settings/index.tt:697
+#: root/dynamic/templates/administration/settings/index.tt:720
 msgid "Add custom CSS for batch guest passes here."
 msgstr "Lägg till egen CSS för batchskapandet av gästpass här."
 
-#: root/dynamic/templates/administration/settings/index.tt:760
+#: root/dynamic/templates/administration/settings/index.tt:796
 msgid "Add custom JavaScript for the administration interface here."
 msgstr "Lägg till eget javascript för administrationsdelen här."
 
-#: root/dynamic/templates/administration/settings/index.tt:768
+#: root/dynamic/templates/administration/settings/index.tt:804
 msgid "Add custom JavaScript for the public web interface here."
 msgstr "Lägg till eget javascript för den offentliga delen här."
 
-#: root/dynamic/templates/administration/settings/index.tt:429
+#: root/dynamic/templates/administration/settings/index.tt:452
 msgid "Add your list of user categories here as a list in YAML syntax."
 msgstr ""
 "Lägg till en lista över användarkategorier här i form av en YAML-lista."
@@ -100,7 +117,7 @@ msgstr ""
 msgid "Administration"
 msgstr "Administration"
 
-#: root/dynamic/templates/administration/hours/index.tt:3
+#: root/dynamic/templates/administration/hours/index.tt:1
 msgid "Administration / Closing hours"
 msgstr "Administration / Öppettider"
 
@@ -108,36 +125,40 @@ msgstr "Administration / Öppettider"
 msgid "Administration / History"
 msgstr "Administration / Historik"
 
-#: root/dynamic/templates/administration/history/statistics.tt:3
+#: root/dynamic/templates/administration/history/statistics.tt:1
 msgid "Administration / History / Statistics"
 msgstr "Administration / Historik / Statistik"
+
+#: root/dynamic/templates/administration/history/logs.tt:1
+msgid "Administration / Logs"
+msgstr "Administration / Loggar"
 
 #: root/dynamic/templates/administration/settings/index.tt:1
 msgid "Administration / Settings"
 msgstr "Administration / inställningar"
 
-#: root/dynamic/templates/administration/settings/index.tt:756
+#: root/dynamic/templates/administration/settings/index.tt:792
 msgid "Administration interface JavaScript"
 msgstr "Administrationsdelens javascript"
 
-#: root/dynamic/templates/administration/index.tt:578
+#: root/dynamic/templates/administration/index.tt:581
 msgid "Administrator"
 msgstr "Administratör"
 
-#: root/dynamic/templates/administration/index.tt:1410
+#: root/dynamic/templates/administration/index.tt:1428
 msgid "Administrators cannot change a super administrator password."
 msgstr "Administratörer kan inte ändra en superadministratörs lösenord."
 
-#: root/dynamic/templates/administration/index.tt:1632
+#: root/dynamic/templates/administration/index.tt:1650
 msgid "Administrators cannot delete super administrators."
 msgstr "Administratörer kan inte ta bort superadministratörer."
 
-#: root/dynamic/templates/administration/settings/index.tt:778
+#: root/dynamic/templates/administration/settings/index.tt:814
 msgid "Advanced rules"
 msgstr "Avancerade regler"
 
 #: root/dynamic/templates/administration/settings/index.tt:26
-#: root/dynamic/templates/administration/settings/index.tt:775
+#: root/dynamic/templates/administration/settings/index.tt:811
 msgid "Advanced settings"
 msgstr "Avancerade inställningar"
 
@@ -146,18 +167,18 @@ msgid "Alert:"
 msgstr "Varning:"
 
 #: root/dynamic/includes/index/clients.tt:7
-#: root/dynamic/templates/administration/index.tt:185
+#: root/dynamic/templates/administration/index.tt:187
 #: root/dynamic/templates/administration/index.tt:86
 msgid "All"
 msgstr "Alla"
 
-#: root/dynamic/templates/administration/hours/index.tt:138
-#: root/dynamic/templates/administration/hours/index.tt:18
-#: root/dynamic/templates/administration/hours/index.tt:182
+#: root/dynamic/templates/administration/hours/index.tt:136
+#: root/dynamic/templates/administration/hours/index.tt:16
+#: root/dynamic/templates/administration/hours/index.tt:180
 msgid "All locations"
 msgstr "Alla platser"
 
-#: root/dynamic/templates/administration/settings/index.tt:215
+#: root/dynamic/templates/administration/settings/index.tt:238
 msgid ""
 "Allows client user to lock the session which returns Libki to a locked "
 "screen. This allows the user to walk away from the client and return to "
@@ -169,76 +190,76 @@ msgstr ""
 "till samma bokning. Medan klienten är låst kommer minuterna att fortfarande "
 "räknas ned."
 
-#: root/dynamic/templates/administration/settings/index.tt:66
+#: root/dynamic/templates/administration/settings/index.tt:67
 msgid "Amount of time a guest user is given daily."
 msgstr "Mängden tid en gästanvändare får per dag."
 
-#: root/dynamic/templates/administration/settings/index.tt:77
+#: root/dynamic/templates/administration/settings/index.tt:78
 msgid "Amount of time a guest user is given per session."
 msgstr "Mängden tid en gästanvändare får per datorpass."
 
-#: root/dynamic/templates/administration/settings/index.tt:44
+#: root/dynamic/templates/administration/settings/index.tt:45
 msgid "Amount of time a user is given daily."
 msgstr "Mängden tid användaren får per dag."
 
-#: root/dynamic/templates/administration/settings/index.tt:55
+#: root/dynamic/templates/administration/settings/index.tt:56
 msgid "Amount of time a user is given per session."
 msgstr "Mängden tid användaren får per datorpass."
 
-#: root/dynamic/templates/administration/settings/index.tt:339
+#: root/dynamic/templates/administration/settings/index.tt:362
 msgid "Amount of time to automatically increase a user's session time by."
 msgstr "Mängden tid användarens passtid automatiskt förlängs med."
 
-#: root/dynamic/templates/administration/settings/index.tt:358
+#: root/dynamic/templates/administration/settings/index.tt:381
 msgid "Any client is reserved"
 msgstr "Vilken dator som helst är reserverad"
 
-#: root/dynamic/templates/administration/index.tt:1819
+#: root/dynamic/templates/administration/index.tt:1840
 msgid "Are you sure you want to cancel this print job?"
 msgstr "Är du säker på att du vill avbryta denna utskrift?"
 
-#: root/dynamic/templates/administration/index.tt:1623
+#: root/dynamic/templates/administration/index.tt:1641
 msgid "Are you sure you want to delete this user?"
 msgstr "Är du säker på att du vill radera den här användaren?"
 
-#: root/dynamic/templates/administration/index.tt:1661
+#: root/dynamic/templates/administration/index.tt:1679
 msgid "Are you sure you want to log this user out?"
 msgstr "Är du säker på att du vill logga ut den här användaren?"
 
-#: root/dynamic/templates/administration/index.tt:1288
+#: root/dynamic/templates/administration/index.tt:1306
 msgid "Are you sure you want to restart all clients?"
 msgstr "Är du säker på att du vill starta om alla datorer?"
 
-#: root/dynamic/templates/administration/index.tt:1701
+#: root/dynamic/templates/administration/index.tt:1719
 msgid "Are you sure you want to restart this client?"
 msgstr "Är du säker på att du vill starta om denna datorn?"
 
-#: root/dynamic/templates/administration/index.tt:1275
+#: root/dynamic/templates/administration/index.tt:1293
 msgid "Are you sure you want to turn off all clients?"
 msgstr "Är du säker på att du vill stänga av alla datorer?"
 
-#: root/dynamic/templates/administration/index.tt:1688
+#: root/dynamic/templates/administration/index.tt:1706
 msgid "Are you sure you want to turn off this client?"
 msgstr "Är du säker på att du vill stänga av denna datorn?"
 
-#: root/dynamic/templates/administration/index.tt:1262
+#: root/dynamic/templates/administration/index.tt:1280
 msgid "Are you sure you want to turn on all clients?"
 msgstr "Är du säker på att du vill starta alla datorer?"
 
-#: root/dynamic/templates/administration/index.tt:1675
+#: root/dynamic/templates/administration/index.tt:1693
 msgid "Are you sure you want to unlock this client?"
 msgstr "Är du säker på att du vill låsa upp den här datorn?"
 
-#: root/dynamic/templates/administration/settings/index.tt:609
+#: root/dynamic/templates/administration/settings/index.tt:632
 msgid "Automatic power on time"
 msgstr "Automatisk starttid"
 
 #: root/dynamic/templates/administration/settings/index.tt:14
-#: root/dynamic/templates/administration/settings/index.tt:329
+#: root/dynamic/templates/administration/settings/index.tt:352
 msgid "Automatic time extension"
 msgstr "Automatisk tidsförlängning"
 
-#: root/dynamic/templates/administration/settings/index.tt:564
+#: root/dynamic/templates/administration/settings/index.tt:587
 msgid ""
 "Automatically turn off clients this number of minutes after closing time. "
 "Leave empty to disable automatic shutdown."
@@ -250,7 +271,7 @@ msgstr ""
 msgid "Available"
 msgstr "Ledig"
 
-#: root/dynamic/templates/administration/history/statistics.tt:183
+#: root/dynamic/templates/administration/history/statistics.tt:181
 msgid "Available reservations"
 msgstr "Tillgängliga reservationer"
 
@@ -258,34 +279,34 @@ msgstr "Tillgängliga reservationer"
 msgid "Bad username or password."
 msgstr "Fel användarnamn eller lösenord."
 
-#: root/dynamic/templates/administration/index.tt:319
+#: root/dynamic/templates/administration/index.tt:321
 msgid "Begin"
 msgstr "Starta"
 
-#: root/dynamic/templates/administration/settings/index.tt:502
+#: root/dynamic/templates/administration/settings/index.tt:525
 msgid "Bottom banner"
 msgstr "Nedre banner"
 
 #: root/dynamic/includes/index/clients.tt:132
 #: root/dynamic/includes/index/clients.tt:92
-#: root/dynamic/templates/administration/index.tt:278
-#: root/dynamic/templates/administration/index.tt:406
-#: root/dynamic/templates/administration/index.tt:591
-#: root/dynamic/templates/administration/index.tt:622
-#: root/dynamic/templates/administration/index.tt:667
-#: root/dynamic/templates/administration/index.tt:747
-#: root/dynamic/templates/administration/index.tt:788
-#: root/dynamic/templates/administration/index.tt:831
+#: root/dynamic/templates/administration/index.tt:280
+#: root/dynamic/templates/administration/index.tt:408
+#: root/dynamic/templates/administration/index.tt:594
+#: root/dynamic/templates/administration/index.tt:625
+#: root/dynamic/templates/administration/index.tt:670
+#: root/dynamic/templates/administration/index.tt:750
+#: root/dynamic/templates/administration/index.tt:791
+#: root/dynamic/templates/administration/index.tt:834
 msgid "Cancel"
 msgstr "Avbryt"
 
 #: root/dynamic/includes/index/clients.tt:103
 #: root/dynamic/includes/index/clients.tt:133
 #: root/dynamic/includes/index/clients.tt:36
-#: root/dynamic/templates/administration/index.tt:166
-#: root/dynamic/templates/administration/index.tt:327
-#: root/dynamic/templates/administration/index.tt:678
-#: root/dynamic/templates/administration/index.tt:697
+#: root/dynamic/templates/administration/index.tt:168
+#: root/dynamic/templates/administration/index.tt:329
+#: root/dynamic/templates/administration/index.tt:681
+#: root/dynamic/templates/administration/index.tt:700
 msgid "Cancel reservation"
 msgstr "Avbryt reservation"
 
@@ -301,18 +322,22 @@ msgstr "Avbryt denna reservation"
 msgid "Cancel your reservation"
 msgstr "Avbryt din reservation"
 
-#: root/dynamic/templates/administration/index.tt:149
-#: root/dynamic/templates/administration/index.tt:371
-#: root/dynamic/templates/administration/index.tt:440
-#: root/dynamic/templates/administration/index.tt:479
+#: root/dynamic/templates/administration/settings/index.tt:743
+msgid "Card number prefix"
+msgstr "Prefix för kortnummer"
+
+#: root/dynamic/templates/administration/index.tt:151
+#: root/dynamic/templates/administration/index.tt:373
+#: root/dynamic/templates/administration/index.tt:442
+#: root/dynamic/templates/administration/index.tt:482
 #: root/dynamic/templates/administration/index.tt:54
-#: root/dynamic/templates/administration/index.tt:540
-#: root/dynamic/templates/administration/index.tt:819
+#: root/dynamic/templates/administration/index.tt:543
+#: root/dynamic/templates/administration/index.tt:822
 msgid "Category"
 msgstr "Kategori"
 
-#: root/dynamic/templates/administration/index.tt:724
-#: root/dynamic/templates/administration/index.tt:748
+#: root/dynamic/templates/administration/index.tt:727
+#: root/dynamic/templates/administration/index.tt:751
 msgid "Change password"
 msgstr "Ändra lösenord"
 
@@ -320,7 +345,7 @@ msgstr "Ändra lösenord"
 msgid "Choose file"
 msgstr "Välj fil"
 
-#: root/dynamic/templates/administration/settings/index.tt:552
+#: root/dynamic/templates/administration/settings/index.tt:575
 msgid ""
 "Choose which action the automatic shutdown and turn off button perform. "
 "Depending on your setup, suspend may be necessary to correctly use together "
@@ -333,42 +358,43 @@ msgstr ""
 #: root/dynamic/includes/index/clients.tt:19
 #: root/dynamic/includes/index/printing.tt:61
 #: root/dynamic/templates/administration/history/index.tt:7
-#: root/dynamic/templates/administration/history/statistics.tt:11
-#: root/dynamic/templates/administration/history/statistics.tt:134
-#: root/dynamic/templates/administration/history/statistics.tt:185
-#: root/dynamic/templates/administration/index.tt:233
-#: root/dynamic/templates/administration/index.tt:317
+#: root/dynamic/templates/administration/history/statistics.tt:132
+#: root/dynamic/templates/administration/history/statistics.tt:183
+#: root/dynamic/templates/administration/history/statistics.tt:9
+#: root/dynamic/templates/administration/index.tt:235
+#: root/dynamic/templates/administration/index.tt:319
 #: root/dynamic/templates/administration/index.tt:61
+#: root/dynamic/templates/administration/settings/index.tt:868
 #: root/dynamic/templates/public/account.tt:23
 msgid "Client"
 msgstr "Dator"
 
-#: root/dynamic/templates/administration/settings/index.tt:557
+#: root/dynamic/templates/administration/settings/index.tt:580
 msgid "Client automatic shutdown delay"
 msgstr "Fördröjning för automatisk avstängning"
 
 #: root/dynamic/templates/administration/settings/index.tt:15
-#: root/dynamic/templates/administration/settings/index.tt:156
+#: root/dynamic/templates/administration/settings/index.tt:179
 msgid "Client behavior"
 msgstr "Inloggningsinställningar"
 
-#: root/dynamic/templates/administration/index.tt:1649
+#: root/dynamic/templates/administration/index.tt:1667
 msgid "Client deleted."
 msgstr "Dator borttagen."
 
-#: root/dynamic/templates/administration/settings/index.tt:184
+#: root/dynamic/templates/administration/settings/index.tt:207
 msgid "Client inactivity"
 msgstr "Datorinaktivitet"
 
-#: root/dynamic/templates/administration/settings/index.tt:198
+#: root/dynamic/templates/administration/settings/index.tt:221
 msgid "Client inactivity logout"
 msgstr "Inaktivitetsutloggning"
 
-#: root/dynamic/templates/administration/settings/index.tt:187
+#: root/dynamic/templates/administration/settings/index.tt:210
 msgid "Client inactivity warning"
 msgstr "Inaktivitetsvarning"
 
-#: root/dynamic/templates/administration/settings/index.tt:462
+#: root/dynamic/templates/administration/settings/index.tt:485
 msgid "Client login banner settings"
 msgstr "Inställningar för datorernas loginskärm"
 
@@ -376,11 +402,11 @@ msgstr "Inställningar för datorernas loginskärm"
 msgid "Client login banners"
 msgstr "Inloggningsbanners"
 
-#: root/dynamic/templates/administration/settings/index.tt:543
+#: root/dynamic/templates/administration/settings/index.tt:566
 msgid "Client power off settings"
 msgstr "Inställningar för avstängning av dator"
 
-#: root/dynamic/templates/administration/settings/index.tt:569
+#: root/dynamic/templates/administration/settings/index.tt:592
 msgid "Client power on settings"
 msgstr "Inställningar för start av dator"
 
@@ -388,23 +414,23 @@ msgstr "Inställningar för start av dator"
 msgid "Client power options"
 msgstr "Start och avstängning"
 
-#: root/dynamic/templates/administration/settings/index.tt:220
+#: root/dynamic/templates/administration/settings/index.tt:243
 msgid "Client registration"
 msgstr "Datorernas uppdateringsfrekvens"
 
-#: root/dynamic/templates/administration/settings/index.tt:223
+#: root/dynamic/templates/administration/settings/index.tt:246
 msgid "Client registration update delay limit"
 msgstr "Tidsgräns för datorernas uppdateringsfrekvens"
 
-#: root/dynamic/templates/administration/settings/index.tt:159
+#: root/dynamic/templates/administration/settings/index.tt:182
 msgid "Client reservations"
 msgstr "Datorreservationer"
 
-#: root/dynamic/templates/administration/index.tt:1704
+#: root/dynamic/templates/administration/index.tt:1722
 msgid "Client restarted."
 msgstr "Dator omstartad."
 
-#: root/dynamic/templates/administration/settings/index.tt:210
+#: root/dynamic/templates/administration/settings/index.tt:233
 msgid "Client session pausing"
 msgstr "Paus under aktiv datorbokning"
 
@@ -412,15 +438,15 @@ msgstr "Paus under aktiv datorbokning"
 msgid "Client status"
 msgstr "Datorstatus"
 
-#: root/dynamic/templates/administration/index.tt:1504
+#: root/dynamic/templates/administration/index.tt:1522
 msgid "Client status change to: "
 msgstr "Datorstatus ändrad till:"
 
-#: root/dynamic/templates/administration/index.tt:1691
+#: root/dynamic/templates/administration/index.tt:1709
 msgid "Client turned off."
 msgstr "Datorn stängdes av."
 
-#: root/dynamic/templates/administration/index.tt:1678
+#: root/dynamic/templates/administration/index.tt:1696
 msgid "Client unlocked."
 msgstr "Dator upplåst."
 
@@ -429,28 +455,28 @@ msgstr "Dator upplåst."
 msgid "Clients"
 msgstr "Datorer"
 
-#: root/dynamic/templates/administration/index.tt:1291
+#: root/dynamic/templates/administration/index.tt:1309
 msgid "Clients restarted."
 msgstr "Datorerna startades om."
 
-#: root/dynamic/templates/administration/index.tt:1278
+#: root/dynamic/templates/administration/index.tt:1296
 msgid "Clients turned off."
 msgstr "Datorerna stängdes av."
 
-#: root/dynamic/templates/administration/index.tt:1265
+#: root/dynamic/templates/administration/index.tt:1283
 msgid "Clients turned on."
 msgstr "Datorerna startades."
 
 #: root/dynamic/includes/navbar_administration.tt:20
-#: root/dynamic/templates/administration/hours/index.tt:14
+#: root/dynamic/templates/administration/hours/index.tt:12
 msgid "Closing hours"
 msgstr "Öppettider"
 
-#: root/dynamic/templates/administration/settings/index.tt:285
+#: root/dynamic/templates/administration/settings/index.tt:308
 msgid "Configure the opening time for reservation:"
 msgstr "Konfigurera öppettider för reservationer:"
 
-#: root/dynamic/templates/administration/settings/index.tt:281
+#: root/dynamic/templates/administration/settings/index.tt:304
 msgid ""
 "Configure the reservation time range displayed on the client. If left blank, "
 "the default is 60 minutes."
@@ -458,13 +484,13 @@ msgstr ""
 "Konfigurera reservationstidsintervallet som visas på klienten. Om lämnad "
 "blank, så är standardtiden 60 minuter."
 
-#: root/dynamic/templates/administration/index.tt:385
-#: root/dynamic/templates/administration/index.tt:740
-#: root/dynamic/templates/administration/index.tt:741
+#: root/dynamic/templates/administration/index.tt:387
+#: root/dynamic/templates/administration/index.tt:743
+#: root/dynamic/templates/administration/index.tt:744
 msgid "Confirm password"
 msgstr "Bekräfta lösenord"
 
-#: root/dynamic/templates/administration/settings/index.tt:361
+#: root/dynamic/templates/administration/settings/index.tt:384
 msgid ""
 "Control whether a user's session is extended automatically unless that "
 "user's client is reserved, or any client at all is reserved."
@@ -472,7 +498,7 @@ msgstr ""
 "Bestäm om passtiden ska sluta förlängas automatiskt när användarens dator är "
 "bokad eller när en dator över huvud taget är bokad."
 
-#: root/dynamic/templates/administration/settings/index.tt:377
+#: root/dynamic/templates/administration/settings/index.tt:400
 msgid ""
 "Control whether a user's time extension uses up minutes from the user's "
 "daily allotment, or if the minutes are \"free\"."
@@ -481,21 +507,25 @@ msgstr ""
 "tidsmängd hen har för dagen eller om de extra minuterna är \"gratis\"."
 
 #: root/dynamic/includes/index/printing.tt:58
-#: root/dynamic/templates/administration/index.tt:230
+#: root/dynamic/templates/administration/index.tt:232
 msgid "Copies"
 msgstr "Kopior"
 
-#: root/dynamic/templates/administration/index.tt:832
-#: root/dynamic/templates/administration/index.tt:833
+#: root/dynamic/templates/administration/index.tt:835
+#: root/dynamic/templates/administration/index.tt:836
 msgid "Create"
 msgstr "Skapa"
 
-#: root/dynamic/templates/administration/index.tt:407
+#: root/dynamic/templates/administration/settings/index.tt:872
+msgid "Create key"
+msgstr "Skapa nyckel"
+
+#: root/dynamic/templates/administration/index.tt:409
 msgid "Create user"
 msgstr "Skapa användare"
 
 #: root/dynamic/includes/index/printing.tt:62
-#: root/dynamic/templates/administration/index.tt:235
+#: root/dynamic/templates/administration/index.tt:237
 msgid "Created"
 msgstr "Skapad"
 
@@ -504,68 +534,74 @@ msgid "Creation source"
 msgstr "Källa för skapande"
 
 #: root/dynamic/templates/administration/settings/index.tt:18
-#: root/dynamic/templates/administration/settings/index.tt:753
+#: root/dynamic/templates/administration/settings/index.tt:789
 msgid "Custom JavaScript"
 msgstr "Eget javascript"
 
-#: root/dynamic/templates/administration/index.tt:150
+#: root/dynamic/templates/administration/index.tt:152
 #: root/dynamic/templates/administration/index.tt:55
 msgid "Daily minutes"
 msgstr "Minuter per dag"
 
-#: root/dynamic/templates/administration/history/statistics.tt:130
+#: root/dynamic/templates/administration/history/statistics.tt:128
 msgid "Daily usage by client"
 msgstr "Dagligt användande efter dator"
 
-#: root/dynamic/templates/administration/history/statistics.tt:51
+#: root/dynamic/templates/administration/history/statistics.tt:49
 msgid "Daily usage by location"
 msgstr "Dagligt användande efter placering"
 
-#: root/dynamic/templates/administration/history/statistics.tt:132
+#: root/dynamic/templates/administration/history/statistics.tt:130
 msgid "Daily usage, count of daily logins by client"
 msgstr "Användande per dag, antal dagliga inloggningar efter dator"
 
-#: root/dynamic/templates/administration/history/statistics.tt:53
+#: root/dynamic/templates/administration/history/statistics.tt:51
 msgid "Daily usage, count of daily logins by location"
 msgstr "Användande per dag, antal dagliga inloggningar efter placering"
 
-#: root/dynamic/templates/administration/settings/index.tt:101
+#: root/dynamic/templates/administration/settings/index.tt:111
 #: root/dynamic/templates/administration/settings/index.tt:19
 msgid "Data retention"
 msgstr "Datalagring"
 
-#: root/dynamic/templates/administration/history/statistics.tt:56
+#: root/dynamic/templates/administration/history/logs.tt:6
+#: root/dynamic/templates/administration/history/statistics.tt:54
 msgid "Date"
 msgstr "Datum"
 
-#: root/dynamic/templates/administration/hours/index.tt:160
+#: root/dynamic/templates/administration/hours/index.tt:158
 msgid "Date and time"
 msgstr "Datum och tid"
 
-#: root/dynamic/templates/administration/settings/index.tt:108
-#: root/dynamic/templates/administration/settings/index.tt:119
-#: root/dynamic/templates/administration/settings/index.tt:130
-#: root/dynamic/templates/administration/settings/index.tt:144
+#: root/dynamic/templates/administration/settings/index.tt:88
+msgid "Date display format"
+msgstr "Datumvisningsformat"
+
+#: root/dynamic/templates/administration/settings/index.tt:118
+#: root/dynamic/templates/administration/settings/index.tt:129
+#: root/dynamic/templates/administration/settings/index.tt:140
+#: root/dynamic/templates/administration/settings/index.tt:154
+#: root/dynamic/templates/administration/settings/index.tt:167
 msgid "Days"
 msgstr "Dagar"
 
-#: root/dynamic/templates/administration/settings/index.tt:59
+#: root/dynamic/templates/administration/settings/index.tt:60
 msgid "Default guest time allowance per day"
 msgstr "Gästanvändares grundtid per dag"
 
-#: root/dynamic/templates/administration/settings/index.tt:70
+#: root/dynamic/templates/administration/settings/index.tt:71
 msgid "Default guest time allowance per session"
 msgstr "Gästanvändares grundtid per datorpass"
 
-#: root/dynamic/templates/administration/settings/index.tt:37
+#: root/dynamic/templates/administration/settings/index.tt:38
 msgid "Default time allowance per day"
 msgstr "Användares grundtid per dag"
 
-#: root/dynamic/templates/administration/settings/index.tt:48
+#: root/dynamic/templates/administration/settings/index.tt:49
 msgid "Default time allowance per session"
 msgstr "Användares grundtid per datorpass"
 
-#: root/dynamic/templates/administration/settings/index.tt:732
+#: root/dynamic/templates/administration/settings/index.tt:768
 msgid ""
 "Define LDAP configuration in YAML format. This setting may be overridden by "
 "a LDAP block in the Libki conf file."
@@ -573,7 +609,7 @@ msgstr ""
 "Definiera LDAP-konfiguration i YAML-format. Den här inställningen kan köras "
 "över av ett LDAP-block i Libkis conf-fil."
 
-#: root/dynamic/templates/administration/settings/index.tt:724
+#: root/dynamic/templates/administration/settings/index.tt:760
 msgid ""
 "Define SIP configuration in YAML format. This setting may be overridden by a "
 "SIP block in the Libki conf file."
@@ -582,53 +618,54 @@ msgstr ""
 "publika datorns konfigurationsfil. Inställningen där går före inställningen "
 "här."
 
-#: root/dynamic/templates/administration/settings/index.tt:746
+#: root/dynamic/templates/administration/settings/index.tt:782
 msgid "Define printer configuration in YAML format."
 msgstr "Skrivarinställningar i YAML-format."
 
-#: root/dynamic/templates/administration/index.tt:171
+#: root/dynamic/templates/administration/index.tt:173
 #: root/dynamic/templates/administration/index.tt:74
+#: root/dynamic/templates/administration/settings/index.tt:987
 msgid "Delete"
 msgstr "Radera"
 
-#: root/dynamic/templates/administration/hours/index.tt:146
+#: root/dynamic/templates/administration/hours/index.tt:144
 msgid "Delete selected"
 msgstr "Radera markerad"
 
-#: root/dynamic/templates/administration/index.tt:510
+#: root/dynamic/templates/administration/index.tt:513
 msgid "Details"
 msgstr "Detaljer"
 
-#: root/dynamic/templates/administration/index.tt:565
+#: root/dynamic/templates/administration/index.tt:568
 msgid "Disabled"
 msgstr "Avstängd"
 
-#: root/dynamic/templates/administration/index.tt:446
-#: root/dynamic/templates/administration/index.tt:487
+#: root/dynamic/templates/administration/index.tt:449
+#: root/dynamic/templates/administration/index.tt:490
 msgid "Dismiss"
 msgstr "Avvisa"
 
-#: root/dynamic/templates/administration/settings/index.tt:441
+#: root/dynamic/templates/administration/settings/index.tt:464
 msgid "Display first and last names"
 msgstr "Visa för- och efternamn"
 
-#: root/dynamic/templates/administration/settings/index.tt:321
+#: root/dynamic/templates/administration/settings/index.tt:344
 msgid "Display the status of the first reservation"
 msgstr "Visa status för den första reservationen"
 
-#: root/dynamic/templates/administration/settings/index.tt:274
+#: root/dynamic/templates/administration/settings/index.tt:297
 msgid "Display the status of the first reservation within:"
 msgstr "Visa status för den första reservationen inom:"
 
-#: root/dynamic/templates/administration/settings/index.tt:373
+#: root/dynamic/templates/administration/settings/index.tt:396
 msgid "Don't take minutes from daily allotment"
 msgstr "Ta inte minuter från den dagliga tidsmängden"
 
-#: root/dynamic/templates/administration/index.tt:262
+#: root/dynamic/templates/administration/index.tt:264
 msgid "Download"
 msgstr "Ladda ner"
 
-#: root/dynamic/templates/administration/index.tt:771
+#: root/dynamic/templates/administration/index.tt:774
 #: root/dynamic/templates/public/account.tt:27
 msgid "Duration"
 msgstr "Tidsperiod"
@@ -637,7 +674,7 @@ msgstr "Tidsperiod"
 msgid "Edit"
 msgstr "Ändra"
 
-#: root/dynamic/templates/administration/index.tt:498
+#: root/dynamic/templates/administration/index.tt:501
 msgid "Edit user"
 msgstr "Ändra användare"
 
@@ -645,19 +682,19 @@ msgstr "Ändra användare"
 msgid "Empty username or password."
 msgstr "Inget användarnamn eller lösenord ifyllt."
 
-#: root/dynamic/templates/administration/settings/index.tt:214
+#: root/dynamic/templates/administration/settings/index.tt:237
 msgid "Enable session locking for clients"
 msgstr "Tillåt låsning av bokning på datorerna"
 
-#: root/dynamic/templates/administration/index.tt:564
+#: root/dynamic/templates/administration/index.tt:567
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: root/dynamic/templates/administration/index.tt:320
+#: root/dynamic/templates/administration/index.tt:322
 msgid "End"
 msgstr "Stäng"
 
-#: root/dynamic/templates/administration/settings/index.tt:712
+#: root/dynamic/templates/administration/settings/index.tt:735
 msgid ""
 "Entering a url here will cause a username to become a hyperlink with the "
 "user's username at the end. Make sure to add <i>http://</i> or <i>https://</"
@@ -671,11 +708,11 @@ msgstr ""
 msgid "Error:"
 msgstr "Fel:"
 
-#: root/dynamic/templates/administration/settings/index.tt:430
+#: root/dynamic/templates/administration/settings/index.tt:453
 msgid "Example:"
 msgstr "Exempel:"
 
-#: root/dynamic/templates/administration/settings/index.tt:350
+#: root/dynamic/templates/administration/settings/index.tt:373
 msgid ""
 "Extend the session time when a user has less than this number of session "
 "minutes remaining."
@@ -683,28 +720,28 @@ msgstr ""
 "Förläng passtiden när användaren har färre än det här antalet minuter kvar "
 "på sin passtid."
 
-#: root/dynamic/templates/administration/settings/index.tt:343
+#: root/dynamic/templates/administration/settings/index.tt:366
 msgid "Extend time at"
 msgstr "Förläng tid vid"
 
-#: root/dynamic/templates/administration/settings/index.tt:354
+#: root/dynamic/templates/administration/settings/index.tt:377
 msgid "Extend time unless"
 msgstr "Förläng tid såvida inte"
 
-#: root/dynamic/templates/administration/settings/index.tt:332
+#: root/dynamic/templates/administration/settings/index.tt:355
 msgid "Extension length"
 msgstr "Tidsförlängning"
 
-#: root/dynamic/templates/administration/index.tt:1825
+#: root/dynamic/templates/administration/index.tt:1846
 msgid "Failed to cancel print job."
 msgstr "Misslyckades att avbryta utskrift."
 
-#: root/dynamic/templates/administration/index.tt:1799
+#: root/dynamic/templates/administration/index.tt:1820
 msgid "Failed to release print job: "
 msgstr "Misslyckades att ta bort utskrift:"
 
 #: root/dynamic/includes/index/printing.tt:59
-#: root/dynamic/templates/administration/index.tt:231
+#: root/dynamic/templates/administration/index.tt:233
 msgid "File name"
 msgstr "Filnamn"
 
@@ -712,7 +749,7 @@ msgstr "Filnamn"
 msgid "Filetype was invalid, file uploads must be PDF."
 msgstr "Felaktig filtyp, uppladdade filer måste vara i PDF-format."
 
-#: root/dynamic/templates/administration/settings/index.tt:177
+#: root/dynamic/templates/administration/settings/index.tt:200
 msgid ""
 "First come first served, with option to place reservation. A patron may "
 "either walk up and use an open client, or may place a reservation on one "
@@ -722,14 +759,14 @@ msgstr ""
 "endera sätta sig vid en ledig dator eller kan reservera en (endera en ledig "
 "eller en som används)."
 
-#: root/dynamic/templates/administration/settings/index.tt:163
+#: root/dynamic/templates/administration/settings/index.tt:186
 msgid ""
 "First come, first served. A patron walks up to an open client and logs in."
 msgstr ""
 "Först till kvarn. Användaren sätter sig vid en ledig dator och loggar in."
 
-#: root/dynamic/templates/administration/index.tt:361
-#: root/dynamic/templates/administration/index.tt:531
+#: root/dynamic/templates/administration/index.tt:363
+#: root/dynamic/templates/administration/index.tt:534
 msgid "First name"
 msgstr "Förnamn"
 
@@ -737,12 +774,12 @@ msgstr "Förnamn"
 msgid "First reservation by"
 msgstr "Första reservationen tillhör"
 
-#: root/dynamic/templates/administration/index.tt:148
+#: root/dynamic/templates/administration/index.tt:150
 #: root/dynamic/templates/administration/index.tt:53
 msgid "Firstname"
 msgstr "Förnamn"
 
-#: root/dynamic/templates/administration/settings/index.tt:715
+#: root/dynamic/templates/administration/settings/index.tt:738
 msgid ""
 "For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?"
 "quicksearch=1&searchmember=</i> will link to the Koha ILS's search function "
@@ -752,41 +789,41 @@ msgstr ""
 "quicksearch=1&searchmember=</i> kommer länka till Kohas sökfunktion för "
 "användarnamnet."
 
-#: root/dynamic/templates/administration/history/statistics.tt:104
-#: root/dynamic/templates/administration/history/statistics.tt:107
-#: root/dynamic/templates/administration/history/statistics.tt:155
-#: root/dynamic/templates/administration/history/statistics.tt:158
-#: root/dynamic/templates/administration/history/statistics.tt:24
-#: root/dynamic/templates/administration/history/statistics.tt:27
-#: root/dynamic/templates/administration/index.tt:156
+#: root/dynamic/templates/administration/history/statistics.tt:102
+#: root/dynamic/templates/administration/history/statistics.tt:105
+#: root/dynamic/templates/administration/history/statistics.tt:153
+#: root/dynamic/templates/administration/history/statistics.tt:156
+#: root/dynamic/templates/administration/history/statistics.tt:22
+#: root/dynamic/templates/administration/history/statistics.tt:25
+#: root/dynamic/templates/administration/index.tt:158
 #: root/dynamic/templates/public/account.tt:25
 msgid "From"
 msgstr "Från"
 
-#: root/dynamic/templates/administration/index.tt:556
+#: root/dynamic/templates/administration/index.tt:559
 #: root/dynamic/templates/administration/index.tt:57
 msgid "Funds"
 msgstr "Medel"
 
-#: root/dynamic/templates/administration/index.tt:1191
+#: root/dynamic/templates/administration/index.tt:1203
 msgid "Guest accound created"
 msgstr "Gästkonto skapat"
 
-#: root/dynamic/templates/administration/settings/index.tt:693
+#: root/dynamic/templates/administration/settings/index.tt:716
 msgid "Guest pass CSS"
 msgstr "Gästpass CSS"
 
 #: root/dynamic/templates/administration/settings/index.tt:20
-#: root/dynamic/templates/administration/settings/index.tt:651
+#: root/dynamic/templates/administration/settings/index.tt:674
 msgid "Guest passes"
 msgstr "Gästpass"
 
-#: root/dynamic/templates/administration/settings/index.tt:490
-#: root/dynamic/templates/administration/settings/index.tt:527
+#: root/dynamic/templates/administration/settings/index.tt:513
+#: root/dynamic/templates/administration/settings/index.tt:550
 msgid "Height"
 msgstr "Höjd"
 
-#: root/dynamic/templates/administration/index.tt:464
+#: root/dynamic/templates/administration/index.tt:467
 msgid "Highest guest account created"
 msgstr "Högsta gästkontonummer som skapats"
 
@@ -794,11 +831,11 @@ msgstr "Högsta gästkontonummer som skapats"
 msgid "History"
 msgstr "Historik"
 
-#: root/dynamic/templates/administration/settings/index.tt:104
+#: root/dynamic/templates/administration/settings/index.tt:114
 msgid "History anonymization"
 msgstr "Anonymisering av historik"
 
-#: root/dynamic/templates/administration/settings/index.tt:115
+#: root/dynamic/templates/administration/settings/index.tt:125
 msgid "History retention"
 msgstr "Lagring av historik"
 
@@ -807,16 +844,17 @@ msgstr "Lagring av historik"
 msgid "Home"
 msgstr "Hem"
 
-#: root/dynamic/templates/administration/settings/index.tt:585
+#: root/dynamic/templates/administration/history/logs.tt:8
+#: root/dynamic/templates/administration/settings/index.tt:608
 msgid "Host"
 msgstr "Källa"
 
 #: root/dynamic/templates/administration/settings/index.tt:21
-#: root/dynamic/templates/administration/settings/index.tt:704
+#: root/dynamic/templates/administration/settings/index.tt:727
 msgid "ILS integration"
 msgstr "Integrera med biblioteksdatasystemet"
 
-#: root/dynamic/templates/administration/settings/index.tt:589
+#: root/dynamic/templates/administration/settings/index.tt:612
 msgid ""
 "IP address or fully qualified domain name (FQDN) where to send the signal. "
 "Defaults to the limited broadcast address (255.255.255.255)."
@@ -825,7 +863,7 @@ msgstr ""
 "till. Som standard är det till den begränsade sändningsadressen "
 "(255.255.255.255)."
 
-#: root/dynamic/templates/administration/settings/index.tt:230
+#: root/dynamic/templates/administration/settings/index.tt:253
 msgid ""
 "If a Libki client has not re-registered itself within this amount of time, "
 "it will be removed from the list of active clients."
@@ -833,7 +871,16 @@ msgstr ""
 "Om en Libkidator inte har kommunicerat med servern inom den här tiden så tas "
 "den bort från listan över aktiva datorer."
 
-#: root/dynamic/templates/administration/settings/index.tt:83
+#: root/dynamic/templates/administration/settings/index.tt:748
+msgid ""
+"If all cardnumbers in your ILS have a prefix, Libki can automatically add "
+"this prefix if it is missing from the cardnumber as entered by the patron."
+msgstr ""
+"Om alla kortnummer i ditt bibliotekssystem har ett prefix så kan Libki lägga "
+"till detta prefix automatiskt om det saknas på det kortnummer som angivits "
+"av låntagaren."
+
+#: root/dynamic/templates/administration/settings/index.tt:84
 msgid ""
 "If checked, each location has it's own time allowance shared between only "
 "the clients it contains."
@@ -841,12 +888,12 @@ msgstr ""
 "Om aktiverad, varje placering har sin egna tillåtna tid som den delar mellan "
 "de datorerna den innehar."
 
-#: root/dynamic/templates/administration/settings/index.tt:785
+#: root/dynamic/templates/administration/settings/index.tt:821
 msgid "If no match is found, the default time allowances will be used."
 msgstr ""
 "Om ingen matchning hittas kommer grundinställningen för tidsmängd användas."
 
-#: root/dynamic/templates/administration/settings/index.tt:442
+#: root/dynamic/templates/administration/settings/index.tt:465
 msgid ""
 "If not checked, the possibility to enter users' first and last name will "
 "disappear."
@@ -854,7 +901,7 @@ msgstr ""
 "Om den här rutan inte är ikryssad försvinner möjligheten att lägga in "
 "användares för- och efternamn."
 
-#: root/dynamic/templates/administration/settings/index.tt:415
+#: root/dynamic/templates/administration/settings/index.tt:438
 msgid ""
 "If text is added here for terms of service, it will be displayed in click-"
 "though dialog on the client before allowing a login."
@@ -874,7 +921,7 @@ msgstr ""
 "CutePDF/writer.asp\">CutePDF</a>, "
 
 #: root/dynamic/includes/index/printing.tt:98
-#: root/dynamic/templates/administration/index.tt:1025
+#: root/dynamic/templates/administration/index.tt:1033
 msgid "In progress"
 msgstr "Under bearbetning"
 
@@ -882,7 +929,7 @@ msgstr "Under bearbetning"
 msgid "In use"
 msgstr "Används"
 
-#: root/dynamic/templates/administration/settings/index.tt:126
+#: root/dynamic/templates/administration/settings/index.tt:136
 msgid "Inactive user retention"
 msgstr "Lagring av inaktiva användare"
 
@@ -894,11 +941,19 @@ msgstr "Fel lösenord."
 msgid "Info:"
 msgstr "Info:"
 
-#: root/dynamic/templates/administration/index.tt:400
+#: root/dynamic/templates/administration/index.tt:402
 msgid "Is not a whole number"
 msgstr "Är inte ett heltal"
 
-#: root/dynamic/templates/administration/settings/index.tt:728
+#: root/dynamic/templates/administration/settings/index.tt:866
+msgid "Jamex"
+msgstr "Jamex"
+
+#: root/dynamic/templates/administration/settings/index.tt:956
+msgid "Key"
+msgstr "Nyckel"
+
+#: root/dynamic/templates/administration/settings/index.tt:764
 msgid "LDAP configuration"
 msgstr "LDAP-konfiguration"
 
@@ -906,22 +961,30 @@ msgstr "LDAP-konfiguration"
 msgid "Language"
 msgstr "Språk"
 
-#: root/dynamic/templates/administration/index.tt:364
-#: root/dynamic/templates/administration/index.tt:534
+#: root/dynamic/templates/administration/index.tt:366
+#: root/dynamic/templates/administration/index.tt:537
 msgid "Last name"
 msgstr "Efternamn"
 
-#: root/dynamic/templates/administration/index.tt:147
+#: root/dynamic/templates/administration/index.tt:149
 #: root/dynamic/templates/administration/index.tt:52
 msgid "Lastname"
 msgstr "Efternamn"
 
-#: root/dynamic/templates/administration/index.tt:398
-#: root/dynamic/templates/administration/index.tt:552
+#: root/dynamic/templates/administration/index.tt:400
+#: root/dynamic/templates/administration/index.tt:555
 msgid "Leave unmodified for default amount of time."
 msgstr "Ändra oförändrat för grundinställningen för tid."
 
-#: root/dynamic/templates/administration/settings/index.tt:148
+#: root/dynamic/templates/administration/settings/index.tt:171
+msgid ""
+"Length of time to retain logs. If not set, will default to 0 and all logs "
+"will be removed nightly."
+msgstr ""
+"Hur länge loggar ska behållas. Om det inte angivits blir standard 0 och alla "
+"loggar tas bort varje natt."
+
+#: root/dynamic/templates/administration/settings/index.tt:158
 msgid ""
 "Length of time to retain print jobs. If not set, will default to 0 and print "
 "jobs will be removed nightly."
@@ -929,7 +992,7 @@ msgstr ""
 "Hur länge utskriftsjobb ska behållas. Om det inte är satt kommer jobben tas "
 "bort varje natt."
 
-#: root/dynamic/templates/administration/settings/index.tt:134
+#: root/dynamic/templates/administration/settings/index.tt:144
 msgid ""
 "Length of time to retain user data of inactive users. If not set, data will "
 "be kept indefinitely."
@@ -937,7 +1000,7 @@ msgstr ""
 "Hur länge data ska lagras för inaktiva användare. Om fältet lämnas tomt "
 "sparas datan för evigt."
 
-#: root/dynamic/templates/administration/settings/index.tt:122
+#: root/dynamic/templates/administration/settings/index.tt:132
 msgid ""
 "Length of time to retain user/client data for statistics and history. If not "
 "set, data will be kept indefinitely."
@@ -945,24 +1008,28 @@ msgstr ""
 "Hur länge data ska lagras för statistik och historik. Om fältet lämnas tomt "
 "sparas datan för evigt."
 
+#: root/dynamic/templates/administration/history/logs.tt:9
+msgid "Level"
+msgstr "Nivå"
+
 #: root/dynamic/includes/navbar_administration.tt:4
 #: root/dynamic/includes/navbar_public.tt:4
 msgid "Libki Kiosk Management System"
 msgstr "Libki datorhanteringssystem"
 
-#: root/dynamic/templates/administration/history/statistics.tt:124
-#: root/dynamic/templates/administration/history/statistics.tt:175
-#: root/dynamic/templates/administration/history/statistics.tt:44
+#: root/dynamic/templates/administration/history/statistics.tt:122
+#: root/dynamic/templates/administration/history/statistics.tt:173
+#: root/dynamic/templates/administration/history/statistics.tt:42
 msgid "Limit"
 msgstr "Avgränsa"
 
 #: root/dynamic/includes/index/clients.tt:20
 #: root/dynamic/includes/index/clients.tt:4
-#: root/dynamic/templates/administration/history/statistics.tt:10
-#: root/dynamic/templates/administration/history/statistics.tt:135
-#: root/dynamic/templates/administration/history/statistics.tt:186
-#: root/dynamic/templates/administration/index.tt:143
-#: root/dynamic/templates/administration/index.tt:182
+#: root/dynamic/templates/administration/history/statistics.tt:133
+#: root/dynamic/templates/administration/history/statistics.tt:184
+#: root/dynamic/templates/administration/history/statistics.tt:8
+#: root/dynamic/templates/administration/index.tt:145
+#: root/dynamic/templates/administration/index.tt:184
 #: root/dynamic/templates/administration/index.tt:83
 #: root/dynamic/templates/public/account.tt:24
 msgid "Location"
@@ -976,43 +1043,55 @@ msgstr "Plats"
 msgid "Log in"
 msgstr "Logga in"
 
-#: root/dynamic/includes/navbar_administration.tt:36
+#: root/dynamic/includes/navbar_administration.tt:37
 #: root/dynamic/includes/navbar_public.tt:25
-#: root/dynamic/templates/administration/index.tt:169
+#: root/dynamic/templates/administration/index.tt:171
 msgid "Log out"
 msgstr "Logga ut"
 
-#: root/dynamic/templates/administration/settings/index.tt:205
+#: root/dynamic/templates/administration/settings/index.tt:228
 msgid "Log user out automatically after this many minutes of inactivity."
 msgstr ""
 "Logga ut användaren automatiskt om hen inte varit aktiv på så här många "
 "minuter."
 
-#: root/dynamic/templates/administration/index.tt:1664
+#: root/dynamic/templates/administration/index.tt:1682
 msgid "Logged user out."
 msgstr "Loggade ut användaren."
 
-#: root/dynamic/templates/administration/settings/index.tt:601
+#: root/dynamic/includes/navbar_administration.tt:23
+msgid "Logs"
+msgstr "Loggar"
+
+#: root/dynamic/templates/administration/settings/index.tt:163
+msgid "Logs retention"
+msgstr "Lagring av loggar"
+
+#: root/dynamic/templates/administration/settings/index.tt:624
 msgid "MAC addresses"
 msgstr "MAC-adresser"
 
 #: root/dynamic/includes/index/clients.tt:32
 #: root/dynamic/includes/index/clients.tt:93
-#: root/dynamic/templates/administration/index.tt:633
-#: root/dynamic/templates/administration/index.tt:668
+#: root/dynamic/templates/administration/index.tt:671
 #: root/dynamic/templates/public/account.tt:16
 msgid "Make reservation"
 msgstr "Reservera"
 
 #: root/dynamic/includes/index/clients.tt:46
+#: root/dynamic/templates/administration/index.tt:636
 msgid "Make reservation for"
 msgstr "Reservera till"
 
-#: root/dynamic/templates/administration/hours/index.tt:129
+#: root/dynamic/templates/administration/hours/index.tt:127
 msgid "Manage existing specific dates"
 msgstr "Hantera redan bestämda datum"
 
-#: root/dynamic/templates/administration/settings/index.tt:259
+#: root/dynamic/templates/administration/history/logs.tt:10
+msgid "Message"
+msgstr "Meddelande"
+
+#: root/dynamic/templates/administration/settings/index.tt:282
 msgid ""
 "Minimum minutes required for a reservation. If left blank, the default is 1 "
 "minute."
@@ -1020,35 +1099,35 @@ msgstr ""
 "Minsta tid tillåtet för en reservation. Om lämnad blank, så är standardtiden "
 "1 minut."
 
-#: root/dynamic/templates/administration/settings/index.tt:252
+#: root/dynamic/templates/administration/settings/index.tt:275
 msgid "Minimum reservation time required"
 msgstr "Minsta tillåtna reservationstid"
 
 #: root/dynamic/includes/index/clients.tt:184
-#: root/dynamic/templates/administration/index.tt:396
-#: root/dynamic/templates/administration/index.tt:435
-#: root/dynamic/templates/administration/index.tt:474
-#: root/dynamic/templates/administration/index.tt:550
-#: root/dynamic/templates/administration/index.tt:612
-#: root/dynamic/templates/administration/settings/index.tt:191
-#: root/dynamic/templates/administration/settings/index.tt:202
-#: root/dynamic/templates/administration/settings/index.tt:227
-#: root/dynamic/templates/administration/settings/index.tt:245
-#: root/dynamic/templates/administration/settings/index.tt:256
-#: root/dynamic/templates/administration/settings/index.tt:267
-#: root/dynamic/templates/administration/settings/index.tt:278
-#: root/dynamic/templates/administration/settings/index.tt:336
-#: root/dynamic/templates/administration/settings/index.tt:347
-#: root/dynamic/templates/administration/settings/index.tt:41
-#: root/dynamic/templates/administration/settings/index.tt:52
-#: root/dynamic/templates/administration/settings/index.tt:561
-#: root/dynamic/templates/administration/settings/index.tt:63
-#: root/dynamic/templates/administration/settings/index.tt:74
+#: root/dynamic/templates/administration/index.tt:398
+#: root/dynamic/templates/administration/index.tt:437
+#: root/dynamic/templates/administration/index.tt:477
+#: root/dynamic/templates/administration/index.tt:553
+#: root/dynamic/templates/administration/index.tt:615
+#: root/dynamic/templates/administration/settings/index.tt:214
+#: root/dynamic/templates/administration/settings/index.tt:225
+#: root/dynamic/templates/administration/settings/index.tt:250
+#: root/dynamic/templates/administration/settings/index.tt:268
+#: root/dynamic/templates/administration/settings/index.tt:279
+#: root/dynamic/templates/administration/settings/index.tt:290
+#: root/dynamic/templates/administration/settings/index.tt:301
+#: root/dynamic/templates/administration/settings/index.tt:359
+#: root/dynamic/templates/administration/settings/index.tt:370
+#: root/dynamic/templates/administration/settings/index.tt:42
+#: root/dynamic/templates/administration/settings/index.tt:53
+#: root/dynamic/templates/administration/settings/index.tt:584
+#: root/dynamic/templates/administration/settings/index.tt:64
+#: root/dynamic/templates/administration/settings/index.tt:75
 msgid "Minutes"
 msgstr "Minuter"
 
-#: root/dynamic/templates/administration/index.tt:163
-#: root/dynamic/templates/administration/index.tt:602
+#: root/dynamic/templates/administration/index.tt:165
+#: root/dynamic/templates/administration/index.tt:605
 msgid "Modify time"
 msgstr "Ändra tid"
 
@@ -1057,10 +1136,10 @@ msgid "More"
 msgstr "Mer"
 
 #: root/dynamic/templates/administration/index.tt:120
-#: root/dynamic/templates/administration/index.tt:219
-#: root/dynamic/templates/administration/index.tt:309
+#: root/dynamic/templates/administration/index.tt:221
+#: root/dynamic/templates/administration/index.tt:311
 #: root/dynamic/templates/administration/index.tt:43
-#: root/dynamic/templates/administration/index.tt:807
+#: root/dynamic/templates/administration/index.tt:810
 msgid "Multiple guests"
 msgstr "Flera gäster"
 
@@ -1068,32 +1147,36 @@ msgstr "Flera gäster"
 msgid "My reservation"
 msgstr "Mina reservationer"
 
-#: root/dynamic/templates/administration/index.tt:142
-#: root/dynamic/templates/administration/index.tt:358
-#: root/dynamic/templates/administration/index.tt:528
+#: root/dynamic/templates/administration/index.tt:144
+#: root/dynamic/templates/administration/index.tt:360
+#: root/dynamic/templates/administration/index.tt:531
 msgid "Name"
 msgstr "Namn"
 
+#: root/dynamic/templates/administration/settings/index.tt:927
+msgid "New API key copied to clipboard!"
+msgstr "Ny API-nyckel kopierad till urklipp!"
+
 #: root/dynamic/templates/administration/index.tt:119
-#: root/dynamic/templates/administration/index.tt:218
-#: root/dynamic/templates/administration/index.tt:308
+#: root/dynamic/templates/administration/index.tt:220
+#: root/dynamic/templates/administration/index.tt:310
 #: root/dynamic/templates/administration/index.tt:42
-#: root/dynamic/templates/administration/index.tt:802
+#: root/dynamic/templates/administration/index.tt:805
 msgid "New guest"
 msgstr "Ny gäst"
 
-#: root/dynamic/templates/administration/index.tt:456
+#: root/dynamic/templates/administration/index.tt:459
 msgid "New guest batch created"
 msgstr "Ny grupp av gäster skapad"
 
-#: root/dynamic/templates/administration/index.tt:417
+#: root/dynamic/templates/administration/index.tt:419
 msgid "New guest user created"
 msgstr "Ny gästanvändare skapad"
 
 #: root/dynamic/templates/administration/index.tt:117
-#: root/dynamic/templates/administration/index.tt:216
-#: root/dynamic/templates/administration/index.tt:306
-#: root/dynamic/templates/administration/index.tt:337
+#: root/dynamic/templates/administration/index.tt:218
+#: root/dynamic/templates/administration/index.tt:308
+#: root/dynamic/templates/administration/index.tt:339
 #: root/dynamic/templates/administration/index.tt:40
 msgid "New user"
 msgstr "Ny användare"
@@ -1102,26 +1185,30 @@ msgstr "Ny användare"
 msgid "No"
 msgstr "Nej"
 
-#: root/dynamic/templates/administration/history/statistics.tt:62
+#: root/dynamic/templates/administration/history/statistics.tt:60
 msgid "No location set"
 msgstr "Ingen plats bestämd"
 
-#: root/dynamic/templates/administration/index.tt:153
-#: root/dynamic/templates/administration/index.tt:570
+#: root/dynamic/templates/administration/settings/index.tt:952
+msgid "Note"
+msgstr "Anteckning"
+
+#: root/dynamic/templates/administration/index.tt:155
+#: root/dynamic/templates/administration/index.tt:573
 #: root/dynamic/templates/administration/index.tt:59
-#: root/dynamic/templates/administration/index.tt:783
+#: root/dynamic/templates/administration/index.tt:786
 msgid "Notes"
 msgstr "Anteckningar"
 
-#: root/dynamic/templates/administration/index.tt:469
+#: root/dynamic/templates/administration/index.tt:472
 msgid "Number of accounts created"
 msgstr "Antal konton skapade"
 
-#: root/dynamic/templates/administration/index.tt:1514
+#: root/dynamic/templates/administration/index.tt:1532
 msgid "Offline"
 msgstr "Offline"
 
-#: root/dynamic/templates/administration/index.tt:1646
+#: root/dynamic/templates/administration/index.tt:1664
 msgid ""
 "Once deleted, all the reservations of this client will be removed at the "
 "same time."
@@ -1129,48 +1216,52 @@ msgstr ""
 "Om raderad, så försvinner samtidigt alla reservationer som är skapade för "
 "denna klient."
 
-#: root/dynamic/templates/administration/index.tt:1515
+#: root/dynamic/templates/administration/index.tt:1533
 msgid "Online"
 msgstr "Online"
 
-#: root/dynamic/templates/administration/index.tt:326
+#: root/dynamic/templates/administration/index.tt:328
 msgid "Operation: "
 msgstr "Funktion:"
 
+#: root/dynamic/templates/administration/history/logs.tt:7
+msgid "PID"
+msgstr "PID"
+
 #: root/dynamic/includes/index/printing.tt:60
-#: root/dynamic/templates/administration/index.tt:232
+#: root/dynamic/templates/administration/index.tt:234
 msgid "Pages"
 msgstr "Sidor"
 
-#: root/dynamic/templates/administration/settings/index.tt:666
+#: root/dynamic/templates/administration/settings/index.tt:689
 msgid "Passes"
 msgstr "Konton"
 
-#: root/dynamic/templates/administration/settings/index.tt:662
+#: root/dynamic/templates/administration/settings/index.tt:685
 msgid "Passes to create per batch"
 msgstr "Konton att skapa per grupp"
 
 #: root/dynamic/includes/index/clients.tt:118
 #: root/dynamic/includes/index/clients.tt:78
-#: root/dynamic/templates/administration/index.tt:382
-#: root/dynamic/templates/administration/index.tt:383
-#: root/dynamic/templates/administration/index.tt:430
+#: root/dynamic/templates/administration/index.tt:1203
+#: root/dynamic/templates/administration/index.tt:384
+#: root/dynamic/templates/administration/index.tt:385
+#: root/dynamic/templates/administration/index.tt:432
 #: root/dynamic/templates/administration/index.tt:71
-#: root/dynamic/templates/administration/index.tt:736
-#: root/dynamic/templates/administration/index.tt:737
-#: root/dynamic/templates/administration/index.tt:1191
+#: root/dynamic/templates/administration/index.tt:739
+#: root/dynamic/templates/administration/index.tt:740
 #: root/dynamic/templates/login.tt:45 root/dynamic/templates/login.tt:49
 #: root/dynamic/templates/public/login.tt:45
 #: root/dynamic/templates/public/login.tt:49
 msgid "Password"
 msgstr "Lösenord"
 
-#: root/dynamic/templates/administration/index.tt:1405
+#: root/dynamic/templates/administration/index.tt:1423
 msgid "Password changed."
 msgstr "Lösenordet har ändrats."
 
-#: root/dynamic/templates/administration/index.tt:386
-#: root/dynamic/templates/administration/index.tt:742
+#: root/dynamic/templates/administration/index.tt:388
+#: root/dynamic/templates/administration/index.tt:745
 msgid "Password fields must match."
 msgstr "Lösenorden måste stämma överens."
 
@@ -1179,23 +1270,23 @@ msgstr "Lösenorden måste stämma överens."
 msgid "Password is required"
 msgstr "Ett lösenord krävs"
 
-#: root/dynamic/templates/administration/settings/index.tt:683
+#: root/dynamic/templates/administration/settings/index.tt:706
 msgid "Password label"
 msgstr "Lösenordsfält"
 
-#: root/dynamic/templates/administration/index.tt:391
+#: root/dynamic/templates/administration/index.tt:393
 msgid "Passwords do not match"
 msgstr "Lösenorden stämmer inte överens"
 
-#: root/dynamic/templates/administration/index.tt:388
+#: root/dynamic/templates/administration/index.tt:390
 msgid "Passwords match"
 msgstr "Lösenorden stämmer överens"
 
-#: root/dynamic/templates/administration/settings/index.tt:707
+#: root/dynamic/templates/administration/settings/index.tt:730
 msgid "Patron hyperlinks"
 msgstr "Hyperlänk till låntagaren"
 
-#: root/dynamic/templates/administration/settings/index.tt:270
+#: root/dynamic/templates/administration/settings/index.tt:293
 msgid ""
 "Patrons will be unable to place reserations for this many minutes after the "
 "previous reservation has ended."
@@ -1203,67 +1294,69 @@ msgstr ""
 "Användare kan inte skapa nya reservationer för än så här många minuter efter "
 "tidigare reservation har avslutats."
 
-#: root/dynamic/templates/administration/settings/index.tt:483
-#: root/dynamic/templates/administration/settings/index.tt:494
-#: root/dynamic/templates/administration/settings/index.tt:520
-#: root/dynamic/templates/administration/settings/index.tt:531
+#: root/dynamic/templates/administration/settings/index.tt:506
+#: root/dynamic/templates/administration/settings/index.tt:517
+#: root/dynamic/templates/administration/settings/index.tt:543
+#: root/dynamic/templates/administration/settings/index.tt:554
 msgid "Pixels"
 msgstr "Pixlar"
 
-#: root/dynamic/templates/administration/settings/index.tt:593
+#: root/dynamic/templates/administration/settings/index.tt:616
 msgid "Port"
 msgstr "Port"
 
-#: root/dynamic/templates/administration/settings/index.tt:597
+#: root/dynamic/templates/administration/settings/index.tt:620
 msgid "Port to send the signal. Defaults to the discard port (9)."
 msgstr ""
 "Port att skicka signalen till. Som standard skickas den till "
 "kasseringsporten (9)."
 
-#: root/dynamic/templates/administration/settings/index.tt:546
+#: root/dynamic/templates/administration/settings/index.tt:569
 msgid "Power off action"
 msgstr "Funktion för avstängning"
 
-#: root/dynamic/templates/administration/settings/index.tt:654
+#: root/dynamic/templates/administration/settings/index.tt:677
 msgid "Prefix for guest passes"
 msgstr "Prefix för gästpass"
 
-#: root/dynamic/templates/administration/settings/index.tt:658
+#: root/dynamic/templates/administration/settings/index.tt:681
 msgid "Prefix for guest passes, defaults to 'guest' if none is specified."
 msgstr "Prefix för gästpass. Om det inte ändras kommer värdet bli \"guest\"."
 
-#: root/dynamic/templates/administration/index.tt:246
+#: root/dynamic/templates/administration/index.tt:248
+#: root/dynamic/templates/administration/index.tt:448
 msgid "Print"
 msgstr "Skriv ut"
 
 #: root/dynamic/includes/index/printing.tt:95
-#: root/dynamic/templates/administration/index.tt:1022
+#: root/dynamic/templates/administration/index.tt:1030
+#: root/dynamic/templates/administration/settings/index.tt:867
 msgid "Print Manager"
 msgstr "Utskriftshanteraren"
 
-#: root/dynamic/templates/administration/index.tt:1822
+#: root/dynamic/templates/administration/index.tt:1843
 msgid "Print job has been canceled."
 msgstr "Utskriften har blivit avbruten."
 
-#: root/dynamic/templates/administration/index.tt:1808
+#: root/dynamic/templates/administration/index.tt:1829
 msgid "Print job refreshed"
 msgstr "Utskriftskön har uppdaterats"
 
-#: root/dynamic/templates/administration/settings/index.tt:140
+#: root/dynamic/templates/administration/settings/index.tt:150
 msgid "Print job retention"
 msgstr "Lagring av utskriftskö"
 
 #: root/dynamic/templates/administration/settings/index.tt:22
-#: root/dynamic/templates/administration/settings/index.tt:739
+#: root/dynamic/templates/administration/settings/index.tt:775
 msgid "Print management"
 msgstr "Utskriftsinställningar"
 
 #: root/dynamic/includes/index/printing.tt:57
-#: root/dynamic/templates/administration/index.tt:229
+#: root/dynamic/templates/administration/index.tt:231
 msgid "Printer"
 msgstr "Skrivare"
 
-#: root/dynamic/templates/administration/settings/index.tt:742
+#: root/dynamic/templates/administration/settings/index.tt:778
 msgid "Printer configuration"
 msgstr "Skrivarinställningar"
 
@@ -1279,23 +1372,23 @@ msgstr "Utskrifter"
 msgid "Public / Account"
 msgstr "Offentlig del / Konto"
 
-#: root/dynamic/templates/administration/settings/index.tt:764
+#: root/dynamic/templates/administration/settings/index.tt:800
 msgid "Public interface JavaScript"
 msgstr "Den offentliga delens javascipt"
 
 #: root/dynamic/templates/administration/index.tt:102
-#: root/dynamic/templates/administration/index.tt:201
-#: root/dynamic/templates/administration/index.tt:254
-#: root/dynamic/templates/administration/index.tt:294
+#: root/dynamic/templates/administration/index.tt:203
+#: root/dynamic/templates/administration/index.tt:256
+#: root/dynamic/templates/administration/index.tt:296
 #: root/dynamic/templates/administration/index.tt:30
 msgid "Refresh"
 msgstr "Uppdatera"
 
-#: root/dynamic/templates/administration/settings/index.tt:386
+#: root/dynamic/templates/administration/settings/index.tt:409
 msgid "Renew the time allotment when it reaches zero"
 msgstr "Förnya tidsmängden när den når noll"
 
-#: root/dynamic/templates/administration/history/statistics.tt:12
+#: root/dynamic/templates/administration/history/statistics.tt:10
 msgid "Reservation"
 msgstr "Reservation"
 
@@ -1307,19 +1400,19 @@ msgstr "Reservationen har tagits bort."
 msgid "Reservation created."
 msgstr "Reservationen har gjorts."
 
-#: root/dynamic/templates/administration/index.tt:1569
+#: root/dynamic/templates/administration/index.tt:1587
 msgid "Reservation for user canceled."
 msgstr "Reservation gjord för användaren har tagits bort."
 
-#: root/dynamic/templates/administration/index.tt:1528
+#: root/dynamic/templates/administration/index.tt:1546
 msgid "Reservation for user created."
 msgstr "Reservation gjord för användaren."
 
-#: root/dynamic/templates/administration/settings/index.tt:263
+#: root/dynamic/templates/administration/settings/index.tt:286
 msgid "Reservation gap"
 msgstr "Reservationslucka"
 
-#: root/dynamic/templates/administration/settings/index.tt:170
+#: root/dynamic/templates/administration/settings/index.tt:193
 msgid ""
 "Reservation only. A patron must place a reservation for a client before "
 "logging in to it."
@@ -1331,39 +1424,39 @@ msgstr ""
 msgid "Reservation status"
 msgstr "Reservationsstatus"
 
-#: root/dynamic/templates/administration/settings/index.tt:241
+#: root/dynamic/templates/administration/settings/index.tt:264
 msgid "Reservation timeout"
 msgstr "Timeout för reservationer"
 
-#: root/dynamic/templates/administration/history/statistics.tt:181
+#: root/dynamic/templates/administration/history/statistics.tt:179
 #: root/dynamic/templates/administration/index.tt:12
 #: root/dynamic/templates/administration/settings/index.tt:23
-#: root/dynamic/templates/administration/settings/index.tt:238
+#: root/dynamic/templates/administration/settings/index.tt:261
 msgid "Reservations"
 msgstr "Reservationer"
 
-#: root/dynamic/templates/administration/index.tt:165
+#: root/dynamic/templates/administration/index.tt:167
 msgid "Reserve"
 msgstr "Reservera"
 
 #: root/dynamic/includes/index/clients.tt:192
-#: root/dynamic/templates/administration/index.tt:155
+#: root/dynamic/templates/administration/index.tt:157
 msgid "Reserved"
 msgstr "Reserverad"
 
-#: root/dynamic/templates/administration/index.tt:172
+#: root/dynamic/templates/administration/index.tt:174
 msgid "Restart"
 msgstr "Starta om"
 
-#: root/dynamic/templates/administration/index.tt:133
+#: root/dynamic/templates/administration/index.tt:135
 msgid "Restart all clients"
 msgstr "Starta om alla datorer"
 
-#: root/dynamic/templates/administration/index.tt:513
+#: root/dynamic/templates/administration/index.tt:516
 msgid "Roles"
 msgstr "Roller"
 
-#: root/dynamic/templates/administration/settings/index.tt:720
+#: root/dynamic/templates/administration/settings/index.tt:756
 msgid "SIP configuration"
 msgstr "SIP-konfiguration"
 
@@ -1372,47 +1465,47 @@ msgid "Select a printer"
 msgstr "Välj skrivare"
 
 #: root/dynamic/includes/index/clients.tt:67
-#: root/dynamic/templates/administration/index.tt:652
+#: root/dynamic/templates/administration/index.tt:655
 msgid "Selected time is invalid, no time blocks are available for this hour"
 msgstr ""
 "Markerad tid är inte tillgänglig, inga tider är tillgängliga under denna "
 "timme."
 
-#: root/dynamic/templates/administration/settings/index.tt:574
+#: root/dynamic/templates/administration/settings/index.tt:597
 msgid "Send the signal using"
 msgstr "Sänd signalen via"
 
-#: root/dynamic/templates/administration/index.tt:151
+#: root/dynamic/templates/administration/index.tt:153
 #: root/dynamic/templates/administration/index.tt:56
 msgid "Session minutes"
 msgstr "Minuter kvar"
 
-#: root/dynamic/templates/administration/index.tt:145
+#: root/dynamic/templates/administration/index.tt:147
 msgid "Session status"
 msgstr "Status på datorpass"
 
-#: root/dynamic/templates/administration/index.tt:760
+#: root/dynamic/templates/administration/index.tt:763
 msgid "Set as troublemaker"
 msgstr "Markera som problem"
 
-#: root/dynamic/includes/navbar_administration.tt:23
+#: root/dynamic/includes/navbar_administration.tt:24
 msgid "Settings"
 msgstr "Inställningar"
 
-#: root/dynamic/templates/administration/settings/index.tt:808
+#: root/dynamic/templates/administration/settings/index.tt:896
 msgid "Settings not updated."
 msgstr "Inställningarna har inte uppdaterats."
 
-#: root/dynamic/templates/administration/settings/index.tt:805
+#: root/dynamic/templates/administration/settings/index.tt:893
 msgid "Settings updated."
 msgstr "Inställningarna har uppdaterats."
 
-#: root/dynamic/templates/administration/settings/index.tt:549
+#: root/dynamic/templates/administration/settings/index.tt:572
 msgid "Shutdown"
 msgstr "Stäng av"
 
-#: root/dynamic/templates/administration/settings/index.tt:468
-#: root/dynamic/templates/administration/settings/index.tt:505
+#: root/dynamic/templates/administration/settings/index.tt:491
+#: root/dynamic/templates/administration/settings/index.tt:528
 msgid "Source URL"
 msgstr "Käll-URL"
 
@@ -1420,7 +1513,7 @@ msgstr "Käll-URL"
 msgid "Statistics"
 msgstr "Statistik"
 
-#: root/dynamic/templates/administration/settings/index.tt:111
+#: root/dynamic/templates/administration/settings/index.tt:121
 msgid ""
 "Statistics and history for users older than this number of days will be "
 "automatically anonymized. If not set, data will never be anonymized."
@@ -1431,9 +1524,9 @@ msgstr ""
 
 #: root/dynamic/includes/index/clients.tt:22
 #: root/dynamic/includes/index/printing.tt:56
-#: root/dynamic/templates/administration/index.tt:157
-#: root/dynamic/templates/administration/index.tt:228
-#: root/dynamic/templates/administration/index.tt:562
+#: root/dynamic/templates/administration/index.tt:159
+#: root/dynamic/templates/administration/index.tt:230
+#: root/dynamic/templates/administration/index.tt:565
 #: root/dynamic/templates/administration/index.tt:58
 msgid "Status"
 msgstr "Status"
@@ -1442,50 +1535,50 @@ msgstr "Status"
 msgid "Success:"
 msgstr "Lyckades:"
 
-#: root/dynamic/templates/administration/index.tt:583
+#: root/dynamic/templates/administration/index.tt:586
 msgid "Super administrator"
 msgstr "Superadministratör"
 
-#: root/dynamic/templates/administration/settings/index.tt:551
+#: root/dynamic/templates/administration/settings/index.tt:574
 msgid "Suspend"
 msgstr "Viloläge"
 
-#: root/dynamic/templates/administration/index.tt:1513
+#: root/dynamic/templates/administration/index.tt:1531
 msgid "Suspended"
 msgstr "Upphävd"
 
-#: root/dynamic/templates/administration/settings/index.tt:374
+#: root/dynamic/templates/administration/settings/index.tt:397
 msgid "Take minutes from daily allotment"
 msgstr "Ta minuter från den dagliga mängden"
 
 #: root/dynamic/templates/administration/settings/index.tt:24
-#: root/dynamic/templates/administration/settings/index.tt:408
+#: root/dynamic/templates/administration/settings/index.tt:431
 msgid "Terms of service"
 msgstr "Användaravtal"
 
-#: root/dynamic/templates/administration/settings/index.tt:411
+#: root/dynamic/templates/administration/settings/index.tt:434
 msgid "Terms of service text"
 msgstr "Användaravtalstext"
 
-#: root/dynamic/templates/administration/settings/index.tt:475
-#: root/dynamic/templates/administration/settings/index.tt:512
+#: root/dynamic/templates/administration/settings/index.tt:498
+#: root/dynamic/templates/administration/settings/index.tt:535
 msgid "The URL for the source image or image service."
 msgstr "UTL:en till bilden eller bildtjänsten."
 
-#: root/dynamic/templates/administration/index.tt:1573
+#: root/dynamic/templates/administration/index.tt:1591
 msgid "The cancellation failed"
 msgstr "Avbokning misslyckades"
 
-#: root/dynamic/templates/administration/settings/index.tt:497
-#: root/dynamic/templates/administration/settings/index.tt:534
+#: root/dynamic/templates/administration/settings/index.tt:520
+#: root/dynamic/templates/administration/settings/index.tt:557
 msgid "The height of the source image or image service in pixels."
 msgstr "Höjden av bilden eller bildtjänsten i pixlar."
 
-#: root/dynamic/templates/administration/settings/index.tt:669
+#: root/dynamic/templates/administration/settings/index.tt:692
 msgid "The number of passes to create per batch."
 msgstr "Antalet gästpass att skapa per grupp."
 
-#: root/dynamic/templates/administration/settings/index.tt:248
+#: root/dynamic/templates/administration/settings/index.tt:271
 msgid ""
 "The size of the time window a patron has to log in to a client. If the "
 "patron does not do so his or her reservation will be canceled. If left "
@@ -1495,7 +1588,7 @@ msgstr ""
 "användaren inte loggat in inom det här tidsfönstret kommer reservationen tas "
 "bort. Om lämnad blank, så är standardtiden 15 minuter."
 
-#: root/dynamic/templates/administration/settings/index.tt:688
+#: root/dynamic/templates/administration/settings/index.tt:711
 msgid ""
 "The text in this field will be prepended to the guest password, for example "
 "<i>Password:</i>. This field is displayed in monospace for ease of "
@@ -1505,7 +1598,7 @@ msgstr ""
 "<i>Password:</i>. Det här fältet visas i monospace för att göra det enklare "
 "att formatera."
 
-#: root/dynamic/templates/administration/settings/index.tt:678
+#: root/dynamic/templates/administration/settings/index.tt:701
 msgid ""
 "The text in this field will be prepended to the guest username, for example "
 "<i>Username:</i>. This field is displayed in monospace for ease of "
@@ -1515,14 +1608,14 @@ msgstr ""
 "exempel <i>Username:</i>. Det här fältet visas i monospace för att göra det "
 "enklare att formatera."
 
-#: root/dynamic/templates/administration/settings/index.tt:644
+#: root/dynamic/templates/administration/settings/index.tt:667
 msgid ""
 "The time at which to automatically turn on the clients. Leave empty to "
 "disable."
 msgstr ""
 "Tiden för att automatiskt starta datorerna. Lämna tomt för att avaktivera."
 
-#: root/dynamic/templates/administration/index.tt:616
+#: root/dynamic/templates/administration/index.tt:619
 msgid "The time entered is invalid"
 msgstr "Den angivna tiden är felaktig"
 
@@ -1530,12 +1623,12 @@ msgstr "Den angivna tiden är felaktig"
 msgid "The time you chose is not available."
 msgstr "Tiden du valt är inte tillgänglig."
 
-#: root/dynamic/templates/administration/settings/index.tt:486
-#: root/dynamic/templates/administration/settings/index.tt:523
+#: root/dynamic/templates/administration/settings/index.tt:509
+#: root/dynamic/templates/administration/settings/index.tt:546
 msgid "The width of the source image or image service in pixels."
 msgstr "Bredden på bilden eller bildtjänsten i pixlar."
 
-#: root/dynamic/templates/administration/settings/index.tt:784
+#: root/dynamic/templates/administration/settings/index.tt:820
 msgid "These rules override the default time allowances"
 msgstr "De här reglerna kör över de vanliga inställningarna för tidsmängd"
 
@@ -1547,6 +1640,14 @@ msgstr "Den här datorn har ingen reservation."
 msgid "This client is already reserved."
 msgstr "Den här datorn är redan reserverad."
 
+#: root/dynamic/templates/administration/settings/index.tt:751
+msgid ""
+"This feature only works for user ids that are numeric only. Alphanumeric ids "
+"will not be prefixed."
+msgstr ""
+"Denna funktion fungerar endast för användar-ID som är helt numeriska. "
+"Alfanumeriska ID kommer inte att bli prefixade."
+
 #: root/dynamic/includes/index/clients.tt:317
 msgid "This kiosk is closed for the day."
 msgstr "Datorerna har stängt för dagen."
@@ -1555,11 +1656,11 @@ msgstr "Datorerna har stängt för dagen."
 msgid "This kiosk will be closed at the time you chose."
 msgstr "Datorerna har stängt den tiden du har valt."
 
-#: root/dynamic/templates/administration/settings/index.tt:82
+#: root/dynamic/templates/administration/settings/index.tt:83
 msgid "Time allowance by location"
 msgstr "Tillåten tid efter placering"
 
-#: root/dynamic/templates/administration/settings/index.tt:87
+#: root/dynamic/templates/administration/settings/index.tt:97
 msgid "Time display format"
 msgstr "Tidvisningsformat"
 
@@ -1568,7 +1669,7 @@ msgid "Time remaining"
 msgstr "Tid kvar"
 
 #: root/dynamic/templates/administration/settings/index.tt:13
-#: root/dynamic/templates/administration/settings/index.tt:34
+#: root/dynamic/templates/administration/settings/index.tt:35
 msgid "Time settings"
 msgstr "Tidsinställningar"
 
@@ -1576,17 +1677,17 @@ msgstr "Tidsinställningar"
 msgid "Timestamp"
 msgstr "Tidsstämpel"
 
-#: root/dynamic/templates/administration/history/statistics.tt:114
-#: root/dynamic/templates/administration/history/statistics.tt:117
-#: root/dynamic/templates/administration/history/statistics.tt:165
-#: root/dynamic/templates/administration/history/statistics.tt:168
-#: root/dynamic/templates/administration/history/statistics.tt:34
-#: root/dynamic/templates/administration/history/statistics.tt:37
+#: root/dynamic/templates/administration/history/statistics.tt:112
+#: root/dynamic/templates/administration/history/statistics.tt:115
+#: root/dynamic/templates/administration/history/statistics.tt:163
+#: root/dynamic/templates/administration/history/statistics.tt:166
+#: root/dynamic/templates/administration/history/statistics.tt:32
+#: root/dynamic/templates/administration/history/statistics.tt:35
 #: root/dynamic/templates/public/account.tt:26
 msgid "To"
 msgstr "Till"
 
-#: root/dynamic/templates/administration/settings/index.tt:570
+#: root/dynamic/templates/administration/settings/index.tt:593
 msgid ""
 "To power on clients, wake on LAN must be enabled on the target computers. "
 "For more information, please refer to the Libki manual."
@@ -1594,180 +1695,181 @@ msgstr ""
 "För att starta datorerna måste Wake On LAN vara aktiverat på måldatorerna. "
 "För mer information, se avsnitt i manualen för Libki."
 
-#: root/dynamic/templates/administration/index.tt:170
+#: root/dynamic/templates/administration/index.tt:172
 msgid "Toggle status"
 msgstr "Växla status"
 
-#: root/dynamic/templates/administration/settings/index.tt:465
+#: root/dynamic/templates/administration/settings/index.tt:488
 msgid "Top banner"
 msgstr "Övre banner"
 
-#: root/dynamic/templates/administration/history/statistics.tt:136
-#: root/dynamic/templates/administration/history/statistics.tt:187
+#: root/dynamic/templates/administration/history/statistics.tt:134
+#: root/dynamic/templates/administration/history/statistics.tt:185
 msgid "Total"
 msgstr "Totalt"
 
-#: root/dynamic/templates/administration/history/statistics.tt:68
+#: root/dynamic/templates/administration/history/statistics.tt:66
 msgid "Total by date"
 msgstr "Total baserat på datum"
 
-#: root/dynamic/templates/administration/history/statistics.tt:89
+#: root/dynamic/templates/administration/history/statistics.tt:87
 msgid "Total by location"
 msgstr "Total baserat på plats"
 
-#: root/dynamic/templates/administration/index.tt:154
+#: root/dynamic/templates/administration/index.tt:156
 #: root/dynamic/templates/administration/index.tt:60
 #: root/dynamic/templates/administration/index.tt:73
 msgid "Troublemaker"
 msgstr "Problem"
 
-#: root/dynamic/templates/administration/index.tt:1453
+#: root/dynamic/templates/administration/index.tt:1471
 msgid "Troublemaker status updated."
 msgstr "Problemstatus ändrad."
 
-#: root/dynamic/templates/administration/index.tt:173
+#: root/dynamic/templates/administration/index.tt:175
 msgid "Turn off"
 msgstr "Stäng av"
 
-#: root/dynamic/templates/administration/index.tt:134
+#: root/dynamic/templates/administration/index.tt:136
 msgid "Turn off all clients"
 msgstr "Stäng av alla datorer"
 
-#: root/dynamic/templates/administration/index.tt:132
+#: root/dynamic/templates/administration/index.tt:133
 msgid "Turn on all clients"
 msgstr "Starta alla datorer"
 
 #: root/dynamic/includes/index/clients.tt:21
 #: root/dynamic/includes/index/printing.tt:55
-#: root/dynamic/templates/administration/index.tt:144
-#: root/dynamic/templates/administration/index.tt:227
+#: root/dynamic/templates/administration/index.tt:146
+#: root/dynamic/templates/administration/index.tt:229
+#: root/dynamic/templates/administration/settings/index.tt:960
 msgid "Type"
 msgstr "Typ"
 
-#: root/dynamic/templates/administration/index.tt:1414
+#: root/dynamic/templates/administration/index.tt:1432
 msgid "Unable to change password."
 msgstr "Kunde inte ändra lösenord."
 
-#: root/dynamic/templates/administration/index.tt:1165
-#: root/dynamic/templates/administration/index.tt:1177
-#: root/dynamic/templates/administration/index.tt:1217
-#: root/dynamic/templates/administration/index.tt:1229
+#: root/dynamic/templates/administration/index.tt:1173
+#: root/dynamic/templates/administration/index.tt:1185
+#: root/dynamic/templates/administration/index.tt:1235
+#: root/dynamic/templates/administration/index.tt:1247
 msgid "Unable to create guest user."
 msgstr "Kunde inte skapa gästanvändare."
 
-#: root/dynamic/templates/administration/index.tt:1654
+#: root/dynamic/templates/administration/index.tt:1672
 msgid "Unable to delete client."
 msgstr "Kunde inte ta bort dator."
 
-#: root/dynamic/templates/administration/index.tt:1638
+#: root/dynamic/templates/administration/index.tt:1656
 msgid "Unable to delete user."
 msgstr "Kunde inte ta bort användare."
 
-#: root/dynamic/templates/administration/index.tt:1668
+#: root/dynamic/templates/administration/index.tt:1686
 msgid "Unable to log user out."
 msgstr "Kunde inte logga ut användaren."
 
-#: root/dynamic/templates/administration/index.tt:1545
+#: root/dynamic/templates/administration/index.tt:1563
 msgid "Unable to make reservation: Reason unknown."
 msgstr "Kunde inte ändra reservationen av okänd anledning."
 
-#: root/dynamic/templates/administration/index.tt:1541
+#: root/dynamic/templates/administration/index.tt:1559
 msgid "Unable to make reservation: The time you choose is not available."
 msgstr ""
 "Kunde inte ändra reservationen eftersom tiden du valt är inte tillgänglig."
 
-#: root/dynamic/templates/administration/index.tt:1537
+#: root/dynamic/templates/administration/index.tt:1555
 msgid "Unable to make reservation: The user has no time remaining.."
 msgstr ""
 "Kunde inte ändra reservationen eftersom användaren har ingen mer tid "
 "tillgänglig."
 
-#: root/dynamic/templates/administration/index.tt:1543
+#: root/dynamic/templates/administration/index.tt:1561
 msgid "Unable to make reservation: This kiosk will be closed for the time.."
 msgstr ""
 "Kunde inte ändra reservationen eftersom att datorerna är stängda den tiden."
 
-#: root/dynamic/templates/administration/index.tt:1539
+#: root/dynamic/templates/administration/index.tt:1557
 msgid "Unable to make reservation: This user has not enough time left."
 msgstr ""
 "Kunde inte ändra reservationen eftersom användaren inte har mer tid "
 "tillgänglig."
 
-#: root/dynamic/templates/administration/index.tt:1533
+#: root/dynamic/templates/administration/index.tt:1551
 msgid "Unable to make reservation: User already has a reservation."
 msgstr ""
 "Kunde inte ändra reservationen eftersom användaren redan har en reservation."
 
-#: root/dynamic/templates/administration/index.tt:1535
+#: root/dynamic/templates/administration/index.tt:1553
 msgid "Unable to make reservation: User not found."
 msgstr "Kunde inte ändra reservationen eftersom användaren inte finns."
 
-#: root/dynamic/templates/administration/index.tt:1294
+#: root/dynamic/templates/administration/index.tt:1312
 msgid "Unable to restart all clients."
 msgstr "Kunde inte starta om alla datorer."
 
-#: root/dynamic/templates/administration/index.tt:1707
+#: root/dynamic/templates/administration/index.tt:1725
 msgid "Unable to restart client."
 msgstr "Kunde inte starta om dator."
 
-#: root/dynamic/templates/administration/index.tt:1507
+#: root/dynamic/templates/administration/index.tt:1525
 msgid "Unable to switch client status."
 msgstr "Kunde inte ändra datorstatus."
 
-#: root/dynamic/templates/administration/index.tt:1281
+#: root/dynamic/templates/administration/index.tt:1299
 msgid "Unable to turn off all clients."
 msgstr "Kunde inte stänga av alla datorer."
 
-#: root/dynamic/templates/administration/index.tt:1694
+#: root/dynamic/templates/administration/index.tt:1712
 msgid "Unable to turn off client."
 msgstr "Kunde inte stänga av dator."
 
-#: root/dynamic/templates/administration/index.tt:1268
+#: root/dynamic/templates/administration/index.tt:1286
 msgid "Unable to turn on all clients."
 msgstr "Kunde inte starta alla datorer."
 
-#: root/dynamic/templates/administration/index.tt:1681
+#: root/dynamic/templates/administration/index.tt:1699
 msgid "Unable to unlock client."
 msgstr "Kunde inte låsa upp dator."
 
-#: root/dynamic/templates/administration/index.tt:1456
+#: root/dynamic/templates/administration/index.tt:1474
 msgid "Unable to update troublemaker status."
 msgstr "Kunde inte ändra problemstatus."
 
-#: root/dynamic/templates/administration/index.tt:1486
+#: root/dynamic/templates/administration/index.tt:1504
 msgid "Unable to update user's time."
 msgstr "Kunde unte uppdatera användarens tid."
 
-#: root/dynamic/templates/administration/index.tt:1362
+#: root/dynamic/templates/administration/index.tt:1380
 msgid "Unable to update user."
 msgstr "Kunde unte uppdatera anändaren."
 
-#: root/dynamic/templates/administration/index.tt:1516
+#: root/dynamic/templates/administration/index.tt:1534
 msgid "Unknown"
 msgstr "Okänd"
 
-#: root/dynamic/templates/administration/index.tt:168
+#: root/dynamic/templates/administration/index.tt:170
 msgid "Unlock"
 msgstr "Lås upp"
 
-#: root/dynamic/templates/administration/hours/index.tt:119
-#: root/dynamic/templates/administration/settings/index.tt:792
+#: root/dynamic/templates/administration/hours/index.tt:117
+#: root/dynamic/templates/administration/settings/index.tt:880
 msgid "Update"
 msgstr "Uppdatera"
 
-#: root/dynamic/templates/administration/hours/index.tt:120
+#: root/dynamic/templates/administration/hours/index.tt:118
 msgid "Update hours for all locations."
 msgstr "Uppdatera tiderna för alla platser."
 
-#: root/dynamic/templates/administration/index.tt:623
+#: root/dynamic/templates/administration/index.tt:626
 msgid "Update time"
 msgstr "Uppdateringstid"
 
-#: root/dynamic/templates/administration/index.tt:789
+#: root/dynamic/templates/administration/index.tt:792
 msgid "Update troublemaker"
 msgstr "Uppdatera problem"
 
-#: root/dynamic/templates/administration/index.tt:592
+#: root/dynamic/templates/administration/index.tt:595
 msgid "Update user"
 msgstr "Uppdatera användare"
 
@@ -1781,15 +1883,15 @@ msgid "Upload file to print"
 msgstr "Ladda upp fil för utskrift"
 
 #: root/dynamic/includes/index/printing.tt:101
-#: root/dynamic/templates/administration/index.tt:1028
+#: root/dynamic/templates/administration/index.tt:1036
 msgid "Uploaded from Web"
 msgstr "Uppladdad från nätet"
 
-#: root/dynamic/templates/administration/index.tt:558
+#: root/dynamic/templates/administration/index.tt:561
 msgid "Use period as separator when editing funds."
 msgstr "Använd period som avskiljare vid redigering av medel."
 
-#: root/dynamic/templates/administration/settings/index.tt:135
+#: root/dynamic/templates/administration/settings/index.tt:145
 msgid ""
 "Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</"
 "a>"
@@ -1797,61 +1899,61 @@ msgstr ""
 "Användbart för att implementera <a href='https://eugdpr.org/' "
 "target='_blank'>GDPR</a>"
 
-#: root/dynamic/templates/administration/index.tt:234
-#: root/dynamic/templates/administration/index.tt:318
+#: root/dynamic/templates/administration/index.tt:236
+#: root/dynamic/templates/administration/index.tt:320
 msgid "User"
 msgstr "Användare"
 
-#: root/dynamic/templates/administration/settings/index.tt:425
+#: root/dynamic/templates/administration/settings/index.tt:448
 msgid "User categories"
 msgstr "Användarkategorier"
 
-#: root/dynamic/templates/administration/index.tt:1138
+#: root/dynamic/templates/administration/index.tt:1146
 msgid "User created."
 msgstr "Användare skapad."
 
-#: root/dynamic/templates/administration/index.tt:1626
+#: root/dynamic/templates/administration/index.tt:1644
 msgid "User deleted."
 msgstr "Användare borttagen."
 
-#: root/dynamic/templates/administration/index.tt:1141
+#: root/dynamic/templates/administration/index.tt:1149
 msgid "User not created."
 msgstr "Användare skapades inte."
 
 #: root/dynamic/templates/administration/settings/index.tt:25
-#: root/dynamic/templates/administration/settings/index.tt:422
+#: root/dynamic/templates/administration/settings/index.tt:445
 msgid "User settings"
 msgstr "Användarinställningar"
 
-#: root/dynamic/templates/administration/index.tt:152
+#: root/dynamic/templates/administration/index.tt:154
 msgid "User status"
 msgstr "Användarstatus"
 
-#: root/dynamic/templates/administration/index.tt:1359
+#: root/dynamic/templates/administration/index.tt:1377
 msgid "User updated."
 msgstr "Användare uppdaterad."
 
-#: root/dynamic/templates/administration/settings/index.tt:357
+#: root/dynamic/templates/administration/settings/index.tt:380
 msgid "User's client is reserved"
 msgstr "Användarens dator är reserverad"
 
-#: root/dynamic/templates/administration/index.tt:1483
+#: root/dynamic/templates/administration/index.tt:1501
 msgid "User's time updated."
 msgstr "Användarens tid har uppdaterats."
 
 #: root/dynamic/includes/index/clients.tt:113
 #: root/dynamic/includes/index/clients.tt:72
 #: root/dynamic/templates/administration/history/index.tt:6
-#: root/dynamic/templates/administration/index.tt:146
-#: root/dynamic/templates/administration/index.tt:345
-#: root/dynamic/templates/administration/index.tt:346
-#: root/dynamic/templates/administration/index.tt:425
+#: root/dynamic/templates/administration/index.tt:1203
+#: root/dynamic/templates/administration/index.tt:148
+#: root/dynamic/templates/administration/index.tt:347
+#: root/dynamic/templates/administration/index.tt:348
+#: root/dynamic/templates/administration/index.tt:427
 #: root/dynamic/templates/administration/index.tt:51
-#: root/dynamic/templates/administration/index.tt:522
-#: root/dynamic/templates/administration/index.tt:523
-#: root/dynamic/templates/administration/index.tt:657
-#: root/dynamic/templates/administration/index.tt:687
-#: root/dynamic/templates/administration/index.tt:1191
+#: root/dynamic/templates/administration/index.tt:525
+#: root/dynamic/templates/administration/index.tt:526
+#: root/dynamic/templates/administration/index.tt:660
+#: root/dynamic/templates/administration/index.tt:690
 #: root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27
 #: root/dynamic/templates/public/login.tt:23
 #: root/dynamic/templates/public/login.tt:27
@@ -1862,12 +1964,12 @@ msgstr "Användarnamn"
 msgid "Username & password do not match."
 msgstr "Användarnamn och lösenord stämmer inte överens."
 
-#: root/dynamic/templates/administration/index.tt:352
+#: root/dynamic/templates/administration/index.tt:354
 msgid "Username already used"
 msgstr "Användarnamnet är upptaget"
 
-#: root/dynamic/templates/administration/index.tt:661
-#: root/dynamic/templates/administration/index.tt:691
+#: root/dynamic/templates/administration/index.tt:664
+#: root/dynamic/templates/administration/index.tt:694
 msgid "Username is invalid"
 msgstr "Användarnamnet stämmer inte"
 
@@ -1876,27 +1978,27 @@ msgstr "Användarnamnet stämmer inte"
 msgid "Username is required"
 msgstr "Användarnamn krävs"
 
-#: root/dynamic/templates/administration/index.tt:349
+#: root/dynamic/templates/administration/index.tt:351
 msgid "Username is unique"
 msgstr "Användarnamnet är unikt"
 
-#: root/dynamic/templates/administration/settings/index.tt:673
+#: root/dynamic/templates/administration/settings/index.tt:696
 msgid "Username label"
 msgstr "Användarnamnsfält"
 
-#: root/dynamic/templates/administration/index.tt:524
+#: root/dynamic/templates/administration/index.tt:527
 msgid "Username may not be edited."
 msgstr "Använarnamnet kan inte ändras."
 
-#: root/dynamic/templates/administration/index.tt:347
+#: root/dynamic/templates/administration/index.tt:349
 msgid "Username must be unique."
 msgstr "Användarnamnet måste vara unikt."
 
-#: root/dynamic/templates/administration/index.tt:689
+#: root/dynamic/templates/administration/index.tt:692
 msgid "Username of user to cancel reservation for."
 msgstr "Användare att ta bort en reservation för."
 
-#: root/dynamic/templates/administration/index.tt:659
+#: root/dynamic/templates/administration/index.tt:662
 msgid "Username of user to make reservation for."
 msgstr "Användare att göra en reservation för."
 
@@ -1904,15 +2006,15 @@ msgstr "Användare att göra en reservation för."
 msgid "Users"
 msgstr "Användare"
 
-#: root/dynamic/templates/administration/index.tt:270
+#: root/dynamic/templates/administration/index.tt:272
 msgid "View"
 msgstr "Se"
 
-#: root/dynamic/templates/administration/index.tt:483
+#: root/dynamic/templates/administration/index.tt:486
 msgid "View & print guest passes"
 msgstr "Se och skriv ut gästpass"
 
-#: root/dynamic/templates/administration/settings/index.tt:194
+#: root/dynamic/templates/administration/settings/index.tt:217
 msgid ""
 "Warn user that they will be logged out automatically after this many minutes "
 "of inactivity."
@@ -1920,11 +2022,11 @@ msgstr ""
 "Varna användaren att hen kommer loggas ut automatiskt efter så här många "
 "minuter av inaktivitet."
 
-#: root/dynamic/templates/administration/index.tt:1191
+#: root/dynamic/templates/administration/index.tt:1203
 msgid "Welcome"
 msgstr "Välkommen"
 
-#: root/dynamic/templates/administration/settings/index.tt:322
+#: root/dynamic/templates/administration/settings/index.tt:345
 msgid ""
 "When a Libki client is reserved and waiting, display the reservation status "
 "of the person it is waiting for."
@@ -1932,7 +2034,7 @@ msgstr ""
 "När en Libkidator är reserverad och väntar på sin användare visas "
 "användarnamnet på personen den väntar på."
 
-#: root/dynamic/templates/administration/settings/index.tt:387
+#: root/dynamic/templates/administration/settings/index.tt:410
 msgid ""
 "When a user's time allotment reaches zero, it's automatically renewed with "
 "the value of Extension length. This makes it possible for the user to log in "
@@ -1941,11 +2043,11 @@ msgstr ""
 "När en användares tidsmängd når noll så förnyas den automatiskt med värdet i "
 "Tidsförlängning. Det här gör att användaren kan logga in igen."
 
-#: root/dynamic/templates/administration/settings/index.tt:370
+#: root/dynamic/templates/administration/settings/index.tt:393
 msgid "When extending time"
 msgstr "När tiden förlängs"
 
-#: root/dynamic/templates/administration/settings/index.tt:580
+#: root/dynamic/templates/administration/settings/index.tt:603
 msgid ""
 "When using the client, at least one Libki client must be running at the time "
 "when the wake up signal is received."
@@ -1953,12 +2055,12 @@ msgstr ""
 "Om klient är vald måste minst en Libki-klient vara igång då signalen för "
 "start tas emot."
 
-#: root/dynamic/templates/administration/settings/index.tt:93
+#: root/dynamic/templates/administration/settings/index.tt:103
 msgid "When you switch to the 12-hour format, the am/pm unit will display."
 msgstr "När du ändrar till 12-timmarsformat visas am/pm."
 
-#: root/dynamic/templates/administration/settings/index.tt:479
-#: root/dynamic/templates/administration/settings/index.tt:516
+#: root/dynamic/templates/administration/settings/index.tt:502
+#: root/dynamic/templates/administration/settings/index.tt:539
 msgid "Width"
 msgstr "Bredd"
 
@@ -1966,7 +2068,7 @@ msgstr "Bredd"
 msgid "Would you like to cancel your reservation?"
 msgstr "Vill du ta bort din reservation?"
 
-#: root/dynamic/templates/administration/index.tt:1635
+#: root/dynamic/templates/administration/index.tt:1653
 msgid "You are logged in as this user."
 msgstr "Du är inloggad som denna användare."
 
@@ -2067,12 +2169,12 @@ msgstr "Du kunde inte avbryta din reservation av en okänd anledning."
 msgid "d"
 msgstr "d"
 
-#: root/dynamic/templates/administration/hours/index.tt:138
-#: root/dynamic/templates/administration/hours/index.tt:179
+#: root/dynamic/templates/administration/hours/index.tt:136
+#: root/dynamic/templates/administration/hours/index.tt:177
 msgid "for"
 msgstr "för"
 
-#: root/dynamic/templates/administration/index.tt:778
+#: root/dynamic/templates/administration/index.tt:781
 msgid "forever"
 msgstr "För alltid"
 
@@ -2094,11 +2196,11 @@ msgstr ""
 msgid "starting"
 msgstr "startar"
 
-#: root/dynamic/templates/administration/settings/index.tt:579
+#: root/dynamic/templates/administration/settings/index.tt:602
 msgid "the client"
 msgstr "klienten"
 
-#: root/dynamic/templates/administration/settings/index.tt:577
+#: root/dynamic/templates/administration/settings/index.tt:600
 msgid "the server"
 msgstr "servern"
 
