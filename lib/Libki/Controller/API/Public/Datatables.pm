@@ -97,7 +97,8 @@ sub clients : Local Args(0) {
         $r->{'3'} = defined( $c->session ) ? $c->session->status : undef;
         $r->{'4'} = defined( $c->session ) ? $c->session->minutes : undef;
         $r->{'5'} = defined( $reservation ) ? decode( 'UTF-8', $reservation->user->username ) : undef;
-        $r->{'6'} = $time;
+        $r->{'6'} = defined( $reservation ) ? decode( 'UTF-8', $reservation->user->lastname . ", " . $reservation->user->firstname ) : undef;
+        $r->{'7'} = $time;
 
         push( @results, $r );
     }
@@ -127,12 +128,12 @@ published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.   
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
