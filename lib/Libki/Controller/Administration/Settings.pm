@@ -21,12 +21,12 @@ Catalyst Controller.
 
 =head2 auto
 
-=cut 
+=cut
 
 sub auto : Private {
     my ( $self, $c ) = @_;
 
-    $c->assert_user_roles( qw/superadmin/ );    
+    $c->assert_user_roles( qw/superadmin/ );
 }
 
 =head2 index
@@ -39,7 +39,7 @@ sub index :Path :Args(0) {
     my $instance = $c->instance;
 
     my $settings = $c->model('DB::Setting')->search({ instance => $instance });
-    
+
     while ( my $s = $settings->next() ) {
         $c->stash( $s->name => decode( 'UTF-8', $s->value ) );
     }
@@ -66,8 +66,8 @@ sub update :Local :Args(0) {
         );
     }
 
-    # Checkboxes need to be converted to boolean values 
-    foreach my $pref ( qw( ReservationShowUsername EnableClientSessionLocking TimeAllowanceByLocation ) ) {
+    # Checkboxes need to be converted to boolean values
+    foreach my $pref ( qw( EnableClientSessionLocking TimeAllowanceByLocation ) ) {
         $c->model('DB::Setting')->update_or_create(
             {
                 instance => $instance,
@@ -76,7 +76,7 @@ sub update :Local :Args(0) {
             }
         );
     }
-    
+
     # And so is AutomaticTimeExtensionRenewal
     $c->model('DB::Setting')->update_or_create(
         {
@@ -109,7 +109,7 @@ Kyle M Hall <kyle@kylehall.info>
 This file is part of Libki.
 
 Libki is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as 
+it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
 

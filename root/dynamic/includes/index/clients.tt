@@ -185,12 +185,21 @@ $(document).ready(function() {
             }
 
             if ( Boolean( aData[5] ) ) {
-                if ( [% Settings.ReservationShowUsername %] ) {
-                    $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[6])) );
-                }
-                else {
-                    $("td:eq(4)", nRow).html( "[% c.loc("Reserved") %]" );
-                }
+              var rs_setting = '[% Settings.ReservationShowUsername %]';
+
+              switch (rs_setting) {
+                case 'RSUN':
+                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
+                  break;
+                case 'RSFN':
+                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[6] + "</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
+                  break;
+                case 'RSA':
+                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>Anonymous</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
+                  break;
+                default:
+                  $("td:eq(4)", nRow).html( "[% c.loc("Reserved") %]" );
+              }
             }
         },
         "fnServerData": function ( sSource, aoData, fnCallback ) {

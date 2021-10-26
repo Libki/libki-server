@@ -177,7 +177,7 @@
             <div class="tab-pane fade" id="v-pills-client-behavior" role="tabpanel" aria-labelledby="v-pills-client-behavior-tab">
                 <fieldset>
                     <legend>[% c.loc("Client behavior") %]</legend>
-                
+
                     <div class="form-group">
                         <label for="ClientBehavior">[% c.loc("Client reservations") %]</label>
                         <div class="form-check">
@@ -259,7 +259,7 @@
             <div class="tab-pane fade" id="v-pills-reservation-settings" role="tabpanel" aria-labelledby="v-pills-reservation-settings-tab">
                 <fieldset>
                     <legend>[% c.loc("Reservations") %]</legend>
-                
+
                     <div class="form-group">
                         <label for="ReservationTimeout">[% c.loc("Reservation timeout") %]</label>
                         <div class="input-group">
@@ -340,8 +340,35 @@
                     </div>
 
                     <div class="form-group">
-                        <input  id="ReservationShowUsername" name="ReservationShowUsername" type="checkbox" [% IF ReservationShowUsername %]checked="checked"[% END %]>
                         <label for="ReservationShowUsername">[% c.loc("Display the status of the first reservation") %]</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ReservationShowUsername" id="ReservationShowUsername" value="RSUN" [% IF ReservationShowUsername == 'RSUN' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationShowUsername">
+                                [% c.loc("By username") %]
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ReservationShowUsername" id="ReservationShowFullname" value="RSFN" [% IF ReservationShowUsername == 'RSFN' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationShowFullname">
+                                [% c.loc("By fullname") %]
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ReservationShowUsername" id="ReservationShowAnonymous" value="RSA" [% IF ReservationShowUsername == 'RSA' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationShowAnonymous">
+                                [% c.loc("Anonymous") %]
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ReservationShowUsername" id="ReservationShowDisabled" value="RSD" [% IF ReservationShowUsername == 'RSD' %]checked[% END %]>
+                            <label class="form-check-label" for="ReservationShowDisabled">
+                                [% c.loc("Disabled") %]
+                            </label>
+                        </div>
+
                         <small class="form-text text-muted">[% c.loc("When a Libki client is reserved and waiting, display the reservation status of the person it is waiting for.") %]</small>
                     </div>
                 </fieldset>
@@ -483,7 +510,7 @@
             <div class="tab-pane fade" id="v-pills-client-login-banners" role="tabpanel" aria-labelledby="v-pills-client-login-banners-tab">
                 <fieldset>
                     <legend><strong>[% c.loc("Client login banner settings") %]</strong></legend>
-                
+
                     <fieldset>
                         <legend>[% c.loc("Top banner") %]</legend>
 
@@ -557,7 +584,7 @@
                             <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
                         </div>
                     </fieldset>
-                    
+
                 </fieldset>
             </div>
 
@@ -725,7 +752,7 @@
             <div class="tab-pane fade" id="v-pills-ils-integration" role="tabpanel" aria-labelledby="v-pills-ils-integration-tab">
                 <fieldset>
                     <legend>[% c.loc("ILS integration") %]</legend>
-                
+
                     <div class="form-group">
                         <label for="ThirdPartyURL">[% c.loc("Patron hyperlinks") %]</label>
                         <div class="input-group">
@@ -787,7 +814,7 @@
             <div class="tab-pane fade" id="v-pills-custom-javascript" role="tabpanel" aria-labelledby="v-pills-custom-javascript-tab">
                 <fieldset>
                     <legend>[% c.loc("Custom JavaScript") %]</legend>
-                
+
                     <div class="form-group">
                         <label for="CustomJsAdministration">[% c.loc("Administration interface JavaScript") %]</label>
                         <div class="input-group">
@@ -849,7 +876,7 @@
                                         document.getElementById("apiKeyNote").classList.remove("text-danger");
                                     }
                                     else {
-                                        document.getElementById("generate-api-key").disabled = true; 
+                                        document.getElementById("generate-api-key").disabled = true;
                                         document.getElementById("apiKeyNote").classList.add("text-danger");
                                     }
                                 });
