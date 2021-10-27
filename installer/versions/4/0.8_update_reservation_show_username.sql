@@ -1,2 +1,3 @@
-UPDATE settings SET value = "RSD" WHERE name = "ReservationShowUsername" AND value = 0;
-UPDATE settings SET value = "RSFN" WHERE name = "ReservationShowUsername" AND value = 1;
+UPDATE settings
+SET value = IF(value = 0 OR value = 1, "RSD", "RSFN")
+WHERE name = "ReservationShowUsername";

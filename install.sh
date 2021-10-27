@@ -6,6 +6,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 is_debian_stretch=false
+is_debian_bullseye=false
 is_debian_buster=false
 is_ubuntu_bionic=false
 is_ubuntu_focal=false
@@ -30,6 +31,9 @@ if [ -e /etc/os-release ]; then
     debian-9)
       is_debian_stretch=true
       ;;
+    debian-bullseye)
+      is_debian_bullseye=true
+      ;;
     *)
       echo
       echo "ERROR: Distribution \"$PRETTY_NAME\" is not supported!" >&2
@@ -47,6 +51,8 @@ if [ "$is_debian_stretch" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev shared-mime-info -y
 elif [ "$is_debian_buster" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mariadb-server pwgen ntp libxml-parser-perl libxml-libxml-perl libnet-ssleay-perl libxml-parser-perl cpanminus cups libcups2-dev shared-mime-info -y
+elif [ "$is_debian_bullseye" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mariadb-server pwgen ntp libxml-parser-perl libxml-libxml-perl libnet-ssleay-perl libxml-parser-perl cpanminus cups libcups2-dev shared-mime-info libdbd-mysql-perl -y
 elif [ "$is_ubuntu_bionic" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev shared-mime-info -y
 elif [ "$is_ubuntu_focal" = true ]; then
