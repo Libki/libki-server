@@ -90,7 +90,7 @@
                                     <input id="DateDisplayFormat" name="DateDisplayFormat" type="text" value="[% DateDisplayFormat %]" placeholder="%m/%d/%Y">
                                  </div>
                                 <small class="form-text text-muted">[% c.loc("Accepts standard <a href='https://man7.org/linux/man-pages/man3/strftime.3.html'>strftime</a> arguments.") %]</small>
-                                <small class="form-text text-muted">For example, the US format is commonly "%m/%d/%Y". ISO format would by "%Y-%m-%d".</small>
+				<small class="form-text text-muted">[% c.loc("For example, the US format is commonly &quot;%m/%d/%Y&quot;. ISO format would by &quot;%Y-%m-%d&quot;.") %]</small>
                             </div>
 
                             <div class="form-group">
