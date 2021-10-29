@@ -893,6 +893,12 @@ msgstr ""
 "quicksearch=1&searchmember=</i> kommer länka till Kohas sökfunktion för "
 "användarnamnet."
 
+#: root/dynamic/templates/administration/settings/index.tt:93
+msgid ""
+"For example, the US format is commonly &quot;%m/%d/%Y&quot;. ISO format would by &quot;%Y-%m-%d&quot;."
+msgstr ""
+"T.ex. har US formatet &quot;%m/%d/%Y&quot;. Formatet i ISO blir &quot;%Y-%m-%d&quot;."
+
 #: root/dynamic/templates/administration/history/statistics.tt:102
 #: root/dynamic/templates/administration/history/statistics.tt:105
 #: root/dynamic/templates/administration/history/statistics.tt:153
