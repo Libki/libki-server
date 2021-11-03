@@ -455,6 +455,24 @@ sub minutes {
     return (defined $user_minutes) ? $user_minutes->minutes : undef;
 }
 
+=head2 reservation_display_name
+
+Returns the user's name formatted for display for reservations.
+
+=cut
+
+sub reservation_display_name {
+    my ( $self, $c ) = @_;
+
+    my $ReservationShowUsername = $c->setting('ReservationShowUsername');
+
+    return $self->username                         if $ReservationShowUsername eq 'RSUN'; # by username
+    return $self->firstname . ' ' . $self->surname if $ReservationShowUsername eq 'RSFN'; # by full name
+    return q{}                                     if $ReservationShowUsername eq 'RSFN'; # anonymous
+    return q{}                                     if $ReservationShowUsername eq 'RSA';  # disabled
+    return q{};                                                                           # default
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info> 

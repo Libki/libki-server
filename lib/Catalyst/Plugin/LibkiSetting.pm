@@ -242,25 +242,39 @@ Get the status of the first reservation.
 
 sub get_reservation_status {
     my ( $c, $client ) = @_;
-    my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
-    my $display = $c->setting( 'DisplayReservationStatusWithin' ) ? $c->setting( 'DisplayReservationStatusWithin' ) : 60;
-    my $reservation = $c->model( 'DB::Reservation' )->search(
-        { 'client_id' => $client->id },
-        { order_by => { -asc => 'begin_time' } }
-    )->first || undef;
+
+    my $timeout = $c->setting('ReservationTimeout') || 15;
+
+    my $display = $c->setting('DisplayReservationStatusWithin') || 60;
+
+    my $reservation
+        = $c->model('DB::Reservation')
+        ->search( { 'client_id' => $client->id }, { order_by => { -asc => 'begin_time' } } )->first
+        || undef;
 
     my $status = undef;
-    if ( $reservation ) {
-        my $seconds = str2time( $reservation->end_time ) - str2time( $reservation->begin_time );
+    if ($reservation) {
+        my $seconds   = str2time( $reservation->end_time ) - str2time( $reservation->begin_time );
         my $time_left = ( $timeout * 60 ) > $seconds ? $seconds : ( $timeout * 60 );
-        my $reserve = str2time( $reservation->begin_time ) + $time_left - time();
-        my $begin = str2time( $reservation->begin_time ) - time();
+        my $reserve   = str2time( $reservation->begin_time ) + $time_left - time();
+        my $begin     = str2time( $reservation->begin_time ) - time();
         if ( $reserve >= 0 && $reserve <= $time_left ) {
-            $status = $reservation->user->username . '  left ' . floor( $reserve / 60 ) . 'm' . ( $reserve % 60 ) . 's';
+            my $reservation_display_name = $reservation->user->reservation_display_name;
+            my $minutes                  = floor( $reserve / 60 );
+            my $seconds                  = $reserve % 60;
+
+            $status = $c->loc( '[_1] left [_2] minutes [_3] seconds',
+                $reservation_display_name, $minutes, $seconds );
         }
         elsif ( $reserve > $time_left && $begin < $display * 60 ) {
             my $willbereserved = $reserve - $time_left;
-            $status = $reservation->user->username() . ' in ' . floor( $willbereserved / 60 ) . 'm' . ( $willbereserved % 60 ) . 's';
+
+            my $reservation_display_name = $reservation->user->reservation_display_name;
+            my $minutes                  = floor( $willbereserved / 60 );
+            my $seconds                  = ( $willbereserved % 60 );
+
+            $status = $c->loc( '[_1] in [_2] minutes [_3] seconds',
+                $reservation_display_name, $minutes, $seconds );
         }
     }
     return $status;
