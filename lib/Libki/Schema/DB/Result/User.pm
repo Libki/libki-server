@@ -468,8 +468,8 @@ sub reservation_display_name {
 
     return $self->username                         if $ReservationShowUsername eq 'RSUN'; # by username
     return $self->firstname . ' ' . $self->surname if $ReservationShowUsername eq 'RSFN'; # by full name
-    return q{}                                     if $ReservationShowUsername eq 'RSFN'; # anonymous
-    return q{}                                     if $ReservationShowUsername eq 'RSA';  # disabled
+    return q{}                                     if $ReservationShowUsername eq 'RSA'; # anonymous
+    return q{}                                     if $ReservationShowUsername eq 'RSD';  # disabled
     return q{};                                                                           # default
 }
 
