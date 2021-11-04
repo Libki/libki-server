@@ -256,21 +256,23 @@
                     <i class="fas fa-sync"></i> [% c.loc("Refresh") %]
                 </button>
 
-                <button
-                    id="print-table-row-toolbar-download"
-                    class="btn libki-toolbar-btn btn-outline-secondary"
-                    onclick="window.open('/administration/api/printjob/view?type=download&id=' + window.selected_id, '_blank' )"
-                >
-                    <i class="fas fa-download"></i> [% c.loc("Download") %]
-                </button>
+                [% IF c.setting('CanAdminsViewPrintFiles') == 'Y' %]
+                    <button
+                        id="print-table-row-toolbar-download"
+                        class="btn libki-toolbar-btn btn-outline-secondary"
+                        onclick="window.open('/administration/api/printjob/view?type=download&id=' + window.selected_id, '_blank' )"
+                    >
+                        <i class="fas fa-download"></i> [% c.loc("Download") %]
+                    </button>
 
-                <button
-                    id="print-table-row-toolbar-view"
-                    class="btn libki-toolbar-btn btn-outline-info"
-                    onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"
-                >
-                    <i class="fas fa-eye"></i> [% c.loc("View") %]
-                </button>
+                    <button
+                        id="print-table-row-toolbar-view"
+                        class="btn libki-toolbar-btn btn-outline-info"
+                        onclick="window.open('/administration/api/printjob/view?id=' + window.selected_id, '_blank' )"
+                    >
+                        <i class="fas fa-eye"></i> [% c.loc("View") %]
+                    </button>
+                [% END %]
 
                 <button
                     id="print-table-row-toolbar-logout"

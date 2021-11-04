@@ -273,6 +273,13 @@ sub view : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
+    my $CanAdminsViewPrintFiles = $c->setting('CanAdminsViewPrintFiles');
+    unless ( $CanAdminsViewPrintFiles eq 'Y' ) {
+        $c->response->body('You are not authorised to access this file.');
+        $c->response->status(403);
+        return;
+    }
+
     my $id = $c->request->params->{id};
     my $type = $c->request->params->{type} || 'view';
 
