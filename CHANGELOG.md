@@ -7,10 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Client will now disable ability for patron to log in if the client is disabled from the server 
-- Remove Google Cloud Print support for print management
 - Add Libki Print Manager support for print management
+- Add setting to control if administrators can view user print job files
+- Add ability to choose how to display user for first reservation
+- Add installer for Debian Bullseye
+- Add ability to select date and time format for display
+- Hide option to turn on clients unless wake on lan mac address have been defined
+- Add ability for patron to 'resume' a session they were in if the computer has crashed instead of logging out
+- Add ability to auto-prefix cardnumbers entered by patrons
+- Add client name to the 'Make reservation' dialog
+- Add logging to database with built in log viewer
 ### Fixed
 - Users getting incorrect session times when logging in before a reservation #210
+- Fix age limit bug
+- Disallow invalid hour/minute selections based on current sessions
+### Removed
+- Removed Google Cloud Print support for print management
 
 ## [4.2.4] [r20.11]
 ### Added
