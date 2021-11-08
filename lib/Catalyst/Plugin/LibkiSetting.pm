@@ -269,7 +269,7 @@ sub get_reservation_status {
         elsif ( $reserve > $time_left && $begin < $display * 60 ) {
             my $willbereserved = $reserve - $time_left;
 
-            my $reservation_display_name = $reservation->user->reservation_display_name;
+            my $reservation_display_name = $reservation->user->reservation_display_name( $c );
             my $minutes                  = floor( $willbereserved / 60 );
             my $seconds                  = ( $willbereserved % 60 );
 
