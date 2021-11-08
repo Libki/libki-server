@@ -259,11 +259,11 @@ sub get_reservation_status {
         my $reserve   = str2time( $reservation->begin_time ) + $time_left - time();
         my $begin     = str2time( $reservation->begin_time ) - time();
         if ( $reserve >= 0 && $reserve <= $time_left ) {
-            my $reservation_display_name = $reservation->user->reservation_display_name;
+            my $reservation_display_name = $reservation->user->reservation_display_name( $c );
             my $minutes                  = floor( $reserve / 60 );
             my $seconds                  = $reserve % 60;
 
-            $status = $c->loc( '[_1] left [_2] minutes [_3] seconds',
+            $status = $c->loc( '[_1] for [_2] minutes [_3] seconds',
                 $reservation_display_name, $minutes, $seconds );
         }
         elsif ( $reserve > $time_left && $begin < $display * 60 ) {
