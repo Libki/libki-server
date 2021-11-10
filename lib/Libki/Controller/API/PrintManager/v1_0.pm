@@ -19,6 +19,35 @@ Catalyst Controller.
 
 =cut
 
+=head2 auto
+
+=cut
+
+sub auto : Private {
+    my ( $self, $c ) = @_;
+
+    my $api_key  = $c->request->params->{'api_key'};
+
+    my $api_key_validated = Libki::Auth::validate_api_key(
+        {
+            context => $c,
+            key     => $api_key,
+            type    => 'PrintManager',
+        }
+    );
+
+    unless ( $api_key_validated ) {
+        delete $c->stash->{Settings};
+        $c->response->status(401);
+        $c->stash(
+            success => JSON::false,
+            error   => "INVALID_API_KEY",
+        );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+}
+
 =head2 get_pending_job
 
 Print server API to send print jobs to the Print Manager.
@@ -76,7 +105,6 @@ sub get_pending_job : Path('get_pending_job') : Args(0) {
         }
     }
 
-    delete( $c->stash->{'Settings'} );
     $c->forward( $c->view('JSON') );
 }
 
