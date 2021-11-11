@@ -319,7 +319,7 @@ UPDATE print_jobs
    SET status = 'Expired'
  WHERE instance = ?
    AND queued_on < ?
-   AND status = 'Queued'
+   AND status = 'Pending'
 };
 
 my $clone_sth = $dbh->prepare( $clone_query );
