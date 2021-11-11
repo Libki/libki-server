@@ -810,6 +810,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="QueuedPrintJobsTimeout">[% c.loc("Queued print jobs timeout") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="QueuedPrintJobsTimeout" name="QueuedPrintJobsTimeout" value="[% QueuedPrintJobsTimeout %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Amount of time a print job can be in the status Queued before the job is set to Expired and new Pending job is added.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("This meant to allow print jobs taken by a Print Manager that has become unresponsive to be re-printed automatically.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Leave this setting empty to disable the feature.") %]</small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="CanAdminsViewPrintFiles">[% c.loc("Allow administrators to view user print job contents") %]</label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="CanAdminsViewPrintFiles" id="CanAdminsViewPrintFilesY" value="Y" [% IF CanAdminsViewPrintFiles == 'Y' %]checked[% END %]>

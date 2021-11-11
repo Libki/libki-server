@@ -3,6 +3,7 @@
 use Modern::Perl;
 
 use List::Util qw(min max);
+use Try::Tiny;
 
 use FindBin;
 use lib "$FindBin::Bin/../../lib";
@@ -210,7 +211,6 @@ foreach my $s ( @$sessions ) {
 
 ## Delete clients that haven't updated recently
 my @post_crash_timeouts = $setting_rs->search( { name => 'PostCrashTimeout' } );
-
 foreach my $pct (@post_crash_timeouts) {
     my $timestamp = DateTime::Format::MySQL->format_datetime(
         DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration(
@@ -276,6 +276,87 @@ if ( $wake_hour || DateTime->now( time_zone => $ENV{LIBKI_TZ} )->hour == $wake_h
         }
     }
 }
+
+## Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
+my $clone_query = q{
+INSERT INTO print_jobs
+            (instance,
+             id,
+             type,
+             status,
+             copies,
+             data,
+             printer,
+             user_id,
+             print_file_id,
+             created_on,
+             updated_on,
+             released_on,
+             queued_on,
+             queued_to)
+SELECT instance,
+       NULL,
+       type,
+       status,
+       copies,
+       data,
+       printer,
+       user_id,
+       print_file_id,
+       NOW(),
+       NOW(),
+       released_on,
+       NULL,
+       NULL
+FROM   print_jobs
+WHERE  instance = ?
+       AND queued_on < ?
+       AND status = 'Queued'  
+};
+
+my $expire_query = q{
+UPDATE print_jobs
+   SET status = 'Expired'
+ WHERE instance = ?
+   AND queued_on < ?
+   AND status = 'Queued'
+};
+
+my $clone_sth = $dbh->prepare( $clone_query );
+my $expire_sth = $dbh->prepare( $expire_query );
+
+my @print_job_timeouts = $setting_rs->search( { name => 'QueuedPrintJobsTimeout' } );
+
+
+$dbh->{AutoCommit} = 0; # enable transactions
+$dbh->{RaiseError} = 1; # die if a query has problems
+
+try {
+    foreach my $pjt (@print_job_timeouts) {
+        next unless $pjt->value;
+
+        my $timestamp
+            = DateTime::Format::MySQL->format_datetime(
+            DateTime->now( time_zone => $ENV{LIBKI_TZ} )
+                ->subtract_duration( DateTime::Duration->new( minutes => $pjt->value ) ) );
+        $clone_sth->execute( $pjt->instance, $timestamp );
+        $expire_sth->execute( $pjt->instance, $timestamp );
+    }
+
+    $dbh->commit();
+}
+catch {
+    warn "Handle expired queued print jobs failed: $_";
+    try {
+        $dbh->rollback();
+    } catch {
+        warn "Handle expired queued print jobs failed rollback failed!: $_";
+    }
+};
+
+$dbh->{AutoCommit} = 1;
+$dbh->{RaiseError} = 0;
+## END Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
 
 =head1 AUTHOR
 
