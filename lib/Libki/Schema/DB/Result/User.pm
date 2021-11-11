@@ -466,11 +466,11 @@ sub reservation_display_name {
 
     my $ReservationShowUsername = $c->setting('ReservationShowUsername');
 
-    return $self->username                         if $ReservationShowUsername eq 'RSUN'; # by username
-    return $self->firstname . ' ' . $self->surname if $ReservationShowUsername eq 'RSFN'; # by full name
-    return q{}                                     if $ReservationShowUsername eq 'RSA'; # anonymous
-    return q{}                                     if $ReservationShowUsername eq 'RSD';  # disabled
-    return q{};                                                                           # default
+    return $self->username                          if $ReservationShowUsername eq 'RSUN'; # by username
+    return $self->firstname . ' ' . $self->lastname if $ReservationShowUsername eq 'RSFN'; # by full name
+    return q{}                                      if $ReservationShowUsername eq 'RSA';  # anonymous
+    return q{}                                      if $ReservationShowUsername eq 'RSD';  # disabled
+    return q{};                                                                            # default
 }
 
 =head1 AUTHOR
