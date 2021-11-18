@@ -117,6 +117,7 @@ sub authenticate_via_sip {
                   . $terminator;
             }
             else {
+                $log->error("ERROR: SIP Server is offline!");
                 return {
                     success => 0,
                     error   => 'SIP_ACS_OFFLINE',
