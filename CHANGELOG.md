@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Users getting incorrect session times when logging in before a reservation #210
 - Fix age limit bug
 - Disallow invalid hour/minute selections based on current sessions
+- Fix ReservationShowDisabled = Disabled acting like ReservationShowDisabled = Anonymous
 ### Removed
 - Removed Google Cloud Print support for print management
 
