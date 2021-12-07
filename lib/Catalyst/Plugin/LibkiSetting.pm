@@ -263,7 +263,7 @@ sub get_reservation_status {
             my $minutes                  = floor( $reserve / 60 );
             my $seconds                  = $reserve % 60;
 
-            $status = $c->loc( '[_1] for [_2] minutes [_3] seconds',
+            $status = $c->loc( '[_1] in [_2] minutes [_3] seconds',
                 $reservation_display_name, $minutes, $seconds );
         }
         elsif ( $reserve > $time_left && $begin < $display * 60 ) {
