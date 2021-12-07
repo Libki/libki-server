@@ -818,7 +818,7 @@
                             </div>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Amount of time a print job can be in the status Queued before the job is set to Expired and new Pending job is added.") %]</small>
-                        <small class="form-text text-muted">[% c.loc("This meant to allow print jobs taken by a Print Manager that has become unresponsive to be re-printed automatically.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("This is meant to allow print jobs taken by a Print Manager that has become unresponsive to be re-printed automatically.") %]</small>
                         <small class="form-text text-muted">[% c.loc("Leave this setting empty to disable the feature.") %]</small>
                     </div>
 
