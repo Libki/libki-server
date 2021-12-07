@@ -351,7 +351,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="ReservationShowUsername" id="ReservationShowFullname" value="RSFN" [% IF ReservationShowUsername == 'RSFN' %]checked[% END %]>
                             <label class="form-check-label" for="ReservationShowFullname">
-                                [% c.loc("By fullname") %]
+                                [% c.loc("By first and last name") %]
                             </label>
                         </div>
 
