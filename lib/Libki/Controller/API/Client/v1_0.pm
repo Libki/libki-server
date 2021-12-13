@@ -196,6 +196,7 @@ sub index : Path : Args(0) {
                     !$user
                     || (   $user
                         && $user->is_guest() eq 'No'
+                        && $user->creation_source eq 'SIP'
                         && !$c->check_any_user_role( $user,
                             qw/admin superadmin/ ) )
                   )
@@ -223,6 +224,7 @@ sub index : Path : Args(0) {
                     !$user
                     || (   $user
                         && $user->is_guest() eq 'No'
+                        && $user->creation_source eq 'LDAP'
                         && !$c->check_any_user_role( $user,
                             qw/admin superadmin/ ) )
                   )

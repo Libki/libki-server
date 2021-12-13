@@ -36,14 +36,19 @@ sub index : Path : Args(0) {
     # If the username and password values were found in form
     if ( $username && $password ) {
         my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
+
         if ( $config->{SIP}->{enable} ) {
-            if ( !$user || ( $user && $user->is_guest() eq 'No' )) {
+            if ( !$user
+                || ( $user && $user->creation_source eq 'SIP' && $user->is_guest() eq 'No' ) )
+            {
                 my $ret = Libki::SIP::authenticate_via_sip( $c, $user, $username, $password );
                 $auth = $ret->{success};
             }
         }
         elsif ( $config->{LDAP}->{enable} ) {
-            if ( !$user || ( $user && $user->is_guest() eq 'No' )) {
+            if ( !$user
+                || ( $user && $user->creation_source eq 'LDAP' && $user->is_guest() eq 'No' ) )
+            {
                 my $ret = Libki::LDAP::authenticate_via_ldap( $c, $user, $username, $password );
                 $auth = $ret->{success};
             }
