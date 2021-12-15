@@ -6,11 +6,12 @@ use PDF::API2;
 
 use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
 
-use constant PRINT_STATUS_PENDING => 'Pending';    # Waiting for PrintManager/CUPS to accept the job
-use constant PRINT_STATUS_PROCESSING => 'Processing';   # Needs to be evaluated for sufficient funds
+use constant PRINT_STATUS_PENDING            => 'Pending';            # Waiting for PrintManager/CUPS to accept the job
+use constant PRINT_STATUS_HELD               => 'Held';               # Waiting for user to release print job
+use constant PRINT_STATUS_PROCESSING         => 'Processing';         # Needs to be evaluated for sufficient funds
 use constant PRINT_STATUS_INSUFFICIENT_FUNDS => 'Insufficient Funds'; # User doesn't have funds to cover printing
-use constant PRINT_STATUS_IN_PROGRESS => 'InProgress'; # Print job is being sent to printer
-use constant PRINT_STATUS_DONE => 'Done'; # Printer has accepted the print job
+use constant PRINT_STATUS_IN_PROGRESS        => 'InProgress';         # Print job is being sent to printer
+use constant PRINT_STATUS_DONE               => 'Done';               # Printer has accepted the print job
 
 =head2 create_print_job_and_file
 
@@ -61,6 +62,13 @@ sub create_print_job_and_file {
         my $client_id       = $client ? $client->id       : undef;
         my $client_location = $client ? $client->location : undef;
         my $client_type     = $client ? $client->type     : undef;
+
+        $c->log->error(
+            sprintf(
+                "User id %s printed to non-existent printer id %s from client %s",
+                $user->id, $printer_id, $client ? $client->id : 'Print From Web'
+            )
+        ) unless $printer;
 
         my $print_job;
         $c->model('DB')->txn_do(
@@ -137,15 +145,25 @@ sub reevaluate_print_jobs_with_insufficient_funds {
 
     foreach my $j (@jobs) {
         my $printer = $printers->{ $j->printer };
+
+        $c->log->error(
+            sprintf(
+                "User id %s printed to non-existent printer id %s while updating print jobs with insufficient funds",
+                $user->id, $j->printer
+            )
+        ) && next unless $printer;
+
+
         my $pages   = $j->print_file->pages;
         my $copies  = $j->copies;
 
-        my $status     = PRINT_STATUS_PENDING;
         my $total_cost = $copies * $pages * $printer->{cost_per_page};
 
         if ( $total_cost <= $user->funds ) {
             $user->funds( $user->funds - $total_cost );
-            $j->status(PRINT_STATUS_PENDING);
+
+            my $status = $printer->{auto_release} ? PRINT_STATUS_PENDING : PRINT_STATUS_HELD;
+            $j->status($status);
 
             $c->model('DB')->txn_do(
                 sub {
