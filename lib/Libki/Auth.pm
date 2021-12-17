@@ -88,6 +88,7 @@ sub authenticate_user {
             $success = 1;
         }
         else {
+            $success = 0;
             $error = 'BAD_LOGIN';
         }
     }
