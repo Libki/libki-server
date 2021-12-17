@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use List::Util qw(none);
+use JSON;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -49,7 +50,7 @@ sub auto : Private {
         return;
     }
 
-    my $authenticated = Libki::Auth::authenticate_user(
+    my $auth = Libki::Auth::authenticate_user(
         {
             context  => $c,
             username => $username,
@@ -57,12 +58,12 @@ sub auto : Private {
         }
     );
 
-    unless ($authenticated) {
+    unless ($auth->{success}) {
         delete $c->stash->{Settings};
         $c->response->status(401);
         $c->stash(
             success => JSON::false,
-            error   => "INVALID_USER_CREDENTIALS",
+            error   => $auth->{error},
         );
         $c->forward( $c->view('JSON') );
         return;
@@ -78,11 +79,11 @@ sub add_funds : Path('add_funds') : Args(0) {
 
     my $username = $c->request->params->{username};
 
-    my $user = $c->model('DB::User')->find( { instance => $instance, username => $username } );
-
     my $instance = $c->instance;
     my $config   = $c->config->{instances}->{$instance} || $c->config;
     my $log      = $c->log();
+
+    my $user = $c->model('DB::User')->find( { instance => $instance, username => $username } );
 
     my $now = $c->now();
 }
@@ -121,7 +122,6 @@ sub print_jobs : Path('print_jobs') : Args(0) {
 
     my $data = [];
     while ( my $j = $jobs->next ) {
-        warn "X" x 10;
         push(
             @$data,
             {
@@ -135,8 +135,9 @@ sub print_jobs : Path('print_jobs') : Args(0) {
     }
     $c->stash( print_jobs => $data );
 
-    delete $c->stash->{Settings};
-    $c->forward( $c->view('JSON') );
+    $c->response->headers->content_type('application/json');
+    $c->response->body( JSON::to_json( $data ) );
+    $c->response->write();
 }
 
 =head1 AUTHOR
