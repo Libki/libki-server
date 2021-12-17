@@ -180,7 +180,8 @@ sub batch_create_guest : Local : Args(0) {
 
     my $success = 0;
 
-    my $BatchGuestPassCustomCSS = $c->setting('BatchGuestPassCustomCSS');
+    my $batch_guest_pass_custom_css = $c->setting('BatchGuestPassCustomCSS');
+    my $batch_guest_pass_template = $c->setting('BatchGuestPassTemplate');
 
     my $guest_count = $c->setting('GuestBatchCount') || 10;
     my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
@@ -192,12 +193,11 @@ sub batch_create_guest : Local : Args(0) {
     my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
     my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
 
-    my $file_contents = q{};
-
-    $file_contents .= "<html><head><style>$BatchGuestPassCustomCSS</style></head><body>";
-
     my $now = $c->now();
 
+    my $file_contents .= "<html><head><style>$batch_guest_pass_custom_css</style></head><body>";
+
+    my @guests;
     for ( my $i = 0 ; $i < $guest_count ; $i++ ) {
 
         $current_guest_number = $current_guest_number + 1;
@@ -229,11 +229,25 @@ sub batch_create_guest : Local : Args(0) {
         $file_contents .= "</div>";
         $file_contents .= "</body>";
 
+        push( @guests, { username => $username, password => $password } ) if $user;
+
         $success = $success + 1 if ($user);
     }
 
     $current_guest_number_setting->set_column( 'value', $current_guest_number );
     $current_guest_number_setting->update_or_insert();
+
+    if ( $batch_guest_pass_template ) {
+        $file_contents = q{};
+        my $tt = Template->new() || die $Template::ERROR;
+        my $vars = {
+            batch_guest_pass_custom_css     => $batch_guest_pass_custom_css,
+            batch_guest_pass_username_label => $batch_guest_pass_username_label,
+            batch_guest_pass_password_label => $batch_guest_pass_password_label,
+            guests                          => \@guests,
+        };
+        $tt->process( \$batch_guest_pass_template, $vars, \$file_contents );
+    }
 
     $c->stash(
         'success'  => $success,

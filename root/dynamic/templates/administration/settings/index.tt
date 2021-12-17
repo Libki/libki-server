@@ -740,6 +740,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="BatchGuestPassTemplate">[% c.loc("Template") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="BatchGuestPassTemplate" name="BatchGuestPassTemplate" rows="15">[% BatchGuestPassTemplate %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Template for batch guest passes uses Template Toolkit syntax.") %]</small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="BatchGuestPassCustomCSS">[% c.loc("Guest pass CSS") %]</label>
                         <div class="input-group">
                             <textarea class="form-control" id="BatchGuestPassCustomCSS" name="BatchGuestPassCustomCSS" rows="15">[% BatchGuestPassCustomCSS %]</textarea>
