@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add client name to the 'Make reservation' dialog
 - Add logging to database with built in log viewer
 - Add ability to use a template for guess passes using Template Toolkit syntax
+- Add automatic print dialog for batch guest passes
 ### Fixed
 - Users getting incorrect session times when logging in before a reservation #210
 - Fix age limit bug
