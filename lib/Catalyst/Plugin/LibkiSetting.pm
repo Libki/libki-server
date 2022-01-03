@@ -8,6 +8,7 @@ use DateTime::Span;
 use DateTime;
 use List::Util qw( any min max );
 use POSIX;
+use Try::Tiny;
 
 use Encode qw/ decode encode /;
 
@@ -72,15 +73,23 @@ sub instance_config {
     my $config = $c->config->{instances}->{ $c->instance } || $c->config;
 
     unless ( $config->{SIP} ) {
-        my $yaml = $c->setting( 'SIPConfiguration' );
-        $yaml = encode( 'UTF-8', $yaml );
-        $config->{SIP} = YAML::XS::Load( $yaml ) if $yaml;
+        try {
+            my $yaml = $c->setting( 'SIPConfiguration' );
+            $yaml = encode( 'UTF-8', $yaml );
+            $config->{SIP} = YAML::XS::Load( $yaml ) if $yaml;
+        } catch {
+            warn "Error loading SIP configuration YAML from system setting: $_";
+        };
     }
 
     unless ( $config->{LDAP} ) {
-        my $yaml = $c->setting( 'LDAPConfiguration' );
-        $yaml = encode( 'UTF-8', $yaml );
-        $config->{LDAP} = YAML::XS::Load( $yaml ) if $yaml;
+        try {
+            my $yaml = $c->setting( 'LDAPConfiguration' );
+            $yaml = encode( 'UTF-8', $yaml );
+            $config->{LDAP} = YAML::XS::Load( $yaml ) if $yaml;
+        } catch {
+            warn "Error loading LDAP configuration YAML from system setting: $_";
+        };
     }
 
     return $config;
@@ -115,17 +124,24 @@ Returns a list of user categories as defined in the system setting UserCategorie
 =cut
 
 sub user_categories {
-    my ( $c ) = @_;
+    my ($c) = @_;
 
-    my $yaml = $c->setting( 'UserCategories' );
+    my $yaml = $c->setting('UserCategories');
 
     $yaml = encode( 'UTF-8', $yaml );
 
-    my $categories = YAML::XS::Load( $yaml ) if $yaml;
+    my $categories;
+    if ($yaml) {
+        try {
+            $categories = YAML::XS::Load($yaml);
+        }
+        catch {
+            warn "Error loading UserCategories configuration YAML from system setting: $_";
+        };
+    }
 
     return $categories;
 }
-
 
 =head2 add_user_category
 
@@ -166,7 +182,15 @@ sub get_rules {
     my $yaml = $c->setting( 'AdvancedRules' );
     $yaml = encode( 'UTF-8', $yaml );
 
-    my $data = YAML::XS::Load( $yaml ) if $yaml;
+    my $data;
+    if ($yaml) {
+        try {
+            $data = YAML::XS::Load($yaml);
+        }
+        catch {
+            warn "Error loading AdvancedRules configuration YAML from system setting: $_";
+        };
+    }
 
     $c->stash->{AdvancedRules} = $data || q{};
 
@@ -229,7 +253,16 @@ sub get_printer_configuration {
 
     my $yaml = $c->setting('PrinterConfiguration');
     $yaml = encode( 'UTF-8', $yaml );
-    my $config = YAML::XS::Load( $yaml );
+
+    my $config;
+    if ($yaml) {
+        try {
+            $config = YAML::XS::Load( $yaml );
+        }
+        catch {
+            warn "Error loading PrinterConfiguration YAML from system setting: $_";
+        };
+    }
 
     return $config;
 }
