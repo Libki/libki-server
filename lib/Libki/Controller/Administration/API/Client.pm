@@ -32,8 +32,11 @@ sub modify_time : Local : Args(0) {
 
     my $success = 0;
 
-    my $client_id = $c->request->params->{'id'};
-    my $minutes   = $c->request->params->{'minutes'};
+    my $instance = $c->instance;
+
+    my $client_id             = $c->request->params->{'id'};
+    my $minutes               = $c->request->params->{'minutes'};
+    my $add_time_to_allotment = $c->request->params->{'add_time_to_allotment'};
 
     my $client = $c->model('DB::Client')->find($client_id);
 
@@ -47,9 +50,38 @@ sub modify_time : Local : Args(0) {
         $minutes = 0 if ( $minutes < 0 );
 
         $success = 1 if $session->update( { minutes => $minutes } );
+
+        if ($add_time_to_allotment) {
+            $minutes
+                = $c->request->params->{'minutes'}; # We modifified the original value, get it fresh
+            my $u = $session->user;
+
+            # logic should be moved to User method, exists in lib/Libki/Controller/Administration/API/DataTables.pm as well
+            my $minutes_allotment = $u->allotments->find(
+                {
+                    'instance' => $instance,
+                    'location' => ( $c->setting('TimeAllowanceByLocation') )
+                    ? (
+                        ( defined( $u->session ) && defined( $u->session->client->location ) )
+                        ? $u->session->client->location
+                        : ''
+                        )
+                    : '',
+                }
+            );
+
+            if ( $minutes =~ /^[+-]/ ) {
+                $minutes = $minutes_allotment->minutes + $minutes;
+            }
+
+            $minutes = 0 if ( $minutes < 0 );
+
+            $success &&= $minutes_allotment->update( { minutes => $minutes } );
+        }
+
     }
 
-    $c->stash( 'success' => $success );
+    $c->stash( 'success' => $success ? 1 : 0 );
     $c->forward( $c->view('JSON') );
 }
 

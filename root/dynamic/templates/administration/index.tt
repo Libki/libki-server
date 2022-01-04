@@ -621,6 +621,14 @@
                     [% c.loc("The time entered is invalid") %]
                 </div>
             </div>
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="add-time-to-allotment" name="add_time_to_allotment">
+                <label class="add-time-to-allotment" for="">[% c.loc("Add time to daily allotment") %]</label>
+                [% IF c.setting("TimeAllowanceByLocation") %]
+                    <small class="form-text text-muted">[% c.loc("Time modification will affect the allotment for the location the user is currently logged in at.") %]</small>
+                [% END %]
+            </div>
         </form>
       </div>
       <div class="modal-footer">

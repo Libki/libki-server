@@ -116,6 +116,7 @@ sub users : Local Args(0) {
 
     my @results;
     foreach my $u (@users) {
+        # logic should be moved to User method, exists in lib/Libki/Controller/Administration/API/Client.pm as well
         my $minutes_allotment = $u->allotments->find({
             'instance' => $instance,
             'location' => ($c->setting('TimeAllowanceByLocation'))
