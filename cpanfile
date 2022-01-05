@@ -45,6 +45,8 @@ requires 'Gazelle';
 requires 'Getopt::Long';
 requires 'Getopt::Long::Descriptive';
 requires 'HTTP::Request::Common';
+requires 'Image::Magick';
+requires 'Image::Magick::Thumbnail::PDF';
 requires 'JSON';
 requires 'LWP::Simple';
 requires 'Log::Log4perl::Catalyst';

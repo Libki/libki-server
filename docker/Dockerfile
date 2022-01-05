@@ -34,6 +34,7 @@ RUN apt-get update -y \
        perl \
        cpanminus \
        libdbd-mysql-perl \
+       libimage-magick-perl \
 # for DBD::mysql
        default-libmysqlclient-dev \
 # for 'ldb' alias
@@ -45,6 +46,8 @@ RUN apt-get update -y \
        shared-mime-info \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
+
+RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
 COPY . /app
 WORKDIR /app

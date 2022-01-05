@@ -3,8 +3,10 @@ package Libki::Controller::API::Jamex::v1_0;
 use Moose;
 use namespace::autoclean;
 
-use List::Util qw(none);
+use Image::Magick::Thumbnail::PDF qw(create_thumbnail);
 use JSON;
+use List::Util qw(none);
+use File::Temp qw( tempfile tempdir );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -138,6 +140,65 @@ sub print_jobs : Path('print_jobs') : Args(0) {
     $c->response->headers->content_type('application/json');
     $c->response->body( JSON::to_json( $data ) );
     $c->response->write();
+}
+
+=head2 print_preview
+
+Returns the PDF of a given print job.
+If the param 'type' is set to 'print_preview', the content
+disposition will be so so the PDF loads in a web browser.
+
+=cut
+
+sub print_preview : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    my $instance = $c->instance;
+
+    my $id       = $c->request->params->{id};
+    my $page     = $c->request->params->{page} || 1;
+    my $username = $c->request->params->{username};
+
+    my $print_job = $c->model('DB::PrintJob')->find(
+        {
+            instance => $instance,
+            id       => $id,
+            username => $username,
+        }
+    );
+
+    if ($print_job) {
+        my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
+        if ($print_file) {
+            my $dir = tempdir( CLEANUP => 1 );
+            my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.pdf' );
+            print $fh $print_file->data;
+            close($fh);
+
+            my $image = create_thumbnail(
+                $filename,
+                $page,
+                {
+                    restriction => 350,
+                    frame       => 2,
+                    normalize   => 0,
+                }
+            );
+            open(my $image_fh, '<:raw', $image);
+
+            $c->response->body( $image_fh );
+
+            $c->response->content_type('image/png');
+            $c->response->header( 'Content-Disposition', "inline; filename=$id.png" );
+        }
+        else {
+            $c->stash( success => 0, error => 'PRINT_FILE_NOT_FOUND' );
+            $c->forward( $c->view('JSON') );
+        }
+    }
+    else {
+        $c->stash( success => 0, error => 'PRINT_JOB_NOT_FOUND' );
+        $c->forward( $c->view('JSON') );
+    }
 }
 
 =head1 AUTHOR
