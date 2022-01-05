@@ -5,7 +5,7 @@ CREATE TABLE `logs` (
   `pid` varchar(10) NOT NULL default '',
   `hostname` varchar(100) NOT NULL default '',
   `level` varchar(10) NOT NULL default '',
-  `message` text NOT NULL default '',
+  `message` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `created_on_idx` (`created_on`)
 ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci;
