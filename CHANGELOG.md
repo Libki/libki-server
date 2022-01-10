@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to use a template for guess passes using Template Toolkit syntax
 - Add automatic print dialog for batch guest passes
 - Add ability to change both session and allotment minutes at the same time from the Clients table "Modify time" button
+- Add the ability to send a Qt Style Sheet to the Libki client so it can be given custom styling easily
 ### Fixed
 - Users getting incorrect session times when logging in before a reservation #210
 - Fix age limit bug
