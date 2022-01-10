@@ -93,7 +93,6 @@ __PACKAGE__->table("logs");
 =head2 message
 
   data_type: 'text'
-  default_value: ''''
   is_nullable: 0
 
 =cut
@@ -117,7 +116,7 @@ __PACKAGE__->add_columns(
   "level",
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 10 },
   "message",
-  { data_type => "text", default_value => "''", is_nullable => 0 },
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -133,8 +132,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-10-21 14:12:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MabsxZ3h9srohL4IUj7qcA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2022-01-10 10:09:59
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ssgTVM26jwMiKXwGTypCMw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
