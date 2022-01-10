@@ -369,7 +369,7 @@ sub index : Path : Args(0) {
                                         user_id    => $user->id,
                                         client_id  => $client->id,
                                         status     => 'active',
-                                        minutes    => $result{'minutes'},
+                                        minutes    => $result{minutes},
                                         session_id => $session_id,
                                     }
                                     );
@@ -386,6 +386,13 @@ sub index : Path : Args(0) {
                                         action          => 'LOGIN',
                                         created_on      => $now,
                                         session_id      => $session_id,
+                                        info            => to_json(
+                                            {
+                                                user_id                  => $user->id,
+                                                client_id                => $client->id,
+                                                session_starting_minutes => $result{minutes},
+                                            }
+                                        ),
                                     }
                                 );
                             }
