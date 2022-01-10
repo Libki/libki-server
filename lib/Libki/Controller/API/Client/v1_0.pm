@@ -13,6 +13,7 @@ use Libki::Utils::Printing qw( create_print_job_and_file );
 use DateTime::Format::MySQL;
 use DateTime;
 use Encode qw(decode);
+use JSON qw(to_json);
 use List::Util qw(min);
 
 =head1 NAME
