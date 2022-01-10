@@ -149,6 +149,8 @@ sub index : Path : Args(0) {
 
             inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
+
+            ClientStyleSheet           => $c->stash->{Settings}->{ClientStyleSheet},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {

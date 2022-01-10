@@ -885,6 +885,16 @@
                         <small class="form-text text-muted">[% c.loc("These rules override the default time allowances") %]</small>
                         <small class="form-text text-muted">[% c.loc("If no match is found, the default time allowances will be used.") %]</small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="ClientStyleSheet">[% c.loc("Client style sheet") %]</label>
+                        <div class="input-group">
+                            <div class="input-group">
+                                <textarea class="form-control" id="ClientStyleSheet" name="ClientStyleSheet" rows="30">[% ClientStyleSheet %]</textarea>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Style the Libki client using <a href='https://doc.qt.io/qt-5/stylesheet-examples.html'>Qt Style Sheets</a>") %]</small>
+                    </div>
                 </fieldset>
             </div>
 
