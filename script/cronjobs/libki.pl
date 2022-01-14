@@ -2,6 +2,7 @@
 
 use Modern::Perl;
 
+use Getopt::Long::Descriptive;
 use List::Util qw(min max);
 use Try::Tiny;
 
@@ -11,7 +12,18 @@ use lib "$FindBin::Bin/../../lib";
 use Libki;
 use Libki::Hours;
 
+my ( $opt, $usage ) = describe_options(
+    'script/cronjobs/libki.pl %o',
+    [ 'verbose|v', "print extra stuff" ],
+    [ 'logging|l', "log extra stuff" ],
+    [ 'help|h',    "print usage message and exit", { shortcircuit => 1 } ],
+);
+print($usage->text), exit if $opt->help;
+
 my $c = Libki->new();
+
+say "Starting Libki cronjob libki.pl" if $opt->verbose;
+$c->log->info("Starting Libki cronjob libki.pl") if $logging;
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
@@ -357,6 +369,9 @@ catch {
 $dbh->{AutoCommit} = 1;
 $dbh->{RaiseError} = 0;
 ## END Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
+
+say "Finished running Libki cronjob libki.pl" if $opt->verbose;
+$c->log->info("Finished running Libki cronjob libki.pl") if $opt->logging;
 
 =head1 AUTHOR
 

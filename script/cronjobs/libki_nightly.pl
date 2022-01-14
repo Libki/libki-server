@@ -7,11 +7,23 @@ use lib "$FindBin::Bin/../../lib";
 
 use Modern::Perl;
 
-use List::Util qw(max min);
-use DateTime;
 use DateTime::Format::MySQL;
+use DateTime;
+use Getopt::Long::Descriptive;
+use List::Util qw(max min);
 
 use Libki;
+
+my ( $opt, $usage ) = describe_options(
+    'script/cronjobs/libki.pl %o',
+    [ 'verbose|v', "print extra stuff" ],
+    [ 'logging|l', "log extra stuff" ],
+    [ 'help|h',    "print usage message and exit", { shortcircuit => 1 } ],
+);
+print($usage->text), exit if $opt->help;
+
+say "Starting Libki cronjob libki_nightly.pl" if $opt->verbose;
+$c->log->info("Starting Libki cronjob libki_nightly.pl") if $logging;
 
 my $c = Libki->new();
 my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
@@ -140,6 +152,9 @@ foreach my $lrd (@log_retention_days) {
 ## TODO: Should we delete sessions with no expiration periodically?
 
 $c->model('DB::LoginSession')->delete();
+
+say "Finished running Libki cronjob libki_nightly.pl" if $opt->verbose;
+$c->log->info("Finished running Libki cronjob libki_nightly.pl") if $opt->logging;
 
 =head1 AUTHOR
 

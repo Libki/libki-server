@@ -44,6 +44,7 @@ requires 'File::Slurp';
 requires 'Gazelle';
 requires 'Getopt::Long';
 requires 'Getopt::Long::Descriptive';
+requires 'Getopt::Long::Descriptive';
 requires 'HTTP::Request::Common';
 requires 'Image::Magick';
 requires 'Image::Magick::Thumbnail::PDF';
