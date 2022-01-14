@@ -23,7 +23,7 @@ print($usage->text), exit if $opt->help;
 my $c = Libki->new();
 
 say "Starting Libki cronjob libki.pl" if $opt->verbose;
-$c->log->info("Starting Libki cronjob libki.pl") if $logging;
+$c->log->info("Starting Libki cronjob libki.pl") if $opt->logging;
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
