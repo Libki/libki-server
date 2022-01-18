@@ -457,12 +457,26 @@
                 <fieldset>
                     <legend>[% c.loc("Terms of service") %]</legend>
 
+                    <p>
+                        <small class="form-text text-muted">
+                            [% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]
+                        </small>
+                    </p>
+
                     <div class="form-group">
                         <label for="TermsOfService">[% c.loc("Terms of service text") %]</label>
                         <div class="input-group">
                             <textarea class="form-control" id="TermsOfService" name="TermsOfService" rows="10">[% TermsOfService %]</textarea>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("This text is displayed directly on the terms of service dialog.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TermsOfServiceDetails">[% c.loc("Terms of service details text") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="TermsOfServiceDetails" name="TermsOfServiceDetails" rows="10">[% TermsOfServiceDetails %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("This text is displayed when the "Show Details" button is clicked.") %]</small>
                     </div>
                 </fieldset>
             </div>

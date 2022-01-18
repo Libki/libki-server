@@ -139,6 +139,7 @@ sub index : Path : Args(0) {
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
             EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
             TermsOfService             => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfService} ),
+            TermsOfServiceDetails      => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfServiceDetails} ),
 
             BannerTopURL               => $c->stash->{Settings}->{BannerTopURL},
             BannerTopWidth             => $c->stash->{Settings}->{BannerTopWidth},
