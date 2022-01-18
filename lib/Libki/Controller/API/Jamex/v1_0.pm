@@ -114,7 +114,7 @@ sub print_jobs : Path('print_jobs') : Args(0) {
         {
             instance => $instance,
             user_id  => $user->id,
-            status   => { '!=' => Libki::Utils::Printing::PRINT_STATUS_DONE },
+            status   => Libki::Utils::Printing::PRINT_STATUS_HELD,
             type     => 'PrintManager',
         },
         {
@@ -199,6 +199,24 @@ sub print_preview : Local : Args(0) {
         $c->stash( success => 0, error => 'PRINT_JOB_NOT_FOUND' );
         $c->forward( $c->view('JSON') );
     }
+}
+
+=head2 release_print_job
+
+Sends the given print job to the actual print management backend.
+
+=cut
+
+sub release_print_job : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $id = $c->request->params->{id};
+
+    my $data = Libki::Utils::Printing::release( $c, $id );
+    delete $c->stash->{Settings};
+    $c->stash( $data );
+
+    $c->forward( $c->view('JSON') );
 }
 
 =head1 AUTHOR

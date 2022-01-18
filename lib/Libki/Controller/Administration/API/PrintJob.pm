@@ -2,13 +2,14 @@ package Libki::Controller::Administration::API::PrintJob;
 use Moose;
 use namespace::autoclean;
 
+use File::Temp qw( tempfile );
 use HTTP::Request::Common;
 use JSON qw( to_json from_json );
 use MIME::Base64;
-use Net::CUPS;
 use Storable qw( thaw );
 use YAML::XS;
-use File::Temp qw( tempfile );
+
+use Libki::Utils::Printing;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -104,81 +105,11 @@ Sends the given print job to the actual print management backend.
 
 sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
-    my $instance = $c->instance;
 
     my $id = $c->request->params->{id};
 
-    my $print_job = $c->model('DB::PrintJob')->find( { id => $id, instance => $instance } );
-
-
-    if ($print_job) {
-        # CUPS print support
-        if ($print_job->type eq 'cups') {
-            my $log = $c->log();
-            my $cups = $self->cups_setup($c);
-
-            my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
-            if ($print_file) {
-
-                my $printers = $c->get_printer_configuration;
-                my $printer  = $printers->{printers}->{ $print_job->printer };
-
-                if ($printer) {
-
-                    my $filename = $print_file->filename;
-                    my $content  = $print_file->data;
-
-                    my $cups_printer_name = $printer->{name};
-                    $log->debug("CUPS Printer name: " . $cups_printer_name);
-                    my $cups_printer = $cups->getDestination($cups_printer_name);
-                    if ($cups_printer) {
-                        # In order to print to CUPS, the data must be on a file
-                        # Create a temporary file to print
-                        my $cups_print_filename = $self->cups_create_print_file($c, $content);
-                        $log->debug("Created temp file for CUPS printing: " . $cups_print_filename);
-                        # The job title is the original print file name
-                        my $cups_print_job_id = $cups_printer->printFile($cups_print_filename, $filename);
-                        unlink ($cups_print_filename);
-                        if ($cups_print_job_id) {
-
-                            my $cups_print_job_data = $cups_printer->getJob($cups_print_job_id);
-                            my $cups_print_job_state = $cups_print_job_data->{state_text};
-                            my $now = $c->now();
-                            $print_job->update(
-                                {
-                                    data       => $cups_print_job_data,
-                                    status     => $cups_print_job_state,
-                                    updated_on => $now,
-                                }
-                            );
-
-                            $c->stash( success => 1, message => 'Ok' );
-
-                        }
-                        else {
-                            $c->stash( success => 0, error => 'Error printing on printer', id => $print_job->printer );
-                        }
-                    }
-                    else {
-                        $c->stash( success => 0, error => 'Printer Not Found on CUPS server', id => $print_job->printer );
-                    }
-                }
-                else {
-                    $c->stash( success => 0, error => 'Printer Not Found', id => $print_job->printer );
-                }
-            }
-            else {
-                $c->stash(
-                    success => 0,
-                    error   => 'Print File Not Found',
-                    id      => $print_job->print_file_id
-                );
-            }
-        }
-    }
-    else {
-        $c->stash( success => 0, error => 'Print Job Not Found', id => $id );
-    };
+    my $data = Libki::Utils::Printing::release( $c, $id );
+    $c->stash( $data );
 
     $c->forward( $c->view('JSON') );
 }
@@ -225,7 +156,7 @@ sub update : Local : Args(0) {
                                         updated_on => $now,
                                     }
                                 );
-                                $c->stash->{success} = 1;
+                                $c->stash( success => 1 );
                             }
                             else {
                                 $c->stash( success => 0, error => 'Error getting CUPS printjob data', id => $cups_printjob_id );
@@ -244,13 +175,12 @@ sub update : Local : Args(0) {
                 }
             }
             elsif ( $print_job ) {
-                $c->stash->{success} = 1;
+                $c->stash( success => 1 );
             }
-        };
-
-	if ( $print_job->type eq 'PrintManager' ) {
-            $c->stash->{success} = 1;
-	}
+        }
+        elsif ($print_job->type eq 'PrintManager') {
+            $c->stash( success => 1 );
+        }
     }
     else {
         $c->stash->{success} = 0;
