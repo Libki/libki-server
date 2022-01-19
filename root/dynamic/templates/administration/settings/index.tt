@@ -476,7 +476,7 @@
                         <div class="input-group">
                             <textarea class="form-control" id="TermsOfServiceDetails" name="TermsOfServiceDetails" rows="10">[% TermsOfServiceDetails %]</textarea>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("This text is displayed when the "Show Details" button is clicked.") %]</small>
+                        <small class="form-text text-muted">[% c.loc('This text is displayed when the "Show Details" button is clicked.') %]</small>
                     </div>
                 </fieldset>
             </div>
