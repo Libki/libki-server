@@ -1062,8 +1062,8 @@ msgid "Is not a whole number"
 msgstr "Är inte ett heltal"
 
 #: root/dynamic/templates/administration/settings/index.tt:893
-msgid "Jamex"
-msgstr "Jamex"
+msgid "Print Station"
+msgstr "Print Station"
 
 #: root/dynamic/templates/administration/settings/index.tt:983
 msgid "Key"

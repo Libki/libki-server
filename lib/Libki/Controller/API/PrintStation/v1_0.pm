@@ -1,4 +1,4 @@
-package Libki::Controller::API::Jamex::v1_0;
+package Libki::Controller::API::PrintStation::v1_0;
 
 use Moose;
 use namespace::autoclean;
@@ -37,7 +37,7 @@ sub auto : Private {
         {
             context => $c,
             key     => $api_key,
-            type    => 'Jamex',
+            type    => 'PrintStation',
         }
     );
 
@@ -92,7 +92,7 @@ sub add_funds : Path('add_funds') : Args(0) {
 
 =head2 print_jobs
 
-API to send list of unfinished print jobs to the Jamex client for print management
+API to send list of unfinished print jobs to the PrintStation client for print management
 
 When hit, this API will send the next queued print job to the Print Manager
 and mark it as Pending in the queue, with the time it was set to Pending.

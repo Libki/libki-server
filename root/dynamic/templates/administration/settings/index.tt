@@ -952,7 +952,7 @@
                                 <div class="input-group-text">Type</div>
                             </div>
                             <select class="form-control" id="apiKeyType">
-                                <option value="Jamex">[% c.loc("Jamex") %]</option>
+                                <option value="PrintStation">[% c.loc("Print Station") %]</option>
                                 <option value="PrintManager">[% c.loc("Print Manager") %]</option>
                                 <!-- <option value="Client">[% c.loc("Client") %]</option> -->
                             </select>
