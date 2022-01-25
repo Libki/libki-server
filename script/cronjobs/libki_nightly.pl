@@ -22,10 +22,11 @@ my ( $opt, $usage ) = describe_options(
 );
 print($usage->text), exit if $opt->help;
 
+my $c = Libki->new();
+
 say "Starting Libki cronjob libki_nightly.pl" if $opt->verbose;
 $c->log->info("Starting Libki cronjob libki_nightly.pl") if $opt->logging;
 
-my $c = Libki->new();
 my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
 my $dbh = $schema->storage->dbh;
 
