@@ -1210,7 +1210,7 @@ $(document).ready(function() {
 
         $('#printslip').on('click', function() {
             myWindow=window.open('','','width=500,height=400');
-            myWindow.document.write('<h3>[% c.loc("Guest accound created") %]</h3><h4>[% c.loc("Username") %]: ' + data.username + '</h4><h4>[% c.loc("Password") %]: ' + data.password + '</h4><p>[% c.loc("Welcome") %]!</p>');
+            myWindow.document.write('<h3>[% c.loc("Guest account created") %]</h3><h4>[% c.loc("Username") %]: ' + data.username + '</h4><h4>[% c.loc("Password") %]: ' + data.password + '</h4><p>[% c.loc("Welcome") %]!</p>');
             myWindow.document.close(); //missing code
             myWindow.focus();
             myWindow.print();

@@ -919,7 +919,7 @@ msgid "Funds"
 msgstr "Medel"
 
 #: root/dynamic/templates/administration/index.tt:1203
-msgid "Guest accound created"
+msgid "Guest account created"
 msgstr "Gästkonto skapat"
 
 #: root/dynamic/templates/administration/settings/index.tt:743
