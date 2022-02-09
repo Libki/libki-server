@@ -219,6 +219,29 @@ sub release_print_job : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 funds_available
+
+Returns the patron's current account balance in Libki
+
+=cut
+
+sub funds_available : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $username = $c->request->params->{username};
+
+    my $instance = $c->instance;
+
+    my $user = $c->model('db::user')->find( { instance => $instance, username => $username } );
+
+    my $funds = $user->funds;
+
+    delete $c->stash->{Settings};
+    $c->stash( funds => $funds );
+
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
