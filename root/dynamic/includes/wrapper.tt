@@ -100,6 +100,17 @@
     <script type="text/javascript">
         [% IF interface == 'administration' %]
             [% CustomJsAdministration %]
+
+            $(document).ajaxComplete(function(event, request, options) {
+                var contenttype = request.getResponseHeader('content-type');
+                if (contenttype && contenttype.match(/^text\/html/)) {
+                    if (request.responseText.match(/login[-]form/)) {   // character class stops regex from matching itself
+                        $(".alert-success").remove();   // removes displayed success messages which could be misleading
+                        DisplayMessage( "error", "[% c.loc("You've been logged out.") %]" );
+                        window.location.reload();
+                    }
+                }
+            });
         [% ELSE %]
             [% CustomJsPublic %]
         [% END %]
