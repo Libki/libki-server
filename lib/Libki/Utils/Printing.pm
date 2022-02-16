@@ -208,7 +208,7 @@ sub release {
         }
     );
 
-    my $user - $print_job->user;
+    my $user = $print_job->user;
 
     if ( $total_cost <= $user->funds ) {
         $user->funds( $user->funds - $total_cost );
