@@ -3,6 +3,8 @@ package Libki::Controller::Public::API::DataTables;
 use Moose;
 use namespace::autoclean;
 
+use Libki::Utils::Printing qw(calculate_job_cost);
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -27,8 +29,8 @@ sub prints : Local Args(0) {
 
     my $instance = $c->instance;
 
-    if( !$c->user_exists ) {
-        $c->response->body( 'Unauthorized' );
+    if ( !$c->user_exists ) {
+        $c->response->body('Unauthorized');
         $c->response->status(401);
         return;
     }
@@ -36,8 +38,8 @@ sub prints : Local Args(0) {
     my $user = $c->user();
 
     # We need to map the table columns to field names for ordering
-    my @columns =
-      qw( me.type me.status me.printer me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
+    my @columns
+        = qw( me.type me.status me.printer me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
 
     # Set up filters
     my $filter;
@@ -63,13 +65,13 @@ sub prints : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+    for ( my $i = 0; $i < $c->request->param('iSortingCols'); $i++ ) {
         push(
             @sorting,
             {
                 '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
+                    . $c->request->param("sSortDir_$i") =>
+                    $columns[ $c->request->param("iSortCol_$i") ]
             }
         );
     }
@@ -77,12 +79,13 @@ sub prints : Local Args(0) {
     # Public API should only show the logged in user's print jobs
     $filter->{'me.user_id'} = $user->id;
 
-    my $total_records =
-      $c->model('DB::PrintJob')->search( { instance => $instance, user_id => $user->id } )->count;
+    my $total_records
+        = $c->model('DB::PrintJob')->search( { instance => $instance, user_id => $user->id } )
+        ->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::PrintJob')
-      ->count( $filter, { prefetch => [ { 'print_file' => 'user' } ] } );
+        ->count( $filter, { prefetch => [ { 'print_file' => 'user' } ] } );
 
     # Do the search, including any required sorting and pagination.
     my @prints = $c->model('DB::PrintJob')->search(
@@ -92,13 +95,20 @@ sub prints : Local Args(0) {
             rows     => ( $c->request->param('iDisplayLength') > 0 )
             ? $c->request->param('iDisplayLength')
             : undef,
-            offset => $c->request->param('iDisplayStart') || 0,
+            offset   => $c->request->param('iDisplayStart') || 0,
             prefetch => [ { 'print_file' => 'user' }, ],
         }
     );
 
     my @results;
     foreach my $p (@prints) {
+        my $total_cost = Libki::Utils::Printing::calculate_job_cost(
+            $c,
+            {
+                print_job => $p
+            }
+        );
+
         my $r;
         $r->{'DT_RowId'} = $p->id;
         $r->{'0'}        = $p->type;
@@ -108,6 +118,7 @@ sub prints : Local Args(0) {
         $r->{'4'}        = $p->print_file->pages;
         $r->{'5'}        = $p->print_file->client_name;
         $r->{'6'}        = $p->created_on->iso8601;
+        $r->{'7'}        = $total_cost;
         push( @results, $r );
     }
 
@@ -128,17 +139,16 @@ Endpoint that returns DataTables JSON of reservations.
 
 =cut
 
-sub reservations  : Local Args(0) {
+sub reservations : Local Args(0) {
     my ( $self, $c ) = @_;
 
     my $instance = $c->instance;
 
     my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
-    my $dbh = $schema->storage->dbh;
+    my $dbh    = $schema->storage->dbh;
 
     # We need to map the table columns to field names for ordering
-    my @columns =
-       qw/ client.name user.username me.begin_time me.end_time /;
+    my @columns = qw/ client.name user.username me.begin_time me.end_time /;
 
     # Set up filters
     my $filter = { 'me.instance' => $instance };
@@ -146,20 +156,20 @@ sub reservations  : Local Args(0) {
     my $search_term = $c->request->param("sSearch");
     if ($search_term) {
         $filter->{-or} = [
-            'client.name'    => { 'like', "%$search_term%" },
-            'user.username'  => { 'like', "%$search_term%" },
+            'client.name'   => { 'like', "%$search_term%" },
+            'user.username' => { 'like', "%$search_term%" },
         ];
     }
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
+    for ( my $i = 0; $i < $c->request->param('iSortingCols'); $i++ ) {
         push(
             @sorting,
             {
                 '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
+                    . $c->request->param("sSortDir_$i") =>
+                    $columns[ $c->request->param("iSortCol_$i") ]
             }
         );
     }
@@ -168,8 +178,7 @@ sub reservations  : Local Args(0) {
     # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
     # in this case, we'd only want the count of notes affecting the specific item,
     # not *all* items
-    my $total_records =
-      $c->model('DB::Reservation')->search( { instance => $instance } )->count;
+    my $total_records = $c->model('DB::Reservation')->search( { instance => $instance } )->count;
 
     # In case of pagination, we need to know how many records match in total
     my $count = $c->model('DB::Reservation')->count(
@@ -197,12 +206,7 @@ sub reservations  : Local Args(0) {
         my $end = $r->end_time->stringify();
         $end =~ s/T/ /;
 
-        my @reservationValues = (
-            $r->client->name,
-            $r->user->username,
-            $begin,
-            $end,
-        );
+        my @reservationValues = ( $r->client->name, $r->user->username, $begin, $end, );
 
         my $row;
         my $reservationValuesCounter = 0;

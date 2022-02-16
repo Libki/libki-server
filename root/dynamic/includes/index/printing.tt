@@ -59,6 +59,7 @@
             <th>[% c.loc("Pages") %]</th>
             <th>[% c.loc("Client") %]</th>
             <th>[% c.loc("Created") %]</th>
+            <th>[% c.loc("Cost") %]</th>
             </thead>
         </table>
     </div>
@@ -101,21 +102,19 @@
 
             // DateTime created
             $('td:eq(6)', nRow).html(aData[6].replace('T', ' '));
-        },
-        "fnServerData": function(sSource, aoData, fnCallback) {
-            if (window.location_filter) {
-                aoData.push({
-                    "name": "location_filter",
-                    "value": window.location_filter
-                });
-            }
 
-            $.getJSON(sSource, aoData, function(json) {
-                fnCallback(json)
+            // Cost
+            var formatter = new Intl.NumberFormat('en-US', { //FIXME: locale and currency should be configurable system settings
+              style: 'currency',
+              currency: 'USD',
+
+              // These options are needed to round to whole numbers if that's what you want.
+              //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+              //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
             });
-        },
-        "fnInitComplete": function() {
-            $('#print-table-toolbar').prependTo($('#print-table_filter'));
+
+            formatter.format(2500); /* $2,500.00 */
+            $('td:eq(7)', nRow).html( formatter.format(aData[7]) );
         }
     });
 </script>
