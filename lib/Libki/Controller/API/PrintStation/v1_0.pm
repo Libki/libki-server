@@ -6,7 +6,8 @@ use namespace::autoclean;
 use Image::Magick::Thumbnail::PDF qw(create_thumbnail);
 use JSON;
 use List::Util qw(none);
-use File::Temp qw( tempfile tempdir );
+use File::Temp qw(tempfile tempdir);
+use Libki::Utils::Printing qw(calculate_job_cost);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -124,6 +125,8 @@ sub print_jobs : Path('print_jobs') : Args(0) {
 
     my $data = [];
     while ( my $j = $jobs->next ) {
+        my $cost = Libki::Utils::Printing::calculate_job_cost( $c, { print_job => $j } );
+
         push(
             @$data,
             {
@@ -132,9 +135,11 @@ sub print_jobs : Path('print_jobs') : Args(0) {
                 created_on    => $j->created_on->iso8601,
                 print_file_id => $j->print_file_id,
                 pages         => $j->print_file->pages,
+                cost          => $cost,
             }
         );
     }
+
     $c->stash( print_jobs => $data );
 
     $c->response->headers->content_type('application/json');

@@ -7,12 +7,13 @@ use PDF::API2;
 
 use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
 
-use constant PRINT_STATUS_PENDING            => 'Pending';            # Waiting for PrintManager/CUPS to accept the job
-use constant PRINT_STATUS_HELD               => 'Held';               # Waiting for user to release print job
-use constant PRINT_STATUS_PROCESSING         => 'Processing';         # Needs to be evaluated for sufficient funds
-use constant PRINT_STATUS_INSUFFICIENT_FUNDS => 'Insufficient Funds'; # User doesn't have funds to cover printing
-use constant PRINT_STATUS_IN_PROGRESS        => 'InProgress';         # Print job is being sent to printer
-use constant PRINT_STATUS_DONE               => 'Done';               # Printer has accepted the print job
+use constant PRINT_STATUS_PENDING => 'Pending';    # Waiting for PrintManager/CUPS to accept the job
+use constant PRINT_STATUS_HELD    => 'Held';       # Waiting for user to release print job
+use constant PRINT_STATUS_PROCESSING => 'Processing';   # Needs to be evaluated for sufficient funds
+use constant PRINT_STATUS_INSUFFICIENT_FUNDS =>
+    'Insufficient Funds';                               # User doesn't have funds to cover printing
+use constant PRINT_STATUS_IN_PROGRESS => 'InProgress';  # Print job is being sent to printer
+use constant PRINT_STATUS_DONE        => 'Done';        # Printer has accepted the print job
 
 =head2 create_print_job_and_file
 
@@ -108,9 +109,6 @@ sub create_print_job_and_file {
             }
         );
 
-        Libki::Utils::Printing::reevaluate_print_jobs_with_insufficient_funds( $c,
-            { user => $user, print_jobs => [$print_job] } );
-
         $c->stash( success => 1 );
     }
     else {
@@ -123,63 +121,37 @@ sub create_print_job_and_file {
     }
 }
 
-=head2 reevaluate_print_jobs_with_insufficient_funds
+=head2 calculate_job_cost
 
-Helper function to check for printable jobs after a users funds have been changed.
+Helper function to calculate the cost of a print job for a given printer
 
 =cut
 
-sub reevaluate_print_jobs_with_insufficient_funds {
+sub calculate_job_cost {
     my ( $c, $params ) = @_;
 
-    my $user       = $params->{user};
-    my $print_jobs = $params->{print_jobs};
+    my $print_job  = $params->{print_job};
+    my $print_file = $params->{print_file};
+    my $printer    = $params->{printer};
 
-    my @jobs = $print_jobs ? @$print_jobs : $c->model('DB::PrintJob')->search(
-        {
-            user_id => $user->id,
-            status  => PRINT_STATUS_INSUFFICIENT_FUNDS,
-        }
-    );
+    die "Libki::Utils::Printing::calculate_job_cost: missing param print_job" unless $print_job;
 
-    my $printers = $c->get_printer_configuration->{printers};
-
-    foreach my $j (@jobs) {
-        my $printer = $printers->{ $j->printer };
-
-        $c->log->error(
-            sprintf(
-                "User id %s printed to non-existent printer id %s while updating print jobs with insufficient funds",
-                $user->id, $j->printer
-            )
-            )
-            && next
-            unless $printer;
-
-
-        my $pages  = $j->print_file->pages;
-        my $copies = $j->copies;
-
-        my $total_cost = $copies * $pages * $printer->{cost_per_page};
-
-        if ( $total_cost <= $user->funds ) {
-            $user->funds( $user->funds - $total_cost );
-
-            my $status = $printer->{auto_release} ? PRINT_STATUS_PENDING : PRINT_STATUS_HELD;
-            $j->status($status);
-
-            $c->model('DB')->txn_do(
-                sub {
-                    $user->update();
-                    $j->update();
-                }
-            );
-        }
-        else {
-            $j->status(PRINT_STATUS_INSUFFICIENT_FUNDS);
-            $j->update();
-        }
+    unless ($printer) {
+        my $printers = $c->get_printer_configuration;
+        $printer = $printers->{printers}->{ $print_job->printer };
     }
+
+    die
+        "Libki::Utils::Printing::calculate_job_cost: missing param printer or invalid printer referenced"
+        unless $printer;
+
+    $print_file ||= $print_job->print_file;
+    my $pages  = $print_file->pages;
+    my $copies = $print_job->copies;
+
+    my $cost = $copies * $pages * $printer->{cost_per_page};
+
+    return $cost;
 }
 
 =head2 release
@@ -228,6 +200,31 @@ sub release {
         print_file => $print_file,
         printer    => $printer,
     };
+
+    my $total_cost = calculate_job_cost( $c,
+        {
+            print_job => $print_job,
+            printer   => $printer,
+        }
+    );
+
+    my $user - $print_job->user;
+
+    if ( $total_cost <= $user->funds ) {
+        $user->funds( $user->funds - $total_cost );
+
+        $print_job->status(PRINT_STATUS_PENDING);
+
+        $c->model('DB')->txn_do(
+            sub {
+                $user->update();
+                $print_job->update();
+            }
+        );
+    }
+    else {
+        return { success => 0, message => 'INSUFFICIENT_FUNDS' };
+    }
 
     if ( $print_job->type eq 'cups' ) {
         return release_for_cups( $c, $params );
