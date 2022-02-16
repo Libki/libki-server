@@ -161,12 +161,20 @@ Release a held print job so it can actually be printed.
 =cut
 
 sub release {
-    my ( $c, $print_job_id ) = @_;
+    my ( $c, $print_job_id, $user ) = @_;
 
     my $instance = $c->instance;
 
     my $print_job
         = $c->model('DB::PrintJob')->find( { id => $print_job_id, instance => $instance } );
+
+    if ( $user ) {
+        return {
+            success => 0,
+            error   => 'User does not match',
+            id      => $print_job_id
+        } unless $print_job->user_id == $user->id;
+    }
 
     return {
         success => 0,

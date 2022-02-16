@@ -71,6 +71,9 @@ sub auto : Private {
         $c->forward( $c->view('JSON') );
         return;
     }
+
+    my $user = $auth->{user};
+    $c->stash({ user => $user });
 }
 
 =head2 add_funds
@@ -109,7 +112,7 @@ sub print_jobs : Path('print_jobs') : Args(0) {
     my $instance = $c->instance;
 
     my $username = $c->request->params->{username};
-    my $user     = $c->model('DB::User')->find( { instance => $instance, username => $username } );
+    my $user     = $c->stash->{user};
 
     my $jobs = $c->model('DB::PrintJob')->search(
         {
@@ -217,7 +220,9 @@ sub release_print_job : Local : Args(0) {
 
     my $id = $c->request->params->{id};
 
-    my $data = Libki::Utils::Printing::release( $c, $id );
+    my $user = $c->stash->{user};
+
+    my $data = Libki::Utils::Printing::release( $c, $id, $user );
     delete $c->stash->{Settings};
     $c->stash( $data );
 
@@ -237,7 +242,7 @@ sub funds_available : Local : Args(0) {
 
     my $instance = $c->instance;
 
-    my $user = $c->model('db::user')->find( { instance => $instance, username => $username } );
+    my $user = $c->stash->{user};
 
     my $funds = $user->funds;
 

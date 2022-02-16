@@ -50,6 +50,7 @@
     <p/>
 
     <div class="container">
+        <h4>Funds available for printing: <span id="user-funds">0</span></h4>
         <table id="print-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
             <th>[% c.loc("Type") %]</th>
@@ -60,6 +61,7 @@
             <th>[% c.loc("Client") %]</th>
             <th>[% c.loc("Created") %]</th>
             <th>[% c.loc("Cost") %]</th>
+            <th></th>
             </thead>
         </table>
     </div>
@@ -73,6 +75,12 @@
       $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
+    const formatter = new Intl.NumberFormat('en-US', { //FIXME: locale and currency should be configurable system settings
+      style: 'currency',
+      currency: 'USD',
+    });
+
+
     // Initalize the Print table as a datatable
     pTable = $('#print-table').DataTable({
         [% IF !c.language.match('en') %]
@@ -83,14 +91,25 @@
         "bProcessing": true, // Indicate when the table is processing data
         "bServerSide": true, // Indicate that the datatable gets data from an HTTP GET request
         "sAjaxSource": "[% c.uri_for('/public/api/datatables/prints') %]", // The actual URL to call for data
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+            $.getJSON( sSource, aoData, function (json) { 
+                $.getJSON( "/public/api/user/funds", function( data ) {
+                    const funds = data.funds;
+                    $('#user-funds').html( formatter.format( funds ) );
+                });
+
+                fnCallback(json);
+            });
+        },
+        "fnInitComplete": function (oSettings, json) {
+            setInterval(() => {
+                $("#print-table").dataTable().fnDraw(true);
+            }, 5000);
+        },
         "order": [
             [6, "desc"]
         ],
-        "fnDrawCallback": function(oSettings, json) {
-            AddTableRowToolbar($('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr'));
-        },
         "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-        console.log(aData);
             // Type column
             $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
 
@@ -104,17 +123,33 @@
             $('td:eq(6)', nRow).html(aData[6].replace('T', ' '));
 
             // Cost
-            var formatter = new Intl.NumberFormat('en-US', { //FIXME: locale and currency should be configurable system settings
-              style: 'currency',
-              currency: 'USD',
-
-              // These options are needed to round to whole numbers if that's what you want.
-              //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-              //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-            });
-
-            formatter.format(2500); /* $2,500.00 */
             $('td:eq(7)', nRow).html( formatter.format(aData[7]) );
+
+            let not_held = aData['status'] !='Held';
+            let insufficient_funds = ! aData['sufficient_funds'];
+
+            let html;
+            if ( not_held || insufficient_funds ) {
+                html = `<a class="btn btn-primary print-release disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+            } else {
+                html = `<a class="btn btn-primary print-release" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+            }
+            $('td:eq(8)', nRow).html(html);
         }
+    });
+
+    $( "#print-table" ).on( "click", "a.print-release", function(e) {
+        e.preventDefault();
+        const job_id = $(this).data('jobid');
+
+        $.getJSON( "/public/api/user/release_print_job", { id: job_id }, function( data ) {
+            if ( data.success ) {
+                alert('[% c.loc("Print job sent to printer!") %]');
+            } else {
+                alert( data.error );
+            }
+
+            $("#print-table").dataTable().fnDraw(true);
+        });
     });
 </script>

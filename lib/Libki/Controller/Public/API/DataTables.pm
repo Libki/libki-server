@@ -110,15 +110,19 @@ sub prints : Local Args(0) {
         );
 
         my $r;
-        $r->{'DT_RowId'} = $p->id;
-        $r->{'0'}        = $p->type;
-        $r->{'1'}        = $p->status;
-        $r->{'2'}        = $p->printer;
-        $r->{'3'}        = $p->copies;
-        $r->{'4'}        = $p->print_file->pages;
-        $r->{'5'}        = $p->print_file->client_name;
-        $r->{'6'}        = $p->created_on->iso8601;
-        $r->{'7'}        = $total_cost;
+        $r->{'DT_RowId'}         = $p->id;
+        $r->{'print_job_id'}     = $p->id;
+        $r->{'status'}           = $p->status;
+        $r->{'sufficient_funds'} = $total_cost <= $user->funds;
+        $r->{'0'}                = $p->type;
+        $r->{'1'}                = $p->status;
+        $r->{'2'}                = $p->printer;
+        $r->{'3'}                = $p->copies;
+        $r->{'4'}                = $p->print_file->pages;
+        $r->{'5'}                = $p->print_file->client_name;
+        $r->{'6'}                = $p->created_on->iso8601;
+        $r->{'7'}                = $total_cost;
+        $r->{'8'}                = 0;
         push( @results, $r );
     }
 
