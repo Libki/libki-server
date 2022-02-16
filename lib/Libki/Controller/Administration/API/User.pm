@@ -339,10 +339,6 @@ sub update : Local : Args(0) {
         }
     }
 
-    if ( $funds_changed ) {
-        Libki::Utils::Printing::reevaluate_print_jobs_with_insufficient_funds( $c, { user => $user } );
-    }
-
     $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );
 }
