@@ -56,7 +56,6 @@
             <th>[% c.loc("Status") %]</th>
             <th>[% c.loc("Printer") %]</th>
             <th>[% c.loc("Copies") %]</th>
-            <th>[% c.loc("File name") %]</th>
             <th>[% c.loc("Pages") %]</th>
             <th>[% c.loc("Client") %]</th>
             <th>[% c.loc("Created") %]</th>
@@ -84,7 +83,7 @@
         "bServerSide": true, // Indicate that the datatable gets data from an HTTP GET request
         "sAjaxSource": "[% c.uri_for('/public/api/datatables/prints') %]", // The actual URL to call for data
         "order": [
-            [7, "desc"]
+            [6, "desc"]
         ],
         "fnDrawCallback": function(oSettings, json) {
             AddTableRowToolbar($('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr'));
@@ -98,10 +97,10 @@
             $('td:eq(1)', nRow).html(aData[1].replace('In_progress', `[% c.loc("In progress") %]`));
 
             // Client column
-            $('td:eq(6)', nRow).html(aData[6].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
+            $('td:eq(5)', nRow).html(aData[5].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
 
             // DateTime created
-            $('td:eq(7)', nRow).html(aData[7].replace('T', ' '));
+            $('td:eq(6)', nRow).html(aData[6].replace('T', ' '));
         },
         "fnServerData": function(sSource, aoData, fnCallback) {
             if (window.location_filter) {

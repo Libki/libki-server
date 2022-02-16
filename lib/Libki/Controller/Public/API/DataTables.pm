@@ -105,10 +105,9 @@ sub prints : Local Args(0) {
         $r->{'1'}        = $p->status;
         $r->{'2'}        = $p->printer;
         $r->{'3'}        = $p->copies;
-        $r->{'4'}        = $p->print_file->filename;
-        $r->{'5'}        = $p->print_file->pages;
-        $r->{'6'}        = $p->print_file->client_name;
-	    $r->{'7'}        = $p->created_on->iso8601;
+        $r->{'4'}        = $p->print_file->pages;
+        $r->{'5'}        = $p->print_file->client_name;
+        $r->{'6'}        = $p->created_on->iso8601;
         push( @results, $r );
     }
 
