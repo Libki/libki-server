@@ -216,7 +216,7 @@ sub release {
         }
     );
 
-    my $user = $print_job->user;
+    $user->discard_changes; # Let's make absolutely sure we have the correct funds
 
     if ( $total_cost <= $user->funds ) {
         $user->funds( $user->funds - $total_cost );
