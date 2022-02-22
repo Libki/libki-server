@@ -65,6 +65,7 @@
             <th>[% c.loc("Created") %]</th>
             <th>[% c.loc("Cost") %]</th>
             <th></th>
+            <th></th>
             </thead>
         </table>
     </div>
@@ -138,6 +139,13 @@
                 html = `<a class="btn btn-primary print-release" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
             }
             $('td:eq(8)', nRow).html(html);
+
+            if ( not_held ) {
+                html = `<a class="btn btn-primary print-cancel disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+            } else {
+                html = `<a class="btn btn-primary print-cancel" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+            }
+            $('td:eq(9)', nRow).html(html);
         }
     });
 
@@ -150,6 +158,24 @@
             $.getJSON( "/public/api/user/release_print_job", { id: job_id }, function( data ) {
                 if ( data.success ) {
                     alert('[% c.loc("Print job released for printing!") %]');
+                } else {
+                    alert( data.error );
+                }
+
+                $("#print-table").dataTable().fnDraw(true);
+            });
+        };
+    });
+
+    $( "#print-table" ).on( "click", "a.print-cancel", function(e) {
+        e.preventDefault();
+        const job_id = $(this).data('jobid');
+
+        const confirmed = confirm("[% c.loc('Are you sure you want to cancel this print job?') %]");
+        if ( confirmed ) {
+            $.getJSON( "/public/api/user/cancel_print_job", { id: job_id }, function( data ) {
+                if ( data.success ) {
+                    alert('[% c.loc("Print job canceled!") %]');
                 } else {
                     alert( data.error );
                 }

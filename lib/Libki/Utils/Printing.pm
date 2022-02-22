@@ -9,9 +9,8 @@ use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
 
 use constant PRINT_STATUS_PENDING => 'Pending';    # Waiting for PrintManager/CUPS to accept the job
 use constant PRINT_STATUS_HELD    => 'Held';       # Waiting for user to release print job
-use constant PRINT_STATUS_PROCESSING => 'Processing';   # Needs to be evaluated for sufficient funds
-use constant PRINT_STATUS_INSUFFICIENT_FUNDS =>
-    'Insufficient Funds';                               # User doesn't have funds to cover printing
+use constant PRINT_STATUS_PROCESSING  => 'Processing';  # Needs to be evaluated for sufficient funds
+use constant PRINT_STATUS_CANCELED    => 'Canceled';    # Canceled by user
 use constant PRINT_STATUS_IN_PROGRESS => 'InProgress';  # Print job is being sent to printer
 use constant PRINT_STATUS_DONE        => 'Done';        # Printer has accepted the print job
 
@@ -154,6 +153,39 @@ sub calculate_job_cost {
     return $cost;
 }
 
+=head2 cancel
+
+Release a held print job so it can actually be printed.
+
+=cut
+
+sub cancel {
+    my ( $c, $print_job_id, $user ) = @_;
+
+    my $instance = $c->instance;
+
+    my $print_job
+        = $c->model('DB::PrintJob')->find( { id => $print_job_id, instance => $instance } );
+
+    if ( $user ) {
+        return {
+            success => 0,
+            error   => 'User does not match',
+            id      => $print_job_id
+        } unless $print_job->user_id == $user->id;
+    }
+
+    return {
+        success => 0,
+        error   => 'Print Job Not Found',
+        id      => $print_job_id
+    } unless $print_job;
+
+    $print_job->status(PRINT_STATUS_CANCELED);
+    return { success => $print_job->update() ? 1 : 0 };
+
+}
+
 =head2 release
 
 Release a held print job so it can actually be printed.
@@ -240,8 +272,6 @@ sub release {
     elsif ( $print_job->type eq 'PrintManager' ) {
         return release_for_print_manager( $c, $params );
     }
-
-    $c->forward( $c->view('JSON') );
 }
 
 =head2 release_for_print_manager

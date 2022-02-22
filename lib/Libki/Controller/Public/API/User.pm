@@ -65,9 +65,34 @@ sub release_print_job : Local : Args(0) {
     my $id = $c->request->params->{id};
 
     my $user = $c->user();
-    warn "USER: $user";
 
     my $data = Libki::Utils::Printing::release( $c, $id, $user );
+    delete $c->stash->{Settings};
+    $c->stash( $data );
+
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 cancel_print_job
+
+Sets the given print job status to Canceled
+
+=cut
+
+sub cancel_print_job : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    if ( !$c->user_exists ) {
+        $c->response->body('Unauthorized');
+        $c->response->status(401);
+        return;
+    }
+
+    my $id = $c->request->params->{id};
+
+    my $user = $c->user();
+
+    my $data = Libki::Utils::Printing::cancel( $c, $id, $user );
     delete $c->stash->{Settings};
     $c->stash( $data );
 

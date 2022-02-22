@@ -123,6 +123,7 @@ sub prints : Local Args(0) {
         $r->{'6'}                = $p->created_on->iso8601;
         $r->{'7'}                = $total_cost;
         $r->{'8'}                = 0;
+        $r->{'9'}                = 0;
         push( @results, $r );
     }
 
