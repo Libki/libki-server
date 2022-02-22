@@ -230,6 +230,27 @@ sub release_print_job : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 cancel_print_job
+
+Sends the given print job to the actual print management backend.
+
+=cut
+
+sub cancel_print_job : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $id = $c->request->params->{id};
+
+    my $user = $c->stash->{user};
+
+    my $data = Libki::Utils::Printing::cancel( $c, $id, $user );
+
+    delete $c->stash->{$_} for keys %{ $c->stash };
+    $c->stash($data);
+
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 funds_available
 
 Returns the patron's current account balance in Libki
