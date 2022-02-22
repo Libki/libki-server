@@ -43,7 +43,7 @@ sub auto : Private {
     );
 
     unless ($api_key_validated) {
-        delete $c->stash->{Settings};
+        delete $c->stash->{$_} for keys %{ $c->stash };
         $c->response->status(401);
         $c->stash(
             success => JSON::false,
@@ -61,8 +61,8 @@ sub auto : Private {
         }
     );
 
-    unless ($auth->{success}) {
-        delete $c->stash->{Settings};
+    unless ( $auth->{success} ) {
+        delete $c->stash->{$_} for keys %{ $c->stash };
         $c->response->status(401);
         $c->stash(
             success => JSON::false,
@@ -73,7 +73,7 @@ sub auto : Private {
     }
 
     my $user = $auth->{user};
-    $c->stash({ user => $user });
+    $c->stash( { user => $user } );
 }
 
 =head2 add_funds
@@ -146,7 +146,7 @@ sub print_jobs : Path('print_jobs') : Args(0) {
     $c->stash( print_jobs => $data );
 
     $c->response->headers->content_type('application/json');
-    $c->response->body( JSON::to_json( $data ) );
+    $c->response->body( JSON::to_json($data) );
     $c->response->write();
 }
 
@@ -178,7 +178,7 @@ sub print_preview : Local : Args(0) {
         my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
         if ($print_file) {
             my $dir = tempdir( CLEANUP => 1 );
-            my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.pdf' );
+            my ( $fh, $filename ) = tempfile( DIR => $dir, SUFFIX => '.pdf' );
             print $fh $print_file->data;
             close($fh);
 
@@ -191,9 +191,9 @@ sub print_preview : Local : Args(0) {
                     normalize   => 0,
                 }
             );
-            open(my $image_fh, '<:raw', $image);
+            open( my $image_fh, '<:raw', $image );
 
-            $c->response->body( $image_fh );
+            $c->response->body($image_fh);
 
             $c->response->content_type('image/png');
             $c->response->header( 'Content-Disposition', "inline; filename=$id.png" );
@@ -223,8 +223,9 @@ sub release_print_job : Local : Args(0) {
     my $user = $c->stash->{user};
 
     my $data = Libki::Utils::Printing::release( $c, $id, $user );
-    delete $c->stash->{Settings};
-    $c->stash( $data );
+
+    delete $c->stash->{$_} for keys %{ $c->stash };
+    $c->stash($data);
 
     $c->forward( $c->view('JSON') );
 }
@@ -246,7 +247,7 @@ sub funds_available : Local : Args(0) {
 
     my $funds = $user->funds;
 
-    delete $c->stash->{Settings};
+    delete $c->stash->{$_} for keys %{ $c->stash };
     $c->stash( funds => $funds );
 
     $c->forward( $c->view('JSON') );
