@@ -473,7 +473,7 @@ sub prints : Local Args(0) {
         $r->{'5'}        = $p->print_file->pages;
         $r->{'6'}        = $p->print_file->client_name;
         $r->{'7'}        = $p->print_file->username;
-	    $r->{'8'}        = $p->created_on->iso8601;
+        $r->{'8'}        = $c->format_dt( { dt => $p->created_on, include_time => 1 } );
         push( @results, $r );
     }
 

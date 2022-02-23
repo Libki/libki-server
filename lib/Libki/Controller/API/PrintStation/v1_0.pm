@@ -135,7 +135,7 @@ sub print_jobs : Path('print_jobs') : Args(0) {
             {
                 print_job_id  => $j->id,
                 copies        => $j->copies,
-                created_on    => $j->created_on->iso8601,
+                created_on    => $c->format_dt( { dt => $j->created_on, include_time => 1 } ),
                 print_file_id => $j->print_file_id,
                 pages         => $j->print_file->pages,
                 cost          => $cost,

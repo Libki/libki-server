@@ -120,7 +120,7 @@ sub prints : Local Args(0) {
         $r->{'3'}                = $p->copies;
         $r->{'4'}                = $p->print_file->pages;
         $r->{'5'}                = $p->print_file->client_name;
-        $r->{'6'}                = $p->created_on->iso8601;
+        $r->{'6'}                = $c->format_dt( { dt => $p->created_on, include_time => 1 } );
         $r->{'7'}                = $total_cost;
         $r->{'8'}                = 0;
         $r->{'9'}                = 0;
