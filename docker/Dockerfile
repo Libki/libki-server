@@ -27,8 +27,6 @@ ENV LIBKI_MAX_WORKERS 4
 # Install needed packages
 RUN install_packages \
        curl \
-       git \
-       vim \
        build-essential \
        perl \
        cpanminus \
