@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to change both session and allotment minutes at the same time from the Clients table "Modify time" button
 - Add the ability to send a Qt Style Sheet to the Libki client so it can be given custom styling easily
 - Add ability to set custom text for Terms of Service on the message and in the "Show Details" section
+- Libki server automatically redirects to login page when the patron is logged out via a timeout
 ### Fixed
 - Users getting incorrect session times when logging in before a reservation #210
 - Fix age limit bug
