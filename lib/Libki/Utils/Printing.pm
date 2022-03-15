@@ -9,7 +9,6 @@ use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
 
 use constant PRINT_STATUS_PENDING => 'Pending';    # Waiting for PrintManager/CUPS to accept the job
 use constant PRINT_STATUS_HELD    => 'Held';       # Waiting for user to release print job
-use constant PRINT_STATUS_PROCESSING  => 'Processing';  # Needs to be evaluated for sufficient funds
 use constant PRINT_STATUS_CANCELED    => 'Canceled';    # Canceled by user
 use constant PRINT_STATUS_IN_PROGRESS => 'InProgress';  # Print job is being sent to printer
 use constant PRINT_STATUS_DONE        => 'Done';        # Printer has accepted the print job
@@ -95,7 +94,7 @@ sub create_print_job_and_file {
                     {
                         instance      => $instance,
                         type          => $printer->{type},
-                        status        => PRINT_STATUS_PROCESSING,
+                        status        => PRINT_STATUS_HELD,
                         data          => undef,
                         copies        => $copies,
                         printer       => $printer_id,
