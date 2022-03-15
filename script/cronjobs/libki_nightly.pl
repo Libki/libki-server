@@ -111,7 +111,7 @@ foreach my $urd (@user_retention_days) {
 ## Clear out old print jobs and print files
 my @print_retention_days = $c->model('DB::Setting')->search( { name => 'PrintJobRetentionDays' } );
 foreach my $prd (@print_retention_days) {
-    if ( $prd->value ) {
+    if ( defined $prd->value && $prd->value ne q{} ) {
         my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
         $dt->subtract( days => $prd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
