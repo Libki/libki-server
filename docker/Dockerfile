@@ -17,7 +17,7 @@
 # Start with the previous image for speed,
 # it has all the dependencies installed already
 #FROM libki/libki-server:latest
-FROM bitnami/minideb:buster
+FROM bitnami/minideb:bullseye
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
