@@ -17,7 +17,7 @@
 # Start with the previous image for speed,
 # it has all the dependencies installed already
 #FROM libki/libki-server:latest
-FROM debian:buster-slim
+FROM bitnami/minideb:buster
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
 
@@ -25,8 +25,7 @@ ENV LIBKI_SERVER_PORT 3000
 ENV LIBKI_MAX_WORKERS 4
 
 # Install needed packages
-RUN apt-get update -y \
-    && apt-get -y install \
+RUN install_packages \
        curl \
        git \
        vim \
@@ -35,6 +34,8 @@ RUN apt-get update -y \
        cpanminus \
        libdbd-mysql-perl \
        libimage-magick-perl \
+# for cpanm --installdeps .
+       libmodule-install-perl \
 # for DBD::mysql
        default-libmysqlclient-dev \
 # for 'ldb' alias
@@ -43,16 +44,13 @@ RUN apt-get update -y \
        libcups2-dev \
        libcupsfilters-dev \
 # Print uploads filetype detection
-       shared-mime-info \
-    && rm -rf /var/cache/apt/archives/* \
-    && rm -rf /var/lib/api/lists/*
+       shared-mime-info
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
 COPY . /app
 WORKDIR /app
 
-RUN cpanm -n Module::Install
 RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
