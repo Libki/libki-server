@@ -48,17 +48,16 @@ sub authenticate_user : Local : Args(0) {
 
     $c->log()->debug("API::Public::authenticate( username => $username, username => $username");
 
-    my $data
-        = ( $api_key_validated && $username && $password )
-        ? Libki::Auth::authenticate_user(
+    my $data =
+      ( $api_key_validated && $username && $password )
+      ? Libki::Auth::authenticate_user(
         {
-            context          => $c,
-            username         => $username,
-            password         => $password,
-            no_external_auth => 1,
+            context  => $c,
+            username => $username,
+            password => $password,
         }
-        )
-        : undef;
+      )
+      : undef;
 
     if ($data) {
         $c->stash(
