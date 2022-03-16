@@ -36,8 +36,6 @@ RUN install_packages \
        libmodule-install-perl \
 # for DBD::mysql
        default-libmysqlclient-dev \
-# for 'ldb' alias
-       mariadb-client \
 # Net::CUPS
        libcups2-dev \
        libcupsfilters-dev \
