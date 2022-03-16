@@ -2,7 +2,6 @@ package Libki::Utils::Printing;
 
 use Modern::Perl;
 
-use Net::CUPS;
 use PDF::API2;
 
 use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
@@ -358,6 +357,8 @@ Initializes the Net::CUPS module with the values from the configuration.
 =cut
 
 sub cups_setup {
+    require Net::CUPS;
+
     my ($c) = @_;
     my $instance = $c->instance;
 

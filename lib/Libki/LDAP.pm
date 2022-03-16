@@ -1,7 +1,5 @@
 package Libki::LDAP;
 
-use Net::LDAP;
-
 =head2 authenticate_via_ldap
 
 Authenticates a given username and password via LDAP.
@@ -140,8 +138,10 @@ sub testGuid {
     return undef unless $userDn;
     
     if ($ldaps) {
+        require Net::LDAPS;
         $ldap = Net::LDAPS->new($host, verify=>'none') or die "$@";
     } else {
+        require Net::LDAP;
         $ldap = Net::LDAP->new($host, verify=>'none') or die "$@";    
     }
 

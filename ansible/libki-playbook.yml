@@ -31,7 +31,6 @@
      cpanm: name={{ item }}
      with_items:
        - namespace::autoclean
-       - Archive::Zip
        - Catalyst::Action::RenderView
        - Catalyst::Authentication::Realm::SimpleDB
        - Catalyst::Controller::REST
