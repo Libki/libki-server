@@ -58,6 +58,7 @@ sub auto : Private {
             context  => $c,
             username => $username,
             password => $password,
+            no_external_auth => 1,
         }
     );
 
@@ -74,24 +75,6 @@ sub auto : Private {
 
     my $user = $auth->{user};
     $c->stash( { user => $user } );
-}
-
-=head2 add_funds
-
-=cut
-
-sub add_funds : Path('add_funds') : Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $username = $c->request->params->{username};
-
-    my $instance = $c->instance;
-    my $config   = $c->config->{instances}->{$instance} || $c->config;
-    my $log      = $c->log();
-
-    my $user = $c->model('DB::User')->find( { instance => $instance, username => $username } );
-
-    my $now = $c->now();
 }
 
 =head2 print_jobs

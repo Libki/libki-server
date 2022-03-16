@@ -12,9 +12,12 @@ Checks a username and password combo for validity
 
 sub authenticate_user {
     my ($params)        = @_;
-    my $c               = $params->{context};
-    my $username        = $params->{username};
-    my $password        = $params->{password};
+    my $c                = $params->{context};
+    my $username         = $params->{username};
+    my $password         = $params->{password};
+    my $no_external_auth = $params->{no_external_auth};
+
+    my $external_auth = !$no_external_auth;
 
     my $instance = $c->instance;
     my $config   = $c->instance_config;
@@ -25,7 +28,7 @@ sub authenticate_user {
 
     ## If SIP is enabled, try SIP first, unless we have a guest or staff account
     my ( $success, $error, $sip_fields ) = ( 1, undef, undef );
-    if ( $config->{SIP}->{enable} ) {
+    if ( $external_auth && $config->{SIP}->{enable} ) {
         if (
             !$user
             || (   $user
@@ -54,7 +57,7 @@ sub authenticate_user {
     }
 
     ## If LDAP is enabled, try LDAP, unless we have a guest or staff account
-    if ( $config->{LDAP}->{enable} ) {
+    if ( $external_auth && $config->{LDAP}->{enable} ) {
         $log->debug( __PACKAGE__ . " attempting LDAP authentication for $username" );
         if (
             !$user
