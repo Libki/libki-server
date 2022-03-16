@@ -2,7 +2,6 @@ requires 'namespace::autoclean';
 
 requires 'Module::Install';
 
-recommends 'File::Find::Rule';
 recommends 'LWP::Simple';
 recommends 'Net::CUPS';
 recommends 'Net::LDAP';
@@ -41,6 +40,7 @@ requires 'DateTime';
 requires 'DateTime::Format::DateParse';
 requires 'DateTime::Span';
 requires 'Encode';
+requires 'File::Find::Rule';
 requires 'File::Slurp';
 requires 'Gazelle';
 requires 'Getopt::Long';
