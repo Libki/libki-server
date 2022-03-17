@@ -33,7 +33,6 @@ RUN apk add --no-cache \
         mysql-client \
         perl-app-cpanminus \
         perl-dbd-mysql \
-        perl-dbd-sqlite \
         perl-dev \
         perl-exporter \
         perl-getopt-long \
@@ -49,9 +48,7 @@ RUN apk add --no-cache \
         perl-posix-strftime-compiler \
         perl-proc-wait3 \
         perl-sub-identify \
-        perl-sub-name \
         perl-template-toolkit \
-        perl-text-soundex \
         perl-yaml-xs \
         sed \
         shared-mime-info \
