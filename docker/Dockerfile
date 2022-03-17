@@ -26,6 +26,7 @@ ENV LIBKI_MAX_WORKERS 4
 
 # Install needed packages
 RUN install_packages \
+       imagemagick
        curl \
        build-essential \
        perl \
