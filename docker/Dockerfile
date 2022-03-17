@@ -16,7 +16,6 @@
 
 # Start with the previous image for speed,
 # it has all the dependencies installed already
-#FROM libki/libki-server:latest
 FROM bitnami/minideb:bullseye
 
 MAINTAINER Kyle M Hall <kyle@kylehall.info>
@@ -26,22 +25,22 @@ ENV LIBKI_MAX_WORKERS 4
 
 # Install needed packages
 RUN install_packages \
-       imagemagick
-       curl \
-       build-essential \
-       perl \
-       cpanminus \
-       libdbd-mysql-perl \
-       libimage-magick-perl \
-# for cpanm --installdeps .
-       libmodule-install-perl \
-# for DBD::mysql
-       default-libmysqlclient-dev \
-# Net::CUPS
-       libcups2-dev \
-       libcupsfilters-dev \
-# Print uploads filetype detection
-       shared-mime-info
+    imagemagick \
+    curl \
+    build-essential \
+    perl \
+    cpanminus \
+    libdbd-mysql-perl \
+    libimage-magick-perl \
+    # for cpanm --installdeps .
+    libmodule-install-perl \
+    # for DBD::mysql
+    default-libmysqlclient-dev \
+    # Net::CUPS
+    libcups2-dev \
+    libcupsfilters-dev \
+    # Print uploads filetype detection
+    shared-mime-info
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
