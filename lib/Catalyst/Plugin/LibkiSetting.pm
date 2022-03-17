@@ -68,26 +68,28 @@ Locates various parts of the Libki config and returns a unified hashref
 =cut
 
 sub instance_config {
-    my ( $c ) = @_;
+    my ($c) = @_;
 
     my $config = $c->config->{instances}->{ $c->instance } || $c->config;
 
-    unless ( $config->{SIP} ) {
+    my $sip_yaml = $c->setting('SIPConfiguration');
+    if ($sip_yaml) {
         try {
-            my $yaml = $c->setting( 'SIPConfiguration' );
-            $yaml = encode( 'UTF-8', $yaml );
-            $config->{SIP} = YAML::XS::Load( $yaml ) if $yaml;
-        } catch {
+            $sip_yaml = encode( 'UTF-8', $sip_yaml );
+            $config->{SIP} = YAML::XS::Load($sip_yaml) if $sip_yaml;
+        }
+        catch {
             warn "Error loading SIP configuration YAML from system setting: $_";
         };
     }
 
-    unless ( $config->{LDAP} ) {
+    my $ldap_yaml = $c->setting('LDAPConfiguration');
+    if ($ldap_yaml) {
         try {
-            my $yaml = $c->setting( 'LDAPConfiguration' );
-            $yaml = encode( 'UTF-8', $yaml );
-            $config->{LDAP} = YAML::XS::Load( $yaml ) if $yaml;
-        } catch {
+            $ldap_yaml = encode( 'UTF-8', $ldap_yaml );
+            $config->{LDAP} = YAML::XS::Load($ldap_yaml) if $ldap_yaml;
+        }
+        catch {
             warn "Error loading LDAP configuration YAML from system setting: $_";
         };
     }
