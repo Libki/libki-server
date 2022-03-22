@@ -89,11 +89,14 @@ jobs:
     - name: Import image from file
       run: docker load --input /tmp/${{ github.sha }}.tar
 
+    - name: List available docker images
+      run: docker image ls
+
     - name: Log in to docker.io
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u kylemhall --password-stdin
 
     - name: Tag image for docker.io
-      run: docker tag libki-server:latest libki/libki-server:alpine-latest
+      run: docker tag libki-server libki/libki-server:alpine-latest
 
     - name: Push image to docker.io
       run: docker push libki/libki-server
@@ -112,11 +115,14 @@ jobs:
     - name: Import image from file
       run: docker load --input /tmp/${{ github.sha }}.tar
 
+    - name: List available docker images
+      run: docker image ls
+
     - name: Log in to quay.io
       run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
 
     - name: Tag image for quay.io
-      run: docker tag libki-server:latest quay.io/libki/libki-server:alpine-latest
+      run: docker tag libki-server quay.io/libki/libki-server:alpine-latest
 
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server
