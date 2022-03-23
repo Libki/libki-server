@@ -54,8 +54,6 @@ sub index : Path : Args(0) {
             }
         }
 
-        $auth = 0 if ( $user && $user->is_guest() eq 'Yes' );
-
         if ( $auth ) {
             $auth = $c->authenticate( { username => $username, password => $password, instance => $instance } );
         }
