@@ -95,17 +95,6 @@ sub index : Path : Args(0) {
             );
         }
 
-        my $minutes_to_shutdown = $c->setting('ClientShutdownDelay');
-        if (length($minutes_to_shutdown)) {
-            my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_s->location });
-            if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) < 0 ) {
-                my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
-                $c->stash(
-                    $status => 1,
-                );
-            }
-        }
-
         $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
         $log->debug( "Client Registered: " . $client->name() );
 

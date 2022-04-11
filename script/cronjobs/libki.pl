@@ -289,6 +289,26 @@ if ( $wake_hour || DateTime->now( time_zone => $ENV{LIBKI_TZ} )->hour == $wake_h
     }
 }
 
+## automatic power off
+my $minutes_to_shutdown = $c->setting('ClientShutdownDelay');
+if (length($minutes_to_shutdown)) {
+    my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
+    my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+    while ( my $client = $clients->next() ) {
+        if ( $client->status eq 'online' ) {
+            my $minutes_until_closing = Libki::Hours::minutes_until_closing({
+                c        => $c,
+                location => $client->{location},
+                instance => $client->{instance}
+            });
+
+            if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {
+                $client->update({ status => $status });
+            }
+        }
+    }
+}
+
 ## Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
 my $clone_query = q{
 INSERT INTO print_jobs
