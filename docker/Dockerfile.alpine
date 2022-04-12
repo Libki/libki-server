@@ -44,10 +44,7 @@ RUN apk add --no-cache \
         perl-moose \
         perl-params-util \
         perl-params-validate \
-        perl-perlio-utf8_strict \
         perl-posix-strftime-compiler \
-        perl-proc-wait3 \
-        perl-template-toolkit \
         perl-yaml-xs \
         sed \
         shared-mime-info \
