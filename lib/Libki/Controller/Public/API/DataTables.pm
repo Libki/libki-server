@@ -5,6 +5,8 @@ use namespace::autoclean;
 
 use Libki::Utils::Printing qw(calculate_job_cost);
 
+use JSON qw(to_json);
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -100,30 +102,59 @@ sub prints : Local Args(0) {
         }
     );
 
+    my $printers = $c->get_printer_configuration;
+
     my @results;
-    foreach my $p (@prints) {
+    foreach my $print_job (@prints) {
+        my $print_file = $print_job->print_file;
+
         my $total_cost = Libki::Utils::Printing::calculate_job_cost(
             $c,
             {
-                print_job => $p
+                print_job => $print_job,
+                print_file => $print_file,
+                printer => $printers->{printers}->{ $print_job->printer },
             }
         );
 
+        my @printer_costs;
+        foreach my $key ( keys %{$printers->{printers}} ) {
+            my $printer = $printers->{printers}->{ $key };
+            my $total_cost = Libki::Utils::Printing::calculate_job_cost(
+                $c,
+                {
+                    print_job => $print_job,
+                    print_file => $print_file,
+                    printer => $printer,
+                }
+            );
+            my $data = {
+                id => $key,
+                selected => $key eq $print_job->printer ? 1 : 0,
+                name => $printer->{public_printer_name},
+                cost => $total_cost,
+            };
+
+            push( @printer_costs, $data );
+        }
+
         my $r;
-        $r->{'DT_RowId'}         = $p->id;
-        $r->{'print_job_id'}     = $p->id;
-        $r->{'status'}           = $p->status;
+        $r->{'DT_RowId'}         = $print_job->id;
+        $r->{'print_job_id'}     = $print_job->id;
+        $r->{'status'}           = $print_job->status;
         $r->{'sufficient_funds'} = $total_cost <= $user->funds;
-        $r->{'0'}                = $p->type;
-        $r->{'1'}                = $p->status;
-        $r->{'2'}                = $p->printer;
-        $r->{'3'}                = $p->copies;
-        $r->{'4'}                = $p->print_file->pages;
-        $r->{'5'}                = $p->print_file->client_name;
-        $r->{'6'}                = $c->format_dt( { dt => $p->created_on, include_time => 1 } );
-        $r->{'7'}                = $total_cost;
-        $r->{'8'}                = 0;
+        $r->{'printer_costs'}    = to_json( \@printer_costs );
+        $r->{'0'}                = $print_job->type;
+        $r->{'1'}                = $print_job->status;
+        $r->{'2'}                = $print_job->printer;
+        $r->{'3'}                = $print_job->copies;
+        $r->{'4'}                = $print_file->pages;
+        $r->{'5'}                = $print_file->client_name;
+        $r->{'6'}                = $c->format_dt( { dt => $print_job->created_on, include_time => 1 } );
+        $r->{'7'}                = q{};
+        $r->{'8'}                = $total_cost;
         $r->{'9'}                = 0;
+        $r->{'10'}                = 0;
         push( @results, $r );
     }
 

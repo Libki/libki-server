@@ -191,12 +191,35 @@ Release a held print job so it can actually be printed.
 =cut
 
 sub release {
-    my ( $c, $print_job_id, $user ) = @_;
+    my ( $c, $params ) = @_;
+
+    my $print_job_id = $params->{print_job_id};
+    my $user         = $params->{user};
+    my $new_printer  = $params->{printer};
 
     my $instance = $c->instance;
 
     my $print_job
         = $c->model('DB::PrintJob')->find( { id => $print_job_id, instance => $instance } );
+
+    my $printers = $c->get_printer_configuration;
+    my $printer  = $printers->{printers}->{ $print_job->printer };
+
+    if ($new_printer) {
+        my $printers = $c->get_printer_configuration;
+        my $p        = $printers->{printers}->{$new_printer};
+
+        if ($p) {
+            $printer = $p;
+            $print_job->printer($new_printer);
+            $print_job->update();
+        }
+        else {
+            $c->log->error(
+                "Attempt to update printer at release time failed for print job $print_job_id, printer '$new_printer' doesn't exist!"
+            );
+        }
+    }
 
     if ( $user ) {
         return {
@@ -222,10 +245,6 @@ sub release {
         }
         unless $print_file;
 
-
-    my $printers = $c->get_printer_configuration;
-    my $printer  = $printers->{printers}->{ $print_job->printer };
-
     return {
         success => 0,
         error   => 'Printer Not Found',
@@ -233,7 +252,7 @@ sub release {
         }
         unless $printer;
 
-    my $params = {
+    my $data = {
         print_job  => $print_job,
         print_file => $print_file,
         printer    => $printer,
@@ -265,10 +284,10 @@ sub release {
     }
 
     if ( $print_job->type eq 'cups' ) {
-        return release_for_cups( $c, $params );
+        return release_for_cups( $c, $data );
     }
     elsif ( $print_job->type eq 'PrintManager' ) {
-        return release_for_print_manager( $c, $params );
+        return release_for_print_manager( $c, $data );
     }
 }
 

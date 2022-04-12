@@ -63,6 +63,7 @@
             <th>[% c.loc("Pages") %]</th>
             <th>[% c.loc("Client") %]</th>
             <th>[% c.loc("Created") %]</th>
+            <th>[% c.loc("Printer") %]</th>
             <th>[% c.loc("Cost") %]</th>
             <th></th>
             <th></th>
@@ -86,6 +87,7 @@
 
 
     // Initalize the Print table as a datatable
+    let user_funds = 0;
     pTable = $('#print-table').DataTable({
         [% IF !c.language.match('en') %]
         "oLanguage": {
@@ -95,25 +97,30 @@
         "bProcessing": true, // Indicate when the table is processing data
         "bServerSide": true, // Indicate that the datatable gets data from an HTTP GET request
         "sAjaxSource": "[% c.uri_for('/public/api/datatables/prints') %]", // The actual URL to call for data
-        "fnServerData": function ( sSource, aoData, fnCallback ) {
-            $.getJSON( sSource, aoData, function (json) { 
-                $.getJSON( "/public/api/user/funds", function( data ) {
-                    const funds = data.funds;
-                    $('#user-funds').html( formatter.format( funds ) );
-                });
-
-                fnCallback(json);
-            });
-        },
         "fnInitComplete": function (oSettings, json) {
             setInterval(() => {
                 $("#print-table").dataTable().fnDraw(true);
-            }, 5000);
+            }, 10000);
         },
         "order": [
             [6, "desc"]
         ],
         "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            let print_job_id = aData["print_job_id"];
+            let not_held = aData['status'] !='Held';
+
+            // Update user funds
+            // TODO: await this instead of async = false - https://petetasker.com/using-async-await-jquerys-ajax
+            $.ajax({
+                dataType: "json",
+                url: "/public/api/user/funds",
+                async: false,
+                success: function(data) {
+                    user_funds = data.funds;
+                    $('#user-funds').html( formatter.format( user_funds ) );
+                }
+            });
+
             // Type column
             $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
 
@@ -126,36 +133,88 @@
             // DateTime created
             $('td:eq(6)', nRow).html(aData[6].replace('T', ' '));
 
+            // Generate the printer select pulldown, retain the current selected printer if there is one
+            // otherwise default to the printer set for the print job itself
+            let sel = document.createElement("select");
+            let sel_id = "printer-select-" + print_job_id;
+            sel.id = sel_id;
+            let existing_sel = $("#" + sel_id);
+            if ( aData['printer_costs'] ) {
+                let printer_costs = JSON.parse(aData["printer_costs"]);
+                for (i = 0; i < printer_costs.length; i++) {
+                    let pc = printer_costs[i];
+                    let opt = document.createElement("option");
+                    opt.value = pc.id;
+                    opt.text = pc.name;
+                    opt.dataset.cost = pc.cost;
+                    if ( existing_sel.length ) {
+                        if ( pc.id == existing_sel.val() ) {
+                            opt.setAttribute("selected", "selected");
+                        }
+                    }
+                    else if ( pc.selected ) {
+                        opt.setAttribute("selected", "selected");
+                    }
+
+                    sel.add(opt, null);
+                }
+
+                if ( not_held ) {
+                    sel.setAttribute("disabled", "disabled");
+                }
+
+                // On change update the cost column and disable/enable print button
+                sel.addEventListener(
+                    'change',
+                    function() {
+                        let cost = this.options[this.selectedIndex].dataset.cost;
+                        $('td:eq(8)', nRow).html( formatter.format(cost) );
+
+                        let btn = $("#print-btn-" + print_job_id);
+                        if ( cost > user_funds ) {
+                            btn.prop("disabled",true);
+                            btn.addClass("disabled");
+                        } else {
+                            btn.removeAttr('disabled');
+                            btn.removeClass("disabled");
+                        }
+                    }
+                );
+                $('td:eq(7)', nRow).append( sel );
+
+            }
+
             // Cost
-            $('td:eq(7)', nRow).html( formatter.format(aData[7]) );
+            let cost = sel.options[sel.selectedIndex].dataset.cost;
+            $('td:eq(8)', nRow).html( formatter.format(cost) );
 
-            let not_held = aData['status'] !='Held';
-            let insufficient_funds = ! aData['sufficient_funds'];
-
+            // Print & Cancel buttons
+            let insufficient_funds = cost > user_funds;
             let html;
             if ( not_held || insufficient_funds ) {
-                html = `<a class="btn btn-primary print-release disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+                html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release disabled" disabled="disabled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
             } else {
-                html = `<a class="btn btn-primary print-release" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
-            }
-            $('td:eq(8)', nRow).html(html);
-
-            if ( not_held ) {
-                html = `<a class="btn btn-primary print-cancel disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
-            } else {
-                html = `<a class="btn btn-primary print-cancel" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+                html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
             }
             $('td:eq(9)', nRow).html(html);
+
+            if ( not_held ) {
+                html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+            } else {
+                html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+            }
+            $('td:eq(10)', nRow).html(html);
         }
     });
 
     $( "#print-table" ).on( "click", "a.print-release", function(e) {
         e.preventDefault();
         const job_id = $(this).data('jobid');
+        const printer = $("#printer-select-" + job_id).val();
 
         const confirmed = confirm("[% c.loc('Job will be released to the printer immediately, are you sure you want to do this?') %]");
         if ( confirmed ) {
-            $.getJSON( "/public/api/user/release_print_job", { id: job_id }, function( data ) {
+            $.getJSON( "/public/api/user/release_print_job", { id: job_id, printer: printer }, function( data ) {
                 if ( data.success ) {
                     alert('[% c.loc("Print job released for printing!") %]');
                 } else {

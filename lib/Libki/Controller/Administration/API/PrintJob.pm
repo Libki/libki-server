@@ -108,7 +108,7 @@ sub release : Local : Args(0) {
 
     my $id = $c->request->params->{id};
 
-    my $data = Libki::Utils::Printing::release( $c, $id );
+    my $data = Libki::Utils::Printing::release( $c, { print_job_id => $id } );
     $c->stash( $data );
 
     $c->forward( $c->view('JSON') );

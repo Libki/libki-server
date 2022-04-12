@@ -63,10 +63,18 @@ sub release_print_job : Local : Args(0) {
     }
 
     my $id = $c->request->params->{id};
+    my $printer = $c->request->params->{printer};
 
     my $user = $c->user();
 
-    my $data = Libki::Utils::Printing::release( $c, $id, $user );
+    my $data = Libki::Utils::Printing::release(
+        $c,
+        {
+            print_job_id => $id,
+            user         => $user,
+            printer      => $printer,
+        }
+    );
     delete $c->stash->{Settings};
     $c->stash( $data );
 

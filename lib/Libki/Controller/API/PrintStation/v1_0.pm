@@ -205,7 +205,7 @@ sub release_print_job : Local : Args(0) {
 
     my $user = $c->stash->{user};
 
-    my $data = Libki::Utils::Printing::release( $c, $id, $user );
+    my $data = Libki::Utils::Printing::release( $c, { print_job_id => $id, user => $user } );
 
     delete $c->stash->{$_} for keys %{ $c->stash };
     $c->stash($data);
