@@ -61,7 +61,7 @@ sub index : Path : Args(0) {
             }
         ) if $location;
 
-        my $client = $c->model('DB::Client')->update_or_create(
+        my $client = $c->model('DB::Client')->update_or_new(
             {
                 instance        => $instance,
                 name            => $node_name,
@@ -70,6 +70,11 @@ sub index : Path : Args(0) {
                 last_registered => $now,
             }
         );
+        unless ($client->in_storage) {
+            $client->insert;
+            $log->debug( "Client Registered: " . $client->name() );
+        }
+
         my $client_s = $c->model('DB::Client')->find( { name => $node_name } );
 
         if ($client_s->status eq "unlock") {
@@ -96,7 +101,6 @@ sub index : Path : Args(0) {
         }
 
         $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
-        $log->debug( "Client Registered: " . $client->name() );
 
         if ( $c->setting('ReservationShowUsername') ne 'RSD' ) {
             my $reserved_for = $c->get_reservation_status($client);
