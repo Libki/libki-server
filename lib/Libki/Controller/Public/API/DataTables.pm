@@ -41,7 +41,7 @@ sub prints : Local Args(0) {
 
     # We need to map the table columns to field names for ordering
     my @columns
-        = qw( me.type me.status me.printer me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
+        = qw( me.type me.status me.copies print_file.filename print_file.pages print_file.client_name print_file.username me.created_on );
 
     # Set up filters
     my $filter;
@@ -146,15 +146,14 @@ sub prints : Local Args(0) {
         $r->{'printer_costs'}    = to_json( \@printer_costs );
         $r->{'0'}                = $print_job->type;
         $r->{'1'}                = $print_job->status;
-        $r->{'2'}                = $print_job->printer;
-        $r->{'3'}                = $print_job->copies;
-        $r->{'4'}                = $print_file->pages;
-        $r->{'5'}                = $print_file->client_name;
-        $r->{'6'}                = $c->format_dt( { dt => $print_job->created_on, include_time => 1 } );
-        $r->{'7'}                = q{};
-        $r->{'8'}                = $total_cost;
+        $r->{'2'}                = $print_job->copies;
+        $r->{'3'}                = $print_file->pages;
+        $r->{'4'}                = $print_file->client_name;
+        $r->{'5'}                = $c->format_dt( { dt => $print_job->created_on, include_time => 1 } );
+        $r->{'6'}                = q{};
+        $r->{'7'}                = $total_cost;
+        $r->{'8'}                = 0;
         $r->{'9'}                = 0;
-        $r->{'10'}                = 0;
         push( @results, $r );
     }
 

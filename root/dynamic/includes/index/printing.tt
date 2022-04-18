@@ -58,7 +58,6 @@
             <thead>
             <th>[% c.loc("Type") %]</th>
             <th>[% c.loc("Status") %]</th>
-            <th>[% c.loc("Printer") %]</th>
             <th>[% c.loc("Copies") %]</th>
             <th>[% c.loc("Pages") %]</th>
             <th>[% c.loc("Client") %]</th>
@@ -128,10 +127,10 @@
             $('td:eq(1)', nRow).html(aData[1].replace('In_progress', `[% c.loc("In progress") %]`));
 
             // Client column
-            $('td:eq(5)', nRow).html(aData[5].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
+            $('td:eq(4)', nRow).html(aData[4].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
 
             // DateTime created
-            $('td:eq(6)', nRow).html(aData[6].replace('T', ' '));
+            $('td:eq(5)', nRow).html(aData[5].replace('T', ' '));
 
             // Generate the printer select pulldown, retain the current selected printer if there is one
             // otherwise default to the printer set for the print job itself
@@ -168,7 +167,7 @@
                     'change',
                     function() {
                         let cost = this.options[this.selectedIndex].dataset.cost;
-                        $('td:eq(8)', nRow).html( formatter.format(cost) );
+                        $('td:eq(7)', nRow).html( formatter.format(cost) );
 
                         let btn = $("#print-btn-" + print_job_id);
                         if ( cost > user_funds ) {
@@ -180,13 +179,13 @@
                         }
                     }
                 );
-                $('td:eq(7)', nRow).append( sel );
+                $('td:eq(6)', nRow).append( sel );
 
             }
 
             // Cost
             let cost = sel.options[sel.selectedIndex].dataset.cost;
-            $('td:eq(8)', nRow).html( formatter.format(cost) );
+            $('td:eq(7)', nRow).html( formatter.format(cost) );
 
             // Print & Cancel buttons
             let insufficient_funds = cost > user_funds;
@@ -196,14 +195,14 @@
             } else {
                 html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
             }
-            $('td:eq(9)', nRow).html(html);
+            $('td:eq(8)', nRow).html(html);
 
             if ( not_held ) {
                 html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
             } else {
                 html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
             }
-            $('td:eq(10)', nRow).html(html);
+            $('td:eq(9)', nRow).html(html);
         }
     });
 
