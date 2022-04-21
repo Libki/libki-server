@@ -25,7 +25,7 @@ print($usage->text), exit if $opt->help;
 my $c = Libki->new();
 
 say "Starting Libki cronjob libki_nightly.pl" if $opt->verbose;
-$c->log->info("Starting Libki cronjob libki_nightly.pl") if $opt->logging;
+$c->log->debug("Starting Libki cronjob libki_nightly.pl") if $opt->logging;
 
 my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
 my $dbh = $schema->storage->dbh;
@@ -160,7 +160,7 @@ foreach my $lrd (@log_retention_days) {
 $c->model('DB::LoginSession')->delete();
 
 say "Finished running Libki cronjob libki_nightly.pl" if $opt->verbose;
-$c->log->info("Finished running Libki cronjob libki_nightly.pl") if $opt->logging;
+$c->log->debug("Finished running Libki cronjob libki_nightly.pl") if $opt->logging;
 
 =head1 AUTHOR
 

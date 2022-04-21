@@ -23,7 +23,7 @@ print($usage->text), exit if $opt->help;
 my $c = Libki->new();
 
 say "Starting Libki cronjob libki.pl" if $opt->verbose;
-$c->log->info("Starting Libki cronjob libki.pl") if $opt->logging;
+$c->log->debug("Starting Libki cronjob libki.pl") if $opt->logging;
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
@@ -391,7 +391,7 @@ $dbh->{RaiseError} = 0;
 ## END Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
 
 say "Finished running Libki cronjob libki.pl" if $opt->verbose;
-$c->log->info("Finished running Libki cronjob libki.pl") if $opt->logging;
+$c->log->debug("Finished running Libki cronjob libki.pl") if $opt->logging;
 
 =head1 AUTHOR
 
