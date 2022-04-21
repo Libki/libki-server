@@ -41,17 +41,24 @@ $c->model('DB::Allotment')->delete();
 
 ## Set troublemaker status
 my @troublemakers = $c->model('DB::user')->search( { is_troublemaker => 'Yes' } );
-foreach my $troublemaker ( @troublemakers ) {
-    #FIXME This cronjob isn't instance timezone aware. We should move the timezone from the config/env to a database setting.
-    my $troublemaker_until_dt = DateTime::Format::MySQL->parse_datetime( $troublemaker->troublemaker_until );
-    #$troublemaker_until_dt->set_time_zone( $c->tz );
+foreach my $troublemaker (@troublemakers) {
+    if ( $troublemaker->troublemaker_until ) {
+        my $troublemaker_until_dt
+            = DateTime::Format::MySQL->parse_datetime( $troublemaker->troublemaker_until );
 
-    if ( $troublemaker_until_dt <= DateTime->now ) {
-        $troublemaker->update( { is_troublemaker => 'No', troublemaker_until => undef } );
+        if ( $troublemaker_until_dt <= DateTime->now ) {
+            $troublemaker->is_troublemaker('No');
+            $troublemaker->troublemaker_until(undef);
+            $troublemaker->status('enabled');
+        }
+        else {
+            $troublemaker->status('disabled');
+        }
     }
     else {
-        $troublemaker->update( { status => 'disabled' } );
+        $troublemaker->status('disabled');
     }
+    $troublemaker->update();
 }
 
 ## Clear out statistics that are past the retention length
