@@ -111,42 +111,40 @@ foreach my $urd (@user_retention_days) {
 ## Clear out old print jobs and print files
 my @print_retention_days = $c->model('DB::Setting')->search( { name => 'PrintJobRetentionDays' } );
 foreach my $prd (@print_retention_days) {
-    if ( defined $prd->value && $prd->value ne q{} ) {
-        my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
-        $dt->subtract( days => $prd->value );
-        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+    $prd ||= 0;
+    my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
+    $dt->subtract( days => $prd->value );
+    my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
 
-        $c->model('DB::PrintFile')->search(
-            {
-                instance             => $prd->instance,
-                'created_on'         => { '<' => $timestamp },
-            }
-        )->delete();
+    $c->model('DB::PrintFile')->search(
+        {
+            instance             => $prd->instance,
+            'created_on'         => { '<' => $timestamp },
+        }
+    )->delete();
 
-        $c->model('DB::PrintJob')->search(
-            {
-                instance             => $prd->instance,
-                'created_on'         => { '<' => $timestamp },
-            }
-        )->delete();
-    }
+    $c->model('DB::PrintJob')->search(
+        {
+            instance             => $prd->instance,
+            'created_on'         => { '<' => $timestamp },
+        }
+    )->delete();
 }
 
 ## Clear out old logs
 my @log_retention_days = $c->model('DB::Setting')->search( { name => 'LogRetentionDays' } );
 foreach my $lrd (@log_retention_days) {
-    if ( $lrd->value ) {
-        my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
-        $dt->subtract( days => $lrd->value );
-        my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
+    $lrd ||= 0;
+    my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
+    $dt->subtract( days => $lrd->value );
+    my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
 
-        $c->model('DB::Log')->search(
-            {
-                instance     => $lrd->instance,
-                'created_on' => { '<' => $timestamp },
-            }
-        )->delete();
-    }
+    $c->model('DB::Log')->search(
+        {
+            instance     => $lrd->instance,
+            'created_on' => { '<' => $timestamp },
+        }
+    )->delete();
 }
 
 ## Clear out expired sessions
