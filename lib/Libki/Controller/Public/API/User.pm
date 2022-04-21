@@ -75,6 +75,7 @@ sub release_print_job : Local : Args(0) {
             printer      => $printer,
         }
     );
+
     delete $c->stash->{Settings};
     $c->stash( $data );
 
