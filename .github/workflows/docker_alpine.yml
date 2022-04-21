@@ -1,4 +1,4 @@
-name: CI
+name: CI - Alpine
 on: [push]
 jobs:
   build:
