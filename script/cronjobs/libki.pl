@@ -4,6 +4,7 @@ use Modern::Perl;
 
 use Getopt::Long::Descriptive;
 use List::Util qw(min max);
+use Sys::Hostname;
 use Try::Tiny;
 
 use FindBin;
@@ -22,8 +23,19 @@ print($usage->text), exit if $opt->help;
 
 my $c = Libki->new();
 
-say "Starting Libki cronjob libki.pl" if $opt->verbose;
-$c->log->debug("Starting Libki cronjob libki.pl") if $opt->logging;
+my $msg = "Starting Libki cronjob libki.pl";
+say $msg             if $opt->verbose;
+$c->log->debug($msg) if $opt->logging;
+$c->model('DB::Log')->create(
+    {
+        instance   => $c->instance,
+        created_on => DateTime->now,
+        level      => "INFO",
+        message    => $msg,
+        hostname   => hostname(),
+        pid        => $$,
+    }
+);
 
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
@@ -390,8 +402,19 @@ $dbh->{AutoCommit} = 1;
 $dbh->{RaiseError} = 0;
 ## END Reset Queued print jobs that have been waiting X minutes to Pending so they can be tried again
 
-say "Finished running Libki cronjob libki.pl" if $opt->verbose;
-$c->log->debug("Finished running Libki cronjob libki.pl") if $opt->logging;
+$msg = "Finished running Libki cronjob libki.pl";
+say $msg             if $opt->verbose;
+$c->log->debug($msg) if $opt->logging;
+$c->model('DB::Log')->create(
+    {
+        instance   => $c->instance,
+        created_on => DateTime->now,
+        level      => "INFO",
+        message    => $msg,
+        hostname   => hostname(),
+        pid        => $$,
+    }
+);
 
 =head1 AUTHOR
 

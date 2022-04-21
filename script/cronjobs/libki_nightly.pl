@@ -11,6 +11,7 @@ use DateTime::Format::MySQL;
 use DateTime;
 use Getopt::Long::Descriptive;
 use List::Util qw(max min);
+use Sys::Hostname;
 
 use Libki;
 
@@ -24,8 +25,19 @@ print($usage->text), exit if $opt->help;
 
 my $c = Libki->new();
 
-say "Starting Libki cronjob libki_nightly.pl" if $opt->verbose;
-$c->log->debug("Starting Libki cronjob libki_nightly.pl") if $opt->logging;
+my $msg = "Starting Libki cronjob libki_nightly.pl";
+say $msg             if $opt->verbose;
+$c->log->debug($msg) if $opt->logging;
+$c->model('DB::Log')->create(
+    {
+        instance   => $c->instance,
+        created_on => DateTime->now,
+        level      => "INFO",
+        message    => $msg,
+        hostname   => hostname(),
+        pid        => $$,
+    }
+);
 
 my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
 my $dbh = $schema->storage->dbh;
@@ -159,8 +171,19 @@ foreach my $lrd (@log_retention_days) {
 
 $c->model('DB::LoginSession')->delete();
 
-say "Finished running Libki cronjob libki_nightly.pl" if $opt->verbose;
-$c->log->debug("Finished running Libki cronjob libki_nightly.pl") if $opt->logging;
+$msg = "Finished running Libki cronjob libki_nightly.pl";
+say $msg             if $opt->verbose;
+$c->log->debug($msg) if $opt->logging;
+$c->model('DB::Log')->create(
+    {
+        instance   => $c->instance,
+        created_on => DateTime->now,
+        level      => "INFO",
+        message    => $msg,
+        hostname   => hostname(),
+        pid        => $$,
+    }
+);
 
 =head1 AUTHOR
 
