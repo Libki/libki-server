@@ -29,7 +29,7 @@ $c->log->debug($msg) if $opt->logging;
 $c->model('DB::Log')->create(
     {
         instance   => $c->instance,
-        created_on => DateTime->now,
+        created_on => DateTime->now( time_zone => $ENV{LIBKI_TZ} ),
         level      => "INFO",
         message    => $msg,
         hostname   => hostname(),
@@ -408,7 +408,7 @@ $c->log->debug($msg) if $opt->logging;
 $c->model('DB::Log')->create(
     {
         instance   => $c->instance,
-        created_on => DateTime->now,
+        created_on => DateTime->now( time_zone => $ENV{LIBKI_TZ} ),
         level      => "INFO",
         message    => $msg,
         hostname   => hostname(),
