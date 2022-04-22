@@ -109,14 +109,17 @@ sub print_jobs : Path('print_jobs') : Args(0) {
         }
     );
 
-    my $data = [];
+    my $printers = $c->get_printer_configuration->{printers};
+
+    my $print_jobs = [];
     while ( my $j = $jobs->next ) {
         my $cost = Libki::Utils::Printing::calculate_job_cost( $c, { print_job => $j } );
 
         push(
-            @$data,
+            @$print_jobs,
             {
                 print_job_id  => $j->id,
+                printer       => $j->printer,
                 copies        => $j->copies,
                 created_on    => $c->format_dt( { dt => $j->created_on, include_time => 1 } ),
                 print_file_id => $j->print_file_id,
@@ -126,7 +129,10 @@ sub print_jobs : Path('print_jobs') : Args(0) {
         );
     }
 
-    $c->stash( print_jobs => $data );
+    my $data = {
+        printers   => $printers,
+        print_jobs => $print_jobs,
+    };
 
     $c->response->headers->content_type('application/json');
     $c->response->body( JSON::to_json($data) );
@@ -202,10 +208,18 @@ sub release_print_job : Local : Args(0) {
     my ( $self, $c ) = @_;
 
     my $id = $c->request->params->{id};
+    my $printer = $c->request->params->{printer};
 
     my $user = $c->stash->{user};
 
-    my $data = Libki::Utils::Printing::release( $c, { print_job_id => $id, user => $user } );
+    my $data = Libki::Utils::Printing::release(
+        $c,
+        {
+            print_job_id => $id,
+            printer      => $printer,
+            user         => $user
+        }
+    );
 
     delete $c->stash->{$_} for keys %{ $c->stash };
     $c->stash($data);
