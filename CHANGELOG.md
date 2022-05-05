@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disallow invalid hour/minute selections based on current sessions
 - Fix ReservationShowDisabled = Disabled acting like ReservationShowDisabled = Anonymous
 - Prevent SIP auth from deleting local users by checking the user's creation_source field
+- Make completed print jobs selected printer updated in web print release if changed elsewhere
 ### Removed
 - Removed Google Cloud Print support for print management
 

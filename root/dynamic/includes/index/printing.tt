@@ -146,7 +146,7 @@
                     opt.value = pc.id;
                     opt.text = pc.name;
                     opt.dataset.cost = pc.cost;
-                    if ( existing_sel.length ) {
+                    if ( existing_sel.length && aData["status"] == "Held" ) {
                         if ( pc.id == existing_sel.val() ) {
                             opt.setAttribute("selected", "selected");
                         }
