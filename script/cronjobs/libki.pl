@@ -310,8 +310,8 @@ if (length($minutes_to_shutdown)) {
         if ( $client->status eq 'online' ) {
             my $minutes_until_closing = Libki::Hours::minutes_until_closing({
                 c        => $c,
-                location => $client->{location},
-                instance => $client->{instance}
+                location => $client->location,
+                instance => $client->instance
             });
 
             if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {
