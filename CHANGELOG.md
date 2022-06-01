@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent SIP auth from deleting local users by checking the user's creation_source field
 - Make completed print jobs selected printer updated in web print release if changed elsewhere
 - Fixed closing hours calculation for automatic shutdown
+- Make client behavior without reservations hide the reservation column, not the session minutes column
 ### Removed
 - Removed Google Cloud Print support for print management
 

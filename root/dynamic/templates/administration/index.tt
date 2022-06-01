@@ -994,7 +994,7 @@ $(document).ready(function() {
         },
         "aoColumnDefs": [
             [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                { "bVisible": false, "aTargets": [ 9 ] },
+                { "bVisible": false, "aTargets": [ 13 ] },
             [% END %]
         ],
     } );
