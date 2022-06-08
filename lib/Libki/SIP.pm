@@ -273,13 +273,15 @@ sub authenticate_via_sip {
         foreach my $d (@deny_on) {
             my ( $field, $message, $value ) = split( ':', $d );
 
-            if ( $value ) {
+            if ($value) {
                 if ( $sip_fields->{$field} eq $value ) {
                     return { success => 0, error => $message, user => $user };
-                }elsif( $sip_fields->{$field} =~ /$value/ ) {
+                }
+                elsif ( $sip_fields->{$field} =~ /$value/ ) {
                     return { success => 0, error => $message, user => $user };
                 }
-            } else {
+            }
+            else {
                 if ( $sip_fields->{$field} ne 'Y' ) {
                     return { success => 0, error => $message, user => $user };
                 }
