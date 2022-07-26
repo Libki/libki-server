@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <img src="[% c.uri_for('/static/images/libki-banner.png') %]" />
+            <img style="max-width: 100%;" src="[% c.uri_for('/static/images/libki-banner.png') %]" />
             <hr>
         </div>
     </div>
