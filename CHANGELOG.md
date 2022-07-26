@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to set custom text for Terms of Service on the message and in the "Show Details" section
 - Libki server automatically redirects to login page when the patron is logged out via a timeout
 - Add ability to select a printer at release time for web-based self service
+- Added automatic dark mode. If your broswer is set to dark mode, Libki will honor it.
 ### Fixed
 - Users getting incorrect session times when logging in before a reservation #210
 - Fix age limit bug
