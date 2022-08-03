@@ -252,8 +252,20 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients.") %]</small>
                     </div>
-
                 </fieldset>
+
+                <fieldset>
+                    <legend>[% c.loc("Internet connectivity checks") %]</legend>
+
+                    <div class="form-group">
+                        <label for="InternetConnectivityURLs">[% c.loc("Use the following URLs to check if client can connect to the Internet") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="InternetConnectivityURLs" name="InternetConnectivityURLs" rows="5">[% InternetConnectivityURLs %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("The client will choose one of the listed URLs at randomn each time it checks for connectivity. Leave empty to disable this feature.") %]</small>
+                    </div>
+                </fieldset>
+
             </div>
 
             <div class="tab-pane fade" id="v-pills-reservation-settings" role="tabpanel" aria-labelledby="v-pills-reservation-settings-tab">

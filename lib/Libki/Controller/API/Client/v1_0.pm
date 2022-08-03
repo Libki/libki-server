@@ -146,6 +146,8 @@ sub index : Path : Args(0) {
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
 
             ClientStyleSheet           => $c->stash->{Settings}->{ClientStyleSheet},
+
+            InternetConnectivityURLs   => $c->stash->{Settings}->{InternetConnectivityURLs},
         );
     }
     elsif ( $action eq 'acknowledge_reservation' ) {
