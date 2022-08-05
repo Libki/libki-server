@@ -1,7 +1,10 @@
 package Libki::Controller::Administration::API::Client;
 use Moose;
 use namespace::autoclean;
+
 use Libki::Clients qw( wakeonlan );
+
+use JSON qw(to_json);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -43,6 +46,8 @@ sub modify_time : Local : Args(0) {
     if ( $client && $client->session ) {
         my $session = $client->session;
 
+        my $minutes_previous = $session->minutes;
+
         if ( $minutes =~ /^[+-]/ ) {
             $minutes = $session->minutes + $minutes;
         }
@@ -79,6 +84,27 @@ sub modify_time : Local : Args(0) {
             $success &&= $minutes_allotment->update( { minutes => $minutes } );
         }
 
+        $c->model('DB::Statistic')->create(
+            {
+                instance        => $c->instance,
+                username        => $c->user->username,
+                client_name     => $client->name,
+                client_location => $client->location,
+                client_type     => $client->type,
+                action          => 'MODIFY_TIME',
+                created_on      => $c->now,
+                session_id      => $c->sessionid,
+                info            => to_json(
+                    {
+                        minutes_previous      => $minutes_previous,
+                        minutes               => $minutes,
+                        add_time_to_allotment => $add_time_to_allotment,
+                        client_id             => $client_id,
+                    }
+                ),
+            }
+        );
+
     }
 
     $c->stash( 'success' => $success ? 1 : 0 );
@@ -98,8 +124,29 @@ sub logout : Local : Args(1) {
     my $client = $c->model('DB::Client')->find($client_id);
 
     if ( defined($client) && defined( $client->session ) ) {
+        my $user = $client->session->user;
         if ( $client->session->delete() ) {
             $success = 1;
+
+            $c->model('DB::Statistic')->create(
+                {
+                    instance        => $c->instance,
+                    username        => $c->user->username,
+                    client_name     => $client->name,
+                    client_location => $client->location,
+                    client_type     => $client->type,
+                    action          => 'LOGOUT',
+                    created_on      => $c->now,
+                    session_id      => $c->sessionid,
+                    info            => to_json(
+                        {
+                            user_id    => $u->id,
+                            username   => $u->username,
+                            client_id  => $client_id,
+                        }
+                    ),
+                }
+            );
         }
     }
 
@@ -257,13 +304,35 @@ sub reservation : Local : Args(1) {
                 $c->stash( 'success' => 0, 'reason' => $check{'error'}, 'detail' => $check{'detail'} );
             }
             else {
-                $c->model('DB::Reservation')->create( {
-                                                        instance   => $instance,
-                                                        user_id    => $user->id,
-                                                        client_id  => $client_id,
-                                                        begin_time => $begin_time,
-                                                        end_time   => $check{'end_time'}
-                                                    } );
+                $c->model('DB::Reservation')->create(
+                    {
+                        instance   => $instance,
+                        user_id    => $user->id,
+                        client_id  => $client_id,
+                        begin_time => $begin_time,
+                        end_time   => $check{end_time},
+                    }
+                );
+                $c->model('DB::Statistic')->create(
+                    {
+                        instance        => $instance,
+                        username        => $c->user->username,
+                        client_name     => $client->name,
+                        client_location => $client->location,
+                        client_type     => $client->type,
+                        action          => 'RESERVATION',
+                        created_on      => $c->now,
+                        session_id      => $c->sessionid,
+                        info            => to_json(
+                            {
+                                user_id    => $user->id,
+                                client_id  => $client_id,
+                                begin_time => $begin_time,
+                                end_time   => $check{'end_time'}
+                            }
+                        ),
+                    }
+                );
                 $c->stash( 'success' => 1 );
             }
         }
@@ -301,6 +370,20 @@ sub toggle_status : Local : Args(1) {
 
         if ( $client->update() ) {
             $success = 1;
+
+            $c->model('DB::Statistic')->create(
+                {
+                    instance        => $instance,
+                    username        => $c->user->username,
+                    client_name     => $client->name,
+                    client_location => $client->location,
+                    client_type     => $client->type,
+                    action          => 'TOGGLE_STATUS',
+                    created_on      => $c->now,
+                    session_id      => $c->sessionid,
+                    info            => to_json( { status => $status } ),
+                }
+            );
         }
     }
     $c->stash( 'success' => $success, status => $client->status );
@@ -321,7 +404,20 @@ sub delete_client : Local : Args(1) {
     my $client = $c->model('DB::Client')->find({ instance => $instance, id => $id });
     if($client) {
         $c->model('DB::Reservation')->search({ client_id => $id })->delete();
-        $success = 1 if ( $client->delete() );
+        $success = 1 if $client->delete();
+
+        $c->model('DB::Statistic')->create(
+            {
+                instance        => $instance,
+                username        => $c->user->username,
+                client_name     => $client->name,
+                client_location => $client->location,
+                client_type     => $client->type,
+                action          => 'DELETE',
+                created_on      => $c->now,
+                session_id      => $c->sessionid,
+            }
+        );
     }
     $c->stash( 'success' => $success );
     $c->forward( $c->view('JSON') );
@@ -343,6 +439,19 @@ sub shutdown : Local : Args(1) {
 
     if ($client->status eq 'online') {
         $success = 1 if $client->update( { status => $status } );
+
+        $c->model('DB::Statistic')->create(
+            {
+                instance        => $c->instance,
+                username        => $c->user->username,
+                client_name     => $client->name,
+                client_location => $client->location,
+                client_type     => $client->type,
+                action          => 'SHUTDOWN',
+                created_on      => $c->now,
+                session_id      => $c->sessionid,
+            }
+        );
     }
 
     $c->stash( 'success' => $success );
@@ -364,6 +473,19 @@ sub restart : Local : Args(1) {
 
     if ($client->status eq 'online') {
         $success = 1 if $client->update( { status => 'restart' } );
+
+        $c->model('DB::Statistic')->create(
+            {
+                instance        => $c->instance,
+                username        => $c->user->username,
+                client_name     => $client->name,
+                client_location => $client->location,
+                client_type     => $client->type,
+                action          => 'RESTART',
+                created_on      => $c->now,
+                session_id      => $c->sessionid,
+            }
+        );
     }
 
     $c->stash( 'success' => $success );
@@ -387,6 +509,19 @@ sub shutdown_all : Local : Args(0) {
     while ( my $client = $clients->next() ) {
         if ($client->status eq 'online') {
             $success = 1 if $client->update( { status => $status } );
+
+            $c->model('DB::Statistic')->create(
+                {
+                    instance        => $c->instance,
+                    username        => $c->user->username,
+                    client_name     => $client->name,
+                    client_location => $client->location,
+                    client_type     => $client->type,
+                    action          => 'SHUTDOWN_ALL',
+                    created_on      => $c->now,
+                    session_id      => $c->sessionid,
+                }
+            );
         }
     }
 
@@ -410,6 +545,19 @@ sub restart_all : Local : Args(0) {
     while ( my $client = $clients->next() ) {
         if ($client->status eq 'online') {
             $success = 1 if $client->update( { status => 'restart' } );
+
+            $c->model('DB::Statistic')->create(
+                {
+                    instance        => $c->instance,
+                    username        => $c->user->username,
+                    client_name     => $client->name,
+                    client_location => $client->location,
+                    client_type     => $client->type,
+                    action          => 'RESTART_ALL',
+                    created_on      => $c->now,
+                    session_id      => $c->sessionid,
+                }
+            );
         }
     }
 
@@ -435,6 +583,19 @@ sub wakeup : Local : Args(0) {
         while ( my $client = $clients->next() ) {
             if ($client->status eq 'online') {
                 $success = 1 if $client->update( { status => 'wakeup' } );
+
+                $c->model('DB::Statistic')->create(
+                    {
+                        instance        => $c->instance,
+                        username        => $c->user->username,
+                        client_name     => $client->name,
+                        client_location => $client->location,
+                        client_type     => $client->type,
+                        action          => 'WAKEUP_ALL',
+                        created_on      => $c->now,
+                        session_id      => $c->sessionid,
+                    }
+                );
             }
         }
     }
