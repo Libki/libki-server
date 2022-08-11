@@ -140,8 +140,8 @@ sub logout : Local : Args(1) {
                     session_id      => $c->sessionid,
                     info            => to_json(
                         {
-                            user_id    => $u->id,
-                            username   => $u->username,
+                            user_id    => $user->id,
+                            username   => $user->username,
                             client_id  => $client_id,
                         }
                     ),
