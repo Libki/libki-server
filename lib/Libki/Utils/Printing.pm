@@ -33,6 +33,7 @@ sub create_print_job_and_file {
     my $username    = $params->{username};       # User's username
 
     $copies ||= 1;    # Default to 1 copy if no cromulent value is passed in
+    $copies = 1 unless $copies =~ /^\d+$/; # Set to default if copies is non-numeric
 
     my $instance = $c->instance;
 
