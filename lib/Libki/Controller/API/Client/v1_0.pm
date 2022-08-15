@@ -491,6 +491,7 @@ sub print : Path('print') : Args(0) {
 
         $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
         my $copies = $1 || 1;
+        $copies = 1 unless $copies =~ /^\d+$/;
 
         Libki::Utils::Printing::create_print_job_and_file($c, {
             client      => $client,
