@@ -144,10 +144,11 @@ sub calculate_job_cost {
         unless $printer;
 
     $print_file ||= $print_job->print_file;
-    my $pages  = $print_file->pages;
-    my $copies = $print_job->copies;
+    my $pages  = $print_file->pages        || 1;
+    my $copies = $print_job->copies        || 1;
+    my $cpp    = $printer->{cost_per_page} || 0;
 
-    my $cost = $copies * $pages * $printer->{cost_per_page};
+    my $cost = $copies * $pages * $cpp;
 
     return $cost;
 }
