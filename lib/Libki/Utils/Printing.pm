@@ -107,7 +107,7 @@ sub create_print_job_and_file {
             }
         );
 
-        if ( $printer->{auto_release} ) {
+        if ( $print_job && $printer->{auto_release} ) {
             #FIXME: Allow passing the print job object to release instead of re-fetching it
             release( $c, { print_job_id => $print_job->id } );
         }

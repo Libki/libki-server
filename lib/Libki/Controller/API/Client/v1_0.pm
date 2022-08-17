@@ -475,6 +475,10 @@ sub print : Path('print') : Args(0) {
 
     my $instance = $c->instance;
 
+    $c->log()
+        ->debug( "Libki::Controller::API::Client::v1_0::print(), instance: $instance, params: "
+            . to_json( $c->request->params ) );
+
     my $client_name = $c->request->params->{'client_name'};
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
@@ -492,21 +496,23 @@ sub print : Path('print') : Args(0) {
         $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
         my $copies = $1 || 1;
 
-        Libki::Utils::Printing::create_print_job_and_file($c, {
-            client      => $client,
-            client_name => $client_name,
-            copies      => $copies,
-            location    => $location,
-            print_file  => $print_file,
-            printer_id  => $printer_id,
-            user        => $user,
-            username    => $username,
-        });
+        Libki::Utils::Printing::create_print_job_and_file(
+            $c,
+            {
+                client      => $client,
+                client_name => $client_name,
+                copies      => $copies,
+                location    => $location,
+                print_file  => $print_file,
+                printer_id  => $printer_id,
+                user        => $user,
+                username    => $username,
+            }
+        );
 
         $c->stash( success => 1 );
     }
     else {
-
         $c->stash(
             success => 0,
             error   => 'CLIENT NOT FOUND',
