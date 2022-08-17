@@ -32,6 +32,7 @@ sub create_print_job_and_file {
     my $user        = $params->{user};           # DB::User object, optional
     my $username    = $params->{username};       # User's username
 
+
     $copies ||= 1;    # Default to 1 copy if no cromulent value is passed in
     $copies = 1 unless $copies =~ /^\d+$/; # Set to default if copies is non-numeric
 
@@ -62,54 +63,58 @@ sub create_print_job_and_file {
         my $client_location = $client ? $client->location : undef;
         my $client_type     = $client ? $client->type     : undef;
 
-        $c->log->error(
-            sprintf(
-                "User id %s printed to non-existent printer id %s from client %s",
-                $user->id, $printer_id, $client ? $client->id : 'Print From Web'
-            )
-        ) unless $printer;
-
         my $print_job;
-        $c->model('DB')->txn_do(
-            sub {
-                $print_file = $c->model('DB::PrintFile')->create(
-                    {
-                        instance        => $instance,
-                        filename        => $print_file->filename,
-                        content_type    => $print_file->type,
-                        data            => $pdf_string,
-                        pages           => $pages,
-                        client_id       => $client_id,
-                        client_name     => $client_name,
-                        client_location => $client_location,
-                        client_type     => $client_type,
-                        user_id         => $user->id,
-                        username        => $username,
-                        created_on      => $now,
-                        updated_on      => $now,
-                    }
-                );
+        if ($printer) {
+            $c->model('DB')->txn_do(
+                sub {
+                    $print_file = $c->model('DB::PrintFile')->create(
+                        {
+                            instance        => $instance,
+                            filename        => $print_file->filename,
+                            content_type    => $print_file->type,
+                            data            => $pdf_string,
+                            pages           => $pages,
+                            client_id       => $client_id,
+                            client_name     => $client_name,
+                            client_location => $client_location,
+                            client_type     => $client_type,
+                            user_id         => $user->id,
+                            username        => $username,
+                            created_on      => $now,
+                            updated_on      => $now,
+                        }
+                    );
 
-                $print_job = $c->model('DB::PrintJob')->create(
-                    {
-                        instance      => $instance,
-                        type          => $printer->{type},
-                        status        => PRINT_STATUS_HELD,
-                        data          => undef,
-                        copies        => $copies,
-                        printer       => $printer_id,
-                        user_id       => $user->id,
-                        print_file_id => $print_file->id,
-                        created_on    => $now,
-                        updated_on    => $now,
-                    }
-                );
-            }
-        );
+                    $print_job = $c->model('DB::PrintJob')->create(
+                        {
+                            instance      => $instance,
+                            type          => $printer->{type},
+                            status        => PRINT_STATUS_HELD,
+                            data          => undef,
+                            copies        => $copies,
+                            printer       => $printer_id,
+                            user_id       => $user->id,
+                            print_file_id => $print_file->id,
+                            created_on    => $now,
+                            updated_on    => $now,
+                        }
+                    );
+                }
+            );
+        }
+        else {
+            $c->log->error(
+                sprintf(
+                    "User id %s printed to non-existent printer id %s from client %s",
+                    $user->id, $printer_id, $client ? $client->id : 'Print From Web'
+                )
+            );
+        }
 
         if ( $print_job && $printer->{auto_release} ) {
+
             #FIXME: Allow passing the print job object to release instead of re-fetching it
-            release( $c, { print_job_id => $print_job->id } );
+            release( $c, { print_job_id => $print_job->id, user => $user } );
         }
 
         $c->stash( success => 1 );

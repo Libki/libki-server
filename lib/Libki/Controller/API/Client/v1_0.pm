@@ -514,11 +514,17 @@ sub print : Path('print') : Args(0) {
 
         $c->stash( success => 1 );
     }
-    else {
+    elsif ($client_name) {
         $c->stash(
             success => 0,
             error   => 'CLIENT NOT FOUND',
             client  => "$instance/$client_name"
+        );
+    }
+    else {
+        $c->stash(
+            success => 0,
+            error   => 'NO DATA',
         );
     }
 
