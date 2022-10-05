@@ -203,7 +203,7 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verfies that password for user $username matches");
 
-    my $sip_fields = sip_message_to_hashref( $c, $data);
+    my $sip_fields = sip_message_to_hashref( $c, $data, $config );
     $log->debug( "SIP FIELDS: " . Data::Dumper::Dumper($sip_fields) );
 
     my $birthdate = $sip_fields->{PB} || undef;
@@ -301,7 +301,7 @@ Converts a raw SIP message into a more useful Perl structure.
 =cut
 
 sub sip_message_to_hashref {
-    my ($c, $data) = @_;
+    my ( $c, $data, $config ) = @_;
 
     my $log = $c->log();
 
@@ -337,12 +337,18 @@ sub sip_message_to_hashref {
       substr( $patron_status_field, 13, 1 );
 
     my $hold_items_count = substr( $fixed_fields, 37, 4 );
+    my $unavailable_holds_count = substr( $fixed_fields, 57, 4 );
 
     pop(@parts);
 
     my %fields = map { substr( $_, 0, 2 ) => substr( $_, 2 ) } @parts;
     $fields{patron_status} = $patron_status;
-    $fields{hold_items_count} = $hold_items_count;
+
+    my $ils = $config->{SIP}->{ILS};
+    $fields{hold_items_count}
+        = $ils eq 'Koha'      ? $hold_items_count
+        : $ils eq 'Evergreen' ? $hold_items_count - $unavailable_holds_count
+        :                       $hold_items_count;
 
     return \%fields;
 }

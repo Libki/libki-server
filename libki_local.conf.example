@@ -32,4 +32,5 @@
                                                             # Leave EXPIRED_CARD unchanged
     category_field PC          # Category field in SIP response
     pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
+    ILS Koha                   # Options are currently 'Koha' and 'Evergreen', defaults to Koha behavior
 </SIP>
