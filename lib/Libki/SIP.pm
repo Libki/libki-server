@@ -181,10 +181,37 @@ sub authenticate_via_sip {
         ## able to log into Libki, so let's attempt to delete that
         ## username before we try to authenticate.
         my $user = $c->model('DB::User')->single( { instance => $instance, username => $username } );
-        if ( $user ) {
+        if ($user) {
             my $is_admin = $c->check_any_user_role( $user, qw/admin superadmin/ );
-            $log->debug(sprintf("User %s is admin account and should not be deleted: %s", $user->id, $is_admin ));
-            $user->delete unless $is_admin;
+            $log->debug(
+                sprintf(
+                    "User %s is admin account and should not be deleted: %s",
+                    $user->id, $is_admin
+                )
+            );
+
+            unless ($is_admin) {
+                $c->txn_do(
+                    sub {
+                        $user->delete;
+
+                        $c->model('DB::Statistic')->create(
+                            {
+                                instance   => $instance,
+                                username   => $username,
+                                action     => 'USER_DELETE',
+                                created_on => $c->now,
+                                info       => to_json(
+                                    {
+                                        deleted_from => 'SIP',
+                                        user_id      => $user->id,
+                                    }
+                                ),
+                            }
+                        );
+                    }
+                );
+            }
         }
         return { success => 0, error => 'INVALID_USER', user => $user };
     }

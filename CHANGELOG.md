@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add logging of actions of Admin Client API ( restart clients, turn off clients, modify time, etc )
 - Added auto-release option for print management, can be set on a per-printer basis
+- Log when a user or group of users is deleted
 ### Changed
 - Move internet connectivity sites list to a server side setting
 

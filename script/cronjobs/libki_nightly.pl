@@ -114,7 +114,8 @@ foreach my $urd (@user_retention_days) {
         my $dt = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
         $dt->subtract( days => $urd->value );
         my $timestamp = DateTime::Format::MySQL->format_datetime($dt);
-        $c->model('DB::User')->search(
+
+        my $users = $c->model('DB::User')->search(
             {
                 instance             => $urd->instance,
                 'created_on'         => { '<' => $timestamp },
@@ -123,7 +124,28 @@ foreach my $urd (@user_retention_days) {
             {
                 join => 'user_roles',
             }
-        )->delete();
+        );
+
+        $schema->txn_do(
+            sub {
+
+                $c->model('DB::Statistic')->create(
+                    {
+                        instance   => $instance,
+                        action     => 'USERS_DELETE',
+                        created_on => $c->now,
+                        info       => to_json(
+                            {
+                                deleted_from => 'cronjobs/libki_nightly',
+                                usernames    => join( ',', $users->get_column('username')->all ),
+                            }
+                        ),
+                    }
+                );
+
+                $users->delete();
+            }
+        );
     }
 }
 

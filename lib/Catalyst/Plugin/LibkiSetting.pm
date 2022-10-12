@@ -97,6 +97,20 @@ sub instance_config {
     return $config;
 }
 
+=head2 schema
+
+Returns a DBIx::Class::Schema object, userful for running transactions
+
+=cut
+
+sub schema {
+    my ( $c ) = @_;
+
+    my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
+
+    return $schema;
+}
+
 =head2 now
 
 Returns a DataTime::now object corrected for the current timezone.

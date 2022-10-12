@@ -368,9 +368,30 @@ sub delete : Local : Args(1) {
                 $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
             }
             elsif ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
-                if ( $user->delete() ) {
-                    $success = 1;
-                }
+                $c->schema->txn_do(
+                    sub {
+                        if ( $user->delete() ) {
+                            $success = 1;
+
+                            $c->model('DB::Statistic')->create(
+                                {
+                                    instance   => $instance,
+                                    username   => $user->username,
+                                    action     => 'USER_DELETE',
+                                    created_on => $c->now,
+                                    info       => to_json(
+                                        {
+                                            deleted_from   => 'Administration/API/User',
+                                            user_id        => $user->id,
+                                            admin_id       => $c->user->id,
+                                            admin_username => $c->user->username,
+                                        }
+                                    ),
+                                }
+                            );
+                        }
+                    }
+                );
             }
         }
         else {
