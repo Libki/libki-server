@@ -11,7 +11,7 @@ use Libki;
 $ENV{LIBKI_INSTANCE} = "TEST";
 
 my $c = Libki->new();
-my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
+my $schema = $c->schema;
 my $dbh = $schema->storage->dbh;
 $schema->storage->txn_begin;
 

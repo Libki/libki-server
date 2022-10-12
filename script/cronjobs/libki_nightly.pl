@@ -39,8 +39,8 @@ $c->model('DB::Log')->create(
     }
 );
 
-my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
-my $dbh = $schema->storage->dbh;
+my $schema = $c->schema;
+my $dbh    = $schema->storage->dbh;
 
 ## Delete any guest accounts
 $c->model('DB::User')->search( { is_guest => 'Yes' } )->delete();

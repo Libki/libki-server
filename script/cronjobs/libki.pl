@@ -46,8 +46,8 @@ my $setting_rs     = $c->model('DB::Setting');
 my $reservation_rs = $c->model('DB::Reservation');
 my $message_rs     = $c->model('DB::Message');
 
-my $schema = $c->model('DB::User')->result_source->schema || die("Couldn't Connect to DB");
-my $dbh = $schema->storage->dbh;
+my $schema = $c->schema;
+my $dbh    = $schema->storage->dbh;
 
 ## Gather sessions to delete, delete them, then log the deletions
 my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone => $ENV{LIBKI_TZ} ) );

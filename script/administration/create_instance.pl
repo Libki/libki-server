@@ -15,11 +15,9 @@ my ( $opt, $usage ) = describe_options(
 
 print( $usage->text ), exit unless ( $opt->instance );
 
-my $c = Libki->new();
-my $schema = $c->model('DB::User')->result_source->schema
-  || die("Couldn't Connect to DB");
-
-my $rs = $schema->resultset('Setting');
+my $c      = Libki->new();
+my $schema = $c->schema;
+my $rs     = $schema->resultset('Setting');
 
 my $i = $opt->instance;
 say qq{Creating instance '$i'} if $opt->verbose;

@@ -30,8 +30,8 @@ sub users : Local Args(0) {
 
     my $instance = $c->instance;
 
-    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
-    my $dbh = $schema->storage->dbh;
+    my $schema = $c->schema;
+    my $dbh    = $schema->storage->dbh;
 
     my $params = $c->req->params;
 
@@ -169,8 +169,8 @@ sub clients : Local Args(0) {
 
     my $instance = $c->instance;
 
-    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
-    my $dbh = $schema->storage->dbh;
+    my $schema = $c->schema;
+    my $dbh    = $schema->storage->dbh;
 
     # Get settings
     my $userCategories = $c->setting('UserCategories');
@@ -501,8 +501,8 @@ sub reservations  : Local Args(0) {
 
     my $instance = $c->instance;
 
-    my $schema = $c->model('DB::Setting')->result_source->schema || die("Couldn't Connect to DB");
-    my $dbh = $schema->storage->dbh;
+    my $schema = $c->schema;
+    my $dbh    = $schema->storage->dbh;
 
     # We need to map the table columns to field names for ordering
     my @columns =

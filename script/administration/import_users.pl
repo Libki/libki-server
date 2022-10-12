@@ -44,8 +44,7 @@ print( $usage->text ), exit
 $ENV{LIBKI_INSTANCE} = $opt->instance;
 
 my $c      = Libki->new();
-my $schema = $c->model('DB::User')->result_source->schema
-  || die("Couldn't Connect to DB");
+my $schema = $c->schema;
 
 my $r = Libki::Users::import_users(
     {
