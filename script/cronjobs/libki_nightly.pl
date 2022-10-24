@@ -131,7 +131,7 @@ foreach my $urd (@user_retention_days) {
 
                 $c->model('DB::Statistic')->create(
                     {
-                        instance   => $instance,
+                        instance   => $urd->instance,
                         action     => 'USERS_DELETE',
                         created_on => $c->now,
                         info       => to_json(
