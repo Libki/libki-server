@@ -66,7 +66,7 @@ jobs:
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
 
   publish-docker-io-debian:
-    name: Publish Docker Debian image to docker.io
+    name: Push Debian image (docker.io)
     needs: test-docker-debian
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +89,7 @@ jobs:
       run: docker push libki/libki-server
 
   publish-quay-io-debian:
-    name: Publish Docker Debian image to quay.io
+    name: Push Debian image (quay.io)
     needs: test-docker-debian
     runs-on: ubuntu-latest
     steps:
@@ -112,7 +112,7 @@ jobs:
       run: docker push quay.io/libki/libki-server
 
   release-docker-io-debian:
-    name: Release Docker Debian image on docker.io
+    name: Release Debian image (docker.io)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
@@ -136,7 +136,7 @@ jobs:
       run: docker push libki/libki-server
 
   release-quay-io-debian:
-    name: Release Docker Debian image on quay.io
+    name: Release Debian image (quay.io)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
@@ -234,7 +234,7 @@ jobs:
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
 
   publish-docker-io-alpine:
-    name: Publish Alpine Docker image to docker.io
+    name: Push Alpine image (docker.io)
     needs: test-docker-alpine
     runs-on: ubuntu-latest
     steps:
@@ -260,7 +260,7 @@ jobs:
       run: docker push libki/libki-server:alpine-latest
 
   publish-quay-io-alpine:
-    name: Publish Alpine Docker image to quay.io
+    name: Push Alpine image (quay.io)
     needs: test-docker-alpine
     runs-on: ubuntu-latest
     steps:
@@ -286,7 +286,7 @@ jobs:
       run: docker push quay.io/libki/libki-server:alpine-latest
 
   release-docker-io-alpine:
-    name: Release Alpine Docker image on docker.io
+    name: Release Alpine image (docker.io)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
@@ -313,7 +313,7 @@ jobs:
       run: docker push libki/libki-server:alpine-${GITHUB_REF##*/}
 
   release-quay-io-alpine:
-    name: Release Alpine Docker image on quay.io
+    name: Release Alpine image (quay.io)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
