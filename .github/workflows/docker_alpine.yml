@@ -180,5 +180,3 @@ jobs:
 
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server:alpine-${GITHUB_REF##*/}
-
-  release
