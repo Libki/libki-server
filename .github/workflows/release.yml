@@ -1,0 +1,20 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'r*'
+  workflow_run:
+    workflows: ["Docker - Debian", "Docker - Alpine"]
+    branches: [master]
+    types: 
+      - completed
+
+jobs:
+  release:
+    - name: Create server release
+      uses: softprops/action-gh-release@v1
+
+    - name: Create server release
+      uses: softprops/action-gh-release@v1
+      with:
+        repository: Libki/libki-client

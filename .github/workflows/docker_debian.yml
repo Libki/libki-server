@@ -1,4 +1,4 @@
-name: CI - Debian
+name: Docker - Debian
 on: [push]
 jobs:
   build:
@@ -107,6 +107,54 @@ jobs:
 
     - name: Tag image for quay.io
       run: docker tag libki-server:latest quay.io/libki/libki-server:latest
+
+    - name: Push image to quay.io
+      run: docker push quay.io/libki/libki-server
+
+  release_docker_io:
+    name: Release on docker.io
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/r')
+    needs: publish_docker_io
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.tar
+
+    - name: Log in to docker.io
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u kylemhall --password-stdin
+
+    - name: Tag image for docker.io
+      run: docker tag libki-server:latest libki/libki-server:${GITHUB_REF##*/}
+
+    - name: Push image to docker.io
+      run: docker push libki/libki-server
+
+  release_quay_io:
+    name: Release on quay.io
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/r')
+    needs: publish_quay_io
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.tar
+
+    - name: Log in to quay.io
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+
+    - name: Tag image for quay.io
+      run: docker tag libki-server:latest libki/libki-server:${GITHUB_REF##*/}
 
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server
