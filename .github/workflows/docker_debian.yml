@@ -1,7 +1,7 @@
 name: Docker - Debian
 on: [push]
 jobs:
-  build:
+  build-docker-debian:
     name: Build Docker image
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         name: ${{ github.sha }}.tar
         path: ${{ github.sha }}.tar
 
-  test:
+  test-docker-debian:
     name: Run unit tests
     needs: build
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
 
-  publish_docker_io:
+  publish-docker-io-debian:
     name: Publish Docker image to docker.io
     needs: test
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
     - name: Push image to docker.io
       run: docker push libki/libki-server
 
-  publish_quay_io:
+  publish-quay-io-debian:
     name: Publish Docker image to quay.io
     needs: test
     runs-on: ubuntu-latest
@@ -111,11 +111,11 @@ jobs:
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server
 
-  release_docker_io:
+  release-docker-io-debian:
     name: Release on docker.io
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
-    needs: publish_docker_io
+    needs: publish-docker-io-debian
     steps:
     - name: Download image artifact
       uses: actions/download-artifact@v1
@@ -135,11 +135,11 @@ jobs:
     - name: Push image to docker.io
       run: docker push libki/libki-server
 
-  release_quay_io:
+  release-quay-io-debian:
     name: Release on quay.io
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
-    needs: publish_quay_io
+    needs: publish-quay-io-debian
     steps:
     - name: Download image artifact
       uses: actions/download-artifact@v1

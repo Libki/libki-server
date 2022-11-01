@@ -1,7 +1,7 @@
 name: Docker - Alpine
 on: [push]
 jobs:
-  build:
+  build-docker-alpine:
     name: Build Docker image
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         name: ${{ github.sha }}.tar
         path: ${{ github.sha }}.tar
 
-  test:
+  test-docker-alpine:
     name: Run unit tests
     needs: build
     runs-on: ubuntu-latest
@@ -75,7 +75,7 @@ jobs:
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
 
-  publish_docker_io:
+  publish-docker-io-alpine:
     name: Publish Docker image to docker.io
     needs: test
     runs-on: ubuntu-latest
@@ -101,7 +101,7 @@ jobs:
     - name: Push image to docker.io
       run: docker push libki/libki-server:alpine-latest
 
-  publish_quay_io:
+  publish-quay-io-alpine:
     name: Publish Docker image to quay.io
     needs: test
     runs-on: ubuntu-latest
@@ -127,11 +127,11 @@ jobs:
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server:alpine-latest
 
-  release_docker_io:
+  release-docker-io:
     name: Build & Release
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
-    needs: publish_docker_io
+    needs: publish-docker-io-alpine
     steps:
     - name: Download image artifact
       uses: actions/download-artifact@v1
@@ -154,11 +154,11 @@ jobs:
     - name: Push image to docker.io
       run: docker push libki/libki-server:alpine-${GITHUB_REF##*/}
 
-  release_quay_io:
+  release-quay-io-alpine:
     name: Build & Release
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/r')
-    needs: publish_quay_io
+    needs: publish-quay-io-alpine
     steps:
     - name: Download image artifact
       uses: actions/download-artifact@v1
