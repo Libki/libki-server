@@ -24,7 +24,7 @@ jobs:
 
   test-docker-debian:
     name: Run unit tests
-    needs: build
+    needs: build-docker-debian
     runs-on: ubuntu-latest
     steps:
 
@@ -67,7 +67,7 @@ jobs:
 
   publish-docker-io-debian:
     name: Publish Docker image to docker.io
-    needs: test
+    needs: test-docker-debian
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
@@ -90,7 +90,7 @@ jobs:
 
   publish-quay-io-debian:
     name: Publish Docker image to quay.io
-    needs: test
+    needs: test-docker-debian
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact

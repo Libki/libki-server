@@ -24,7 +24,7 @@ jobs:
 
   test-docker-alpine:
     name: Run unit tests
-    needs: build
+    needs: build-docker-alpine
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -77,7 +77,7 @@ jobs:
 
   publish-docker-io-alpine:
     name: Publish Docker image to docker.io
-    needs: test
+    needs: test-docker-alpine
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
@@ -103,7 +103,7 @@ jobs:
 
   publish-quay-io-alpine:
     name: Publish Docker image to quay.io
-    needs: test
+    needs: test-docker-alpine
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
