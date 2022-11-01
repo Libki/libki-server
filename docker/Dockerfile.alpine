@@ -61,7 +61,7 @@ RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
-COPY docker/files/bashrc /root/.bashrc
+COPY docker/files/bashrc /root/.profile
 
 ENV PERL5LIB /app/lib
 
