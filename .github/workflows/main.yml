@@ -245,7 +245,7 @@ jobs:
         path: /tmp
 
     - name: Import image from file
-      run: docker load --input /tmp/${{ github.sha }}.tar
+      run: docker load --input /tmp/${{ github.sha }}.alpine.tar
 
     - name: Log in to docker.io
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u kylemhall --password-stdin
