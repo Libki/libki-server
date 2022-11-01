@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - 'r*'
+      - '*'
   workflow_run:
     workflows: ["Docker - Debian", "Docker - Alpine"]
     branches: [master]
