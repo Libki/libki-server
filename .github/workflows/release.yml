@@ -13,8 +13,11 @@ jobs:
   release:
     - name: Create server release
       uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
 
     - name: Create server release
       uses: softprops/action-gh-release@v1
       with:
+        generate_release_notes: true
         repository: Libki/libki-client
