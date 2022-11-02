@@ -341,7 +341,7 @@ jobs:
 
   release-github:
     name: Create releases on GitHub
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: startsWith(github.ref, 'refs/tags/r')
     runs-on: ubuntu-latest
     needs: [release-docker-io-debian, release-quay-io-debian, release-docker-io-alpine, release-quay-io-alpine]
     steps:
