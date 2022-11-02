@@ -154,7 +154,7 @@ jobs:
       run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
 
     - name: Tag image for quay.io
-      run: docker tag libki-server:latest libki/libki-server:${GITHUB_REF##*/}
+      run: docker tag libki-server:latest quay.io/libki/libki-server:${GITHUB_REF##*/}
 
     - name: Push image to quay.io
       run: docker push quay.io/libki/libki-server:${GITHUB_REF##*/}
