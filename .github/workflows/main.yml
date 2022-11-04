@@ -68,6 +68,7 @@ jobs:
   publish-docker-io-debian:
     name: Push Debian image (docker.io)
     needs: test-docker-debian
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
@@ -91,6 +92,7 @@ jobs:
   publish-quay-io-debian:
     name: Push Debian image (quay.io)
     needs: test-docker-debian
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
@@ -236,6 +238,7 @@ jobs:
   publish-docker-io-alpine:
     name: Push Alpine image (docker.io)
     needs: test-docker-alpine
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
@@ -262,6 +265,7 @@ jobs:
   publish-quay-io-alpine:
     name: Push Alpine image (quay.io)
     needs: test-docker-alpine
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
