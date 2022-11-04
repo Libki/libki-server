@@ -2,7 +2,7 @@ name: Docker - Debian
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   build-docker-debian:
     name: Build Debian Docker image
