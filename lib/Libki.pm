@@ -84,6 +84,7 @@ __PACKAGE__->config(
 
 mkdir('/dev/libki_metrics'); # /dev is a ram disk, use for storing prom metrics
 __PACKAGE__->config('Plugin::PrometheusTiny' => {
+    no_default_controller => 1,
     filename => -w '/dev/libki_metrics' ? '/dev/libki_metrics' : '/tmp/libki_metrics',
     metrics => {
         active_clients => {
