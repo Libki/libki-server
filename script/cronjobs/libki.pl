@@ -37,6 +37,13 @@ $c->model('DB::Log')->create(
     }
 );
 
+$c->prometheus->set(
+    'active_clients', $c->model('DB::Client')->search( { status => 'online' } )->count()
+);
+$c->prometheus->set(
+    'active_sessions', $c->model('DB::Session')->count()
+);
+
 my $lang = 'en';
 if ( $c->installed_languages()->{$lang} ) {
     $c->session->{lang} = $lang;

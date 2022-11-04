@@ -232,6 +232,8 @@ sub unlock : Local : Args(1) {
             );
 
             if ( $session ) {
+                $c->prometheus->inc('logins');
+
                 $client->update( { status => 'unlock' } );
                 $success = 1;
 

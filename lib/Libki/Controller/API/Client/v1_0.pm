@@ -359,19 +359,23 @@ sub index : Path : Args(0) {
 
                                 # If a user is logging into the same client they are currently "logged in" to according to the sessions table
                                 # resume that session instead of creating a new session.
-                                my $session
-                                    = $user->session && $user->session->client_id eq $client->id
-                                    ? $user->session
-                                    : $c->model('DB::Session')->create(
-                                    {
-                                        instance   => $instance,
-                                        user_id    => $user->id,
-                                        client_id  => $client->id,
-                                        status     => 'active',
-                                        minutes    => $result{minutes},
-                                        session_id => $session_id,
-                                    }
+                                my $session;
+                                if ( $user->session && $user->session->client_id eq $client->id ) {
+                                    $session = $user->session;
+                                }
+                                else {
+                                    $session = $c->model('DB::Session')->create(
+                                        {
+                                            instance   => $instance,
+                                            user_id    => $user->id,
+                                            client_id  => $client->id,
+                                            status     => 'active',
+                                            minutes    => $result{minutes},
+                                            session_id => $session_id,
+                                        }
                                     );
+                                    $c->prometheus->inc('logins');
+                                }
 
                                 $c->stash( authenticated => $session && 1 );
 
