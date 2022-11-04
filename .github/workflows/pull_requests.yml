@@ -1,7 +1,7 @@
 name: Docker - Debian
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-docker-debian:
