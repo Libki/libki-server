@@ -47,6 +47,8 @@ use Catalyst qw(
   I18N
 
   Upload::MIME
+
+  PrometheusTiny
 );
 # add -Debug to this list for debugging purposes
 
@@ -79,6 +81,25 @@ __PACKAGE__->config(
         expires    => 3600,
     },
 );
+
+mkdir('/dev/libki_metrics'); # /dev is a ram disk, use for storing prom metrics
+__PACKAGE__->config('Plugin::PrometheusTiny' => {
+    filename => -w '/dev/libki_metrics' ? '/dev/libki_metrics' : '/tmp/libki_metrics',
+    metrics => {
+        active_clients => {
+            help    => 'Count of currently active registered clients',
+            type    => 'guage',
+        },
+        active_sessions => {
+            help    => 'Count of currently logged in users',
+            type    => 'guage',
+        },
+        logins => {
+            help    => 'Counter of user logins',
+            type    => 'counter',
+        },
+    },
+});
 
 __PACKAGE__->config(
     'View::HTML' => {
