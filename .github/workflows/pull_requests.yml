@@ -1,0 +1,144 @@
+name: Docker - Debian
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-docker-debian:
+    name: Build Debian Docker image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Docker build
+      run: docker build -t libki-server -f docker/Dockerfile .
+
+    - name: Export image to file
+      run: docker save libki-server > ${{ github.sha }}.debian.tar
+
+    - name: Upload image artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ github.sha }}.debian.tar
+        path: ${{ github.sha }}.debian.tar
+
+  test-docker-debian:
+    name: Debian Docker image unit tests
+    needs: build-docker-debian
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.debian.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.debian.tar
+
+    - name: Create docker network
+      run: docker network create libki-net
+
+    - name: Start database container
+      run:  docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
+
+    - name: Sleep to give database container time to launch
+      run: sleep 30
+
+    - name: Start Libki container
+      run: docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -d libki-server
+
+    - name: Sleep to give Libki container time to launch
+      run: sleep 30
+
+    - name: List docker containers
+      run: docker ps && docker logs libki-test-server
+
+    - name: Set up the Libki database
+      run: docker exec -t libki-test-server /app/installer/update_db.pl
+
+    - name: Run unit tests
+      run: |
+        docker exec -t libki-test-server prove /app/t/01app.t
+        docker exec -t libki-test-server prove /app/t/stdout.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
+
+  build-docker-alpine:
+    name: Build Docker Alpine image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Docker build
+      run: docker build -t libki-server -f docker/Dockerfile.alpine .
+
+    - name: Export image to file
+      run: docker save libki-server > ${{ github.sha }}.alpine.tar
+
+    - name: Upload image artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ github.sha }}.alpine.tar
+        path: ${{ github.sha }}.alpine.tar
+
+  test-docker-alpine:
+    name: Alpine Docker image unit tests
+    needs: build-docker-alpine
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Download image artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ github.sha }}.alpine.tar
+        path: /tmp
+
+    - name: Import image from file
+      run: docker load --input /tmp/${{ github.sha }}.alpine.tar
+
+    - name: Create docker network
+      run: docker network create libki-net
+
+    - name: Start database container
+      run:  docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
+
+    - name: Sleep to give database container time to launch
+      run: sleep 30
+
+    - name: Load database schema
+      run: cat installer/schema.sql | docker exec -i libki-mariadb /usr/bin/mysql -u root --password=password libki
+
+    - name: Load database default data
+      run: cat installer/data.sql | docker exec -i libki-mariadb /usr/bin/mysql -u root --password=password libki
+
+    - name: Start Libki container
+      run: docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -e 'LIBKI_TZ=America/New_York' -d libki-server
+
+    - name: Sleep to give Libki container time to launch
+      run: sleep 30
+
+    - name: List docker containers
+      run: docker ps && docker logs libki-test-server
+
+    - name: Set up the Libki database
+      run: docker exec -t libki-test-server /app/installer/update_db.pl
+
+    - name: Run unit tests
+      run: |
+        docker exec -t libki-test-server prove /app/t/01app.t
+        docker exec -t libki-test-server prove /app/t/stdout.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
+        docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
+
