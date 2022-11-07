@@ -43,7 +43,7 @@ function backup {
     if (( $whileCounter < 10 ))
     then
       sleep $whileCounter
-      whileCounter++
+      ((whileCounter++))
     else
       1>&2 echo "Unfortunately it wasn't possible to stop the Libki Server service."
       1>&2 echo "Please shut it down manually with 'service libki stop' and try again."
