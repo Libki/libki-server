@@ -611,6 +611,43 @@
                         </div>
                     </fieldset>
 
+                    <fieldset>
+                        <legend>[% c.loc("Center logo") %]</legend>
+
+                        <div class="form-group">
+                            <label for="LogoURL">[% c.loc("Source URL") %]</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">http://</span>
+                                </div>
+                                <input type="text" class="form-control" id="LogoURL" name="LogoURL" value="[% LogoURL %]">
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LogoWidth">[% c.loc("Width") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="LogoWidth" name="LogoWidth" value="[% LogoWidth %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The width of the source image or image service in pixels.") %]</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LogoHeight">[% c.loc("Height") %]</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="LogoHeight" name="LogoHeight" value="[% LogoHeight %]">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">[% c.loc("Pixels") %]</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("The height of the source image or image service in pixels.") %]</small>
+                        </div>
+                    </fieldset>
+
                 </fieldset>
             </div>
 
