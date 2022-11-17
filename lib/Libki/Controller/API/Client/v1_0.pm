@@ -142,6 +142,10 @@ sub index : Path : Args(0) {
             BannerBottomWidth          => $c->stash->{Settings}->{BannerBottomWidth},
             BannerBottomHeight         => $c->stash->{Settings}->{BannerBottomHeight},
 
+            Logo                       => $c->stash->{Settings}->{LogoURL},
+            LogoWidth                  => $c->stash->{Settings}->{LogoWidth},
+            LogoHeight                 => $c->stash->{Settings}->{LogoHeight},
+
             inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
 

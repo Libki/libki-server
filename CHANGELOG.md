@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add basic prometheus metrics for counting sessions, clients and logins ( in addition to default metrics )
+- Add ability to set client logo URL, height and width from the server
 
 ## [4.4.0] [r22.11]
 ### Added
