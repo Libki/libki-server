@@ -8,6 +8,8 @@ use POSIX;
 
 use Libki::Utils::Printing;
 
+use JSON qw(to_json);
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
