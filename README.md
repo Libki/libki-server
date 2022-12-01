@@ -1,4 +1,7 @@
+# Focal only. (20.04)
+
 # Libki Server
+
 
 ## Contributing
 
