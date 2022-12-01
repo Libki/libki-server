@@ -9,7 +9,7 @@ is_debian_stretch=false
 is_debian_bullseye=false
 is_debian_buster=false
 is_ubuntu_bionic=false
-is_ubuntu_focal=false
+is_ubuntu_focal=true
 
 if [ -e /etc/os-release ]; then
   source /etc/os-release
