@@ -368,6 +368,26 @@ sub index : Path : Args(0) {
                                     $session = $user->session;
                                 }
                                 else {
+                                    # Check to see if there is a crashed session still hanging around
+                                    # If there is, "log out" the previous session
+                                    if ( $session = $client->session ) {
+                                        $c->model('DB::Statistic')->create(
+                                            {
+                                                instance        => $instance,
+                                                username        => $session->user->username,
+                                                client_name     => $client->name,
+                                                client_location => $client->location,
+                                                client_type     => $client->type,
+                                                action          => 'LOGOUT',
+                                                created_on      => $c->now,
+                                                session_id      => $session->session_id,
+                                            }
+                                        );
+
+                                        $client->session->delete();
+
+                                    }
+
                                     $session = $c->model('DB::Session')->create(
                                         {
                                             instance   => $instance,
