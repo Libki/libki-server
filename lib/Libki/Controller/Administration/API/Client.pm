@@ -135,7 +135,7 @@ sub logout : Local : Args(1) {
                     client_name     => $client->name,
                     client_location => $client->location,
                     client_type     => $client->type,
-                    action          => 'LOGOUT',
+                    action          => 'FORCE_LOGOUT',
                     created_on      => $c->now,
                     session_id      => $c->sessionid,
                     info            => to_json(
