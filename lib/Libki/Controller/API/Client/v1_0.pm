@@ -494,6 +494,57 @@ sub index : Path : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 statistics
+
+Client API method to send statistics/actions to the server.
+
+=cut
+
+sub statistics : Path('statistics') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    $c->log()
+        ->debug( "Libki::Controller::API::Client::v1_0::statistics(), instance: $instance, params: "
+            . to_json( $c->request->params ) );
+
+    my $client_name = $c->request->params->{'client_name'};
+    my $username    = $c->request->params->{'username'};
+    my $action      = $c->request->params->{'action'};
+
+    my $client = $c->model('DB::Client')
+        ->single( { instance => $instance, name => $client_name } );
+        warn "CLIENT: $client";
+
+    my $user = $c->model('DB::User')
+        ->single( { instance => $instance, username => $username } );
+        warn "USER: $user";
+
+    $c->model('DB::Statistic')->create(
+        {
+            instance        => $c->instance,
+            username        => $username,
+            client_name     => $client->name,
+            client_location => $client->location,
+            client_type     => $client->type,
+            action          => $action,
+            created_on      => $c->now,
+            session_id      => $c->sessionid,
+            info            => to_json(
+                {
+                    user_id    => $user->id,
+                    username   => $user->username,
+                    client_id  => $client->id,
+                }
+            ),
+        }
+    );
+
+    delete( $c->stash->{'Settings'} );
+    $c->forward( $c->view('JSON') );
+}
+
 =head2 print
 
 Client API method to send a print job to the server.
