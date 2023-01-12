@@ -241,6 +241,8 @@ sub authenticate_via_sip {
         = split( $c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE} );
     $lastname  =~ s/^\s+//;
     $firstname =~ s/^\s+//;
+    ( $lastname, $firstname ) = ( $firstname, $lastname ) if $c->config->{SIP}->{pattern_personal_name_reverse};
+
     my $category = $sip_fields->{ $c->config->{SIP}->{category_field} };
     $c->add_user_category($category) if $category;
 

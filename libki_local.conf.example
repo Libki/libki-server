@@ -32,5 +32,6 @@
                                                             # Leave EXPIRED_CARD unchanged
     category_field PC          # Category field in SIP response
     pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
+    pattern_personal_name_reverse: 1 # If the names are ordered firstname then lastname, enable this option
     ILS Koha                   # Options are currently 'Koha' and 'Evergreen', defaults to Koha behavior
 </SIP>
