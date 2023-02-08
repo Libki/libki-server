@@ -617,9 +617,6 @@
                         <div class="form-group">
                             <label for="LogoURL">[% c.loc("Source URL") %]</label>
                             <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">http://</span>
-                                </div>
                                 <input type="text" class="form-control" id="LogoURL" name="LogoURL" value="[% LogoURL %]">
                             </div>
                             <small class="form-text text-muted">[% c.loc("The URL for the source image or image service.") %]</small>
