@@ -75,19 +75,19 @@ sub index : Path : Args(0) {
             $log->debug( "Client Registered: " . $client->name() );
         }
 
-        my $client_s = $c->model('DB::Client')->find( { name => $node_name } );
+        $client->get_from_storage;
 
-        if ($client_s->status eq "unlock") {
+        if ($client->status eq "unlock") {
             $c->stash(
                 unlock   => 1,
-                minutes  => $client_s->session->minutes,
-                username => $client_s->session->user->username,
+                minutes  => $client->session->minutes,
+                username => $client->session->user->username,
             );
-        } elsif ($client_s->status eq "shutdown" || $client_s->status eq "suspend" || $client_s->status eq "restart") {
+        } elsif ($client->status eq "shutdown" || $client->status eq "suspend" || $client->status eq "restart") {
             $c->stash(
-                $client_s->status => 1,
+                $client->status => 1,
             );
-        } elsif ($client_s->status eq "wakeup") {
+        } elsif ($client->status eq "wakeup") {
             my $host = $c->setting('WOLHost') || '255.255.255.255';
             my $port = $c->setting('WOLPort') || 9;
             my @mac_addresses = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
@@ -100,7 +100,7 @@ sub index : Path : Args(0) {
             );
         }
 
-        $client_s->update( { status => 'online' } ) if ( $client_s->status ne 'suspended' );
+        $client->update( { status => 'online' } ) if ( $client->status ne 'suspended' );
 
         if ( $c->setting('ReservationShowUsername') ne 'RSD' ) {
             my $reserved_for = $c->get_reservation_status($client);
@@ -127,7 +127,7 @@ sub index : Path : Args(0) {
 
         $c->stash(
             registered                 => !!$client,
-            status                     => $client_s->status,
+            status                     => $client->status,
             ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
             EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
