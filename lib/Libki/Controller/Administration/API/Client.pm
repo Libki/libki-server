@@ -442,6 +442,9 @@ sub shutdown : Local : Args(1) {
     if ($client->status eq 'online') {
         $success = 1 if $client->update( { status => $status } );
 
+        my $session = $client->session;
+        my $user = $session ? $session->user : undef;
+
         $c->model('DB::Statistic')->create(
             {
                 instance        => $c->instance,
@@ -452,6 +455,13 @@ sub shutdown : Local : Args(1) {
                 action          => 'SHUTDOWN',
                 created_on      => $c->now,
                 session_id      => $c->sessionid,
+                info            => to_json(
+                    {
+                        user_id   => $user ? $user->id : undef,
+                        username  => $user ? $user->username : undef,
+                        client_id => $client_id,
+                    }
+                ),
             }
         );
     }
