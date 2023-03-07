@@ -1,4 +1,4 @@
--- MySQL dump 10.19  Distrib 10.3.31-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: libki-mariadb    Database: libki
 -- ------------------------------------------------------
@@ -339,7 +339,7 @@ CREATE TABLE `statistics` (
   `created_on` timestamp NULL DEFAULT NULL,
   `anonymized` tinyint(1) DEFAULT 0,
   `session_id` char(72) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `info` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `instance` (`instance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -401,4 +401,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-10 10:30:15
+-- Dump completed on 2023-03-07  9:40:54
