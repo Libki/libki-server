@@ -288,22 +288,33 @@ sub reservation : Local : Args(1) {
 
     my $reservation = undef;
     if ( $user ) {
-        $reservation =  $c->model('DB::Reservation')->find({ user_id => $user->id,client_id => $client_id});
+        $reservation = $c->model('DB::Reservation')->find(
+            {
+                user_id   => $user->id,
+                client_id => $client_id,
+            }
+        );
     }
     else {
-        $c->stash( 'success' => 0, 'reason' => 'INVALID_USER');
+        $c->stash( success => 0, reason => 'INVALID_USER' );
     }
 
     if ( $action eq 'reserve' && $user) {
         if( !$reservation ) {
-            my $begin_time = $c->request->params->{'reservation_date'}.' '
-                                                  .$c->request->params->{'reservation_hour'}.':'
-                                                  .$c->request->params->{'reservation_minute'}.':00';
+            my $date   = $c->request->params->{reservation_date};
+            my $hour   = $c->request->params->{reservation_hour};
+            my $minute = $c->request->params->{reservation_minute};
 
-            my %check = $c->check_reservation($client,$user,$begin_time);
+            my %check = $c->check_reservation( $client, $user, $begin_time );
 
-            if($check{'error'}) {
-                $c->stash( 'success' => 0, 'reason' => $check{'error'}, 'detail' => $check{'detail'} );
+            my $begin_time = "$date $hour:$minute:00";
+
+            if ( $check{error} ) {
+                $c->stash(
+                    success => 0,
+                    reason  => $check{error},
+                    detail  => $check{detail},
+                );
             }
             else {
                 $c->model('DB::Reservation')->create(
@@ -330,7 +341,7 @@ sub reservation : Local : Args(1) {
                                 user_id    => $user->id,
                                 client_id  => $client_id,
                                 begin_time => $begin_time,
-                                end_time   => $check{'end_time'}
+                                end_time   => $check{end_time}
                             }
                         ),
                     }
