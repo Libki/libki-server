@@ -2,6 +2,8 @@ package Libki::Controller::Administration::API::Client;
 use Moose;
 use namespace::autoclean;
 
+use DateTime::Format::MySQL;
+
 use Libki::Clients qw( wakeonlan );
 
 use JSON qw(to_json);
@@ -305,25 +307,29 @@ sub reservation : Local : Args(1) {
             my $hour   = $c->request->params->{reservation_hour};
             my $minute = $c->request->params->{reservation_minute};
 
-            my %check = $c->check_reservation( $client, $user, $begin_time );
-
             my $begin_time = "$date $hour:$minute:00";
 
-            if ( $check{error} ) {
+            my %check  = $c->check_reservation( $client, $user, $begin_time );
+            my $error  = $check{error};
+            my $detail = $check{detail};
+
+            if ( $error ) {
                 $c->stash(
                     success => 0,
-                    reason  => $check{error},
-                    detail  => $check{detail},
+                    reason  => $error,
+                    detail  => $detail,
                 );
             }
             else {
+                my $end_time = DateTime::Format::MySQL->format_datetime( $check{end_time} );
+
                 $c->model('DB::Reservation')->create(
                     {
                         instance   => $instance,
                         user_id    => $user->id,
                         client_id  => $client_id,
                         begin_time => $begin_time,
-                        end_time   => $check{end_time},
+                        end_time   => $end_time,
                     }
                 );
                 $c->model('DB::Statistic')->create(
@@ -341,7 +347,7 @@ sub reservation : Local : Args(1) {
                                 user_id    => $user->id,
                                 client_id  => $client_id,
                                 begin_time => $begin_time,
-                                end_time   => $check{end_time}
+                                end_time   => $end_time,
                             }
                         ),
                     }
