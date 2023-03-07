@@ -875,9 +875,9 @@ $(document).ready(function() {
     });
 
     // When we switch tabs, refresh the new tab automatically
-    $('#user-tab-label').click( function(){ ForceUserTableRefresh() });
-    $('#client-tab-label').click( function(){ ForceClientTableRefresh() });
-    $('#reservation-tab-label').click( function(){ ForceReservationTableRefresh() });
+    $('#users-tab').click( function(){ ForceUserTableRefresh() });
+    $('#clients-tab').click( function(){ ForceClientTableRefresh() });
+    $('#reservations-tab').click( function(){ ForceReservationTableRefresh() });
 
     /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
