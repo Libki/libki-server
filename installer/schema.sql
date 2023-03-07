@@ -331,8 +331,8 @@ DROP TABLE IF EXISTS `statistics`;
 CREATE TABLE `statistics` (
   `instance` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
-  `client_name` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `client_name` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
   `client_location` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
   `client_type` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
   `action` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
