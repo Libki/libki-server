@@ -204,10 +204,38 @@
                 </fieldset>
 
                 <fieldset>
+                    <legend>[% c.loc("Client notifications") %]</legend>
+
+                    <div class="form-group">
+                        <label for="ClientTimeNotificationFrequency">[% c.loc("Client time notification frequency") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientTimeNotificationFrequency" name="ClientTimeNotificationFrequency" value="[% ClientTimeNotificationFrequency %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Frequency with which to request the host OS display a message with the user's remaining time.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Note: Host operating system may not honor message requests based on the OS configuration.") %]</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ClientTimeWarningThreshold">[% c.loc("Client time warning threshold") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientTimeWarningThreshold" name="ClientTimeWarningThreshold" value="[% ClientTimeWarningThreshold %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("When the user's remaining remaining time drops below the threshold, Libki will request the OS display the user's remaining time in a warning message once per minute.") %]</small>
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
                     <legend>[% c.loc("Client inactivity") %]</legend>
 
                     <div class="form-group">
-                        <label for="ClientInactivity">[% c.loc("Client inactivity warning") %]</label>
+                        <label for="ClientInactivityWarning">[% c.loc("Client inactivity warning") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientInactivityWarning" name="ClientInactivityWarning" value="[% ClientInactivityWarning %]">
                             <div class="input-group-append">
@@ -218,7 +246,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ClientInactivity">[% c.loc("Client inactivity logout") %]</label>
+                        <label for="ClientInactivityLogout">[% c.loc("Client inactivity logout") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientInactivityLogout" name="ClientInactivityLogout" value="[% ClientInactivityLogout %]">
                             <div class="input-group-append">
