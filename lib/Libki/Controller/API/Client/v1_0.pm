@@ -149,6 +149,9 @@ sub index : Path : Args(0) {
             inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
 
+            ClientTimeNotificationFrequency => $c->stash->{Settings}->{ClientInactivityLogout},
+            ClientTimeWarningThreshold      => $c->stash->{Settings}->{ClientInactivityLogout},
+
             ClientStyleSheet           => $c->stash->{Settings}->{ClientStyleSheet},
 
             InternetConnectivityURLs   => $c->stash->{Settings}->{InternetConnectivityURLs},
