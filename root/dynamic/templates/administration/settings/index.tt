@@ -243,6 +243,7 @@
                             </div>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Warn user that they will be logged out automatically after this many minutes of inactivity.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Note: Libki is only able to detect mouse activity, not keyboard activity.") %]</small>
                     </div>
 
                     <div class="form-group">
