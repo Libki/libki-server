@@ -239,6 +239,14 @@ sub release {
             error   => 'User does not match',
             id      => $print_job_id
         } unless $print_job->user_id == $user->id;
+    } elsif ( !$c->check_user_roles('admin') ) {
+        return {
+            success => 0,
+            error   => 'User does not have rights to release this print job.',
+            id      => $print_job_id,
+        };
+    } else {
+        $user = $c->model('DB::User')->find( $print_job->user_id );
     }
 
     return {
