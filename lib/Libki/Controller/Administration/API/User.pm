@@ -366,7 +366,7 @@ sub delete : Local : Args(1) {
             if ( $user->username eq $c->user->username ) {
                 $msg = q{CANNOT_DELETE_YOURSELF};
             }
-            elsif ( $i_am_admin && $user_is_superadmin ) {
+            elsif ( $user_is_superadmin && !$i_am_superadmin ) {
                 $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
             }
             elsif ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
