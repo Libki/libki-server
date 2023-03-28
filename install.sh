@@ -22,6 +22,9 @@ if [ -e /etc/os-release ]; then
     ubuntu-focal)
       is_ubuntu_focal=true
       ;;
+    ubuntu-jammy)
+      is_ubuntu_jammy=true
+      ;;
     debian-buster)
       is_debian_buster=true
       ;;
@@ -56,6 +59,8 @@ elif [ "$is_debian_bullseye" = true ]; then
 elif [ "$is_ubuntu_bionic" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libimage-magick-perl libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev shared-mime-info -y
 elif [ "$is_ubuntu_focal" = true ]; then
+  apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libimage-magick-perl libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen shared-mime-info -y
+elif [ "$is_ubuntu_jammy" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libimage-magick-perl libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen shared-mime-info -y
 
 fi
