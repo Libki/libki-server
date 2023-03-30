@@ -237,11 +237,17 @@ sub authenticate_via_sip {
     $birthdate = ( join( '-', unpack( "A4A2A2", $birthdate ) ) )
       if $birthdate;
 
-    my ( $lastname, $firstname )
-        = split( $c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE} );
-    $lastname  =~ s/^\s+//;
-    $firstname =~ s/^\s+//;
-    ( $lastname, $firstname ) = ( $firstname, $lastname ) if $c->config->{SIP}->{pattern_personal_name_reverse};
+    my ( $lastname, $firstname );
+    unless ( $c->config->{SIP}->{skip_import_personal_name} ) {
+        ( $lastname, $firstname )
+            = split( $c->config->{SIP}->{pattern_personal_name}, $sip_fields->{AE} );
+
+        $lastname  =~ s/^\s+//;
+        $firstname =~ s/^\s+//;
+
+        ( $lastname, $firstname ) = ( $firstname, $lastname )
+            if $c->config->{SIP}->{pattern_personal_name_reverse};
+    }
 
     my $category = $sip_fields->{ $c->config->{SIP}->{category_field} };
     $c->add_user_category($category) if $category;
