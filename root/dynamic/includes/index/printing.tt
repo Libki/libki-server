@@ -1,3 +1,4 @@
+[%- SET public_print_release = c.get_printer_configuration.public_print_release %]
 <div class="container">
     <div class="row">
         <div class="col">
@@ -64,8 +65,8 @@
             <th>[% c.loc("Created") %]</th>
             <th>[% c.loc("Printer") %]</th>
             <th>[% c.loc("Cost") %]</th>
-            <th></th>
-            <th></th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
             </thead>
         </table>
     </div>
@@ -101,6 +102,12 @@
                 $("#print-table").dataTable().fnDraw(true);
             }, 10000);
         },
+        columnDefs: [
+            {
+                targets: [8],
+                className: "[% IF public_print_release == 'disabled' %]display-none[% END %]"
+            },
+        ],
         "order": [
             [6, "desc"]
         ],
@@ -190,11 +197,15 @@
             // Print & Cancel buttons
             let insufficient_funds = cost > user_funds;
             let html;
-            if ( not_held || insufficient_funds ) {
-                html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release disabled" disabled="disabled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
-            } else {
-                html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
-            }
+            [% IF public_print_release != "disabled" %]
+                if ( not_held || insufficient_funds ) {
+                    html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release disabled" disabled="disabled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+                } else {
+                    html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+                }
+            [% ELSE %]
+                html = "&nbsp;";
+            [% END %]
             $('td:eq(8)', nRow).html(html);
 
             if ( not_held ) {
