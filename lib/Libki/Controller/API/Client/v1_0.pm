@@ -130,7 +130,10 @@ sub index : Path : Args(0) {
             status                     => $client->status,
             ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
-            EnableClientSessionLocking => $c->stash->{Settings}->{EnableClientSessionLocking},
+
+            EnableClientSessionLocking   => $c->stash->{Settings}->{EnableClientSessionLocking},
+            EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode},
+
             TermsOfService             => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfService} ),
             TermsOfServiceDetails      => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfServiceDetails} ),
 
@@ -247,6 +250,7 @@ sub index : Path : Args(0) {
             ## Process client requests
             if ($success) {
                 if (
+                    $c->setting('EnableClientPasswordlessMode') ||
                     $c->authenticate(
                         {
                             username => $username,

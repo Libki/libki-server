@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.6.0] [r23.04]
+### Added
+- Add passwordless mode that supports SIP and regular logins
+
+## [4.5.0] [r23.03]
 ### Added
 - Add basic prometheus metrics for counting sessions, clients and logins ( in addition to default metrics )
 - Add ability to set client logo URL, height and width from the server

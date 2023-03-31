@@ -218,7 +218,7 @@ sub authenticate_via_sip {
 
     $log->debug("ILS verifies $username exists");
 
-    unless ( $config->{SIP}->{no_password_check} || $admin_auth ) {
+    unless ( $c->setting('EnableClientPasswordlessMode') || $config->{SIP}->{no_password_check} || $admin_auth ) {
         if ( CORE::index( $data, 'CQY' ) == -1 ) {
             return {
                 success => 0,
