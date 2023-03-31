@@ -11,7 +11,7 @@ use DateTime::Format::MySQL;
 use DateTime;
 use File::Slurp;
 
-our $VERSION = '4.4.0';
+our $VERSION = '4.5.0';
 
 # Set flags and add plugins for the application.
 #
@@ -40,7 +40,7 @@ use Catalyst qw(
   Session::State::Cookie
 
   StatusMessage
-  
+
   Breadcrumbs
   LibkiSetting
 

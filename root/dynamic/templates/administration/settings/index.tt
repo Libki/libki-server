@@ -269,6 +269,16 @@
                 </fieldset>
 
                 <fieldset>
+                    <legend>[% c.loc("Client passwordless mode") %]</legend>
+
+                    <div class="form-group">
+                        <input  id="EnableClientPasswordlessMode" name="EnableClientPasswordlessMode" type="checkbox" [% IF EnableClientPasswordlessMode %]checked="checked"[% END %]>
+                        <label for="EnableClientPasswordlessMode">[% c.loc("Enable passwordless mode for clients") %]</label>
+                        <small class="form-text text-muted">[% c.loc("If enabled, passwords will not be checked for client logins and the password field will be hidden in client v2.2.22 or later.") %]</small>
+                    </div>
+                </fieldset>
+
+                <fieldset>
                     <legend>[% c.loc("Client registration") %]</legend>
 
                     <div class="form-group">

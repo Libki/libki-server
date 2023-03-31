@@ -67,7 +67,7 @@ sub update :Local :Args(0) {
     }
 
     # Checkboxes need to be converted to boolean values
-    foreach my $pref ( qw( EnableClientSessionLocking TimeAllowanceByLocation ) ) {
+    foreach my $pref ( qw( EnableClientSessionLocking TimeAllowanceByLocation EnableClientPasswordlessMode ) ) {
         $c->model('DB::Setting')->update_or_create(
             {
                 instance => $instance,
