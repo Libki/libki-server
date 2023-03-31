@@ -179,7 +179,7 @@
                     <legend>[% c.loc("Client behavior") %]</legend>
 
                     <div class="form-group">
-                        <label for="ClientBehavior">[% c.loc("Client reservations") %]</label>
+                        <label for="ClientBehavior">[% c.loc("Reservations") %]</label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="ClientBehavior" id="ClientBehaviorFCFS" value="FCFS" [% IF ClientBehavior == 'FCFS' %]checked[% END %]>
                             <label class="form-check-label" for="ClientBehaviorFCFS">
@@ -204,10 +204,10 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>[% c.loc("Client notifications") %]</legend>
+                    <legend>[% c.loc("Notifications") %]</legend>
 
                     <div class="form-group">
-                        <label for="ClientTimeNotificationFrequency">[% c.loc("Client time notification frequency") %]</label>
+                        <label for="ClientTimeNotificationFrequency">[% c.loc("Time notification frequency") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientTimeNotificationFrequency" name="ClientTimeNotificationFrequency" value="[% ClientTimeNotificationFrequency %]">
                             <div class="input-group-append">
@@ -219,7 +219,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ClientTimeWarningThreshold">[% c.loc("Client time warning threshold") %]</label>
+                        <label for="ClientTimeWarningThreshold">[% c.loc("Time warning threshold") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientTimeWarningThreshold" name="ClientTimeWarningThreshold" value="[% ClientTimeWarningThreshold %]">
                             <div class="input-group-append">
@@ -235,7 +235,7 @@
                     <legend>[% c.loc("Client inactivity") %]</legend>
 
                     <div class="form-group">
-                        <label for="ClientInactivityWarning">[% c.loc("Client inactivity warning") %]</label>
+                        <label for="ClientInactivityWarning">[% c.loc("Inactivity warning") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientInactivityWarning" name="ClientInactivityWarning" value="[% ClientInactivityWarning %]">
                             <div class="input-group-append">
@@ -247,7 +247,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ClientInactivityLogout">[% c.loc("Client inactivity logout") %]</label>
+                        <label for="ClientInactivityLogout">[% c.loc("Inactivity logout") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="ClientInactivityLogout" name="ClientInactivityLogout" value="[% ClientInactivityLogout %]">
                             <div class="input-group-append">
@@ -259,7 +259,7 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>[% c.loc("Client session pausing") %]</legend>
+                    <legend>[% c.loc("Session pausing") %]</legend>
 
                     <div class="form-group">
                         <input  id="EnableClientSessionLocking" name="EnableClientSessionLocking" type="checkbox" [% IF EnableClientSessionLocking %]checked="checked"[% END %]>
@@ -269,7 +269,7 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>[% c.loc("Client passwordless mode") %]</legend>
+                    <legend>[% c.loc("Passwordless mode") %]</legend>
 
                     <div class="form-group">
                         <input  id="EnableClientPasswordlessMode" name="EnableClientPasswordlessMode" type="checkbox" [% IF EnableClientPasswordlessMode %]checked="checked"[% END %]>
