@@ -18,7 +18,7 @@
 # it has all the dependencies installed already
 FROM bitnami/minideb:bullseye
 
-MAINTAINER Kyle M Hall <kyle@kylehall.info>
+LABEL maintainer="Kyle M Hall <kyle@kylehall.info>"
 
 ENV LIBKI_SERVER_PORT 3000
 ENV LIBKI_MAX_WORKERS 4
