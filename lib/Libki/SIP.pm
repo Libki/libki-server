@@ -371,19 +371,23 @@ sub sip_message_to_hashref {
     $patron_status->{too_many_items_billed} =
       substr( $patron_status_field, 13, 1 );
 
-    my $hold_items_count = substr( $fixed_fields, 37, 4 );
-    my $unavailable_holds_count = substr( $fixed_fields, 57, 4 );
-
     pop(@parts);
 
     my %fields = map { substr( $_, 0, 2 ) => substr( $_, 2 ) } @parts;
     $fields{patron_status} = $patron_status;
 
-    my $ils = $config->{SIP}->{ILS};
-    $fields{hold_items_count}
-        = $ils eq 'Koha'      ? $hold_items_count
-        : $ils eq 'Evergreen' ? $hold_items_count - $unavailable_holds_count
-        :                       $hold_items_count;
+    $fields{hold_items_count} = 0;
+    my $hold_notification = $config->{SIP}->{hold_notification} // 1;
+    if ($hold_notification) {
+        my $hold_items_count        = substr( $fixed_fields, 37, 4 );
+        my $unavailable_holds_count = substr( $fixed_fields, 57, 4 );
+
+        my $ils = $config->{SIP}->{ILS};
+        $fields{hold_items_count}
+            = $ils eq 'Koha'      ? $hold_items_count
+            : $ils eq 'Evergreen' ? $hold_items_count - $unavailable_holds_count
+            :                       $hold_items_count;
+    }
 
     return \%fields;
 }
