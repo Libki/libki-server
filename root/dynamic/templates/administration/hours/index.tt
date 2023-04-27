@@ -28,7 +28,7 @@
                 [% FOREACH d IN DaysOfWeek %]
                     <div class="form-group form-inline">
                         <label for="[% d %]" style="width: 7em">[% c.loc("$d") %]</label>
-						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control" onclick="formatHour('[% d %]-hour-all','[% d %]-show-ampm-label')">
+						<select id="[% d %]-hour-all" name="[% d %]-hour-all" class="form-control" onchange="formatHour('[% d %]-hour-all','[% d %]-show-ampm-label')">
 							<option value=""></option>
 							[% FOREACH h IN Hours %]
                                 [% IF h == 12 && Settings.TimeDisplayFormat == 12 %]
@@ -73,7 +73,7 @@
                         <p/>
                         <div class="form-group form-inline">
                             <label for="[% d %]" style="width: 7em">[% c.loc("$d") %]</label>
-							<select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="form-control" onclick="formatHour('[% d %]-hour-[% l.id %]','[% d %]-show-ampm-label-[% l.id %]')">
+							<select id="[% d %]-hour-[% l.id %]" name="[% d %]-hour-[% l.id %]" class="form-control" onchange="formatHour('[% d %]-hour-[% l.id %]','[% d %]-show-ampm-label-[% l.id %]')">
 								<option value=""></option>
 								[% FOREACH h IN Hours %]
                                     [% IF h == 12 && Settings.TimeDisplayFormat == 12 %]
