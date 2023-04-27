@@ -36,22 +36,22 @@ sub index : Path : Args(0) {
             distinct => 1
         }
     )->get_column('location')->all();
-    @locations = map {  decode( 'UTF-8', $_ ) } @locations;
+    @locations = map { decode( 'UTF-8', $_ ) } @locations;
 
     $c->stash(
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
         PrinterConfiguration   => $c->setting('PrinterConfiguration'),
         ShowFirstLastNames     => $c->setting('ShowFirstLastNames'),
-        UserCategories	       => $c->setting('UserCategories'),
+        UserCategories         => $c->setting('UserCategories'),
         locations              => \@locations,
     );
 }
 
 =head2 auto
-    
+
 Check if there is an authorized user and, if not, forward to login page
-    
+
 =cut
 
 # Note that 'auto' runs after 'begin' but before your actions and that
@@ -60,8 +60,11 @@ Check if there is an authorized user and, if not, forward to login page
 sub auto : Private {
     my ( $self, $c ) = @_;
 
-    $c->stash( interface => 'administration' );
-    
+    $c->stash(
+        interface => 'administration',
+        version   => $Libki::VERSION,
+    );
+
     # Allow unauthenticated users to reach the login page.  This
     # allows unauthenticated users to reach any action in the Login
     # controller.  To lock it down to a single action, we could use:
@@ -87,7 +90,7 @@ sub auto : Private {
               # Redirect the user to the login page
         $c->response->redirect( $c->uri_for('/administration/login') );
 
-      # Return 0 to cancel 'post-auto' processing and prevent use of application
+        # Return 0 to cancel 'post-auto' processing and prevent use of application
         return 0;
     }
 

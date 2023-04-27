@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.7.1]
 ### Added
 - Fix bug for closing hours where a pm time initially show am in the label
+- Add server version to the bottom of the administration area
 
 ## [4.7.0]
 ### Added

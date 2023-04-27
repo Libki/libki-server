@@ -133,9 +133,13 @@
 
     [% INCLUDE breadcrumbs.tt %]
 
-    <div id="container">
+    <div id="content" class="container-fluid">
         [%# This is where TT will stick all of your template's contents. -%]
         [% content %]
+    </div><!-- /container -->
+
+    <div class="container-fluid">
+        Libki [% version %]
     </div><!-- /container -->
 </body>
 </html>
