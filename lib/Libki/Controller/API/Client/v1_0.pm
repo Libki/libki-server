@@ -250,7 +250,7 @@ sub index : Path : Args(0) {
             ## Process client requests
             if ($success) {
                 if (
-                    $c->setting('EnableClientPasswordlessMode') ||
+                    ( $user && $c->setting('EnableClientPasswordlessMode') ) ||
                     $c->authenticate(
                         {
                             username => $username,
