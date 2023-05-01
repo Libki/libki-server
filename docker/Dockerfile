@@ -39,6 +39,8 @@ RUN install_packages \
     # Net::CUPS
     libcups2-dev \
     libcupsfilters-dev \
+    # Needed to count pages in encrypted PDFs
+    pdftk \
     # Print uploads filetype detection
     shared-mime-info
 
