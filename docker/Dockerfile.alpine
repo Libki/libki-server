@@ -31,7 +31,6 @@ RUN apk add --no-cache \
         imagemagick \
         imagemagick-perlmagick \
         mysql-client \
-        pdftk \
         perl-app-cpanminus \
         perl-dbd-mysql \
         perl-dev \
@@ -47,6 +46,7 @@ RUN apk add --no-cache \
         perl-params-validate \
         perl-posix-strftime-compiler \
         perl-yaml-xs \
+        poppler-utils \
         sed \
         shared-mime-info \
         wget

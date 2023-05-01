@@ -62,12 +62,11 @@ sub create_print_job_and_file {
             my $pdf = PDF::API2->open_scalar($pdf_string);
             $pages = $pdf->pages();
         }
-        catch { # PDF may be encrypted, try using pdftk instead
+        catch { # PDF may be encrypted, try using pdfinfo instead
             my ( $fh, $fn ) = tempfile();
             write_file( $fn, $pdf_string );
-            my $output = qx{ pdftk $fn dump_data | grep NumberOfPages };
-            $output =~ m/NumberOfPages: (\d+)/;
-            $pages = $1;
+            my $pages = qx{ pdfinfo $fn | awk '/^Pages:/ {print \$2}' };
+            chomp $pages;
         };
 
         my $printers = $c->get_printer_configuration;

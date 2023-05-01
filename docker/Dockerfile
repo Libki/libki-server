@@ -40,7 +40,7 @@ RUN install_packages \
     libcups2-dev \
     libcupsfilters-dev \
     # Needed to count pages in encrypted PDFs
-    pdftk \
+    poppler-utils \
     # Print uploads filetype detection
     shared-mime-info
 
