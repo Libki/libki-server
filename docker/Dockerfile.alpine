@@ -31,6 +31,7 @@ RUN apk add --no-cache \
         imagemagick \
         imagemagick-perlmagick \
         mysql-client \
+        pdftk \
         perl-app-cpanminus \
         perl-dbd-mysql \
         perl-dev \

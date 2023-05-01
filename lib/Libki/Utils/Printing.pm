@@ -2,7 +2,10 @@ package Libki::Utils::Printing;
 
 use Modern::Perl;
 
+use File::Slurp qw( write_file );
+use File::Temp qw( tempfile );
 use PDF::API2;
+use Try::Tiny;
 
 use constant PRINT_FROM_WEB => '__PRINT_FROM_WEB__';
 
@@ -53,8 +56,19 @@ sub create_print_job_and_file {
 
     if ($user) {
         my $pdf_string = $print_file->decoded_slurp;
-        my $pdf        = PDF::API2->open_scalar($pdf_string);
-        my $pages      = $pdf->pages();
+
+        my $pages;
+        try {
+            my $pdf = PDF::API2->open_scalar($pdf_string);
+            $pages = $pdf->pages();
+        }
+        catch { # PDF may be encrypted, try using pdftk instead
+            my ( $fh, $fn ) = tempfile();
+            write_file( $fn, $pdf_string );
+            my $output = qx{ pdftk $fn dump_data | grep NumberOfPages };
+            $output =~ m/NumberOfPages: (\d+)/;
+            $pages = $1;
+        };
 
         my $printers = $c->get_printer_configuration;
         my $printer  = $printers->{printers}->{$printer_id};
