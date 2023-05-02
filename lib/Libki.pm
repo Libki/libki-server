@@ -11,7 +11,7 @@ use DateTime::Format::MySQL;
 use DateTime;
 use File::Slurp;
 
-our $VERSION = '4.7.2';
+our $VERSION = '4.7.3';
 
 # Set flags and add plugins for the application.
 #

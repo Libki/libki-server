@@ -152,8 +152,8 @@ sub index : Path : Args(0) {
             inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
 
-            ClientTimeNotificationFrequency => $c->stash->{Settings}->{ClientInactivityLogout},
-            ClientTimeWarningThreshold      => $c->stash->{Settings}->{ClientInactivityLogout},
+            ClientTimeNotificationFrequency => $c->stash->{Settings}->{ClientTimeNotificationFrequency} || 5,
+            ClientTimeWarningThreshold      => $c->stash->{Settings}->{ClientTimeWarningThreshold} || 5,
 
             ClientStyleSheet           => $c->stash->{Settings}->{ClientStyleSheet},
 
