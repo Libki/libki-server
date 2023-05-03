@@ -139,7 +139,7 @@
     </div><!-- /container -->
 
     <div class="container-fluid">
-        Libki [% version %]
+        [% IF version && c.user %]Libki [% version %][% END %]
     </div><!-- /container -->
 </body>
 </html>
