@@ -46,13 +46,15 @@ sub index : Path : Args(0) {
 
     my $now = $c->now();
 
-    my $action = $c->request->params->{'action'} || q{};
+    my $action  = $c->request->params->{'action'}  || q{};
+    my $version = $c->request->params->{'version'} || q{};
 
     if ( $action eq 'register_node' ) {
 
         my $node_name = $c->request->params->{'node_name'};
         my $location  = $c->request->params->{'location'};
         my $type      = $c->request->params->{'type'};
+        my $version   = $c->request->params->{'version'};
 
         $c->model('DB::Location')->update_or_create(
             {
@@ -72,7 +74,7 @@ sub index : Path : Args(0) {
         );
         unless ($client->in_storage) {
             $client->insert;
-            $log->debug( "Client Registered: " . $client->name() );
+            $log->debug( "Client Registered: $node_name / Version: $version" );
         }
 
         $client->get_from_storage;
@@ -388,6 +390,11 @@ sub index : Path : Args(0) {
                                                 action          => 'LOGOUT',
                                                 created_on      => $c->now,
                                                 session_id      => $session->session_id,
+                                                info            => to_json(
+                                                    {
+                                                        client_version => $version
+                                                    }
+                                                ),
                                             }
                                         );
 
@@ -422,6 +429,7 @@ sub index : Path : Args(0) {
                                         session_id      => $session_id,
                                         info            => to_json(
                                             {
+                                                client_version           => $version
                                                 user_id                  => $user->id,
                                                 client_id                => $client->id,
                                                 session_starting_minutes => $result{minutes},
@@ -492,6 +500,11 @@ sub index : Path : Args(0) {
                     action          => 'LOGOUT',
                     created_on      => $now,
                     session_id      => $session_id,
+                    info            => to_json(
+                        {
+                            client_version => $version
+                        }
+                    ),
                 }
             );
         }
