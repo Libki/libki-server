@@ -429,7 +429,7 @@ sub index : Path : Args(0) {
                                         session_id      => $session_id,
                                         info            => to_json(
                                             {
-                                                client_version           => $version
+                                                client_version           => $version,
                                                 user_id                  => $user->id,
                                                 client_id                => $client->id,
                                                 session_starting_minutes => $result{minutes},
