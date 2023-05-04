@@ -1,5 +1,7 @@
 package Libki;
 
+use feature 'say';
+
 use Moose;
 use namespace::autoclean;
 
@@ -114,7 +116,7 @@ __PACKAGE__->config(
         ],
 
         PLUGIN_BASE => 'Libki::Template::Plugin',
-        
+
         # Set to 1 for detailed timer stats in your HTML as comments
         TIMER   => 0,
         WRAPPER => 'wrapper.tt',
@@ -138,6 +140,7 @@ __PACKAGE__->config(
 
 # Set the time zone
 $ENV{LIBKI_TZ} ||= DateTime::TimeZone->new( name => 'local' )->name();
+say "TIME ZONE IS $ENV{LIBKI_TZ}";
 
 # These envinronment variables will be overwritten by matching ones in the config files if they are set
 __PACKAGE__->config->{'Model::DB'}->{connect_info}->{dsn}      = $ENV{LIBKI_DB_DSN};
