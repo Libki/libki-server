@@ -31,6 +31,7 @@
                                                             # Change the value that indicates that the card has expired according to the SIP response, in my case, the response contains EXPIRED
                                                             # Leave EXPIRED_CARD unchanged
     category_field PC          # Category field in SIP response
+    birthdate_field PB         # Date of birth field in SIP response, default is PB
     pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
     pattern_personal_name_reverse: 1 # If the names are ordered firstname then lastname, enable this option
     ILS Koha                   # Options are currently 'Koha' and 'Evergreen', defaults to Koha behavior

@@ -233,9 +233,10 @@ sub authenticate_via_sip {
     my $sip_fields = sip_message_to_hashref( $c, $data, $config );
     $log->debug( "SIP FIELDS: " . Data::Dumper::Dumper($sip_fields) );
 
-    my $birthdate = $sip_fields->{PB} || undef;
+    my $birthdate_field = $c->config->{SIP}->{birthdate_field} || 'PB';
+    my $birthdate       = $sip_fields->{$birthdate_field}      || undef;
     $birthdate = ( join( '-', unpack( "A4A2A2", $birthdate ) ) )
-      if $birthdate;
+        if $birthdate;
 
     my ( $lastname, $firstname );
     unless ( $c->config->{SIP}->{skip_import_personal_name} ) {
