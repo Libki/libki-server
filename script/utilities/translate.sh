@@ -16,15 +16,13 @@ function welcome {
 
 if ! { [ "$1" == "-h" ] || [ "$1" == "--help" ]; }
 then
-  currentDirectory=$(basename "$PWD")
-
-  if [ "$currentDirectory" != "libki-server" ]
+  if [ ! -f ./lib/Libki.pm ]
   then
     welcome
 
     echo "This utility can only be run from your libki-server directory."
     echo
-    echo "Use --help to see alternatives."
+    echo "Use --help to see script options."
     echo
     exit 1
   fi
@@ -35,7 +33,7 @@ if [ $# -eq 0 ]; then
 
   echo "No arguments supplied."
   echo
-  echo "Use --help to see the alternatives."
+  echo "Use --help to see see script options."
   echo
   exit 1
 fi
