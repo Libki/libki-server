@@ -55,6 +55,11 @@ sub index : Path : Args(0) {
         my $location  = $c->request->params->{'location'};
         my $type      = $c->request->params->{'type'};
         my $version   = $c->request->params->{'version'};
+        my $ipaddress = $c->request->params->{'ipaddress'};
+        my $macaddress= $c->request->params->{'macaddress'};
+        my $hostname  = $c->request->params->{'hostname'};
+
+        $log->debug( "Network info from client: IP $ipaddress, MAC $macaddress, Hostname $hostname" );
 
         $c->model('DB::Location')->update_or_create(
             {
