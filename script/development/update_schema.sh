@@ -32,11 +32,12 @@ then
     mysqldump --no-data -u $LIBKI_DB_USER -p$LIBKI_DB_PASSWORD -h $LIBKI_DB_HOST -P $LIBKI_DB_PORT $LIBKI_DB_DATABASE | sed 's/ AUTO_INCREMENT=[0-9]*//g' > $DIR/../../installer/schema.sql
 
     # Compare the two new schema files
-    DIFF=$(diff $DIR/../../installer/schema.sql /tmp/libki_current_schema.sql) 
-    if [ "$DIFF" != "" ]
+    DIFF=$(diff -I "^-- Dump completed on" $DIR/../../installer/schema.sql /tmp/libki_current_schema.sql)
+    if [ "$DIFF" == "" ]
+    then
         # Save a copy of the updated default database data
         mysqldump --no-create-info -u $LIBKI_DB_USER -p$LIBKI_DB_PASSWORD -h $LIBKI_DB_HOST -P $LIBKI_DB_PORT $LIBKI_DB_DATABASE | sed 's/ AUTO_INCREMENT=[0-9]*//g' > $DIR/../../installer/data.sql
-    then
+    else
         echo "WARNING: The schema from a fresh install does not match the current schema. Did you forget to add a database update?"
     fi
 
