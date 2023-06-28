@@ -87,6 +87,24 @@ __PACKAGE__->table("clients");
   is_nullable: 1
   size: 191
 
+=head2 ipaddress
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
+=head2 macaddress
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
+=head2 hostname
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 191
+
 =head2 last_registered
 
   data_type: 'timestamp'
@@ -112,6 +130,12 @@ __PACKAGE__->add_columns(
     size => 191,
   },
   "type",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "ipaddress",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "macaddress",
+  { data_type => "varchar", is_nullable => 1, size => 191 },
+  "hostname",
   { data_type => "varchar", is_nullable => 1, size => 191 },
   "last_registered",
   {
@@ -212,8 +236,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-11-24 15:15:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jx+b0ZMRDBydlC3WFYHarg
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-06-27 14:05:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ezahs6nNd/0otskinplv7g
 
 =head2 can_user_use
 
