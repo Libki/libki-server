@@ -205,7 +205,7 @@ __PACKAGE__->belongs_to(
   {
     is_deferrable => 1,
     join_type     => "LEFT",
-    on_delete     => "SET NULL",
+    on_delete     => "CASCADE",
     on_update     => "CASCADE",
   },
 );
@@ -246,8 +246,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZSaupo1syB4s7CEsz/sxew
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-07-11 07:35:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9IRAjpODFDD7mIKVnM/Jgg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

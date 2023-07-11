@@ -222,6 +222,9 @@ sub release {
     my $user         = $params->{user};
     my $new_printer  = $params->{printer};
 
+    my $log  = $c->log();
+    $log->info("Libki::Utils::Printing::release print_job_id: $params->{print_job_id}, user: $params->{user}, new_printer: $params->{printer}");
+
     my $instance = $c->instance;
 
     my $print_job
@@ -259,7 +262,7 @@ sub release {
             id      => $print_job_id,
         };
     } else {
-        $user = $c->model('DB::User')->find( $print_job->user_id );
+        $user = $print_job->user;
     }
 
     return {

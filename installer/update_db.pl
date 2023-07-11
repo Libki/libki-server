@@ -72,7 +72,7 @@ foreach my $version_dir (@version_dirs) {
 	next unless ( $version gt $db_version );
 
         print "\nInstalling version $version\n\n";
-        print "Running script @subversion_and_name[1]\n";
+        print "Running update $name$suffix\n";
 
         if ( $suffix eq '.pl' ) {
             my $c = eval( read_file($file) );

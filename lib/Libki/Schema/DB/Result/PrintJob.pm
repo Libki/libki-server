@@ -234,14 +234,14 @@ __PACKAGE__->belongs_to(
   {
     is_deferrable => 1,
     join_type     => "LEFT",
-    on_delete     => "SET NULL",
+    on_delete     => "CASCADE",
     on_update     => "CASCADE",
   },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0R/zbwcCaWwfsBAzhxo4YA
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-07-11 07:35:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:09Hi0qsW0zShp8vcR24gVg
 
 __PACKAGE__->load_components('InflateColumn::Serializer');
 __PACKAGE__->add_columns(
