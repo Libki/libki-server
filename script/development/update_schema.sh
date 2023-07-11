@@ -42,7 +42,7 @@ then
     fi
 
     # Save a copy of the updated default database data
-    mysqldump --no-create-info -u $LIBKI_DB_USER -p$LIBKI_DB_PASSWORD -h $LIBKI_DB_HOST -P $LIBKI_DB_PORT $LIBKI_DB_DATABASE | sed 's/ AUTO_INCREMENT=[0-9]*//g' > $DIR/../../installer/data.sql
+    mysqldump --no-create-info --skip-extended-insert -u $LIBKI_DB_USER -p$LIBKI_DB_PASSWORD -h $LIBKI_DB_HOST -P $LIBKI_DB_PORT $LIBKI_DB_DATABASE | sed 's/ AUTO_INCREMENT=[0-9]*//g' > $DIR/../../installer/data.sql
 
     # Drop and recreate the empty database again
     mysql -u $LIBKI_DB_USER -p$LIBKI_DB_PASSWORD -h $LIBKI_DB_HOST -P $LIBKI_DB_PORT $LIBKI_DB_DATABASE -e "DROP DATABASE $LIBKI_DB_DATABASE; CREATE DATABASE $LIBKI_DB_DATABASE"
