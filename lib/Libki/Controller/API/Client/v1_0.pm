@@ -59,8 +59,6 @@ sub index : Path : Args(0) {
         my $macaddress= $c->request->params->{'macaddress'};
         my $hostname  = $c->request->params->{'hostname'};
 
-        $log->debug( "Network info from client: IP $ipaddress, MAC $macaddress, Hostname $hostname" );
-
         $c->model('DB::Location')->update_or_create(
             {
                 instance => $instance,
@@ -74,6 +72,9 @@ sub index : Path : Args(0) {
                 name            => $node_name,
                 location        => $location ? $location : undef,
                 type            => $type     ? $type     : undef,
+                ipaddress       => $ipaddress? $ipaddress: undef,
+                macaddress      => $macaddress? $macaddress: undef,
+                hostname        => $hostname ? $hostname : undef,
                 last_registered => $now,
             }
         );
