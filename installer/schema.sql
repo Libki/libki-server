@@ -67,6 +67,9 @@ CREATE TABLE `clients` (
   `location` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
   `status` varchar(191) COLLATE utf8_unicode_ci DEFAULT 'online',
   `type` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ipaddress` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `macaddress` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hostname` varchar(191) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_registered` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`instance`,`name`),
@@ -401,4 +404,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-11  7:45:27
+-- Dump completed on 2023-07-17  7:52:06
