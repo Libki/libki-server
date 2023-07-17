@@ -42,7 +42,9 @@ RUN install_packages \
     # Needed to count pages in encrypted PDFs
     poppler-utils \
     # Print uploads filetype detection
-    shared-mime-info
+    shared-mime-info \
+    # For cli access to the database
+    mariadb-client
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
