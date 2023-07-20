@@ -34,6 +34,8 @@ sub auto : Private {
     my $username = $c->request->params->{username};
     my $password = $c->request->params->{password};
 
+    my $instance = $c->instance;
+
     my $api_key_validated = Libki::Auth::validate_api_key(
         {
             context => $c,
@@ -53,28 +55,47 @@ sub auto : Private {
         return;
     }
 
-    my $auth = Libki::Auth::authenticate_user(
-        {
-            context  => $c,
-            username => $username,
-            password => $password,
-            no_external_auth => 1,
-        }
-    );
+    my $EnableClientPasswordlessMode = $c->stash->{Settings}->{EnableClientPasswordlessMode};
 
-    unless ( $auth->{success} ) {
-        delete $c->stash->{$_} for keys %{ $c->stash };
-        $c->response->status(401);
-        $c->stash(
-            success => JSON::false,
-            error   => $auth->{error},
+    unless ( $EnableClientPasswordlessMode ) {
+        my $auth = Libki::Auth::authenticate_user(
+            {
+                context  => $c,
+                username => $username,
+                password => $password,
+                no_external_auth => 1,
+            }
         );
-        $c->forward( $c->view('JSON') );
-        return;
-    }
 
-    my $user = $auth->{user};
-    $c->stash( { user => $user } );
+        unless ( $auth->{success} ) {
+            delete $c->stash->{$_} for keys %{ $c->stash };
+            $c->response->status(401);
+            $c->stash(
+                success => JSON::false,
+                error   => $auth->{error},
+            );
+            $c->forward( $c->view('JSON') );
+            return;
+        }
+
+        my $user = $auth->{user};
+        $c->stash( { user => $user } );
+    } else {
+        my $user = $c->model('DB::User')->find({ instance => $c->instance, username => $username });
+
+        unless ( $user ) {
+            delete $c->stash->{$_} for keys %{ $c->stash };
+            $c->response->status(404);
+            $c->stash(
+                success => JSON::false,
+                error   => $auth->{error},
+            );
+            $c->forward( $c->view('JSON') );
+            return;
+        }
+
+        $c->stash( { user => $user } );
+    }
 }
 
 =head2 print_jobs
@@ -281,7 +302,7 @@ sub settings : Local : Args(0) {
     my ( $self, $c ) = @_;
 
     my %settings = (
-        EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode}
+        EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode},
     );
 
     delete $c->stash->{$_} for keys %{ $c->stash };
