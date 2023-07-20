@@ -271,6 +271,26 @@ sub funds_available : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 settings
+
+Returns the settings needded by the Libki Print Station
+
+=cut
+
+sub settings : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my %settings = (
+        EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode}
+    );
+
+    delete $c->stash->{$_} for keys %{ $c->stash };
+
+    $c->stash(%settings);
+
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
