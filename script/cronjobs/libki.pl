@@ -87,6 +87,7 @@ foreach my $s (@$sessions_to_delete) {
             client_name => $s->{name},
             action      => 'SESSION_DELETED',
             created_on  => $when,
+            session_id  => $s->{session_id},
         }
     );
 }
