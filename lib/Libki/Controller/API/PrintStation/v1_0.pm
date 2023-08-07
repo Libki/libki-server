@@ -88,7 +88,7 @@ sub auto : Private {
             $c->response->status(404);
             $c->stash(
                 success => JSON::false,
-                error   => $auth->{error},
+                error   => 'BAD_LOGIN',
             );
             $c->forward( $c->view('JSON') );
             return;
