@@ -316,7 +316,7 @@ sub release {
         );
     }
     else {
-        return { success => 0, message => 'INSUFFICIENT_FUNDS' };
+        return { success => 0, error => 'Insufficient funds' };
     }
 
     if ( $print_job->type eq 'cups' ) {
