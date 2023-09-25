@@ -1,12 +1,12 @@
 package Libki::Controller::Administration::API::User;
 
 use Moose;
-use String::Random qw(random_string);
 
 use namespace::autoclean;
 use POSIX;
 
 use Libki::Utils::Printing;
+use Libki::Utils::User;
 
 use JSON qw(to_json);
 
@@ -32,7 +32,7 @@ sub get : Local : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $instance = $c->instance;
 
-    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user = $c->model('DB::User')->find( { instance => $instance, id => $id } );
 
     my $roles = $user->roles;
     my @roles;
@@ -42,18 +42,20 @@ sub get : Local : Args(1) {
 
     $c->stash(
         {
-            id              => $user->id,
-            username        => $user->username,
-            firstname       => $user->firstname,
-            lastname        => $user->lastname,
-            category        => $user->category,
-            minutes         => $user->minutes($c),
-            status          => $user->status,
-            notes           => $user->notes,
-            funds           => $user->funds,
-            is_troublemaker => $user->is_troublemaker,
-            troublemaker_until => defined($user->troublemaker_until) ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59') : undef,
-            roles           => \@roles,
+            id                 => $user->id,
+            username           => $user->username,
+            firstname          => $user->firstname,
+            lastname           => $user->lastname,
+            category           => $user->category,
+            minutes            => $user->minutes($c),
+            status             => $user->status,
+            notes              => $user->notes,
+            funds              => $user->funds,
+            is_troublemaker    => $user->is_troublemaker,
+            troublemaker_until => defined( $user->troublemaker_until )
+            ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59')
+            : undef,
+            roles => \@roles,
         }
     );
 
@@ -79,32 +81,23 @@ sub create : Local : Args(0) {
 
     my $success = 0;
 
-    my $now = $c->now();
-    my $user = $c->model('DB::User')->create(
+    my $now  = $c->now();
+    my $user = Libki::Utils::User::create_or_update_user(
+        $c,
         {
-            instance          => $instance,
-            username          => $username,
-            firstname         => $firstname,
-            lastname          => $lastname,
-            category          => $category,
-            password          => $password,
-            status            => 'enabled',
-            created_on        => $now,
-            updated_on        => $now,
-            creation_source   => 'local',
+            instance        => $instance,
+            username        => $username,
+            firstname       => $firstname,
+            lastname        => $lastname,
+            category        => $category,
+            password        => $password,
+            status          => 'enabled',
+            created_on      => $now,
+            updated_on      => $now,
+            creation_source => 'local',
+            minutes         => $minutes,
         }
     );
-
-    if (defined $minutes) {
-        $c->model('DB::Allotment')->update_or_create(
-            {
-                instance => $instance,
-                user_id  => $user->id,
-                location => '',
-                minutes  => $minutes,
-            }
-        );
-    }
 
     $success = 1 if ($user);
 
@@ -123,43 +116,11 @@ sub create_guest : Local : Args(0) {
 
     my $category = $params->{category};
 
-    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
-    $current_guest_number_setting->set_column( 'value', $current_guest_number );
-    $current_guest_number_setting->update_or_insert();
-
-    my $prefix_setting = $c->setting('GuestPassPrefix');
-    my $prefix = $prefix_setting || 'guest';
-
-    my $username = $prefix . $current_guest_number;
-    my $password =
-      random_string("nnnn");    #TODO: Make the pattern a system setting
-
-    my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
-    $minutes_allotment = 0 unless $minutes_allotment > 0;
-
-    my $success = 0;
-
-    my $now = $c->now();
-    my $user = $c->model('DB::User')->create(
-        {
-            instance          => $instance,
-            username          => $username,
-            password          => $password,
-            status            => 'enabled',
-            is_guest          => 'Yes',
-            created_on        => $now,
-            updated_on        => $now,
-            category          => $category,
-            creation_source   => 'local',
-        }
-    );
-
-    $success = 1 if ($user);
+    my ( $user, $password, $minutes_allotment ) = Libki::Utils::User::create_guest( $c, $category );
 
     $c->stash(
-        'success'  => $success,
-        'username' => $username,
+        'success'  => $user ? 1               : 0,
+        'username' => $user ? $user->username : q{},
         'password' => $password,
         'category' => $category,
         'minutes'  => $minutes_allotment,
@@ -175,58 +136,47 @@ sub batch_create_guest : Local : Args(0) {
     my ( $self, $c ) = @_;
     my $instance = $c->instance;
 
-    my $params = $c->request->params;
-    my $category = $params->{category};
+    my $params         = $c->request->params;
+    my $category       = $params->{category};
     my $prefix_setting = $c->setting('GuestPassPrefix');
-    my $prefix = $prefix_setting || 'guest';
+    my $prefix         = $prefix_setting || 'guest';
 
     my $success = 0;
 
     my $batch_guest_pass_custom_css = $c->setting('BatchGuestPassCustomCSS');
-    my $batch_guest_pass_template = $c->setting('BatchGuestPassTemplate');
+    my $batch_guest_pass_template   = $c->setting('BatchGuestPassTemplate');
 
-    my $guest_count = $c->setting('GuestBatchCount') || 10;
+    my $guest_count                     = $c->setting('GuestBatchCount') || 10;
     my $batch_guest_pass_username_label = $c->setting('BatchGuestPassUsernameLabel');
     my $batch_guest_pass_password_label = $c->setting('BatchGuestPassPasswordLabel');
 
     my $minutes_allotment = $c->setting('DefaultGuestTimeAllowance');
     $minutes_allotment = 0 unless ( $minutes_allotment > 0 );
 
-    my $current_guest_number_setting = $c->model('DB::Setting')->find_or_new({ instance => $instance, name => 'CurrentGuestNumber' });
-    my $current_guest_number = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
+    my $current_guest_number_setting = $c->model('DB::Setting')
+        ->find_or_new( { instance => $instance, name => 'CurrentGuestNumber' } );
+    my $current_guest_number
+        = $current_guest_number_setting->value ? $current_guest_number_setting->value + 1 : 1;
 
     my $now = $c->now();
 
     my $file_contents .= "<html><head><style>$batch_guest_pass_custom_css</style></head><body>";
 
     my @guests;
-    for ( my $i = 0 ; $i < $guest_count ; $i++ ) {
+    for ( my $i = 0; $i < $guest_count; $i++ ) {
 
-        $current_guest_number = $current_guest_number + 1;
-        my $username = $prefix . $current_guest_number;
-        my $password =
-          random_string("nnnn");    #TODO: Make the pattern a system setting
-
-        my $user = $c->model('DB::User')->create(
-            {
-                instance          => $instance,
-                username          => $username,
-                password          => $password,
-                status            => 'enabled',
-                is_guest          => 'Yes',
-                created_on        => $now,
-                updated_on        => $now,
-                category          => $category,
-                creation_source   => 'local',
-            }
-        );
+        my ( $user, $password, $minutes_allotment )
+            = Libki::Utils::User::create_guest( $c, $category );
+        my $username = $user->username;
 
         $file_contents .= "\n<div class='guest-pass'>";
         $file_contents .= "\n<span class='guest-pass-username'>";
-        $file_contents .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
+        $file_contents
+            .= "<span class='guest-pass-username-label'>$batch_guest_pass_username_label</span><span class='guest-pass-username-content'>$username</span>";
         $file_contents .= "</span>";
         $file_contents .= "\n\n<span class='guest-pass-password'>";
-        $file_contents .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
+        $file_contents
+            .= "<span class='guest-pass-password-label'>$batch_guest_pass_password_label</span><span class='guest-pass-password-content'>$password</span>\n\n";
         $file_contents .= "</span>";
         $file_contents .= "</div>";
         $file_contents .= "</body>";
@@ -236,12 +186,9 @@ sub batch_create_guest : Local : Args(0) {
         $success = $success + 1 if ($user);
     }
 
-    $current_guest_number_setting->set_column( 'value', $current_guest_number );
-    $current_guest_number_setting->update_or_insert();
-
-    if ( $batch_guest_pass_template ) {
+    if ($batch_guest_pass_template) {
         $file_contents = q{};
-        my $tt = Template->new() || die $Template::ERROR;
+        my $tt   = Template->new() || die $Template::ERROR;
         my $vars = {
             batch_guest_pass_custom_css     => $batch_guest_pass_custom_css,
             batch_guest_pass_username_label => $batch_guest_pass_username_label,
@@ -285,12 +232,12 @@ sub update : Local : Args(0) {
 
     # For some reason the list of checkboxes are created
     # as a list within a list if multiple are checked
-    @roles = @{$roles[0]} if ref( $roles[0] ) eq 'ARRAY';
+    @roles = @{ $roles[0] } if ref( $roles[0] ) eq 'ARRAY';
 
     $minutes = undef if $minutes eq q{};
-    $minutes = 0 if defined($minutes) &&  $minutes < 0;
+    $minutes = 0     if defined($minutes) && $minutes < 0;
 
-    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user = $c->model('DB::User')->find( { instance => $instance, id => $id } );
 
     my $now = $c->now();
 
@@ -309,7 +256,7 @@ sub update : Local : Args(0) {
         }
     );
 
-    if (defined $minutes) {
+    if ( defined $minutes ) {
         $c->model('DB::Allotment')->update_or_create(
             {
                 instance => $instance,
@@ -318,25 +265,26 @@ sub update : Local : Args(0) {
                 minutes  => $minutes,
             }
         );
-    } else {
-        $c->model('DB::Allotment')->search( { instance => $instance, user_id => $user->id } )->delete;
+    }
+    else {
+        $c->model('DB::Allotment')->search( { instance => $instance, user_id => $user->id } )
+            ->delete;
     }
 
     if ( $c->check_user_roles(qw/superadmin/) ) {
 
         # Update the user's roles
         my @libki_roles = $c->model('DB::Role')->search();
-        foreach my $lr ( @libki_roles ) {
+        foreach my $lr (@libki_roles) {
             my $role = $lr->role;
-            if ( grep { /$role/ } @roles ) {
+            if ( grep {/$role/} @roles ) {
                 ## Add the role if it doesn't exists
-                $c->model('DB::UserRole')
-                  ->find_or_create( { user_id => $id, role_id => $lr->id } );
+                $c->model('DB::UserRole')->find_or_create( { user_id => $id, role_id => $lr->id } );
             }
             else {
                 ## Delete the role if it does already exist
-                $c->model('DB::UserRole')
-                  ->search( { user_id => $id, role_id => $lr->id } )->delete();
+                $c->model('DB::UserRole')->search( { user_id => $id, role_id => $lr->id } )
+                    ->delete();
             }
         }
     }
@@ -370,7 +318,7 @@ sub delete : Local : Args(1) {
                 $msg = q{ADMIN_CANNOT_DELETE_SUPERADMIN};
             }
             elsif ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
-                $c->schema->txn_do(
+                $c->model('DB')->txn_do(
                     sub {
                         if ( $user->delete() ) {
                             $success = 1;
@@ -414,8 +362,8 @@ sub is_username_unique : Local : Args(1) {
     my ( $self, $c, $username ) = @_;
     my $instance = $c->instance;
 
-    my $count =
-      $c->model('DB::User')->search( { instance => $instance, username => $username } )->count();
+    my $count = $c->model('DB::User')->search( { instance => $instance, username => $username } )
+        ->count();
 
     my $is_unique = ($count) ? 0 : 1;
 
@@ -436,21 +384,21 @@ sub toggle_troublemaker : Local : Args(3) {
 
     my $success = 0;
 
-    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user = $c->model('DB::User')->find( { instance => $instance, id => $id } );
 
     my $is_troublemaker = ( $user->is_troublemaker eq 'Yes' ) ? 'No' : 'Yes';
 
     my $now = $c->now();
 
-    $user->set_column( 'is_troublemaker', $is_troublemaker );
-    $user->set_column( 'updated_on', $now );
+    $user->set_column( 'is_troublemaker',    $is_troublemaker );
+    $user->set_column( 'updated_on',         $now );
     $user->set_column( 'troublemaker_until', undef );
-    if ( $until != 0 && $is_troublemaker eq 'Yes'){
+    if ( $until != 0 && $is_troublemaker eq 'Yes' ) {
         my $troublemaker_until = $now->clone;
         $troublemaker_until->add( days => $until );
 
         $user->set_column( 'troublemaker_until', $troublemaker_until );
-        $user->set_column( 'notes', $notes eq '' ? undef : $notes ); 
+        $user->set_column( 'notes',              $notes eq '' ? undef : $notes );
     }
 
     if ( $user->update() ) {
@@ -474,7 +422,7 @@ sub change_password : Local : Args(0) {
     my $id       = $c->request->params->{'id'};
     my $password = $c->request->params->{'password'};
 
-    my $user = $c->model('DB::User')->find({ instance => $instance, id => $id });
+    my $user = $c->model('DB::User')->find( { instance => $instance, id => $id } );
 
     my $now = $c->now();
 
@@ -487,7 +435,7 @@ sub change_password : Local : Args(0) {
 
         if ( $i_am_admin || $i_am_superadmin ) {
             if ( $i_am_superadmin || ( $i_am_admin && !$user_is_superadmin ) ) {
-                $user->set_column( 'password', $password );
+                $user->set_column( 'password',   $password );
                 $user->set_column( 'updated_on', $now );
 
                 if ( $user->update() ) {

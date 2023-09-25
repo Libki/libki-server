@@ -9,6 +9,7 @@ use Libki::SIP qw( authenticate_via_sip );
 use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
 use Libki::Utils::Printing qw( create_print_job_and_file );
+use Libki::Utils::User qw( create_guest );
 
 use DateTime::Format::MySQL;
 use DateTime;
@@ -84,18 +85,19 @@ sub index : Path : Args(0) {
         }
 
         $client->get_from_storage;
+        my $client_status = $client->status // q{};
 
-        if ($client->status eq "unlock") {
+        if ($client_status eq "unlock") {
             $c->stash(
                 unlock   => 1,
                 minutes  => $client->session->minutes,
                 username => $client->session->user->username,
             );
-        } elsif ($client->status eq "shutdown" || $client->status eq "suspend" || $client->status eq "restart") {
+        } elsif ($client_status eq "shutdown" || $client_status eq "suspend" || $client_status eq "restart") {
             $c->stash(
-                $client->status => 1,
+                $client_status => 1,
             );
-        } elsif ($client->status eq "wakeup") {
+        } elsif ($client_status eq "wakeup") {
             my $host = $c->setting('WOLHost') || '255.255.255.255';
             my $port = $c->setting('WOLPort') || 9;
             my @mac_addresses = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
@@ -138,6 +140,8 @@ sub index : Path : Args(0) {
             status                     => $client->status,
             ClientBehavior             => $c->stash->{Settings}->{ClientBehavior},
             ReservationShowUsername    => $c->stash->{Settings}->{ReservationShowUsername},
+
+            EnableGuestSelfRegistration => $c->stash->{Settings}->{EnableGuestSelfRegistration},
 
             EnableClientSessionLocking   => $c->stash->{Settings}->{EnableClientSessionLocking},
             EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode},
@@ -199,10 +203,32 @@ sub index : Path : Args(0) {
         my $client_type     = $c->request->params->{'type'};
 
         my $units;
-        my $user = $c->model('DB::User')
-          ->single( { instance => $instance, username => $username } );
+        my $user
+            = $username
+            ? $c->model('DB::User')->single( { instance => $instance, username => $username } )
+            : undef;
 
         if ( $action eq 'login' ) {
+            my $create_guest = $c->request->params->{'createGuest'};
+            if ($create_guest) {
+                if ( $c->setting('EnableGuestSelfRegistration') ) {
+                    ( $user, $password ) = Libki::Utils::User::create_guest($c);
+                    $username = $user->username;
+
+                    $c->stash(
+                        username => $username,
+                        password => $password,
+                    );
+                }
+                else {
+                    delete( $c->stash->{Settings} );
+                    $c->stash( authenticated => 0, error => "GUEST_SELF_REG_NOT_ENABLED" );
+                    $c->res->status(501);
+                    $c->forward( $c->view('JSON') );
+                    return;
+                }
+            }
+
             $log->debug( __PACKAGE__
                   . " - username: $username, client_name: $client_name" );
 
@@ -488,31 +514,35 @@ sub index : Path : Args(0) {
         }
         elsif ( $action eq 'logout' ) {
             my $session    = $user->session;
-            my $session_id = $session->session_id;
-            my $location   = $session->client->location;
-            my $type       = $session->client->type;
 
-            my $success = $user->session->delete();
-            $success &&= 1;
-            $c->stash( logged_out => $success );
+            if ($session) {
+                my $session_id = $session->session_id;
+                my $location   = $session->client->location;
+                my $type       = $session->client->type;
 
-            $c->model('DB::Statistic')->create(
-                {
-                    instance        => $instance,
-                    username        => $username,
-                    client_name     => $client_name,
-                    client_location => $client_location,
-                    client_type     => $client_type,
-                    action          => 'LOGOUT',
-                    created_on      => $now,
-                    session_id      => $session_id,
-                    info            => to_json(
-                        {
-                            client_version => $version
-                        }
-                    ),
-                }
-            );
+                my $success = $session->delete() ? 1 : 0;
+                $c->stash( logged_out => $success );
+
+                $c->model('DB::Statistic')->create(
+                    {
+                        instance        => $instance,
+                        username        => $username,
+                        client_name     => $client_name,
+                        client_location => $client_location,
+                        client_type     => $client_type,
+                        action          => 'LOGOUT',
+                        created_on      => $now,
+                        session_id      => $session_id,
+                        info            => to_json(
+                            {
+                                client_version => $version
+                            }
+                        ),
+                    }
+                );
+            } else {
+                $c->stash( logged_out => 0 );
+            }
         }
     }
 

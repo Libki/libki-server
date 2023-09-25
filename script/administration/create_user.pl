@@ -5,13 +5,14 @@ use Modern::Perl;
 use Getopt::Long::Descriptive;
 
 use Libki;
+use Libki::Utils::User;
 
 my ( $opt, $usage ) = describe_options(
     '%c %o',
-    [ 'instance|i=s', "the instance for the user to exist on", { default => q{} } ],
-    [ 'username|u=s', "the username for this user, required", { required => 1 } ],
+    [ 'instance|i=s', "the instance for the user to exist on", { default  => q{} } ],
+    [ 'username|u=s', "the username for this user, required",  { required => 1 } ],
     [ 'password|p=s', "the password for this user" ],
-    [ 'minutes|m=s',  "number of minutes for this user" ],
+    [ 'minutes|m=i',  "number of minutes for this user" ],
     [ 'admin|a',      "makes the user an admin" ],
     [ 'superadmin|s', "makes the user a superadmin" ],
     [],
@@ -20,64 +21,28 @@ my ( $opt, $usage ) = describe_options(
 
 print( $usage->text ), exit unless ( $opt->username );
 
-my $c       = Libki->new();
-my $schema  = $c->schema;
-my $user_rs = $schema->resultset('User');
-
-my $user = $user_rs->search( { instance => $opt->instance, username => $opt->username } )->next();
-
-if ($user) {
-    $user->set_column( 'password', $opt->password );
-    $user->update();
-}
-else {
-    my $default_time_allowance_setting = $schema->resultset('Setting')->find({ instance => $opt->instance, name => 'DefaultTimeAllowance' });
-    my $default_time_allowance = $default_time_allowance_setting ? $default_time_allowance_setting->value : 0;
-
-    $user = $user_rs->create(
-        {
-            instance          => $opt->instance,
-            username          => $opt->username,
-            password          => $opt->password,
-            status          => 'enabled',
-            is_troublemaker => 'No',
-        }
-    );
-
-    if (defined $opt->minutes) {
-        $c->model('DB::Allotment')->update_or_create(
-            {
-                instance => $user->instance,
-                user_id  => $user->id,
-                location => '',
-                minutes  => $opt->minutes,
-            }
-        );
+my $c    = Libki->new();
+my $user = Libki::Utils::User::create_or_update_user(
+    $c,
+    {
+        instance   => $opt->instance,
+        username   => $opt->username,
+        password   => $opt->password,
+        minutes    => $opt->minutes,
+        admin      => $opt->admin,
+        superadmin => $opt->superadmin,
     }
-}
+);
 
-if ( $opt->superadmin ) {
-    my $role =
-      $schema->resultset('Role')->search( { role => 'superadmin' } )->single();
-
-    $schema->resultset('UserRole')->update_or_create(
-        {
-            role_id => $role->id,
-            user_id => $user->id,
-        }
-    );
-}
-
-if ( $opt->admin || $opt->superadmin ) {
-    my $role =
-      $schema->resultset('Role')->search( { role => 'admin' } )->single();
-
-    $schema->resultset('UserRole')->update_or_create(
-        {
-            role_id => $role->id,
-            user_id => $user->id,
-        }
-    );
+say "User created" if $user;
+say "User not created" unless $user;
+if ( $user && $opt->verbose ) {
+  say "User Id: " . $user->id;
+  say "Username: " . $user->username;
+  say "Instance: " . $user->instance;
+  say "Minutes: " . $user->minutes($c);
+  say "Is Admin: " . ( $user->has_role(q{admin}) ? 'Yes' : 'No' );
+  say "Is Admin: " . ( $user->has_role(q{superadmin}) ? 'Yes' : 'No' );
 }
 
 =head1 AUTHOR

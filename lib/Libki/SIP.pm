@@ -191,7 +191,7 @@ sub authenticate_via_sip {
             );
 
             unless ($is_admin) {
-                $c->txn_do(
+                $c->model('DB')->txn_do(
                     sub {
                         $user->delete;
 

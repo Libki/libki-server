@@ -800,6 +800,17 @@
                     <legend>[% c.loc("Guest passes") %]</legend>
 
                     <div class="form-group">
+                        <label for="EnableGuestSelfRegistration">[% c.loc("Self-registered guest passes") %]</label>
+                        <div>
+                            <input type="radio" id="disabled" name="EnableGuestSelfRegistration" value="disabled" style="margin-left:15px;" [% IF !EnableGuestSelfRegistration || EnableGuestSelfRegistration == 'disabled' %]checked[% END %]>
+                            <label for="disabled" style="margin-bottom:3px;"> [% c.loc("Disabled") %]</label>
+                            <input type="radio" id="enabled" name="EnableGuestSelfRegistration" value="enabled" style="margin-left:20px;" [% IF EnableGuestSelfRegistration == 'enabled' %]checked[% END %]>
+                            <label for="enabled" style="margin-bottom:3px;"> [% c.loc("Enabled") %]</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("If enabled, clients will have a 'Log in as guest' button that will create a guest account and log them into it automatically.") %]</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">
