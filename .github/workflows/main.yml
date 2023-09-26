@@ -238,6 +238,7 @@ jobs:
         docker exec -t libki-test-server prove /app/t/stdout.t
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/02pod.t
         docker exec -t -e TEST_POD=1 libki-test-server prove /app/t/03podcoverage.t
+        docker exec -t libki-test-server prove t/controller_API-Client-v1_0.t
 
   publish-docker-io-alpine:
     name: Push Alpine image (docker.io)
