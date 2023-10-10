@@ -10,6 +10,7 @@ use Modern::Perl;
 use DateTime::Format::MySQL;
 use DateTime;
 use Getopt::Long::Descriptive;
+use JSON qw(to_json);
 use List::Util qw(max min);
 use Sys::Hostname;
 
