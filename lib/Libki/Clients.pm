@@ -18,8 +18,7 @@ sub wakeonlan {
     my $port = $c->setting('WOLPort') || 9;
     my $sockaddr = sockaddr_in($port, inet_aton($host));
 
-    my $mac_addresses_setting = $c->setting('ClientMACAddresses');
-    my @mac_addresses = split(/[\r\n]+/, $mac_addresses_setting);
+    my @mac_addresses = get_wol_mac_addresses();
 
     foreach my $mac_address (@mac_addresses) {
         my $socket = new IO::Socket::INET( Proto => 'udp' )
@@ -39,6 +38,26 @@ sub wakeonlan {
     }
 
     return $success;
+}
+
+=head2 get_wol_mac_addresses
+
+Get MAC addresses from clients and add them to MAC address in the ClientMACAddresses setting.
+
+=cut
+
+sub get_wol_mac_addresses {
+    
+    my ($c) = @_;
+
+    my $mac_addresses_setting = $c->setting('ClientMACAddresses');
+    my @mac_addresses_from_setting = split(/[\r\n]+/, $mac_addresses_setting);
+
+    my @clients_with_mac_address = $c->model('DB::client')->search( { macaddress => { '!=', undef } } );
+
+    my @all_mac_addresses = (@mac_addresses_from_setting, @clients_with_mac_address);
+
+    return @all_mac_addresses;
 }
 
 =head1 AUTHOR
