@@ -50,14 +50,15 @@ sub get_wol_mac_addresses {
     
     my ($c) = @_;
 
-    my $mac_addresses_setting = $c->setting('ClientMACAddresses');
-    my @mac_addresses_from_setting = split(/[\r\n]+/, $mac_addresses_setting);
+    my @mac_addresses_from_setting = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
+    my @mac_addresses = (@mac_addresses_from_setting);
 
     my @clients_with_mac_address = $c->model('DB::client')->search( { macaddress => { '!=', undef } } );
+    foreach my $client (@clients_with_mac_address) {
+        push(@mac_addresses, $client->macaddress);
+    }
 
-    my @all_mac_addresses = (@mac_addresses_from_setting, @clients_with_mac_address);
-
-    return @all_mac_addresses;
+    return @mac_addresses;
 }
 
 =head1 AUTHOR

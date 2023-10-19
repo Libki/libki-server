@@ -10,6 +10,7 @@ use Libki::LDAP qw( authenticate_via_ldap );
 use Libki::Hours qw( minutes_until_closing );
 use Libki::Utils::Printing qw( create_print_job_and_file );
 use Libki::Utils::User qw( create_guest );
+use Libki::Clients qw( get_wol_mac_addresses );
 
 use DateTime::Format::MySQL;
 use DateTime;
@@ -100,7 +101,7 @@ sub index : Path : Args(0) {
         } elsif ($client_status eq "wakeup") {
             my $host = $c->setting('WOLHost') || '255.255.255.255';
             my $port = $c->setting('WOLPort') || 9;
-            my @mac_addresses = split(/[\r\n]+/, $c->setting('ClientMACAddresses'));
+            my @mac_addresses = Libki::Clients::get_wol_mac_addresses($c);
 
             $c->stash(
                 wakeup => 1,
