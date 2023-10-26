@@ -62,8 +62,9 @@ elif [ "$is_ubuntu_focal" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libimage-magick-perl libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen shared-mime-info -y
 elif [ "$is_ubuntu_jammy" = true ]; then
   apt-get install sudo openssl curl perl make build-essential unzip mysql-server pwgen ntp libimage-magick-perl libmysqlclient-dev libxml-parser-perl libxml-libxml-perl cpanminus cups libcups2-dev pwgen shared-mime-info -y
-
 fi
+
+/etc/init.d/mariadb start
 
 # Auto-created passwords
 USERPASS=$(pwgen -B 8 1)
