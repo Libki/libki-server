@@ -130,10 +130,10 @@
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="Client actions">
                     [% IF c.setting('ClientMACAddresses') %]
-                        <a href="#" class="turn-on-button btn btn-success"><i class="fas fa-power-off"></i> [% c.loc("Turn on all clients") %]</a>
+                        <a href="#" class="turn-on-button btn btn-success"><i class="fas fa-power-off"></i> [% c.loc("Turn on clients") %]</a>
                     [% END %]
-                    <a href="#" class="restart-button btn btn-warning"><i class="fas fa-redo"></i> [% c.loc("Restart all clients") %]</a>
-                    <a href="#" class="shutdown-button btn btn-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off all clients") %]</a>
+                    <a href="#" class="restart-button btn btn-warning"><i class="fas fa-redo"></i> [% c.loc("Restart clients") %]</a>
+                    <a href="#" class="shutdown-button btn btn-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off clients") %]</a>
                 </div>
             </li>
         </ul>
@@ -1288,39 +1288,54 @@ $(document).ready(function() {
     });
 
     $(".turn-on-button").click(function () {
-        if ( confirm("[% c.loc("Are you sure you want to turn on all clients?") %]") ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/wakeup') %]', function(data) {
+        const location = window.location_filter || "";
+
+        let msg = "[% c.loc("Are you sure you want to turn on all clients?") %]";
+        if ( location ) msg = "[% c.loc("Are you sure you want to turn on all clients at location ") %]" + location;
+
+        if ( confirm( msg ) ) {
+            $.getJSON( '[% c.uri_for('/administration/api/client/wakeup/') %]' + location, function(data) {
                 if ( data.success ) {
-                    DisplayMessage( "success", "[% c.loc("Clients turned on.") %]" );
+                    DisplayMessage( "success", "[% c.loc("Clients turned on: ") %]" + data.count );
                     $("#client-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to turn on all clients.") %]" );
+                    DisplayMessage( "error", "[% c.loc("Unable to wake all clients. Clients turned on: ") %]" + data.count );
                 }
             });
         }
     });
 
     $(".shutdown-button").click(function () {
-        if ( confirm("[% c.loc("Are you sure you want to turn off all clients?") %]") ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/shutdown_all') %]', function(data) {
+        const location = window.location_filter || "";
+
+        let msg = "[% c.loc("Are you sure you want to shutdown all clients?") %]";
+        if ( location ) msg = "[% c.loc("Are you sure you want to turn off all clients at location ") %]" + location;
+
+        if ( confirm( msg ) ) {
+            $.getJSON( '[% c.uri_for('/administration/api/client/shutdown_all/') %]' + location, function(data) {
                 if ( data.success ) {
-                    DisplayMessage( "success", "[% c.loc("Clients turned off.") %]" );
+                    DisplayMessage( "success", "[% c.loc("Clients turned off: ") %]" + data.count );
                     $("#client-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to turn off all clients.") %]" );
+                    DisplayMessage( "error", "[% c.loc("Unable to shutdown all clients. Clients turned off: ") %]" + data.count );
                 }
             });
         }
     });
 
     $(".restart-button").click(function () {
-        if ( confirm("[% c.loc("Are you sure you want to restart all clients?") %]") ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/restart_all') %]', function(data) {
+        const location = window.location_filter || "";
+
+        let msg = "[% c.loc("Are you sure you want to restart all clients?") %]";
+        if ( location ) msg = "[% c.loc("Are you sure you want to restart all clients at location ") %]" + location;
+
+        if ( confirm( msg ) ) {
+            $.getJSON( '[% c.uri_for('/administration/api/client/restart_all/') %]' + location, function(data) {
                 if ( data.success ) {
-                    DisplayMessage( "success", "[% c.loc("Clients restarted.") %]" );
+                    DisplayMessage( "success", "[% c.loc("Clients restarted: ") %]" + data.count );
                     $("#client-table").dataTable().fnDraw(true);
                 } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to restart all clients.") %]" );
+                    DisplayMessage( "error", "[% c.loc("Unable to restart all clients. Clients restarted: ") %]" + data.count );
                 }
             });
         }

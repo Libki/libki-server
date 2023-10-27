@@ -528,16 +528,26 @@ The status change will send a message to each client to initiate shutdown.
 
 =cut
 
-sub shutdown_all : Local : Args(0) {
-    my ( $self, $c ) = @_;
+sub shutdown_all : Local {
+    my ( $self, $c, $location ) = @_;
 
-    my $success = 0;
-    my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
-    my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
+    my $success = 1;
 
+    my $search;
+    $search->{instance} = $c->instance;
+    $search->{location} = $location if $location;
+    my $clients = $c->model('DB::Client')->search($search);
+
+    my $status = $c->setting('ClientShutdownAction') || 'shutdown';
+
+    my $count = 0;
     while ( my $client = $clients->next() ) {
         if ($client->status eq 'online') {
-            $success = 1 if $client->update( { status => $status } );
+            if ( $client->update( { status => $status } ) ) {
+                $count++;
+            } else {
+                $success = 0;
+            }
 
             $c->model('DB::Statistic')->create(
                 {
@@ -554,7 +564,7 @@ sub shutdown_all : Local : Args(0) {
         }
     }
 
-    $c->stash( 'success' => $success );
+    $c->stash( success => $success, count => $count );
     $c->forward( $c->view('JSON') );
 }
 
@@ -565,15 +575,24 @@ The status change will send a message to each client to initiate reboot.
 
 =cut
 
-sub restart_all : Local : Args(0) {
-    my ( $self, $c ) = @_;
+sub restart_all : Local {
+    my ( $self, $c, $location ) = @_;
 
-    my $success = 0;
-    my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
+    my $success = 1;
 
+    my $search;
+    $search->{instance} = $c->instance;
+    $search->{location} = $location if $location;
+    my $clients = $c->model('DB::Client')->search($search);
+
+    my $count = 0;
     while ( my $client = $clients->next() ) {
         if ($client->status eq 'online') {
-            $success = 1 if $client->update( { status => 'restart' } );
+            if ( $client->update( { status => 'restart' } ) ) {
+                $count++;
+            } else {
+                $success = 0;
+            }
 
             $c->model('DB::Statistic')->create(
                 {
@@ -590,7 +609,7 @@ sub restart_all : Local : Args(0) {
         }
     }
 
-    $c->stash( 'success' => $success );
+    $c->stash( success => $success, count => $count );
     $c->forward( $c->view('JSON') );
 }
 
