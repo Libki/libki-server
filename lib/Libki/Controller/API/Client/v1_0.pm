@@ -335,7 +335,7 @@ sub index : Path : Args(0) {
                     }
 
                     my $error = {};    # Must be initialized as a hashref
-                    if ( $minutes_until_closing && $minutes_until_closing <= 0 )
+                    if ( defined $minutes_until_closing && $minutes_until_closing <= 0 )
                     {
                         $c->stash( error => 'CLOSED' );
                     }
