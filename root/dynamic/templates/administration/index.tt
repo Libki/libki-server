@@ -49,8 +49,8 @@
         <table id="user-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
                 <th>[% c.loc("Username") %]</th>
-                <th>[% c.loc("Lastname") %]</th>
-                <th>[% c.loc("Firstname") %]</th>
+                <th>[% c.loc("First name") %]</th>
+                <th>[% c.loc("Last name") %]</th>
                 <th>[% c.loc("Category") %]</th>
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
@@ -146,8 +146,8 @@
                 <th>[% c.loc("Type") %]</th>
                 <th>[% c.loc("Session status") %]</th>
                 <th>[% c.loc("Username") %]</th>
-                <th>[% c.loc("Lastname") %] </th>
-                <th>[% c.loc("Firstname") %] </th>
+                <th>[% c.loc("First name") %] </th>
+                <th>[% c.loc("Last name") %] </th>
                 <th>[% c.loc("Category") %]</th>
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
