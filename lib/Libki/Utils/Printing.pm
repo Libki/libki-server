@@ -362,7 +362,7 @@ sub release_for_cups {
     my $log  = $c->log();
     my $cups = cups_setup($c);
 
-    my $cups_printer_name = $printer->{name};
+    my $cups_printer_name = $printer->{name} || $printer->{physical_printer_name};
     $log->debug( "CUPS Printer name: " . $cups_printer_name );
     my $cups_printer = $cups->getDestination($cups_printer_name);
 
