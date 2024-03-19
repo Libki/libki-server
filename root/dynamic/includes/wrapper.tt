@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" [%#%]"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head data-instance="[% c.instance %]">
-    <title>[% template.title or meta.title %]</title>
+<head data-instance="[% c.instance | html %]">
+    <title>[% template.title or meta.title | html %]</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -139,7 +139,7 @@
     </div><!-- /container -->
 
     <div class="container-fluid">
-        [% IF version && c.user %]Libki [% version %][% END %]
+        [% IF version && c.user %]Libki [% version | html %][% END %]
     </div><!-- /container -->
 </body>
 </html>

@@ -1,11 +1,11 @@
 <ul class="navbar-nav">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarLanguageDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-globe"></i> [% c.loc("Language") %]
+            <i class="fas fa-globe"></i> [% c.loc("Language") | html %]
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarLanguageDropdownMenu">
             [% FOREACH lang IN c.installed_languages.keys %]
-                <a class="dropdown-item [% IF c.language.match(lang) %]active[% END %]" href="/i18n/changelocale?lang=[% lang %]">[% c.loc("lang.$lang") %]</a>
+                <a class="dropdown-item [% IF c.language.match(lang) %]active[% END %]" href="/i18n/changelocale?lang=[% lang | uri %]">[% c.loc("lang.$lang") | html %]</a>
             [% END %]
         </div>
     </li>

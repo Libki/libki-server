@@ -8,7 +8,7 @@
         </li>
         [% FOREACH location IN locations %]
             <li class="nav-item">
-                <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
+                <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location | html %]`);">[% location | html %]</a>
             </li>
         [% END %]
     </ul>

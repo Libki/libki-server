@@ -2,11 +2,11 @@
     [% FOREACH item IN c.breadcrumbs %]
         [% IF loop.last %]
             <li class="active">
-                [% c.loc(item.label) %]
+                [% c.loc(item.label) | html %]
             </li>
         [% ELSE %]
             <li>
-                <a href="[% c.uri_for(item.path) %]">[% c.loc(item.label) %]</a>
+                <a href="[% c.uri_for(item.path) %]">[% c.loc(item.label) | html %]</a>
                 <span class="divider">/&nbsp;</span>
             </li>
         [% END %]

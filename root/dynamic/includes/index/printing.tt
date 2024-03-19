@@ -37,7 +37,7 @@
                         [% FOREACH p IN c.get_printer_configuration.printers %]
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
-                                <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name %]</label>
+                                <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name | html %]</label>
                             </div>
                         [% END %]
                     </div>
