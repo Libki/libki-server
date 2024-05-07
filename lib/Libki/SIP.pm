@@ -26,7 +26,7 @@ sub authenticate_via_sip {
 
     my $host             = $config->{SIP}->{host};
     my $port             = $config->{SIP}->{port};
-    my $timeout          = $config->{SIP}->{timout} || 15;
+    my $timeout          = $config->{SIP}->{timeout} || 15;
     my $require_sip_auth = $config->{SIP}->{require_sip_auth}
       // 1;    # Default to requiring authentication if setting doesn't exist
 
