@@ -29,6 +29,7 @@ RUN apk add --no-cache \
 #       cups-filters-dev \
         curl \
         imagemagick \
+        imagemagick-dev \
         imagemagick-perlmagick \
         mysql-client \
         perl-app-cpanminus \
