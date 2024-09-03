@@ -34,7 +34,7 @@ jobs:
     steps:
 
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -124,7 +124,7 @@ jobs:
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -148,7 +148,7 @@ jobs:
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -197,7 +197,7 @@ jobs:
         fetch-depth: 1
 
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
@@ -246,7 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
@@ -272,7 +272,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
@@ -299,7 +299,7 @@ jobs:
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
@@ -326,7 +326,7 @@ jobs:
     needs: [publish-docker-io-debian, publish-quay-io-debian, publish-docker-io-alpine, publish-quay-io-alpine]
     steps:
     - name: Download image artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
