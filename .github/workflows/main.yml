@@ -22,7 +22,7 @@ jobs:
       run: docker save libki-server > ${{ github.sha }}.debian.tar
 
     - name: Upload image artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact
       with:
         name: ${{ github.sha }}.debian.tar
         path: ${{ github.sha }}.debian.tar
@@ -34,7 +34,7 @@ jobs:
     steps:
 
     - name: Download image artifact
-      uses: actions/download-artifact@v4.1.7
+      uses: actions/download-artifact
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
