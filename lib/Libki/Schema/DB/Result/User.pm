@@ -473,6 +473,36 @@ sub reservation_display_name {
     return q{};                                                                            # default
 }
 
+=head2 add_payment
+
+Alters the users account balance by the amount given
+
+=cut
+
+sub add_payment {
+    my ( $self, $c, $funds ) = @_;
+
+    $user->funds( $user->funds + $funds );
+    $user->update();
+
+    $c->model('DB::Statistic')->create(
+        {
+            instance        => $c->instance,
+            username        => $user->username,
+            action          => 'MODIFY_BALANCE',
+            created_on      => $c->now,
+            session_id      => $c->sessionid,
+            info            => to_json(
+                {
+                    payer => $c->user->username, # may be a librarian or patron
+                    delta => $funds,
+                    funds => $user->funds,
+                }
+            ),
+        }
+    );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info> 
