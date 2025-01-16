@@ -131,25 +131,8 @@ sub user_funds : Local : Args(0) {
             );
         } elsif ( $c->request->method eq 'POST' ) {
             my $funds = $c->request->params->{'funds'};
-            $user->funds( $user->funds + $funds );
-            $user->update();
 
-            $c->model('DB::Statistic')->create(
-                {
-                    instance        => $c->instance,
-                    username        => $user->username,
-                    action          => 'MODIFY_BALANCE',
-                    created_on      => $c->now,
-                    session_id      => $c->sessionid,
-                    info            => to_json(
-                        {
-                            payer => $c->user->username, # may be a librarian or patron
-                            delta => $funds,
-                            funds => $user->funds,
-                        }
-                    ),
-                }
-            );
+            $user->add_payment($funds);
 
             $c->stash(
                 success => JSON::true,
