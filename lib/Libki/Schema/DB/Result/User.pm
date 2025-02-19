@@ -482,13 +482,13 @@ Alters the users account balance by the amount given
 sub add_payment {
     my ( $self, $c, $funds ) = @_;
 
-    $user->funds( $user->funds + $funds );
-    $user->update();
+    $self->funds( $self->funds + $funds );
+    $self->update();
 
     $c->model('DB::Statistic')->create(
         {
             instance        => $c->instance,
-            username        => $user->username,
+            username        => $self->username,
             action          => 'MODIFY_BALANCE',
             created_on      => $c->now,
             session_id      => $c->sessionid,
@@ -496,7 +496,7 @@ sub add_payment {
                 {
                     payer => $c->user->username, # may be a librarian or patron
                     delta => $funds,
-                    funds => $user->funds,
+                    funds => $self->funds,
                 }
             ),
         }
