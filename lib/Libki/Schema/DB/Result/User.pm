@@ -484,6 +484,17 @@ sub add_funds {
 
     $self->funds( $self->funds + $funds );
     $self->update();
+    $self->log_funds_change( $c, $funds );
+}
+
+=head2 log_funds_change
+
+Logs the change ( postitive or negative ) to a patron's funds
+
+=cut
+
+sub log_funds_change {
+    my ( $self, $c, $delta ) = @_;
 
     $c->model('DB::Statistic')->create(
         {
