@@ -315,7 +315,7 @@ sub statistics : Local Args(0) {
     my $instance = $c->instance;
 
     # We need to map the table columns to field names for ordering
-    my @columns = ( 'me.username', 'me.client_name', 'me.action', 'me.created_on' );
+    my @columns = ( 'me.username', 'me.client_name', 'me.action', 'me.created_on', 'me.info' );
 
     my $search_term = $c->request->param("sSearch");
     my $filter;
@@ -368,6 +368,7 @@ sub statistics : Local Args(0) {
         $r->{'1'}        = $s->client_name;
         $r->{'2'}        = $s->action;
         $r->{'3'}        = $s->created_on->strftime('%m/%d/%Y %I:%M %p');
+        $r->{'4'}        = $s->info;
 
         push( @results, $r );
     }
