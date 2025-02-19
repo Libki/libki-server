@@ -473,18 +473,32 @@ sub reservation_display_name {
     return q{};                                                                            # default
 }
 
-=head2 add_funds
+=head2 credit_funds
 
-Alters the users account balance by the amount given
+Adds to the users account balance by the amount given
 
 =cut
 
-sub add_funds {
+sub credit_funds {
     my ( $self, $c, $funds ) = @_;
 
     $self->funds( $self->funds + $funds );
     $self->update();
     $self->log_funds_change( $c, $funds );
+}
+
+=head2 debit_funds
+
+Remove from the users account balance by the amount given
+
+=cut
+
+sub debit_funds {
+    my ( $self, $c, $funds ) = @_;
+
+    $self->funds( $self->funds - $funds );
+    $self->update();
+    $self->log_funds_change( $c, $funds * -1 );
 }
 
 =head2 log_funds_change
@@ -506,7 +520,7 @@ sub log_funds_change {
             info            => to_json(
                 {
                     payer => $c->user->username, # may be a librarian or patron
-                    delta => $funds,
+                    delta => $delta,
                     funds => $self->funds,
                 }
             ),
