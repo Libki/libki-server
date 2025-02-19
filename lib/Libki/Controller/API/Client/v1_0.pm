@@ -489,6 +489,10 @@ sub index : Path : Args(0) {
             }
         }
         elsif ( $action eq 'get_user_data' ) {
+            unless ( $user ) {
+                $c->response->body('User not found');
+                $c->response->status(404);
+            }
 
             my $status;
             if ( $user->session ) {
@@ -514,6 +518,11 @@ sub index : Path : Args(0) {
             $user->messages()->delete();
         }
         elsif ( $action eq 'logout' ) {
+            unless ( $user ) {
+                $c->response->body('User not found');
+                $c->response->status(404);
+            }
+
             my $session    = $user->session;
 
             if ($session) {
