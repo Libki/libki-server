@@ -473,13 +473,13 @@ sub reservation_display_name {
     return q{};                                                                            # default
 }
 
-=head2 add_payment
+=head2 add_funds
 
 Alters the users account balance by the amount given
 
 =cut
 
-sub add_payment {
+sub add_funds {
     my ( $self, $c, $funds ) = @_;
 
     $self->funds( $self->funds + $funds );
