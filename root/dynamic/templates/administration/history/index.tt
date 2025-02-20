@@ -7,6 +7,7 @@
         <th>[% c.loc("Client") %]</th>
         <th>[% c.loc("Action") %]</th>
         <th>[% c.loc("Timestamp") %]</th>
+        <th>[% c.loc("Info") %]</th>
     </thead>
 </table>
 
@@ -19,6 +20,47 @@ $(document).ready(function() {
         "bServerSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
         "sAjaxSource": "[% c.uri_for('/administration/api/datatables/statistics') %]",
+    "columnDefs": [
+        {
+            "targets": 4,  // 4th column (zero-based index)
+            "render": function(data, type, row, meta) {
+                return jsonToHtmlTable( data );
+            }
+        }
+    ]
     } );
 } );
+
+function jsonToHtmlTable(json) {
+    if (typeof json === "string") {
+        try {
+            json = JSON.parse(json);
+        } catch (e) {
+            return "";
+        }
+    }
+
+    if (typeof json !== "object" || json === null) {
+        return "";
+    }
+
+    let table = '<table style="border-collapse: collapse;">';
+
+    for (let key in json) {
+        if (json.hasOwnProperty(key)) {
+            let value = json[key];
+
+            // Convert arrays and objects to formatted strings, but keep other types as-is
+            if (typeof value === "object") {
+                value = JSON.stringify(value, null, 2).replace(/["{}[\]]/g, '').replace(/,/g, ', ');
+            }
+
+            table += `<tr><td>${key}</td><td>${value}</td></tr>`;
+        }
+    }
+
+    table += "</table>";
+    return table;
+}
+
 </script>

@@ -473,30 +473,76 @@ sub reservation_display_name {
     return q{};                                                                            # default
 }
 
-=head2 add_payment
+=head2 credit_funds
 
-Alters the users account balance by the amount given
+Adds to the users account balance by the amount given
 
 =cut
 
-sub add_payment {
+sub credit_funds {
     my ( $self, $c, $funds ) = @_;
 
-    $user->funds( $user->funds + $funds );
-    $user->update();
+    $self->funds( $self->funds + $funds );
+    $self->update();
+    $self->log_funds_change( $c, $funds );
+}
+
+=head2 debit_funds
+
+Remove from the users account balance by the amount given
+
+=cut
+
+sub debit_funds {
+    my ( $self, $c, $funds ) = @_;
+
+    $self->funds( $self->funds - $funds );
+    $self->update();
+    $self->log_funds_change( $c, $funds * -1 );
+}
+
+=head2 set_funds
+
+Updates the users account balance to the amount given
+
+=cut
+
+sub set_funds {
+    my ( $self, $c, $funds ) = @_;
+
+    my $current_funds = $self->funds;
+
+    my $delta = $funds - $current_funds;
+
+    $self->funds( $funds );
+    $self->update();
+    $self->log_funds_change( $c, $delta );
+}
+
+=head2 log_funds_change
+
+Logs the change ( postitive or negative ) to a patron's funds
+
+=cut
+
+sub log_funds_change {
+    my ( $self, $c, $delta ) = @_;
+
+    # This will be hoisted, which is good because we cannot modify the top of the file
+    use JSON qw(to_json);
 
     $c->model('DB::Statistic')->create(
         {
             instance        => $c->instance,
-            username        => $user->username,
+            username        => $self->username,
             action          => 'MODIFY_BALANCE',
             created_on      => $c->now,
             session_id      => $c->sessionid,
             info            => to_json(
                 {
                     payer => $c->user->username, # may be a librarian or patron
-                    delta => $funds,
-                    funds => $user->funds,
+                    delta => $delta,
+                    funds => $self->funds,
                 }
             ),
         }

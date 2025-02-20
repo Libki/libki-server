@@ -242,6 +242,7 @@ sub update : Local : Args(0) {
     my $now = $c->now();
 
     my $funds_changed = $funds != $user->funds;
+    $user->set_funds( $c, $funds ) if $funds_changed;
 
     $success = 1 if $user->update(
         {

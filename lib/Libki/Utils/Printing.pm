@@ -304,7 +304,7 @@ sub release {
     $user->discard_changes; # Let's make absolutely sure we have the correct funds
 
     if ( $total_cost <= $user->funds ) {
-        $user->funds( $user->funds - $total_cost );
+        $user->debit_funds( $c, $total_cost );
 
         $print_job->status(PRINT_STATUS_PENDING);
 
