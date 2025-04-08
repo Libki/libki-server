@@ -127,11 +127,10 @@
         [% IF c.user %]
             [% INCLUDE navbar_administration.tt %]
         [% END %]
+        [% INCLUDE breadcrumbs.tt %]
     [% ELSE %]
         [% INCLUDE navbar_public.tt %]
     [% END %]
-
-    [% INCLUDE breadcrumbs.tt %]
 
     <div id="content" class="container-fluid">
         [%# This is where TT will stick all of your template's contents. -%]
