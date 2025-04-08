@@ -44,7 +44,9 @@ RUN install_packages \
     # Print uploads filetype detection
     shared-mime-info \
     # For cli access to the database
-    mariadb-client
+    mariadb-client \
+    # for https support in PDF conversion services
+    liblwp-protocol-https-perl
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 

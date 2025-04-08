@@ -5,6 +5,19 @@ use namespace::autoclean;
 
 use Libki::Utils::Printing;
 
+use LWP::UserAgent;
+use LWP::Protocol::https;
+use HTTP::Request;
+use HTTP::Request::Common;
+use Data::Dumper;
+
+{
+    package Libki::PDFAutoConvert;
+    sub filename      { shift->{_filename} }
+    sub type          { shift->{_type} }
+    sub decoded_slurp { shift->{_content} }
+}
+
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -51,7 +64,8 @@ sub upload_print_file :Local :Args(0) {
     my $printer_id  = $c->req->params->{printer_id};
 
     my $mime = $print_file->mimetype;
-    my $ext = $print_file->extension;
+    my ($ext) = $print_file->filename =~ /\.([^.]+)$/;
+    $ext = lc $ext if defined $ext;
 
     if ( $mime eq "application/pdf" && $ext eq "pdf" ) {
         Libki::Utils::Printing::create_print_job_and_file( $c, {
@@ -64,6 +78,38 @@ sub upload_print_file :Local :Args(0) {
         } );
 
         $c->response->redirect( $c->uri_for('/public/printing') );
+    } elsif ($ext ~~ $c->get_printer_configuration->{'pdf_conversion_service'}->{'supported_extensions'} ) {
+        my $ua = LWP::UserAgent->new(timeout => 600);
+        my $service_url = $c->get_printer_configuration->{'pdf_conversion_service'}->{'service_url'};
+
+        my $request = HTTP::Request::Common::POST(
+            $service_url,
+            Content_Type => 'form-data',
+            Content      => [
+                file => [ $print_file->tempname, $print_file->filename, $print_file->type ]
+            ]
+        );
+        my $res = $ua->request($request);
+        if ($res->is_success) {
+            my $pdf_data = $res->decoded_content(charset => 'none');
+            my $converted_upload = bless {
+                _filename => $print_file->filename . ".pdf",
+                _type     => 'application/pdf',
+                _content  => $pdf_data,
+            }, 'Libki::PDFAutoConvert';
+            Libki::Utils::Printing::create_print_job_and_file( $c, {
+                client_name => Libki::Utils::Printing::PRINT_FROM_WEB,
+                copies      => 1,
+                print_file  => $converted_upload,
+                printer_id  => $printer_id,
+                user        => $user,
+                username    => $user->username,
+            } );
+            $c->response->redirect( $c->uri_for( '/public/printing', undef, { success => 'PDF_CONV_SUCCESS' } ));
+        } else {
+            $c->response->redirect( $c->uri_for( '/public/printing', undef, { error => 'PDF_CONV_ERROR' } ));
+            # print Dumper $res;
+        }
     } else {
         $c->response->redirect( $c->uri_for( '/public/printing', undef, { error => 'INVALID_FILETYPE' } ));
     }
