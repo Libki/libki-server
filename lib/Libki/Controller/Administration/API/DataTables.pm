@@ -150,7 +150,7 @@ sub users : Local Args(0) {
             'recordsTotal'         => $total_records,
             'recordsFiltered'      => $count,
             'draw'                 => $params->{draw},
-            'aaData'               => \@results,
+            'data'                 => \@results,
         }
     );
     $c->forward( $c->view('JSON') );
@@ -191,7 +191,7 @@ sub clients : Local Args(0) {
     # Set up filters
     my $filter = { 'me.instance' => $instance };
 
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     if ($search_term) {
         $filter->{-or} = [
             'me.name'       => { 'like', "%$search_term%" },
@@ -208,17 +208,21 @@ sub clients : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
-    }
+    my $params = $c->request->params;
 
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
+
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+        }
+    }
   # May need editing with a filter if the table contains records for other items
   # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
   # in this case, we'd only want the count of notes affecting the specific item,
@@ -239,8 +243,8 @@ sub clients : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => $c->request->param('iDisplayLength'),
-            offset   => $c->request->param('iDisplayStart'),
+            rows     => $c->request->param('length'),
+            offset   => $c->request->param('start'),
             prefetch => [ { 'session' => 'user' } ]
         }
     );
@@ -292,9 +296,9 @@ sub clients : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
+            'recordsTotal'       => $total_records,
+            'recordsFiltered'    => $count,
+            'draw'               => $c->request->param('draw') || undef,
             'data'               => \@results,
         }
     );
@@ -317,7 +321,7 @@ sub statistics : Local Args(0) {
     # We need to map the table columns to field names for ordering
     my @columns = ( 'me.username', 'me.client_name', 'me.action', 'me.created_on', 'me.info' );
 
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     my $filter;
     if ($search_term) {
         $filter = {
@@ -332,17 +336,21 @@ sub statistics : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
-    }
+    my $params = $c->request->params;
 
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
+
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+         }
+    }
     my $total_records =
       $c->model('DB::Statistic')->search( { instance => $instance } )->count;
 
@@ -354,8 +362,8 @@ sub statistics : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => $c->request->param('iDisplayLength'),
-            offset   => $c->request->param('iDisplayStart'),
+            rows     => $c->request->param('length'),
+            offset   => $c->request->param('start'),
         }
     );
 
@@ -375,10 +383,10 @@ sub statistics : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'recordsTotal'        => $total_records,
+            'recordsFiltered'     => $count,
+            'draw'                => $c->request->param('draw') || undef,
+            'data'                => \@results,
         }
     );
     $c->forward( $c->view('JSON') );
@@ -403,7 +411,7 @@ sub prints : Local Args(0) {
 
     # Set up filters
     my $filter;
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     if ($search_term) {
         $filter->{-or} = [
             'me.type'                => { 'like', "%$search_term%" },
@@ -426,15 +434,20 @@ sub prints : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
+    my $params = $c->request->params;
+
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
+
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+         }
     }
 
   # May need editing with a filter if the table contains records for other items
@@ -453,10 +466,10 @@ sub prints : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => ( $c->request->param('iDisplayLength') > 0 )
-            ? $c->request->param('iDisplayLength')
+            rows     => ( $c->request->param('length') > 0 )
+            ? $c->request->param('length')
             : undef,
-            offset => $c->request->param('iDisplayStart') || 0,
+            offset => $c->request->param('start') || 0,
             prefetch => [ { 'print_file' => 'user' }, ],
         }
     );
@@ -480,10 +493,10 @@ sub prints : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'recordsTotal'         => $total_records,
+            'recordsFiltered'      => $count,
+            'draw'                 => $c->request->param('draw') || undef,
+            'data'                 => \@results,
         }
     );
     $c->forward( $c->view('JSON') );
@@ -512,7 +525,7 @@ sub reservations  : Local Args(0) {
     # Set up filters
     my $filter = { 'me.instance' => $instance };
 
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     if ($search_term) {
         $filter->{-or} = [
             'client.name'    => { 'like', "%$search_term%" },
@@ -522,18 +535,23 @@ sub reservations  : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
+    my $params = $c->request->params;
+
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
+
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+         }
     }
 
-    # May need editing with a filter if the table contains records for other items
+   # May need editing with a filter if the table contains records for other items
     # not caught by the filter e.g. a "item" table with a FK to a "notes" table -
     # in this case, we'd only want the count of notes affecting the specific item,
     # not *all* items
@@ -553,8 +571,8 @@ sub reservations  : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => $c->request->param('iDisplayLength'),
-            offset   => $c->request->param('iDisplayStart'),
+            rows     => $c->request->param('length'),
+            offset   => $c->request->param('start'),
             prefetch => [ 'client', 'user' ],
         }
     );
@@ -587,10 +605,10 @@ sub reservations  : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'recordsTotal'        => $total_records,
+            'recordsFiltered'     => $count,
+            'draw'                => $c->request->param('draw') || undef,
+            'data'                => \@results,
         }
     );
     $c->forward( $c->view('JSON') );
@@ -613,7 +631,7 @@ sub logs : Local Args(0) {
     # We need to map the table columns to field names for ordering
     my @columns = ( 'me.created_on', 'me.pid', 'me.hostname', 'me.level', 'me.message' );
 
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     my $filter;
     if ($search_term) {
         $filter = {
@@ -633,15 +651,20 @@ sub logs : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0; $i < $c->request->param('iSortingCols'); $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                    . $c->request->param("sSortDir_$i") =>
-                    $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
+    my $params = $c->request->params;
+
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
+
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+         }
     }
 
     my $total_records = $c->model('DB::Log')->search( { instance => $instance } )->count;
@@ -654,8 +677,8 @@ sub logs : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => $c->request->param('iDisplayLength'),
-            offset   => $c->request->param('iDisplayStart'),
+            rows     => $c->request->param('length'),
+            offset   => $c->request->param('start'),
         }
     );
 
@@ -674,10 +697,10 @@ sub logs : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'recordsTotal '        => $total_records,
+            'recordsFiltered'      => $count,
+            'draw'                 => $c->request->param('draw') || undef,
+            'data'                 => \@results,
         }
     );
     $c->forward( $c->view('JSON') );

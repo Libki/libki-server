@@ -14,20 +14,20 @@
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Initialize Datatables ****/
-    hTable = $('#history-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
+    const hTable = $('#history-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/statistics') %]",
-    "columnDefs": [
-        {
-            "targets": 4,  // 4th column (zero-based index)
-            "render": function(data, type, row, meta) {
-                return jsonToHtmlTable( data );
+        "ajax": "[% c.uri_for('/administration/api/datatables/statistics') %]",
+        "columnDefs": [
+            {
+                "targets": 4,  // 4th column (zero-based index)
+                "render": function(data, type, row, meta) {
+                    return jsonToHtmlTable( data );
+                }
             }
-        }
-    ]
+        ]
     } );
 } );
 

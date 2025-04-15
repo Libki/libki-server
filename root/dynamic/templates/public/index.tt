@@ -18,7 +18,7 @@
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade [% IF tab == 'clients' %]show active[% END %]" id="clients" role="tabpanel" aria-labelledby="clients-tab">
-        [% INCLUDE index/clients.tt %]
+	[% INCLUDE index/clients.tt %]
     </div>
     [% IF c.user_exists %]
         <div class="tab-pane fade [% IF tab == 'printing' %]show active[% END %]" id="printing" role="tabpanel" aria-labelledby="printing-tab">
