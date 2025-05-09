@@ -54,7 +54,7 @@
                     <div class="form-group">
                         <div id="reservation-time" class="is-invalid">
                             <input id="datepicker" type="text" value="" width='400px' readonly="readonly"
-                                   name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
+                                   name="reservation_date">
 
                             <select id="reservation-hour" name="reservation_hour" onchange="getMinute()" required></select>
                             :
@@ -244,8 +244,9 @@ $(document).ready(function() {
     });
 
     $("#client-table-row-toolbar-make-reservation").click(function(){
-            getHourList([% Settings.TimeDisplayFormat %]);
-    
+            format = [% Settings.TimeDisplayFormat %];
+            getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
+
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
 
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
@@ -483,9 +484,10 @@ $(document).ready(function() {
 
   $("#datepicker").datepicker("setDate", new Date());
 
-  window.getHourList = function (format) {
+  $("#datepicker").change(function () {
+    format = [% Settings.TimeDisplayFormat %];
     getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
-  }
+  });
 });
 
 </script>
