@@ -35,7 +35,7 @@ sub clients : Local Args(0) {
     # Set up filters
     my $filter = { instance => $instance, status => "online" };
 
-    my $search_term = $c->request->param("sSearch");
+    my $search_term = $c->request->param("search[value]");
     if ($search_term) {
         $filter->{-or} = [
             'me.name'     => { 'like', "%$search_term%" },
@@ -50,17 +50,21 @@ sub clients : Local Args(0) {
 
     # Sorting options
     my @sorting;
-    for ( my $i = 0 ; $i < $c->request->param('iSortingCols') ; $i++ ) {
-        push(
-            @sorting,
-            {
-                '-'
-                  . $c->request->param("sSortDir_$i") =>
-                  $columns[ $c->request->param("iSortCol_$i") ]
-            }
-        );
-    }
+    my $params = $c->request->params;
+ 
+    # Find all order indices
+    foreach my $key (keys %$params) {
+        if ($key =~ /^order\[(\d+)\]\[column\]$/) {
+            my $idx = $1;
+            my $col_idx = $params->{"order[$idx][column]"};
+            my $dir     = $params->{"order[$idx][dir]"} || 'asc';
 
+            # Default to column index if no name mapping is provided
+            my $col_name = $columns[$col_idx] // $col_idx;
+
+            push @sorting, { "-" . $dir => $col_name };
+        }
+    }
     my $total_records = $c->model('DB::Client')->search({ instance => $instance })->count;
 
     # In case of pagination, we need to know how many records match in total
@@ -71,10 +75,10 @@ sub clients : Local Args(0) {
         $filter,
         {
             order_by => \@sorting,
-            rows     => ( $c->request->param('iDisplayLength') > 0 )
-            ? $c->request->param('iDisplayLength')
+            rows     => ( $c->request->param('length') > 0 )
+            ? $c->request->param('length')
             : undef,
-            offset   => $c->request->param('iDisplayStart'),
+            offset   => $c->request->param('start'),
     #       prefetch => [ { 'session' => 'user' }, { 'reservation' => 'user' }, ],
         }
     );
@@ -105,10 +109,10 @@ sub clients : Local Args(0) {
 
     $c->stash(
         {
-            'iTotalRecords'        => $total_records,
-            'iTotalDisplayRecords' => $count,
-            'sEcho'                => $c->request->param('sEcho') || undef,
-            'aaData'               => \@results,
+            'recordsTotal'        => $total_records,
+            'recordsFiltered'     => $count,
+            'draw'                => $c->request->param('draw') || undef,
+            'data'                => \@results,
         }
     );
     $c->forward( $c->view('JSON') );

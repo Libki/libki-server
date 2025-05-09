@@ -195,8 +195,8 @@
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="ClientBehavior" id="ReservationOnly" value="FCFS+RES" [% IF ClientBehavior == 'FCFS+RES' %]checked[% END %]>
-                            <label class="form-check-label" for="ReservationOnly">
+                            <input class="form-check-input" type="radio" name="ClientBehavior" id="FCFSorReservation" value="FCFS+RES" [% IF ClientBehavior == 'FCFS+RES' %]checked[% END %]>
+                            <label class="form-check-label" for="FCFSorReservation">
                                 [% c.loc("First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use ).") %]
                             </label>
                         </div>

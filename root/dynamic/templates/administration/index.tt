@@ -71,23 +71,23 @@
                     <button id="user-table-row-toolbar-password" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-unlock"></i> [% c.loc("Password") %]</button>
                 [% END %]
                 <button id="user-table-row-toolbar-troublemaker" class="btn libki-toolbar-btn btn-outline-dark"><i class="fas fa-exclamation-triangle"></i> [% c.loc("Troublemaker") %]</button>
-                <button id="user-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiDeleteUser( window.selected_id )"><i class="fas fa-trash-alt"></i> [% c.loc("Delete") %]</button>
+                <button id="user-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-trash-alt"></i> [% c.loc("Delete") %]</button>
             </div>
         </div>
   </div>
   <div class="tab-pane fade show active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
-        <ul class="nav nav-pills" id="primary-tabs">
+        <ul class="nav nav-pills" id="client-locations">
           <li class="nav-item">
             <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
           </li>
           <li class="nav-item">
-              <a class="nav-link active" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+              <a class="nav-link active" data-toggle="pill" href="#" data-location="">[% c.loc("All") %]</a>
           </li>
           [% FOREACH location IN locations %]
               <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
+                  <a class="nav-link" data-toggle="pill" href="#" data-location="[% location %]">[% location %]</a>
               </li>
           [% END %]
         </ul>
@@ -164,31 +164,31 @@
             <div class="btn-group" role="group">
                 <button id="client-table-row-toolbar-time" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
                 [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                <button id="client-table-row-toolbar-reserve" class="btn libki-toolbar-btn btn-outline-primary" onclick="LibkiToggleReservation( window.selected_id )"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
-                <button id="client-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiShowCancelClientTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+                <button id="client-table-row-toolbar-reserve" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                <button id="client-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" ><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
                 [% END %]
-                <button id="client-table-row-toolbar-unlock" class="btn libki-toolbar-btn btn-outline-primary" onclick="LibkiUnlockClient( window.selected_id )"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
-                <button id="client-table-row-toolbar-logout" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiLogOutClient( window.selected_id )"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+                <button id="client-table-row-toolbar-unlock" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
+                <button id="client-table-row-toolbar-logout" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
                 <button id="client-table-row-toolbar-status" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</button>
-                <button id="client-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiDeleteClient( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
-                <button id="client-table-row-toolbar-restart" class="btn libki-toolbar-btn btn-outline-warning" onclick="LibkiRestartClient( window.selected_id )"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</button>
-                <button id="client-table-row-toolbar-shutdown" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiShutdownClient( window.selected_id )"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</button>
+                <button id="client-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
+                <button id="client-table-row-toolbar-restart" class="btn libki-toolbar-btn btn-outline-warning"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</button>
+                <button id="client-table-row-toolbar-shutdown" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</button>
             </div>
         </div>
   </div>
 
   <div class="tab-pane fade" id="prints" role="tabpanel" aria-labelledby="prints-tab">
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
-        <ul class="nav nav-pills" id="primary-tabs">
+        <ul class="nav nav-pills" id="print-locations">
           <li class="nav-item">
             <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
           </li>
           <li class="nav-item">
-              <a class="nav-link active" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+              <a class="nav-link active" data-toggle="pill" href="#" data-location="">[% c.loc("All") %]</a>
           </li>
           [% FOREACH location IN locations %]
               <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" onclick="PrintTableUpdateLocationFilter(`[% location %]`);">[% location %]</a>
+                  <a class="nav-link" data-toggle="pill" href="#" data-location="[% location %]">[% location %]</a>
               </li>
           [% END %]
         </ul>
@@ -243,7 +243,6 @@
                 <button
                     id="print-table-row-toolbar-release"
                     class="btn libki-toolbar-btn btn-outline-primary"
-                    onclick="LibkiReleasePrint( window.selected_id )"
                 >
                     <i class="fas fa-print"></i> [% c.loc("Print") %]
                 </button>
@@ -251,7 +250,6 @@
                 <button
                     id="print-table-row-toolbar-refresh"
                     class="btn libki-toolbar-btn btn-outline-info"
-                    onclick="LibkiRefreshPrint( window.selected_id )"
                 >
                     <i class="fas fa-sync"></i> [% c.loc("Refresh") %]
                 </button>
@@ -275,9 +273,8 @@
                 [% END %]
 
                 <button
-                    id="print-table-row-toolbar-logout"
+                    id="print-table-row-toolbar-cancel"
                     class="btn libki-toolbar-btn btn-outline-danger"
-                    onclick="LibkiCancelPrint( window.selected_id )"
                 >
                     <i class="fa fa-ban"></i> [% c.loc("Cancel") %]
                 </button>
@@ -328,7 +325,7 @@
         <div id="reservation-table-row-toolbar" class="table-row-toolbar" role="toolbar">
             <div class="btn-group" role="group">
                 <button id="reservation-table-row-toolbar-info" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-clock"></i> [% c.loc("Operation: ") %]</button>
-                <button id="reservation-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" onclick="LibkiShowCancelReservationTab( window.selected_id )"><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+                <button id="reservation-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" ><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
             </div>
         </div>
 
@@ -653,7 +650,7 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
-                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
+                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date">
 
                 <select id="reservation-hour" name="reservation_hour" onchange="getMinute()"></select>
                  :
@@ -856,6 +853,17 @@ $(document).ready(function() {
     clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
     printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
 
+    // Client Table refreshing on location limit
+    $('#client-locations .nav-link').click(function() {
+        const location = $(this).data('location');
+        ClientTableUpdateLocationFilter(location);
+    });
+    // Print Table refreshing on location limit
+    $('#print-locations .nav-link').click(function() {
+        const location = $(this).data('location');
+        PrintTableUpdateLocationFilter(location);
+    });
+
     // Set up the manual refresh buttons for each table
     $('#client-table-refresh-button').on( 'click', function() {
         ForceClientTableRefresh();
@@ -881,15 +889,15 @@ $(document).ready(function() {
 
     /**** Initialize Datatables ****/
     // Initalize the Users table as a datatable
-    uTable = $('#user-table').DataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+    const uTable = $('#user-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "[% c.uri_for('/administration/api/datatables/users') %]",  // The actual URL to call for data
+            "url": "[% c.uri_for('/administration/api/datatables/users') %]",
             "type": "POST"
         },
-        "fnDrawCallback": function(oSettings, json) {
+        "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#user-table-row-toolbar'), $('#user-table'), $('#user-table tbody tr') );
         },
         "columns": [
@@ -936,13 +944,20 @@ $(document).ready(function() {
     });
 
     // Initalize the Clients table as a datatable
-    cTable = $('#client-table').DataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
-                              // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/clients') %]",  // The actual URL to call for data
-        "fnDrawCallback": function(oSettings, json) {
+    const cTable = $('#client-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": true,  // Indicate that the datatable gets data from a
+        "ajax": function (data, callback, settings ) {
+            if ( window.location_filter ) {
+                data.location_filter = window.location_filter;
+            }
+
+            $.getJSON("[% c.uri_for('/administration/api/datatables/clients') %]", data, function (json) {
+                callback(json);
+            } );
+        },
+        "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
         },
         columns: [
@@ -976,23 +991,14 @@ $(document).ready(function() {
                 }
             }
         ],
-        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        "rowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             [% IF Settings.ThirdPartyURL %]
                 if ( aData[3] ) {
                     $('td:eq(3)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[3] + '">' + aData[3] + '</b>' );
                 }
             [% END %]
         },
-        "fnServerData": function ( sSource, aoData, fnCallback ) {
-            if ( window.location_filter ) {
-                aoData.push( { "name": "location_filter", "value": window.location_filter } );
-            }
-
-            $.getJSON( sSource, aoData, function (json) {
-                fnCallback(json)
-            } );
-        },
-        "aoColumnDefs": [
+        "columnDefs": [
             [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 { "bVisible": false, "aTargets": [ 13 ] },
             [% END %]
@@ -1013,29 +1019,35 @@ $(document).ready(function() {
     });
 
     //Initalize the Reservations table as a datatable
-        rTable = $('#reservation-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
-                              // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/reservations') %]",  // The actual URL to call for data
-        "fnDrawCallback": function(oSettings, json) {
+    const rTable = $('#reservation-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": true,  // Indicate that the datatable gets data from a HTTP GET request
+        "ajax": "[% c.uri_for('/administration/api/datatables/reservations') %]",  // The actual URL to call for data
+        "drawCallback": function(oSettings, json) {
              AddTableRowToolbar( $('#reservation-table-row-toolbar'), $('#reservation-table'), $('#reservation-table tbody tr') );
          },
      } );
 
     // Initalize the Print table as a datatable
-    pTable = $('#print-table').DataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
-                              // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/prints') %]",  // The actual URL to call for data
+    const pTable = $('#print-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": true,  // Indicate that the datatable gets data from a HTTP GET request
+        "ajax": function (data, callback, settings ) {
+            if ( window.location_filter ) {
+                data.location_filter = window.location_filter;
+            }
+
+            $.getJSON("[% c.uri_for('/administration/api/datatables/prints') %]", data, function (json) {
+                callback(json);
+            } );
+        },
         "order": [[ 7, "desc" ]],
-        "fnDrawCallback": function(oSettings, json) {
+        "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
         },
-        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        "rowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             // Type column
             $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
 
@@ -1048,16 +1060,7 @@ $(document).ready(function() {
             // DateTime created
             $('td:eq(8)', nRow).html(aData[8].replace('T', ' '));
         },
-        "fnServerData": function ( sSource, aoData, fnCallback ) {
-            if ( window.location_filter ) {
-                aoData.push( { "name": "location_filter", "value": window.location_filter } );
-            }
-
-            $.getJSON( sSource, aoData, function (json) {
-                fnCallback(json)
-            } );
-        },
-        "fnInitComplete": function(){
+        "initComplete": function(){
             $('#print-table-toolbar').prependTo($('#print-table_filter'));
         }
     } );
@@ -1154,7 +1157,7 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("User created.") %]" );
-                    $("#user-table").dataTable().fnDraw(true);
+                    uTable.draw(true);
                 } else {
                     DisplayMessage( "error", "[% c.loc("User not created.") %]" );
                 }
@@ -1200,7 +1203,7 @@ $(document).ready(function() {
     function ShowCreatedGuest( data ) {
         $('#create-new-guest-modal').modal('hide');
 
-        $("#user-table").dataTable().fnDraw(true);
+        uTable.draw(true);
         ForceClientTableRefresh();
 
         $('#new-guest-modal-form-username').val( data.username );
@@ -1261,7 +1264,7 @@ $(document).ready(function() {
 
     function ShowCreatedGuestBatch( data ) {
         $('#create-new-guest-modal').modal('hide');
-        $("#user-table").dataTable().fnDraw(true);
+        uTable.draw(true);
         ForceClientTableRefresh();
 
         $('#user-table-row-toolbar').hide();
@@ -1297,7 +1300,7 @@ $(document).ready(function() {
             $.getJSON( '[% c.uri_for('/administration/api/client/wakeup/') %]' + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients turned on: ") %]" + data.count );
-                    $("#client-table").dataTable().fnDraw(true);
+                    cTable.draw(true);
                 } else {
                     DisplayMessage( "error", "[% c.loc("Unable to wake all clients. Clients turned on: ") %]" + data.count );
                 }
@@ -1315,7 +1318,7 @@ $(document).ready(function() {
             $.getJSON( '[% c.uri_for('/administration/api/client/shutdown_all/') %]' + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients turned off: ") %]" + data.count );
-                    $("#client-table").dataTable().fnDraw(true);
+                    cTable.draw(true);
                 } else {
                     DisplayMessage( "error", "[% c.loc("Unable to shutdown all clients. Clients turned off: ") %]" + data.count );
                 }
@@ -1333,7 +1336,7 @@ $(document).ready(function() {
             $.getJSON( '[% c.uri_for('/administration/api/client/restart_all/') %]' + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients restarted: ") %]" + data.count );
-                    $("#client-table").dataTable().fnDraw(true);
+                    cTable.draw(true);
                 } else {
                     DisplayMessage( "error", "[% c.loc("Unable to restart all clients. Clients restarted: ") %]" + data.count );
                 }
@@ -1401,7 +1404,7 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("User updated.") %]" );
-                    $("#user-table").dataTable().fnDraw(true);
+                    uTable.draw(true);
                 } else {
                     DisplayMessage( "error", "[% c.loc("Unable to update user.") %]" );
                 }
@@ -1447,7 +1450,7 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Password changed.") %]" );
-                    $("#user-table").dataTable().fnDraw(true);
+                    uTable.draw(true);
                 } else {
                     if ( data.message ) {
                         if ( data.message == 'ADMIN_CANNOT_CHANGE_SUPERADMIN_PASSWORD' ) {
@@ -1495,12 +1498,36 @@ $(document).ready(function() {
         $.getJSON(url, function(data) {
             if ( parseInt( data.success ) ) {
                 DisplayMessage( "success", "[% c.loc("Troublemaker status updated.") %]" );
-                $("#user-table").dataTable().fnDraw(true);
+                uTable.draw(true);
             } else {
                 DisplayMessage( "error", "[% c.loc("Unable to update troublemaker status.") %]" );
             }
         });
     }
+
+    /* Delete User */
+    $('#user-table-row-toolbar-delete').click(function() {
+      if ( confirm("[% c.loc("Are you sure you want to delete this user?") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/user/delete') %]' + '/' + window.selected_id, function( data ) {
+          if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("User deleted.") %]" );
+            // Refresh the table to remove the deleted row
+            uTable.draw(true);
+          } else {
+            if ( data.message ) {
+              if ( data.message == 'ADMIN_CANNOT_DELETE_SUPERADMIN' ) {
+                DisplayMessage( "error", "[% c.loc("Administrators cannot delete super administrators.") %]" );
+              }
+              if ( data.message == 'CANNOT_DELETE_YOURSELF' ) {
+                DisplayMessage( "error", "[% c.loc("You are logged in as this user.") %]" );
+              }
+            } else {
+              DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
+            }
+          }
+        });
+      }
+    });
 
     /*********** Client Table ***********/
     /* Modify Time */
@@ -1540,13 +1567,83 @@ $(document).ready(function() {
         }
     });
 
+    /* Reserve */
+    $('#client-table-row-toolbar-reserve').click(function(){
+      setTime();
+      $('#make-reservation-modal-form-username').removeClass('is-invalid');
+
+      const id = window.selected_id;
+      const client_name = $(`#client-table tr[id="${id}"] td:eq(0)`).text();
+      $('#client-table-row-toolbar').hide();
+      $('#make-reservation-modal-title-client-name').text(client_name);
+
+      $('#make-reservation-modal-form-id').val( window.selected_id );
+      $('#make-reservation-modal-form-username').val("");
+
+      $('#make-reservation-modal').modal();
+      $('#make-reservation-modal-form-username').focus();
+    });
+
+    /* Cancel Reservation from Client table */
+    $('#client-table-row-toolbar-cancel').click(function(){
+      const id = window.selected_id;
+
+      $('$cancel-reservation-modal-form-username').removeAttr("readonly");
+      $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
+      $('#client-table-row-toolbar').hide();
+      $('#cancel-reservation-modal-form-id').val( id );
+      $('#cancel-reservation-modal-form-username').val("");
+      $('#cancel-reservation-modal').modal();
+      $('#cancel-reservation-modal-form-username').focus();
+    });
+
+    /* Cancel Reservation from Reservation table */
+    $('#reservation-table-row-toolbar-cancel').click(function() {
+      $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
+      $('#client-table-row-toolbar').hide();
+      $('#cancel-reservation-modal-form-id').val( window.selected_id );
+      $('#cancel-reservation-modal-form-username').val(window.selected_id);
+      $('#cancel-reservation-modal-form-username').attr("readonly","readonly");
+      $('#cancel-reservation-modal').modal();
+      $('#cancel-reservation-modal-form-username').focus();
+    });
+
+
+    /* Unlock */
+    $('#client-table-row-toolbar-unlock').click(function(){
+      if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + window.selected_id, function(data) {
+           if ( data.success ) {
+               DisplayMessage( "success", "[% c.loc("Client unlocked.") %]" );
+               cTable.draw(true);
+           } else {
+               DisplayMessage( "error", "[% c.loc("Unable to unlock client.") %]" );
+           }
+         });
+      }
+    });
+
+    /* Log out */
+    $('#client-table-row-toolbar-logout').click(function(){
+      if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + window.selected_id, function(data) {
+           if ( data.success ) {
+               DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
+               cTable.draw(true);
+           } else {
+               DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
+           }
+        });
+      }
+    });
+
     /* Toggle client status */
     $('#client-table-row-toolbar-status').click(function(){
         $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + window.selected_id, function(data) {
             if ( parseInt( data.success ) ) {
                     const status = TranslateStatus( data.status );
                     DisplayMessage( "success", "[% c.loc("Client status change to: ") %]" + status );
-                    $("#client-table").dataTable().fnDraw(true);
+                    cTable.draw(true);
             } else {
                     DisplayMessage( "error", "[% c.loc("Unable to switch client status.") %]" );
             }
@@ -1559,6 +1656,51 @@ $(document).ready(function() {
                status == 'online'    ? '[% c.loc("Online") %]'    :
                '[% c.loc("Unknown") %]';
     }
+
+    /* Delete Client*/
+    $('#client-table-row-toolbar-delete').click(function(){
+      if ( confirm("[% c.loc("Once deleted, all the reservations of this client will be removed at the same time.") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + window.selected_id, function( data ) {
+          if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("Client deleted.") %]" );
+            // Refresh the table to remove the deleted row
+            cTable.draw(true);
+            rTable.draw(true);
+          } else {
+            DisplayMessage( "error", "[% c.loc("Unable to delete client.") %]" );
+          }
+        });
+      }
+    });
+
+    /* Restart Client */
+    $('#client-table-row-toolbar-restart').click(function(){
+      if ( confirm("[% c.loc("Are you sure you want to restart this client?") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/restart') %]' + '/' + window.selected_id, function(data) {
+          if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("Client restarted.") %]" );
+            cTable.draw(true);
+          } else {
+            DisplayMessage( "error", "[% c.loc("Unable to restart client.") %]" );
+          }
+        });
+      }
+    });
+
+    /* Turn off Client */
+    $('#client-table-row-toolbar-shutdown').click(function(){
+      if ( confirm("[% c.loc("Are you sure you want to turn off this client?") %]") ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/shutdown') %]' + '/' + window.selected_id, function(data) {
+          if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("Client turned off.") %]" );
+            cTable.draw(true);
+          } else {
+            DisplayMessage( "error", "[% c.loc("Unable to turn off client.") %]" );
+          }
+        });
+      }
+    });
+
 
     /* Make reservation */
     $('#make-reservation-modal-form-submit').click(function(){
@@ -1645,7 +1787,45 @@ $(document).ready(function() {
       $('#modify-time-modal-form-submit').removeAttr('disabled');
     })
 
-});
+/*********** Prints Table  ***********/
+
+    /* Release Print Job */
+    $('#print-table-row-toolbar-release').click(function() {
+      $.getJSON('[% c.uri_for("api/printjob/release") %]', { id: window.selected_id }, function(data) {
+        if ( data.success ) {
+          DisplayMessage( "success", data.message );
+          ForcePrintTableRefresh();
+        } else {
+            DisplayMessage( "error", "[% c.loc("Failed to release print job: ") %]" + data.error );
+        }
+      });
+    });
+
+    /* Refresh Print Job */
+    $('#print-table-row-toolbar-refresh').click(function() {
+      $.getJSON('[% c.uri_for("api/printjob/update") %]', { id: window.selected_id }, function(data) {
+        if ( data.success ) {
+          DisplayMessage( "success", "[% c.loc("Print job refreshed") %]: " + window.selected_id );
+          ForcePrintTableRefresh();
+        } else {
+          DisplayMessage( "error", data.data );
+        }
+      });
+    });
+
+    /* Cancel Print Job */
+    $('#print-table-row-toolbar-cancel').click(function() {
+      if ( confirm("[% c.loc("Are you sure you want to cancel this print job?") %]")){
+        $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: window.selected_id }, function(data) {
+          if ( data.success ) {
+            DisplayMessage( 'success', "[% c.loc("Print job has been canceled.") %]" );
+            ForcePrintTableRefresh();
+          } else {
+            DisplayMessage( 'error', "[% c.loc("Failed to cancel print job.") %]");
+          }
+        });
+      }
+    });
 
 /*********** Helper Functions ***********/
 
@@ -1663,132 +1843,6 @@ function filter_woo() {
     };
 }
 
-function LibkiDeleteUser( id ) {
-  if ( confirm("[% c.loc("Are you sure you want to delete this user?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/user/delete') %]' + '/' + id, function( data ) {
-         if ( data.success ) {
-             DisplayMessage( "success", "[% c.loc("User deleted.") %]" );
-             // Refresh the table to remove the deleted row
-             $("#user-table").dataTable().fnDraw(true);
-         } else {
-             if ( data.message ) {
-                 if ( data.message == 'ADMIN_CANNOT_DELETE_SUPERADMIN' ) {
-                     DisplayMessage( "error", "[% c.loc("Administrators cannot delete super administrators.") %]" );
-                 }
-                 if ( data.message == 'CANNOT_DELETE_YOURSELF' ) {
-                     DisplayMessage( "error", "[% c.loc("You are logged in as this user.") %]" );
-                 }
-             } else {
-                 DisplayMessage( "error", "[% c.loc("Unable to delete user.") %]" );
-             }
-         }
-    });
-  }
-}
-
-function LibkiDeleteClient( id ) {
-  if ( confirm("[% c.loc("Once deleted, all the reservations of this client will be removed at the same time.") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + id, function( data ) {
-         if ( data.success ) {
-             DisplayMessage( "success", "[% c.loc("Client deleted.") %]" );
-             // Refresh the table to remove the deleted row
-             $("#client-table").dataTable().fnDraw(true);
-             $("#reservation-table").dataTable().fnDraw(true);
-         } else {
-             DisplayMessage( "error", "[% c.loc("Unable to delete client.") %]" );
-         }
-    });
-  }
-}
-
-function LibkiLogOutClient( id ) {
-  if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + id, function(data) {
-         if ( data.success ) {
-             DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
-             // Refresh the table to remove the deleted row
-             $("#client-table").dataTable().fnDraw(true);
-         } else {
-             DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
-         }
-     });
-  }
-}
-
-function LibkiUnlockClient( id ) {
-  if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + id, function(data) {
-         if ( data.success ) {
-             DisplayMessage( "success", "[% c.loc("Client unlocked.") %]" );
-             $("#client-table").dataTable().fnDraw(true);
-         } else {
-             DisplayMessage( "error", "[% c.loc("Unable to unlock client.") %]" );
-         }
-     });
-  }
-}
-
-function LibkiShutdownClient( id ) {
-  if ( confirm("[% c.loc("Are you sure you want to turn off this client?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/shutdown') %]' + '/' + id, function(data) {
-        if ( data.success ) {
-            DisplayMessage( "success", "[% c.loc("Client turned off.") %]" );
-            $("#client-table").dataTable().fnDraw(true);
-        } else {
-            DisplayMessage( "error", "[% c.loc("Unable to turn off client.") %]" );
-        }
-     });
-  }
-}
-
-function LibkiRestartClient( id ) {
-  if ( confirm("[% c.loc("Are you sure you want to restart this client?") %]") ) {
-    $.getJSON( '[% c.uri_for('/administration/api/client/restart') %]' + '/' + id, function(data) {
-        if ( data.success ) {
-            DisplayMessage( "success", "[% c.loc("Client restarted.") %]" );
-            $("#client-table").dataTable().fnDraw(true);
-        } else {
-            DisplayMessage( "error", "[% c.loc("Unable to restart client.") %]" );
-        }
-     });
-  }
-}
-
-function LibkiShowCancelClientTab( id ) {
-    $('#cancel-reservation-modal-form-username').removeAttr("readonly");
-    $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
-    $('#client-table-row-toolbar').hide();
-    $('#cancel-reservation-modal-form-id').val( id );
-    $('#cancel-reservation-modal-form-username').val("");
-    $('#cancel-reservation-modal').modal();
-    $('#cancel-reservation-modal-form-username').focus();
-}
-
- function LibkiShowCancelReservationTab( id ) {
-     $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
-     $('#client-table-row-toolbar').hide();
-     $('#cancel-reservation-modal-form-id').val( id );
-     $('#cancel-reservation-modal-form-username').val(id);
-     $('#cancel-reservation-modal-form-username').attr("readonly","readonly");
-     $('#cancel-reservation-modal').modal();
-     $('#cancel-reservation-modal-form-username').focus();
- }
-
-function LibkiToggleReservation( id ) {
-    setTime();
-    $('#make-reservation-modal-form-username').removeClass('is-invalid');
-
-    const client_name = $(`#client-table tr[id="${id}"] td:eq(0)`).text();
-    $('#client-table-row-toolbar').hide();
-    $('#make-reservation-modal-title-client-name').text(client_name);
-
-    $('#make-reservation-modal-form-id').val( window.selected_id );
-    $('#make-reservation-modal-form-username').val("");
-
-    $('#make-reservation-modal').modal();
-    $('#make-reservation-modal-form-username').focus();
-}
-
 function HandleClientTableRefreshCounter() {
     var countdown = parseInt( $('#client-table-refresh-counter').text() ) - 1;
 
@@ -1799,22 +1853,22 @@ function HandleClientTableRefreshCounter() {
     }
 }
 
-function ClientTableUpdateLocationFilter( location ) {
+window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     ForceClientTableRefresh();
 }
 
 function ForceClientTableRefresh() {
-     $("#client-table").dataTable().fnDraw(true);
+     cTable.draw(true);
      $('#client-table-refresh-counter').text( '30' );
 }
 
 function ForceUserTableRefresh() {
-     $("#user-table").dataTable().fnDraw(true);
+     uTable.draw(true);
 }
 
 function ForceReservationTableRefresh() {
-     $("#reservation-table").dataTable().fnDraw(true);
+     rTable.draw(true);
 }
 
 function HandlePrintTableRefreshCounter() {
@@ -1827,52 +1881,14 @@ function HandlePrintTableRefreshCounter() {
     }
 }
 
-function PrintTableUpdateLocationFilter( location ) {
+window.PrintTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     ForcePrintTableRefresh();
 }
 
 function ForcePrintTableRefresh() {
-     $("#print-table").dataTable().fnDraw(true);
+     pTable.draw(true);
      $('#print-table-refresh-counter').text( '30' );
-}
-
-function LibkiReleasePrint( print_job_id ) {
-    $.getJSON('[% c.uri_for("api/printjob/release") %]', { id: print_job_id }, function(data) {
-        if ( data.success ) {
-            DisplayMessage( "success", data.message );
-            ForcePrintTableRefresh();
-        } else {
-            DisplayMessage( "error", "[% c.loc("Failed to release print job: ") %]" + data.error );
-        }
-    });
-}
-
-function LibkiRefreshPrint( print_job_id, no_refresh ) {
-    $.getJSON('[% c.uri_for("api/printjob/update") %]', { id: print_job_id }, function(data) {
-        if ( data.success ) {
-            if ( ! no_refresh ) {
-                DisplayMessage( "success", "[% c.loc("Print job refreshed") %]: " + print_job_id );
-                ForcePrintTableRefresh();
-            }
-        } else {
-console.log( data.data );
-            DisplayMessage( "error", data.data );
-        }
-    });
-}
-
-function LibkiCancelPrint( print_job_id ) {
-    if ( confirm("[% c.loc("Are you sure you want to cancel this print job?") %]")){
-        $.getJSON('[% c.uri_for("api/printjob/cancel") %]', { id: print_job_id }, function(data) {
-            if ( data.success ) {
-                DisplayMessage( 'success', "[% c.loc("Print job has been canceled.") %]" );
-                ForcePrintTableRefresh();
-            } else {
-                DisplayMessage( 'error', "[% c.loc("Failed to cancel print job.") %]");
-            }
-        });
-    }
 }
 
 function postForm(url, fields) {
@@ -1891,14 +1907,17 @@ function postForm(url, fields) {
     $form.submit();
 }
 
-$('#datepicker').datepicker({
+  $('#datepicker').datepicker({
     dateFormat:'yy-mm-dd',
     minDate:'%y-%M-%d',
     gotoCurrent: true,
-});
-$("#datepicker").datepicker("setDate", new Date());
-
-function getHourList(format) {
+  });
+  $("#datepicker").datepicker("setDate", new Date());
+  $("#datepicker").change(function() {
+    format = [% Settings.TimeDisplayFormat %];
     getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
-}
+  });
+});
+
+
 </script>

@@ -14,13 +14,13 @@
 <script type="text/javascript">
 $(document).ready(function() {
     /**** Initialize Datatables ****/
-    hTable = $('#logs-table').dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bProcessing": true,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
+    const lTable = $('#logs-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": true,  // Indicate that the datatable gets data from a
                               // HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/administration/api/datatables/logs') %]",
-        "aoColumnDefs": [
+        "ajax": "[% c.uri_for('/administration/api/datatables/logs') %]",
+        "columnDefs": [
             {
                 "mRender": function ( data, type, row ) {
                     return "<pre>" + data + "</pre>";

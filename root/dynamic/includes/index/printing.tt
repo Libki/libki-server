@@ -42,7 +42,7 @@
                         [% END %]
                     </div>
 
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-file-upload"></i> [% c.loc("Upload") %]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> [% c.loc("Upload") %]</button>
                 </form>
             </fieldset>
         </div>
@@ -73,184 +73,178 @@
 </div>
 
 
-<script>
-    // Sets the filename in the bootstrapped file uploader once a file has been selected
+<script type="text/javascript">
+$(document).ready(function() {
+    // Update filename display in custom file input
     $(".custom-file-input").on("change", function() {
-      var fileName = $(this).val().split("\\").pop();
-      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        const fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
-    const formatter = new Intl.NumberFormat('en-US', { //FIXME: locale and currency should be configurable system settings
-      style: 'currency',
-      currency: 'USD',
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
     });
 
-
-    // Initalize the Print table as a datatable
     let user_funds = 0;
-    pTable = $('#print-table').DataTable({
+
+    async function fetchUserFundsAndUpdateUI() {
+        try {
+            const res = await fetch("/public/api/user/funds");
+            const data = await res.json();
+            user_funds = data.funds;
+            $('#user-funds').html(formatter.format(user_funds));
+        } catch (err) {
+            console.error("Error fetching user funds:", err);
+        }
+    }
+
+    fetchUserFundsAndUpdateUI();
+    setInterval(fetchUserFundsAndUpdateUI, 60000);
+
+    const pTable = $('#print-table').DataTable({
         [% IF !c.language.match('en') %]
-        "oLanguage": {
-            "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json"
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json"
         },
         [% END %]
-        "bProcessing": true, // Indicate when the table is processing data
-        "bServerSide": true, // Indicate that the datatable gets data from an HTTP GET request
-        "sAjaxSource": "[% c.uri_for('/public/api/datatables/prints') %]", // The actual URL to call for data
-        "fnInitComplete": function (oSettings, json) {
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        ajax: {
+            url: '[% c.uri_for('/public/api/datatables/prints') %]',
+        },
+        columns: [
+          { data: '0', title: 'Source' },
+          { data: '1', title: 'Status' },
+          { data: '2', title: 'Pages' },
+          { data: '3', title: 'Copies' },
+          { data: '4', title: 'Submitted From' },
+          { data: '5', title: 'Submitted At' },
+          { data: '6', title: 'Printer' },
+          { data: '7', title: 'Cost' },
+          { data: null, title: '', orderable: false, searchable: false }, // For print button
+          { data: null, title: '', orderable: false, searchable: false }  // For cancel button
+        ],
+        initComplete: function () {
             setInterval(() => {
-                $("#print-table").dataTable().fnDraw(true);
+                $('#print-table').DataTable().draw(false);
             }, 10000);
         },
         columnDefs: [
             {
                 targets: [8],
                 className: "[% IF public_print_release == 'disabled' %]display-none[% END %]"
-            },
+            }
         ],
-        "order": [
-            [6, "desc"]
-        ],
-        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            let print_job_id = aData["print_job_id"];
-            let not_held = aData['status'] !='Held';
+        order: [[5, "desc"]],
+        rowCallback: async function(nRow, aData) {
+            const print_job_id = aData["print_job_id"];
+            const not_held = aData["status"] !== "Held";
 
-            // Update user funds
-            // TODO: await this instead of async = false - https://petetasker.com/using-async-await-jquerys-ajax
-            $.ajax({
-                dataType: "json",
-                url: "/public/api/user/funds",
-                async: false,
-                success: function(data) {
-                    user_funds = data.funds;
-                    $('#user-funds').html( formatter.format( user_funds ) );
-                }
-            });
+            $('td:eq(7)', nRow).html(formatter.format(0));
 
-            // Type column
-            $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
+            // Localize content
+            $('td:eq(0)', nRow).html(aData[0].replace("PrintManager", `[% c.loc("Print Manager") %]`));
+            $('td:eq(1)', nRow).html(aData[1].replace("In_progress", `[% c.loc("In progress") %]`));
+            $('td:eq(4)', nRow).html(aData[4].replace("__PRINT_FROM_WEB__", `<em>[% c.loc("Uploaded from Web") %]</em>`));
+            $('td:eq(5)', nRow).html(aData[5].replace("T", " "));
 
-            // Status column
-            $('td:eq(1)', nRow).html(aData[1].replace('In_progress', `[% c.loc("In progress") %]`));
-
-            // Client column
-            $('td:eq(4)', nRow).html(aData[4].replace('__PRINT_FROM_WEB__', `<em>[% c.loc("Uploaded from Web") %]</em>`));
-
-            // DateTime created
-            $('td:eq(5)', nRow).html(aData[5].replace('T', ' '));
-
-            // Generate the printer select pulldown, retain the current selected printer if there is one
-            // otherwise default to the printer set for the print job itself
-            let sel = document.createElement("select");
-            let sel_id = "printer-select-" + print_job_id;
+            // Printer dropdown logic
+            const sel = document.createElement("select");
+            const sel_id = "printer-select-" + print_job_id;
             sel.id = sel_id;
-            let existing_sel = $("#" + sel_id);
-            if ( aData['printer_costs'] ) {
-                let printer_costs = JSON.parse(aData["printer_costs"]);
-                for (i = 0; i < printer_costs.length; i++) {
-                    let pc = printer_costs[i];
-                    let opt = document.createElement("option");
+
+            const existing_sel = $("#" + sel_id);
+            if (aData["printer_costs"]) {
+                const printer_costs = JSON.parse(aData["printer_costs"]);
+
+                for (let pc of printer_costs) {
+                    const opt = document.createElement("option");
                     opt.value = pc.id;
                     opt.text = pc.name;
                     opt.dataset.cost = pc.cost;
-                    if ( existing_sel.length && aData["status"] == "Held" ) {
-                        if ( pc.id == existing_sel.val() ) {
-                            opt.setAttribute("selected", "selected");
-                        }
-                    }
-                    else if ( pc.selected ) {
-                        opt.setAttribute("selected", "selected");
+
+                    if (existing_sel.length && aData["status"] === "Held" && pc.id === existing_sel.val()) {
+                        opt.selected = true;
+                    } else if (pc.selected) {
+                        opt.selected = true;
                     }
 
-                    sel.add(opt, null);
+                    sel.add(opt);
                 }
 
-                if ( not_held ) {
-                    sel.setAttribute("disabled", "disabled");
-                }
+                if (not_held) sel.disabled = true;
 
-                // On change update the cost column and disable/enable print button
-                sel.addEventListener(
-                    'change',
-                    function() {
-                        let cost = this.options[this.selectedIndex].dataset.cost;
-                        $('td:eq(7)', nRow).html( formatter.format(cost) );
+                sel.addEventListener("change", function() {
+                    const cost = this.options[this.selectedIndex].dataset.cost;
+                    $('td:eq(7)', nRow).html(formatter.format(cost));
 
-                        let btn = $("#print-btn-" + print_job_id);
-                        if ( cost > user_funds ) {
-                            btn.prop("disabled",true);
-                            btn.addClass("disabled");
-                        } else {
-                            btn.removeAttr('disabled');
-                            btn.removeClass("disabled");
-                        }
+                    const btn = $("#print-btn-" + print_job_id);
+                    if (cost > user_funds) {
+                        btn.prop("disabled", true).addClass("disabled");
+                    } else {
+                        btn.prop("disabled", false).removeClass("disabled");
                     }
-                );
-                $('td:eq(6)', nRow).append( sel );
+                });
 
+                $('td:eq(6)', nRow).append(sel);
             }
 
-            // Cost
-            let cost = sel.options[sel.selectedIndex].dataset.cost;
-            $('td:eq(7)', nRow).html( formatter.format(cost) );
+            // Cost column
+            const selected_cost = sel.options[sel.selectedIndex]?.dataset.cost ?? 0;
+            $('td:eq(7)', nRow).html(formatter.format(selected_cost));
 
-            // Print & Cancel buttons
-            let insufficient_funds = cost > user_funds;
-            let html;
+            // Print button
+            let html = "";
             [% IF public_print_release != "disabled" %]
-                if ( not_held || insufficient_funds ) {
-                    html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release disabled" disabled="disabled" aria-disabled="true" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+                if (not_held || selected_cost > user_funds) {
+                    html = `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
                 } else {
-                    html = `<a id="print-btn-${ print_job_id }" data-jobid="${ print_job_id }" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print" /> Print</a>`;
+                    html = `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
                 }
             [% ELSE %]
                 html = "&nbsp;";
             [% END %]
             $('td:eq(8)', nRow).html(html);
 
-            if ( not_held ) {
-                html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel disabled" disabled="disbled" aria-disabled="true" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+            // Cancel button
+            if (not_held) {
+                html = `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
             } else {
-                html = `<a id="cancel-btn-${ print_job_id }" class="btn btn-primary print-cancel" disabled data-jobid="${ aData['print_job_id']}" href="#" role="button"><i class="fa fa-cancel" /> Cancel</a>`;
+                html = `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel" data-jobid="${print_job_id}" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
             }
             $('td:eq(9)', nRow).html(html);
         }
     });
 
-    $( "#print-table" ).on( "click", "a.print-release", function(e) {
+    // Print handler
+    $("#print-table").on("click", "a.print-release", async function(e) {
         e.preventDefault();
-        const job_id = $(this).data('jobid');
+        const job_id = $(this).data("jobid");
         const printer = $("#printer-select-" + job_id).val();
 
         const confirmed = confirm("[% c.loc('Job will be released to the printer immediately, are you sure you want to do this?') %]");
-        if ( confirmed ) {
-            $.getJSON( "/public/api/user/release_print_job", { id: job_id, printer: printer }, function( data ) {
-                if ( data.success ) {
-                    alert('[% c.loc("Print job released for printing!") %]');
-                } else {
-                    alert( data.error );
-                }
-
-                $("#print-table").dataTable().fnDraw(true);
-            });
-        };
+        if (confirmed) {
+            const res = await fetch(`/public/api/user/release_print_job?id=${job_id}&printer=${printer}`);
+            const data = await res.json();
+            alert(data.success ? "[% c.loc('Print job released for printing!') %]" : data.error);
+            $("#print-table").DataTable().draw(false);
+        }
     });
 
-    $( "#print-table" ).on( "click", "a.print-cancel", function(e) {
+    // Cancel handler
+    $("#print-table").on("click", "a.print-cancel", async function(e) {
         e.preventDefault();
-        const job_id = $(this).data('jobid');
+        const job_id = $(this).data("jobid");
 
         const confirmed = confirm("[% c.loc('Are you sure you want to cancel this print job?') %]");
-        if ( confirmed ) {
-            $.getJSON( "/public/api/user/cancel_print_job", { id: job_id }, function( data ) {
-                if ( data.success ) {
-                    alert('[% c.loc("Print job canceled!") %]');
-                } else {
-                    alert( data.error );
-                }
-
-                $("#print-table").dataTable().fnDraw(true);
-            });
-        };
+        if (confirmed) {
+            const res = await fetch(`/public/api/user/cancel_print_job?id=${job_id}`);
+            const data = await res.json();
+            alert(data.success ? "[% c.loc('Print job canceled!') %]" : data.error);
+            $("#print-table").DataTable().draw(false);
+        }
     });
+});
 </script>

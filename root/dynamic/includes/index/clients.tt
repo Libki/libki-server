@@ -4,11 +4,11 @@
             <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter('');">[% c.loc("All") %]</a>
+            <a class="nav-link active" data-toggle="pill" href="#" data-location="" >[% c.loc("All") %]</a>
         </li>
         [% FOREACH location IN locations %]
             <li class="nav-item">
-                <a class="nav-link" data-toggle="pill" href="#" onclick="ClientTableUpdateLocationFilter(`[% location | html %]`);">[% location | html %]</a>
+                <a class="nav-link" data-toggle="pill" href="#" data-location="[% location | html %]">[% location | html %]</a>
             </li>
         [% END %]
     </ul>
@@ -28,7 +28,7 @@
 <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
     <div class="btn-group" role="group">
         [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-            <button id="client-table-row-toolbar-make-reservation" class="libki-toolbar-btn btn btn-outline-primary" onclick="getHourList([% Settings.TimeDisplayFormat %])">
+            <button id="client-table-row-toolbar-make-reservation" class="libki-toolbar-btn btn btn-outline-primary">
                 <i class="fas fa-tag"></i> [% c.loc("Make reservation") %]
             </button>
 
@@ -54,7 +54,7 @@
                     <div class="form-group">
                         <div id="reservation-time" class="is-invalid">
                             <input id="datepicker" type="text" value="" width='400px' readonly="readonly"
-                                   name="reservation_date" onchange="getHourList([% Settings.TimeDisplayFormat %])">
+                                   name="reservation_date">
 
                             <select id="reservation-hour" name="reservation_hour" onchange="getMinute()" required></select>
                             :
@@ -160,95 +160,93 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    // Initialize the Clients table as a datatable
-    cTable = $("#client-table").dataTable( {
-        [% IF !c.language.match('en') %]"oLanguage": { "sUrl": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "bPaginate": false,
-        "bFilter": false, // Hide the search form
-        "bProcessing": false,  // Indicate when the table is processing data
-        "bServerSide": true,  // Indicate that the datatable gets data from a
-                              // HTTP GET request
-        "sAjaxSource": "[% c.uri_for("/api/public/datatables/clients") %]",  // The actual URL to call for data
-        "fnDrawCallback": function(oSettings, json) {
-            AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
+    const cTable = $("#client-table").DataTable({
+        [% IF !c.language.match('en') %]
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json"
         },
-        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if ( aData[3] ) {
-                var status;
-                $("td:eq(2)", nRow).html( "[% c.loc("In use") %]" );
+        [% END %]
+        paging: false,
+        searching: false,
+        processing: false,
+        serverSide: true,
+        ajax: function(data, callback, settings) {
+            if (window.location_filter) {
+                data.location_filter = window.location_filter;
+            }
+
+            $.getJSON("[% c.uri_for("/api/public/datatables/clients") %]", data, function(json) {
+                callback(json);
+            });
+        },
+        columnDefs: [
+            { targets: [1], visible: false },
+            [% UNLESS Settings.ClientBehavior.match("RES") %]
+            { targets: [4], visible: false },
+            [% END %]
+        ],
+        order: [[1, "asc"], [0, "asc"]],
+        rowCallback: function(nRow, aData) {
+            if (aData[3]) {
+                $("td:eq(2)", nRow).html("[% c.loc("In use") %]");
             } else {
-                $("td:eq(2)", nRow).html( "[% c.loc("Available") %]" );
+                $("td:eq(2)", nRow).html("[% c.loc("Available") %]");
             }
 
-            if ( aData[4] ) {
-                $("td:eq(3)", nRow).html( aData[4] + " " + "[% c.loc("Minutes") %]" );
+            if (aData[4]) {
+                $("td:eq(3)", nRow).html(aData[4] + " " + "[% c.loc("Minutes") %]");
             }
 
-            if ( Boolean( aData[5] ) ) {
-              var rs_setting = '[% Settings.ReservationShowUsername %]';
+            if (Boolean(aData[5])) {
+                const rs_setting = '[% Settings.ReservationShowUsername %]';
+                const startTime = strftime(DateTimeDisplayFormat, new Date(aData[7]));
 
-              switch (rs_setting) {
-                case 'RSUN':
-                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[5] + "</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
-                  break;
-                case 'RSFN':
-                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation by") %]" + " " + "<i>" + aData[6] + "</i>" + " [% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
-                  break;
-                case 'RSA':
-                  $("td:eq(4)", nRow).html( "[% c.loc("First reservation") %]" + " " + "[% c.loc('starting') %] " + strftime(DateTimeDisplayFormat, new Date(aData[7])) );
-                  break;
-                default:
-                  $("td:eq(4)", nRow).html( "[% c.loc("Reserved") %]" );
-              }
-            }
-        },
-        "fnServerData": function ( sSource, aoData, fnCallback ) {
-            if ( window.location_filter ) {
-                aoData.push( { "name": "location_filter", "value": window.location_filter } );
-            }
-
-            $.getJSON( sSource, aoData, function (json) {
-                fnCallback(json)
-            } );
-        },
-        "fnDrawCallback": function ( oSettings, json ) {
-            AddTableRowToolbar( $("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr") );
-
-            if ( oSettings.aiDisplay.length == 0 ) {
-                return;
-            }
-
-            var nTrs = $("#client-table tbody tr");
-            var iColspan = nTrs[0].getElementsByTagName("td").length;
-            var sLastGroup = "";
-
-            for ( var i=0 ; i<nTrs.length ; i++ ) {
-                var iDisplayIndex = oSettings._iDisplayStart + i;
-                var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[1];
-
-                if ( sGroup != sLastGroup ) {
-                    var nGroup = document.createElement( "tr" );
-                    var nCell = document.createElement( "td" );
-                    nCell.colSpan = iColspan;
-                    nCell.className = "group";
-                    nCell.innerHTML = sGroup;
-                    nGroup.appendChild( nCell );
-                    nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
-                    sLastGroup = sGroup;
+                switch (rs_setting) {
+                    case 'RSUN':
+                        $("td:eq(4)", nRow).html(`[% c.loc("First reservation by") %] <i>${aData[5]}</i> [% c.loc("starting") %] ${startTime}`);
+                        break;
+                    case 'RSFN':
+                        $("td:eq(4)", nRow).html(`[% c.loc("First reservation by") %] <i>${aData[6]}</i> [% c.loc("starting") %] ${startTime}`);
+                        break;
+                    case 'RSA':
+                        $("td:eq(4)", nRow).html(`[% c.loc("First reservation") %] [% c.loc("starting") %] ${startTime}`);
+                        break;
+                    default:
+                        $("td:eq(4)", nRow).html("[% c.loc("Reserved") %]");
                 }
             }
         },
-        "aoColumnDefs": [
-            { "bVisible": false, "aTargets": [ 1 ] },
-            [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                { "bVisible": false, "aTargets": [ 4 ] },
-            [% END %]
-        ],
-        "aaSortingFixed": [[ 1, "asc" ]],
-        "aaSorting": [[ 0, "asc" ]],
-    } );
+        drawCallback: function(settings) {
+            AddTableRowToolbar($("#client-table-row-toolbar"), $("#client-table"), $("#client-table tbody tr"));
+
+            if (settings.aoData.length === 0) return;
+
+            const nTrs = $("#client-table tbody tr").toArray();
+            const iColspan = nTrs[0].getElementsByTagName("td").length;
+            let sLastGroup = "";
+
+            for (let i = 0; i < nTrs.length; i++) {
+                const iDisplayIndex = settings._iDisplayStart + i;
+                const sGroup = settings.aoData[settings.aiDisplay[iDisplayIndex]]._aData[1];
+
+                if (sGroup !== sLastGroup) {
+                    const nGroup = document.createElement("tr");
+                    const nCell = document.createElement("td");
+                    nCell.colSpan = iColspan;
+                    nCell.className = "group";
+                    nCell.innerHTML = sGroup;
+                    nGroup.appendChild(nCell);
+                    nTrs[i].parentNode.insertBefore(nGroup, nTrs[i]);
+                    sLastGroup = sGroup;
+                }
+            }
+        }
+    });
 
     $("#client-table-row-toolbar-make-reservation").click(function(){
+            format = [% Settings.TimeDisplayFormat %];
+            getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
+
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
 
             $("#make-reservation-modal-for").text( $("#" + window.selected_id).children(":first").text() );
@@ -460,30 +458,36 @@ $(document).ready(function() {
         }
     });
 
+    $('#primary-tabs .nav-link').click(function() {
+        const location = $(this).data('location');
+        ClientTableUpdateLocationFilter(location);
+    });
+
     window.setInterval( function(){ ForceClientTableRefresh() }, 5000 );
-});
 
-/*********** Helper Functions ***********/
-function ForceClientTableRefresh() {
-     $("#client-table").dataTable().fnDraw(true);
-}
+  /*********** Helper Functions ***********/
+  function ForceClientTableRefresh() {
+     cTable.draw(true);
+  }
 
-function ClientTableUpdateLocationFilter( location ) {
+  window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     $("#client-table-row-toolbar").hide();
     ForceClientTableRefresh();
-}
+  }
 
-$('#datepicker').datepicker({
+  $('#datepicker').datepicker({
      dateFormat:'yy-mm-dd',
      minDate:'%y-%M-%d',
      gotoCurrent: true,
- });
+  });
 
-$("#datepicker").datepicker("setDate", new Date());
+  $("#datepicker").datepicker("setDate", new Date());
 
-function getHourList(format) {
+  $("#datepicker").change(function () {
+    format = [% Settings.TimeDisplayFormat %];
     getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
-}
+  });
+});
 
 </script>
