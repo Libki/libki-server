@@ -50,23 +50,24 @@
 
     <p/>
 
-    <div class="container">
+    <div>
         <h4>Funds available for printing: <span id="user-funds">0</span></h4>
         <span id="print-button-warning-text" class="form-text text-muted">
             [% c.loc('If enough funds are available, printing will start immediately when the "Print" button is clicked.') %]
         </span>
         <table id="print-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
-            <th>[% c.loc("Type") %]</th>
-            <th>[% c.loc("Status") %]</th>
-            <th>[% c.loc("Copies") %]</th>
-            <th>[% c.loc("Pages") %]</th>
-            <th>[% c.loc("Client") %]</th>
-            <th>[% c.loc("Created") %]</th>
-            <th>[% c.loc("Printer") %]</th>
-            <th>[% c.loc("Cost") %]</th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
+            <th data-priority="0">&nbsp;</th>
+            <th data-priority="5">[% c.loc("Type") %]</th>
+            <th data-priority="2">[% c.loc("Status") %]</th>
+            <th data-priority="3">[% c.loc("Copies") %]</th>
+            <th data-priority="2">[% c.loc("Pages") %]</th>
+            <th data-priority="4">[% c.loc("Client") %]</th>
+            <th data-priority="3">[% c.loc("Created") %]</th>
+            <th data-priority="1">[% c.loc("Filename") %]</th>
+            <th data-priority="2">[% c.loc("Printer") %]</th>
+            <th data-priority="1">[% c.loc("Cost") %]</th>
+            <th data-priority="1">&nbsp;</th>
             </thead>
         </table>
     </div>
@@ -115,107 +116,100 @@ $(document).ready(function() {
             url: '[% c.uri_for('/public/api/datatables/prints') %]',
         },
         columns: [
-          { data: '0', title: 'Source' },
-          { data: '1', title: 'Status' },
-          { data: '2', title: 'Pages' },
-          { data: '3', title: 'Copies' },
-          { data: '4', title: 'Submitted From' },
-          { data: '5', title: 'Submitted At' },
-          { data: '6', title: 'Printer' },
-          { data: '7', title: 'Cost' },
-          { data: null, title: '', orderable: false, searchable: false }, // For print button
-          { data: null, title: '', orderable: false, searchable: false }  // For cancel button
+          { // more details control
+              data: null,
+              title: '&nbsp;', 
+              orderable: false, 
+              searchable: false,
+              defaultContent: '&nbsp;'
+          },
+          { // Print Type
+              data: '0',
+              render: function(data,type,row) {
+                  return data.replace("PrintManager", `[% c.loc("Print Manager") %]`);
+              }
+          },
+          { // Status
+              data: '1',
+              render: function(data,type,row) {
+                  return data.replace("In_progress", `[% c.loc("In progress") %]`);
+              }
+          },
+          { data: '2' }, // Copies
+          { data: '3' }, // Pages
+          { // Client
+              data: '4',
+              render: function(data,type,row) {
+                  return data.replace("__PRINT_FROM_WEB__", `<em>[% c.loc("Uploaded from Web") %]</em>`)
+              }
+          },
+          { // Created
+              data: '5',
+              render: function(data,type,row) {
+                  return data.replace("T", " ");
+              }
+          },
+          { data: 'filename' }, // Filename
+          { // Printer
+              data: 'printer_costs',
+              render: function(data,type,row) {
+                  const print_job_id = row["print_job_id"];
+                  const not_held = row["status"] !== "Held";
+                  const sel_id = "printer-select-" + print_job_id;
+
+                  const printer_costs = JSON.parse(row["printer_costs"]);
+
+                  let html = `<select id="${sel_id}" ${not_held ? "disabled" : ""}>`;
+
+                  for (let pc of printer_costs) {
+                      const selected = pc.selected == 1 ? "selected" : "";
+                      html += `<option value="${pc.id}" data-cost="${pc.cost}" ${selected}>${pc.name}</option>`;
+                  }
+
+                  html += `</select>`;
+                  return html;
+              }
+          },
+          { // Cost
+              data: '7',
+              render: function(data,type,row) {
+                  return "<span id='" + row.print_job_id + "-cost'>" + formatter.format(data) + "</span>";
+              } 
+          },
+          { // Actions
+              data: null,
+              title: 'Actions', 
+              orderable: false, 
+              searchable: false,
+              render: function(data,type,row) {
+                  const print_job_id = row["print_job_id"];
+                  const not_held = row["status"] !== "Held";
+
+                  let html = "<div class='btn-group' role='group' aria-label='Print actions'>";
+                  [% IF public_print_release != "disabled" %]
+                  if (not_held || data["sufficient_funds"]) {
+                    html += `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
+                  } else {
+                    html += `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
+                  }
+                  [% END %]
+
+                  if (not_held) {
+                     html += `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
+                  } else {
+                     html += `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel" data-jobid="${print_job_id}" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
+                  }
+                  html += '</div>'
+                  return html;
+              }
+          }
         ],
         initComplete: function () {
             setInterval(() => {
                 $('#print-table').DataTable().draw(false);
             }, 10000);
         },
-        columnDefs: [
-            {
-                targets: [8],
-                className: "[% IF public_print_release == 'disabled' %]display-none[% END %]"
-            }
-        ],
-        order: [[5, "desc"]],
-        rowCallback: async function(nRow, aData) {
-            const print_job_id = aData["print_job_id"];
-            const not_held = aData["status"] !== "Held";
-
-            $('td:eq(7)', nRow).html(formatter.format(0));
-
-            // Localize content
-            $('td:eq(0)', nRow).html(aData[0].replace("PrintManager", `[% c.loc("Print Manager") %]`));
-            $('td:eq(1)', nRow).html(aData[1].replace("In_progress", `[% c.loc("In progress") %]`));
-            $('td:eq(4)', nRow).html(aData[4].replace("__PRINT_FROM_WEB__", `<em>[% c.loc("Uploaded from Web") %]</em>`));
-            $('td:eq(5)', nRow).html(aData[5].replace("T", " "));
-
-            // Printer dropdown logic
-            const sel = document.createElement("select");
-            const sel_id = "printer-select-" + print_job_id;
-            sel.id = sel_id;
-
-            const existing_sel = $("#" + sel_id);
-            if (aData["printer_costs"]) {
-                const printer_costs = JSON.parse(aData["printer_costs"]);
-
-                for (let pc of printer_costs) {
-                    const opt = document.createElement("option");
-                    opt.value = pc.id;
-                    opt.text = pc.name;
-                    opt.dataset.cost = pc.cost;
-
-                    if (existing_sel.length && aData["status"] === "Held" && pc.id === existing_sel.val()) {
-                        opt.selected = true;
-                    } else if (pc.selected) {
-                        opt.selected = true;
-                    }
-
-                    sel.add(opt);
-                }
-
-                if (not_held) sel.disabled = true;
-
-                sel.addEventListener("change", function() {
-                    const cost = this.options[this.selectedIndex].dataset.cost;
-                    $('td:eq(7)', nRow).html(formatter.format(cost));
-
-                    const btn = $("#print-btn-" + print_job_id);
-                    if (cost > user_funds) {
-                        btn.prop("disabled", true).addClass("disabled");
-                    } else {
-                        btn.prop("disabled", false).removeClass("disabled");
-                    }
-                });
-
-                $('td:eq(6)', nRow).append(sel);
-            }
-
-            // Cost column
-            const selected_cost = sel.options[sel.selectedIndex]?.dataset.cost ?? 0;
-            $('td:eq(7)', nRow).html(formatter.format(selected_cost));
-
-            // Print button
-            let html = "";
-            [% IF public_print_release != "disabled" %]
-                if (not_held || selected_cost > user_funds) {
-                    html = `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
-                } else {
-                    html = `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
-                }
-            [% ELSE %]
-                html = "&nbsp;";
-            [% END %]
-            $('td:eq(8)', nRow).html(html);
-
-            // Cancel button
-            if (not_held) {
-                html = `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
-            } else {
-                html = `<a id="cancel-btn-${print_job_id}" class="btn btn-danger print-cancel" data-jobid="${print_job_id}" href="#" role="button"><i class="fa fa-ban"></i> Cancel</a>`;
-            }
-            $('td:eq(9)', nRow).html(html);
-        }
+        order: [[5, "desc"]]
     });
 
     // Print handler
@@ -246,5 +240,22 @@ $(document).ready(function() {
             $("#print-table").DataTable().draw(false);
         }
     });
+
+    // Change cost on change of printer
+    $('#print-table').on('change', 'select[id^="printer-select-"]', function() {
+        const print_job_id = this.id.replace("printer-select-", "");
+        const cost = parseFloat(this.selectedOptions[0].dataset.cost);
+
+        $('#'+print_job_id+'-cost').html(formatter.format(cost));
+
+        const btn = $("#print-btn-" + print_job_id);
+
+        if (cost > user_funds) {
+            btn.prop("disabled", true).addClass("disabled");
+        } else {
+            btn.prop("disabled", false).removeClass("disabled");
+        }
+    });
+
 });
 </script>

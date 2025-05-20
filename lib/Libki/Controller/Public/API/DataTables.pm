@@ -122,7 +122,13 @@ sub prints : Local Args(0) {
         );
 
         my @printer_costs;
-        foreach my $key ( keys %{$printers->{printers}} ) {
+        foreach my $key ( 
+        sort {
+            lc( $printers->{printers}{$a}{public_printer_name} )
+                cmp
+            lc( $printers->{printers}{$b}{public_printer_name} )
+        }
+        keys %{$printers->{printers}} ) {
             my $printer = $printers->{printers}->{ $key };
             my $total_cost = Libki::Utils::Printing::calculate_job_cost(
                 $c,
@@ -148,6 +154,7 @@ sub prints : Local Args(0) {
         $r->{'status'}           = $print_job->status;
         $r->{'sufficient_funds'} = $total_cost <= $user->funds;
         $r->{'printer_costs'}    = to_json( \@printer_costs );
+        $r->{'filename'}         = $print_file->filename;
         $r->{'0'}                = $print_job->type;
         $r->{'1'}                = $print_job->status;
         $r->{'2'}                = $print_job->copies;
