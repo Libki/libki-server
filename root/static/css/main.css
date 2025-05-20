@@ -87,3 +87,9 @@ table {
 .libki-toolbar-btn {
     background-color: white;
 }
+
+@media (max-width: 450px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+}
