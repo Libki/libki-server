@@ -187,7 +187,7 @@ $(document).ready(function() {
 
                   let html = "<div class='btn-group' role='group' aria-label='Print actions'>";
                   [% IF public_print_release != "disabled" %]
-                  if (not_held || data["sufficient_funds"]) {
+                  if (not_held || user_funds < row["7"]) {
                     html += `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
                   } else {
                     html += `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;
@@ -207,7 +207,7 @@ $(document).ready(function() {
         initComplete: function () {
             setInterval(() => {
                 $('#print-table').DataTable().draw(false);
-            }, 10000);
+            }, 30000);
         },
         order: [[5, "desc"]]
     });
@@ -216,7 +216,7 @@ $(document).ready(function() {
     $("#print-table").on("click", "a.print-release", async function(e) {
         e.preventDefault();
         const job_id = $(this).data("jobid");
-        const printer = $("#printer-select-" + job_id).val();
+        const printer = printerSelections[job_id] || $("#printer-select-" + job_id).val();
 
         const confirmed = confirm("[% c.loc('Job will be released to the printer immediately, are you sure you want to do this?') %]");
         if (confirmed) {
@@ -241,12 +241,15 @@ $(document).ready(function() {
         }
     });
 
+
     // Change cost on change of printer
+    const printerSelections = {};
     $('#print-table').on('change', 'select[id^="printer-select-"]', function() {
         const print_job_id = this.id.replace("printer-select-", "");
         const cost = parseFloat(this.selectedOptions[0].dataset.cost);
 
         $('#'+print_job_id+'-cost').html(formatter.format(cost));
+        printerSelections[print_job_id] = this.value;
 
         const btn = $("#print-btn-" + print_job_id);
 
