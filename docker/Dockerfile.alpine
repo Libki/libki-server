@@ -39,6 +39,7 @@ RUN apk add --no-cache \
         perl-getopt-long \
         perl-html-parser \
         perl-http-parser-xs \
+        perl-lwp-protocol-https \
         perl-module-build \
         perl-module-build-tiny \
         perl-module-install \
