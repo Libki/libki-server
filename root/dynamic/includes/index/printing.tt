@@ -1,4 +1,5 @@
 [%- SET public_print_release = c.get_printer_configuration.public_print_release %]
+[%- SET pdf_conversion_service = c.get_printer_configuration.pdf_conversion_service %]
 <div class="container">
     <div class="row">
         <div class="col">
@@ -6,15 +7,31 @@
                 <legend class="">[% c.loc("Upload file to print") %]</legend>
                 [% IF c.req.params.error == "INVALID_FILETYPE" %]
                     <div class="alert alert-danger" role="alert">
-                        [% c.loc('Filetype was invalid, file uploads must be PDF.') %]
+                        [% c.loc('Filetype was invalid; PDFs work best.') %]
                         [% c.loc('If your file is not a PDF, you may use a PDF printer such as <a target="_blank" class="alert-link" href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,') %]
                         [% c.loc('or a <a target="_blank" class="alert-link" href="https://www.freepdfconvert.com/">web based PDF converter</a>.') %]
                     </div>
+                [% ELSIF c.req.params.success == "PDF_CONV_SUCCESS" %]
+                    <div class="alert alert-success" role="alert">
+                        [% c.loc('File successfully converted to PDF and ready to print!') %]
+                    </div>
+                [% ELSIF c.req.params.error == "PDF_CONV_ERROR" %]
+                    <div class="alert alert-danger" role="alert">
+                        [% c.loc('Something went wrong with the automatic PDF conversion process.') %]
+                    </div>
                 [% ELSE %]
+                    [% IF pdf_conversion_service %]
+                    <div class="alert alert-warning" role="alert">
+                        [% c.loc('<strong>PDFs work best</strong>; non-PDF printing is currently experimental.  Best of luck!') %]
+                        [% c.loc('Currently supporting: ') %]
+			[% c.get_printer_configuration.pdf_conversion_service.supported_extensions.join(", ") %].
+                    </div>
+                    [% ELSE %]
                     <div class="alert alert-info" role="alert">
                         [% c.loc('If your file is not a PDF, you may use a PDF printer such as <a target="_blank" class="alert-link" href="https://www.cutepdf.com/Products/CutePDF/writer.asp">CutePDF</a>,') %]
                         [% c.loc('or a <a target="_blank" class="alert-link" href="https://www.freepdfconvert.com/">web based PDF converter</a>.') %]
                     </div>
+                    [% END %]
                 [% END %]
                 <form action="[% c.uri_for('upload_print_file') %]" method="post" enctype="multipart/form-data">
                     <div class="form-group">
@@ -23,7 +40,7 @@
                                 <span class="input-group-text" id="inputGroupFileAddon01">[% c.loc("Upload") %]</span>
                             </div>
                             <div class="custom-file">
-                                <input type="file" accept="application/pdf" class="form-control custom-file-input" name="print_file" id="print_file"
+                                <input type="file" accept="application/pdf[% IF pdf_conversion_service %],.[% c.get_printer_configuration.pdf_conversion_service.supported_extensions.join(",.") %][% END %]" class="form-control custom-file-input" name="print_file" id="print_file"
                                     aria-describedby="inputGroupFileAddon01" required/>
                                 <label class="custom-file-label" for="inputGroupFile01">[% c.loc("Choose file") %]</label>
                             </div>
