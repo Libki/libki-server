@@ -66,6 +66,7 @@ sub upload_print_file :Local :Args(0) {
     my $mime = $print_file->mimetype;
     my ($ext) = $print_file->filename =~ /\.([^.]+)$/;
     $ext = lc $ext if defined $ext;
+    my $nonpdf_supported = $c->get_printer_configuration->{'pdf_conversion_service'}->{'supported_extensions'};
 
     if ( $mime eq "application/pdf" && $ext eq "pdf" ) {
         Libki::Utils::Printing::create_print_job_and_file( $c, {
@@ -78,7 +79,7 @@ sub upload_print_file :Local :Args(0) {
         } );
 
         $c->response->redirect( $c->uri_for('/public/printing') );
-    } elsif ($ext ~~ $c->get_printer_configuration->{'pdf_conversion_service'}->{'supported_extensions'} ) {
+    } elsif ($nonpdf_supported && grep { $_ eq $ext } @$nonpdf_supported ) {
         my $ua = LWP::UserAgent->new(timeout => 600);
         my $service_url = $c->get_printer_configuration->{'pdf_conversion_service'}->{'service_url'};
 
