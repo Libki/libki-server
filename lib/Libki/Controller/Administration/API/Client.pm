@@ -4,7 +4,7 @@ use namespace::autoclean;
 
 use DateTime::Format::MySQL;
 
-use Libki::Clients qw( wakeonlan );
+use Libki::Clients;
 
 use JSON qw(to_json);
 

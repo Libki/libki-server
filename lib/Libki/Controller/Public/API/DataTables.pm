@@ -3,7 +3,7 @@ package Libki::Controller::Public::API::DataTables;
 use Moose;
 use namespace::autoclean;
 
-use Libki::Utils::Printing qw(calculate_job_cost);
+use Libki::Utils::Printing;
 
 use JSON qw(to_json);
 

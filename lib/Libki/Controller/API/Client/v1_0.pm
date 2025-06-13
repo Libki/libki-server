@@ -5,12 +5,12 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-use Libki::SIP qw( authenticate_via_sip );
-use Libki::LDAP qw( authenticate_via_ldap );
-use Libki::Hours qw( minutes_until_closing );
-use Libki::Utils::Printing qw( create_print_job_and_file );
-use Libki::Utils::User qw( create_guest );
-use Libki::Clients qw( get_wol_mac_addresses );
+use Libki::SIP;
+use Libki::LDAP;
+use Libki::Hours;
+use Libki::Utils::Printing;
+use Libki::Utils::User;
+use Libki::Clients;
 
 use DateTime::Format::MySQL;
 use DateTime;

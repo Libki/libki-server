@@ -3,7 +3,7 @@ package Libki::Controller::Public::API::User;
 use Moose;
 use namespace::autoclean;
 
-use Libki::Utils::Printing qw(calculate_job_cost);
+use Libki::Utils::Printing;
 
 BEGIN { extends 'Catalyst::Controller'; }
 

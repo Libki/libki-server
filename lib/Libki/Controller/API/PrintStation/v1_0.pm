@@ -7,7 +7,7 @@ use Image::Magick::Thumbnail::PDF qw(create_thumbnail);
 use JSON;
 use List::Util qw(none);
 use File::Temp qw(tempfile tempdir);
-use Libki::Utils::Printing qw(calculate_job_cost);
+use Libki::Utils::Printing;
 
 BEGIN { extends 'Catalyst::Controller'; }
 

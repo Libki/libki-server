@@ -3,7 +3,7 @@ package Libki::Controller::API::Public;
 use Moose;
 use namespace::autoclean;
 
-use Libki::Auth qw(authenticate_user);
+use Libki::Auth;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
