@@ -109,7 +109,7 @@ jobs:
       run: docker load --input /tmp/${{ github.sha }}.debian.tar
 
     - name: Log in to quay.io
-      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u ${{ secrets.QUAY_USERNAME }} --password-stdin
 
     - name: Tag image for quay.io
       run: docker tag libki-server:latest quay.io/libki/libki-server:latest
@@ -157,7 +157,7 @@ jobs:
       run: docker load --input /tmp/${{ github.sha }}.debian.tar
 
     - name: Log in to quay.io
-      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u ${{ secrets.QUAY_USERNAME }} --password-stdin
 
     - name: Tag image for quay.io
       run: docker tag libki-server:latest quay.io/libki/libki-server:${GITHUB_REF##*/}
@@ -281,7 +281,7 @@ jobs:
       run: docker load --input /tmp/${{ github.sha }}.alpine.tar
 
     - name: Log in to quay.io
-      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u ${{ secrets.QUAY_USERNAME }} --password-stdin
 
     - name: Tag image for quay.io
       run: docker tag libki-server:latest quay.io/libki/libki-server:alpine-latest
@@ -335,7 +335,7 @@ jobs:
       run: docker load --input /tmp/${{ github.sha }}.alpine.tar
 
     - name: Log in to quay.io
-      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u kylemhall --password-stdin
+      run: echo "${{ secrets.QUAY_PASSWORD }}" | docker login quay.io -u ${{ secrets.QUAY_USERNAME }} --password-stdin
 
     - name: Tag image for quay.io
       run: docker tag libki-server:latest quay.io/libki/libki-server:alpine-${GITHUB_REF##*/}
