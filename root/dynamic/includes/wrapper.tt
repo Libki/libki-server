@@ -24,8 +24,8 @@
     <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap4.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/61c1297cec.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="[% c.uri_for('/static/css/font-awesome/css/all.min.css') %]">
+    <script src="[% c.uri_for('/static/css/font-awesome/js/all.min.js') %]"></script>
 
     <script src="https://cdn.rawgit.com/Libki/Hullabaloo/d4e6b08a/js/hullabaloo.min.js"></script>
 
