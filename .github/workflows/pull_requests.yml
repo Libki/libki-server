@@ -20,7 +20,7 @@ jobs:
       run: docker save libki-server > ${{ github.sha }}.debian.tar
 
     - name: Upload image artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ github.sha }}.debian.tar
         path: ${{ github.sha }}.debian.tar
@@ -32,7 +32,7 @@ jobs:
     steps:
 
     - name: Download image artifact
-      uses: actions/download-artifact@v4.1.7
+      uses: actions/download-artifact@v4
       with:
         name: ${{ github.sha }}.debian.tar
         path: /tmp
@@ -84,7 +84,7 @@ jobs:
       run: docker save libki-server > ${{ github.sha }}.alpine.tar
 
     - name: Upload image artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ github.sha }}.alpine.tar
         path: ${{ github.sha }}.alpine.tar
@@ -100,7 +100,7 @@ jobs:
         fetch-depth: 1
 
     - name: Download image artifact
-      uses: actions/download-artifact@v4.1.7
+      uses: actions/download-artifact@v4
       with:
         name: ${{ github.sha }}.alpine.tar
         path: /tmp
