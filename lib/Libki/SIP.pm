@@ -62,11 +62,12 @@ sub authenticate_via_sip {
         $telnet                  = new Net::Telnet( Fhopen => $socket );
         $sip_username            = $config->{SIP}->{username};
         $sip_password            = $config->{SIP}->{password};
-        $sip_telnet_login_prompt = $config->{SIP}->{telnet_login_prompt};
+        $sip_telnet_login_prompt = quotemeta($config->{SIP}->{sip_telnet_login_prompt});
+        say "login, expecting: $sip_telnet_login_prompt" if $test_mode;
         $ok = $telnet->login(
             Name     => $sip_username,
             Password => $sip_password,
-            Prompt   => '/' . quotemeta($sip_telnet_login_prompt) . '/',
+            Prompt   => '/' . $sip_telnet_login_prompt . '/',
             Errmode  => 'return'
         );
         if ( !$ok ) {
