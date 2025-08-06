@@ -55,6 +55,7 @@ requires 'Modern::Perl';
 requires 'Moose';
 requires 'MooseX::NonMoose';
 requires 'Net::Server::SS::PreFork';
+requires 'Net::Telnet';
 requires 'PDF::API2';
 requires 'Perl6::Junction';
 requires 'Plack';
