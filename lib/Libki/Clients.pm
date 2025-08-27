@@ -24,12 +24,13 @@ sub wakeonlan {
         or $c->log()->fatal("ERROR in Socket Creation : $!\n");
 
     if ($socket) {
+        setsockopt( $socket, SOL_SOCKET, SO_BROADCAST, 1 );
+
         foreach my $mac_address (@mac_addresses) {
             $c->log()->debug("Sending magic packet to $mac_address at $host:$port");
             $mac_address =~ s/://g;
             my $packet = pack( 'C6H*', 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, $mac_address x 16 );
 
-            setsockopt( $socket, SOL_SOCKET, SO_BROADCAST, 1 );
             $success = 0 unless send( $socket, $packet, 0, $sockaddr );
             $socket->close;
         }
