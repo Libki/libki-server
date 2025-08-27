@@ -14,27 +14,28 @@ sub wakeonlan {
 
     my $success = 1;
 
-    my $host = $c->setting('WOLHost') || '255.255.255.255';
-    my $port = $c->setting('WOLPort') || 9;
-    my $sockaddr = sockaddr_in($port, inet_aton($host));
+    my $host     = $c->setting('WOLHost') || '255.255.255.255';
+    my $port     = $c->setting('WOLPort') || 9;
+    my $sockaddr = sockaddr_in( $port, inet_aton($host) );
 
     my @mac_addresses = get_wol_mac_addresses($c);
 
-    foreach my $mac_address (@mac_addresses) {
-        my $socket = new IO::Socket::INET( Proto => 'udp' )
-            or $c->log()->fatal("ERROR in Socket Creation : $!\n");
+    my $socket = new IO::Socket::INET( Proto => 'udp' )
+        or $c->log()->fatal("ERROR in Socket Creation : $!\n");
 
-        if ($socket) {
+    if ($socket) {
+        foreach my $mac_address (@mac_addresses) {
             $c->log()->debug("Sending magic packet to $mac_address at $host:$port");
             $mac_address =~ s/://g;
-            my $packet = pack('C6H*', 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, $mac_address x 16);
+            my $packet = pack( 'C6H*', 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, $mac_address x 16 );
 
-            setsockopt($socket, SOL_SOCKET, SO_BROADCAST, 1);
-            $success = 0 unless send($socket, $packet, 0, $sockaddr);
+            setsockopt( $socket, SOL_SOCKET, SO_BROADCAST, 1 );
+            $success = 0 unless send( $socket, $packet, 0, $sockaddr );
             $socket->close;
-        } else {
-            $success = 0;
         }
+    }
+    else {
+        $success = 0;
     }
 
     return $success;
