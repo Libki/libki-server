@@ -18,7 +18,7 @@ sub wakeonlan {
     my $port = $c->setting('WOLPort') || 9;
     my $sockaddr = sockaddr_in($port, inet_aton($host));
 
-    my @mac_addresses = get_wol_mac_addresses();
+    my @mac_addresses = get_wol_mac_addresses($c);
 
     foreach my $mac_address (@mac_addresses) {
         my $socket = new IO::Socket::INET( Proto => 'udp' )
