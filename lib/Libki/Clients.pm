@@ -11,7 +11,6 @@ Send a magic packet for every MAC address in the ClientMACAddresses setting.
 
 sub wakeonlan {
     my ($c) = @_;
-
     my $success = 1;
 
     my $host     = $c->setting('WOLHost') || '255.255.255.255';
@@ -21,9 +20,12 @@ sub wakeonlan {
     my @mac_addresses = get_wol_mac_addresses($c);
 
     my $socket = new IO::Socket::INET( Proto => 'udp' )
-        or $c->log()->fatal("ERROR in Socket Creation : $!\n");
+        or do {
+        $c->log()->error("Socket Creation failed: $!\n");
+        $success = 0;
+        };
 
-    if ($socket) {
+    if ( $success && $socket ) {
         setsockopt( $socket, SOL_SOCKET, SO_BROADCAST, 1 );
 
         foreach my $mac_address (@mac_addresses) {
