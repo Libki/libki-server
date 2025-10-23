@@ -119,7 +119,8 @@ sub statistics : Local : Args(0) {
             ],
             as       => [ 'name', 'count', 'location', ],
             group_by => [
-                'client_name'
+                'client_name',
+                'client_location'
             ],
         }
     );
