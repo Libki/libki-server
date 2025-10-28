@@ -78,6 +78,7 @@
   <div class="tab-pane fade show active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
+        [% IF locations.size > 1 %]
         <ul class="nav nav-pills" id="client-locations">
           <li class="nav-item">
             <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
@@ -91,6 +92,7 @@
               </li>
           [% END %]
         </ul>
+        [% END %]
 
         <ul class="navbar-nav mr-auto"></ul>
 
@@ -179,6 +181,7 @@
 
   <div class="tab-pane fade" id="prints" role="tabpanel" aria-labelledby="prints-tab">
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
+        [% IF locations.size > 1 %]
         <ul class="nav nav-pills" id="print-locations">
           <li class="nav-item">
             <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
@@ -192,6 +195,7 @@
               </li>
           [% END %]
         </ul>
+        [% END %]
 
         <ul class="navbar-nav mr-auto"></ul>
 
@@ -962,7 +966,10 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'name' },
-            { data: 'location' },
+            { 
+                "data": "location",
+                "visible": [% IF locations.size > 1 %]true[% ELSE %]false[% END %]
+            },
             { data: 'type' },
             { data: 'session_status' },
             { data: 'username' },
