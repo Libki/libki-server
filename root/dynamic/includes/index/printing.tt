@@ -50,12 +50,18 @@
                     <p/>
 
                     <div class="form-group">
+                        [% IF c.get_printer_configuration.printers.size > 1 %]
                         <label for="printer_id">[% c.loc("Select a printer") %]</label>
-                        [% FOREACH p IN c.get_printer_configuration.printers %]
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
-                                <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name | html %]</label>
-                            </div>
+                            [% FOREACH p IN c.get_printer_configuration.printers %]
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
+                                    <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name | html %]</label>
+                                </div>
+                            [% END %]
+                        [% ELSE %]
+                            [% FOREACH p IN c.get_printer_configuration.printers %]
+                                <input type="hidden" name="printer_id" value="[% p.key %]">
+                            [% END %]
                         [% END %]
                     </div>
 
@@ -168,6 +174,7 @@ $(document).ready(function() {
           },
           { data: 'filename' }, // Filename
           { // Printer
+              visible: [% c.get_printer_configuration.printers.size > 1 ? 'true' : 'false' %],
               data: 'printer_costs',
               render: function(data,type,row) {
                   const print_job_id = row["print_job_id"];
@@ -176,15 +183,20 @@ $(document).ready(function() {
 
                   const printer_costs = JSON.parse(row["printer_costs"]);
 
-                  let html = `<select id="${sel_id}" ${not_held ? "disabled" : ""}>`;
+                  if (printer_costs.size > 1) {
+                      let html = `<select id="${sel_id}" ${not_held ? "disabled" : ""}>`;
 
-                  for (let pc of printer_costs) {
-                      const selected = pc.selected == 1 ? "selected" : "";
-                      html += `<option value="${pc.id}" data-cost="${pc.cost}" ${selected}>${pc.name}</option>`;
+                      for (let pc of printer_costs) {
+                          const selected = pc.selected == 1 ? "selected" : "";
+                          html += `<option value="${pc.id}" data-cost="${pc.cost}" ${selected}>${pc.name}</option>`;
+                      }
+
+                      html += `</select>`;
+                      return html;
+                  } else {
+                      let html = '<span>' + printer_costs[0].name + '</span>';
+                      return html;
                   }
-
-                  html += `</select>`;
-                  return html;
               }
           },
           { // Cost
