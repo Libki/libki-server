@@ -24,6 +24,10 @@
     <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap4.js" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css" crossorigin="anonymous">
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.html5.min.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="[% c.uri_for('/static/css/font-awesome/css/all.min.css') %]">
     <script src="[% c.uri_for('/static/css/font-awesome/js/all.min.js') %]"></script>
 

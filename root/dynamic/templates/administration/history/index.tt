@@ -27,7 +27,12 @@ $(document).ready(function() {
                     return jsonToHtmlTable( data );
                 }
             }
-        ]
+        ],
+        "layout": {
+            "bottomStart": {
+                "buttons": ['copy', 'csv']
+            }
+        }
     } );
 } );
 
