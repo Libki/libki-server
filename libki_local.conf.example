@@ -34,5 +34,5 @@
     birthdate_field PB         # Date of birth field in SIP response, default is PB
     pattern_personal_name ,    # Pattern for spliting lastname et firstname in personal name field(AE) in SIP response
     pattern_personal_name_reverse: 1 # If the names are ordered firstname then lastname, enable this option
-    ILS Koha                   # Options are currently 'Koha' and 'Evergreen', defaults to Koha behavior
+    ILS Koha                   # Options are currently 'Koha', 'Evergreen', and 'Sierra'; defaults to Koha behavior
 </SIP>

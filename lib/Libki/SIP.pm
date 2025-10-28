@@ -411,6 +411,7 @@ sub sip_message_to_hashref {
         $fields{hold_items_count}
             = $ils eq 'Koha'      ? $hold_items_count
             : $ils eq 'Evergreen' ? $hold_items_count - $unavailable_holds_count
+            : $ils eq 'Sierra'    ? $hold_items_count - $unavailable_holds_count
             :                       $hold_items_count;
     }
 
