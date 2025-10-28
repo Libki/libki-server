@@ -983,8 +983,14 @@ $(document).ready(function() {
             { data: 'user_status' },
             { data: 'notes' },
             { data: 'is_troublemaker' },
-            { data: 'reservation' },
-            { data: 'reservation_start' },
+            { 
+                "data": "reservation",
+                "visible": [% IF Settings.ClientBehavior.match("RES") %]true[% ELSE %]false[% END %]
+            },
+            { 
+                "data": "reservation_start", 
+                "visible": [% IF Settings.ClientBehavior.match("RES") %]true[% ELSE %]false[% END %]
+            },
             { // Client status
                 data: function( row, type, val, meta ) {
                     return TranslateStatus( row.client_status );
