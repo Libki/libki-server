@@ -45,6 +45,7 @@ my $defaults = {
     'ReservationShowUsername'            => '0',
     'ReservationTimeout'                 => '15',
     'ThirdPartyURL'                      => '',
+    'TimeDisplayFormat'                  => '24',
     'UserCategories'                     => '',
     'EnableClientSessionPausing'         => 0,
     'BatchGuestPassTemplate'             => q{<html>
