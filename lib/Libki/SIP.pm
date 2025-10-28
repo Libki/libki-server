@@ -4,6 +4,7 @@ use feature 'say';
 
 use Data::Dumper;
 use IO::Socket::INET;
+use Net::Telnet;
 use POSIX qw(strftime);
 use Socket qw(:crlf);
 
@@ -29,6 +30,7 @@ sub authenticate_via_sip {
     my $timeout          = $config->{SIP}->{timeout} || 15;
     my $require_sip_auth = $config->{SIP}->{require_sip_auth}
       // 1;    # Default to requiring authentication if setting doesn't exist
+    my $sip_enable_telnet_login = $config->{SIP}->{sip_enable_telnet_login};
 
     $log->debug("SIP SERVER: $host:$port");
     say "SIP SERVER: $host:$port" if $test_mode;
@@ -53,6 +55,28 @@ sub authenticate_via_sip {
         )
         or $log->fatal("ERROR in Socket Creation : $!\n")
         && ( $test_mode && die "ERROR in Socket Creation : $!\n" );
+
+    say "sip_enable_telnet_login: $sip_enable_telnet_login" if $test_mode;
+    if ($sip_enable_telnet_login) {
+        $log->debug("Telnet login enabled");
+        $telnet                  = new Net::Telnet( Fhopen => $socket );
+        $sip_username            = $config->{SIP}->{username};
+        $sip_password            = $config->{SIP}->{password};
+        $sip_telnet_login_prompt = quotemeta($config->{SIP}->{sip_telnet_login_prompt});
+        say "login, expecting: $sip_telnet_login_prompt" if $test_mode;
+        $ok = $telnet->login(
+            Name     => $sip_username,
+            Password => $sip_password,
+            Prompt   => '/' . $sip_telnet_login_prompt . '/',
+            Errmode  => 'return'
+        );
+        if ( !$ok ) {
+            $telnet_error = $telnet->errmsg;
+            $log->debug("Telnet error: $telnet_error");
+            say "telnet error: $telnet_error" if $test_mode;
+            return { success => 0, error => 'SIP_AUTH_FAILURE', user => $user };
+        }
+    }
 
     ## Set location to empty string if not set
     $config->{SIP}->{location} //= q{};
