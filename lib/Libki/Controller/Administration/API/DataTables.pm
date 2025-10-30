@@ -334,6 +334,35 @@ sub statistics : Local Args(0) {
         };
     }
 
+    # date filtering
+    my $from = $c->request->param('from');
+    my $to   = $c->request->param('to');
+
+    my %date_filter;
+    if ($from) {
+        # append time for inclusivity if desired
+        $date_filter{'>='} = "$from 00:00:00";
+    }
+    if ($to) {
+        $date_filter{'<='} = "$to 23:59:59";
+    }
+
+    if (%date_filter) {
+        my $created_on_filter = { 'me.created_on' => \%date_filter };
+
+        if ($filter) {
+            # merge with existing search filter
+            $filter = {
+                -and => [
+                    $filter,
+                    $created_on_filter,
+                ],
+            };
+        } else {
+            $filter = $created_on_filter;
+        }
+    }
+
     # Sorting options
     my @sorting;
     my $params = $c->request->params;
