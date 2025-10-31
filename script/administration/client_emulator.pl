@@ -48,6 +48,7 @@ if ( $opt->action eq 'register_client' || $opt->action eq 'client_login' ) {
             action    => 'register_node',
             node_name => $opt->name,
             location  => $opt->location,
+            type => $opt->type
         ],
     );
 

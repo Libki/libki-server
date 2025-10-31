@@ -206,6 +206,10 @@ sub clients : Local Args(0) {
         $filter->{'location'} = $c->request->param("location_filter");
     }
 
+    if ( $c->request->param("type_filter") ) {
+        $filter->{'type'} = $c->request->param("type_filter");
+    }
+
     # Sorting options
     my @sorting;
     my $params = $c->request->params;

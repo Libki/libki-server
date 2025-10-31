@@ -38,6 +38,17 @@ sub index : Path : Args(0) {
     )->get_column('location')->all();
     @locations = map { decode( 'UTF-8', $_ ) } @locations;
 
+    my @types = $c->model('DB::Client')->search(
+        {
+            instance => $instance,
+        },
+        {
+            columns  => [qw/type/],
+            distinct => 1
+        }
+    )->get_column('type')->all();
+    @types = map { decode( 'UTF-8', $_ ) } @types;
+
     $c->stash(
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
@@ -45,6 +56,7 @@ sub index : Path : Args(0) {
         ShowFirstLastNames     => $c->setting('ShowFirstLastNames'),
         UserCategories         => $c->setting('UserCategories'),
         locations              => \@locations,
+        types                  => \@types,
     );
 }
 

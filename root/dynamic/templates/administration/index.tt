@@ -126,6 +126,22 @@
 	</nav>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-none">
+        [% IF types.size > 1 %]
+        <ul class="nav nav-pills" id="client-types">
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">[% c.loc("Type") %]:</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link active" data-toggle="pill" href="#" data-type="">[% c.loc("All") %]</a>
+          </li>
+          [% FOREACH type IN types %]
+              <li class="nav-item">
+                  <a class="nav-link" data-toggle="pill" href="#" data-type="[% type %]">[% type %]</a>
+              </li>
+          [% END %]
+        </ul>
+        [% END %]
+
         <ul class="navbar-nav mr-auto"></ul>
 
         <ul class="navbar-nav">
@@ -862,6 +878,11 @@ $(document).ready(function() {
         const location = $(this).data('location');
         ClientTableUpdateLocationFilter(location);
     });
+    // Client Table refreshing on type limit
+    $('#client-types .nav-link').click(function() {
+        const type = $(this).data('type');
+        ClientTableUpdateTypeFilter(type);
+    });
     // Print Table refreshing on location limit
     $('#print-locations .nav-link').click(function() {
         const location = $(this).data('location');
@@ -956,6 +977,9 @@ $(document).ready(function() {
             if ( window.location_filter ) {
                 data.location_filter = window.location_filter;
             }
+            if ( window.type_filter ) {
+                data.type_filter = window.type_filter;
+            }
 
             $.getJSON("[% c.uri_for('/administration/api/datatables/clients') %]", data, function (json) {
                 callback(json);
@@ -970,7 +994,10 @@ $(document).ready(function() {
                 "data": "location",
                 "visible": [% IF locations.size > 1 %]true[% ELSE %]false[% END %]
             },
-            { data: 'type' },
+            { 
+                "data": "type",
+                "visible": [% IF types.size > 1 %]true[% ELSE %]false[% END %]
+            },
             { data: 'session_status' },
             { data: 'username' },
             {
@@ -1868,6 +1895,11 @@ function HandleClientTableRefreshCounter() {
 
 window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
+    ForceClientTableRefresh();
+}
+
+window.ClientTableUpdateTypeFilter = function( type ) {
+    window.type_filter = type;
     ForceClientTableRefresh();
 }
 
