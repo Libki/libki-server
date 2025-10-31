@@ -811,6 +811,17 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="ExpireRemainingGuestPassTimeOnLogout">[% c.loc("Expire remaining guest pass time on logout") %]</label>
+                        <div>
+                            <input type="radio" id="egpt_disabled" name="ExpireRemainingGuestPassTimeOnLogout" value="disabled" style="margin-left:15px;" [% IF !ExpireRemainingGuestPassTimeOnLogout || ExpireRemainingGuestPassTimeOnLogout == 'disabled' %]checked[% END %]>
+                            <label for="egpt_disabled" style="margin-bottom:3px;"> [% c.loc("Disabled") %]</label>
+                            <input type="radio" id="egpt_enabled" name="ExpireRemainingGuestPassTimeOnLogout" value="enabled" style="margin-left:20px;" [% IF ExpireRemainingGuestPassTimeOnLogout == 'enabled' %]checked[% END %]>
+                            <label for="egpt_enabled" style="margin-bottom:3px;"> [% c.loc("Enabled") %]</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("If enabled, any time remaining on a guest pass will be set to 0 after the guest logs out, preventing pass reuse.") %]</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="GuestPassPrefix">[% c.loc("Prefix for guest passes") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="GuestPassPrefix" name="GuestPassPrefix" value="[% GuestPassPrefix %]">

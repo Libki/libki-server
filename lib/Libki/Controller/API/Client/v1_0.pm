@@ -529,7 +529,17 @@ sub index : Path : Args(0) {
                 my $session_id = $session->session_id;
                 my $location   = $session->client->location;
                 my $type       = $session->client->type;
-
+                # If ExpireRemainingGuestPassTimeOnLogout enabled and user is guest, set minutes to 0
+                if ($user->is_guest eq 'Yes' && $c->setting('ExpireRemainingGuestPassTimeOnLogout') eq 'enabled' ) {
+                    $c->model('DB::Allotment')->update_or_create(
+                        {
+                            instance => $c->instance,
+                            user_id  => $user->id,
+                            location => '',
+                            minutes  => 0,
+                        }
+                    );
+                }
                 my $success = $session->delete() ? 1 : 0;
                 $c->stash( logged_out => $success );
 

@@ -127,6 +127,17 @@ sub logout : Local : Args(1) {
 
     if ( defined($client) && defined( $client->session ) ) {
         my $user = $client->session->user;
+        # If ExpireRemainingGuestPassTimeOnLogout enabled and user is guest, set minutes to 0
+        if ($user->is_guest eq 'Yes' && $c->setting('ExpireRemainingGuestPassTimeOnLogout') eq 'enabled' ) {
+            $c->model('DB::Allotment')->update_or_create(
+                {
+                    instance => $c->instance,
+                    user_id  => $user->id,
+                    location => '',
+                    minutes  => 0,
+                }
+            );
+        }
         if ( $client->session->delete() ) {
             $success = 1;
 

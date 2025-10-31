@@ -13,7 +13,7 @@ my ( $opt, $usage ) = describe_options(
     [ 'port|p=s',   'the host server port',                { default => '3000' } ],
     [
         'action|a=s',
-        'action to take ( options: register_client, client_login, print )',
+        'action to take ( options: register_client, client_login, client_logout, print )',
         { default => 'register_client' }
     ],
     [],
@@ -21,8 +21,8 @@ my ( $opt, $usage ) = describe_options(
     [ 'type|t=s',           'the client type',                     { default => '' } ],
     [ 'location|loc|l=s',   'location code for the mocked client', { default => 'TEST' } ],
     [],
-    [ 'username|un|u=s', 'username for action=client_login' ],
-    [ 'password|pw=s',   'password for action=client_login' ],
+    [ 'username|un|u=s', 'username for action=client_login/out' ],
+    [ 'password|pw=s',   'password for action=client_login/out' ],
     [],
     [ 'print=s', 'Send file as print job for node' ],
     [],
@@ -85,6 +85,33 @@ if ( $opt->action eq 'client_login' ) {
     }
     else {
         say "LOGIN failed!";
+        say $response->status_line . " - " . $response->message;
+    }
+}
+if ( $opt->action eq 'client_logout' ) {
+    say 'ACTION: client_logout' if $opt->verbose;
+
+    die "MISSING PARAMETER: name"     unless $opt->name;
+    die "MISSING PARAMETER: username" unless $opt->username;
+    die "MISSING PARAMETER: password" unless $opt->password;
+
+    my $response = $ua->post(
+        $api_url,
+        Content => [
+            action   => 'logout',
+            node     => $opt->name,
+            location => $opt->location,
+            username => $opt->username,
+            password => $opt->password,
+            type     => $opt->type,
+        ],
+    );
+
+    if ( $response->is_success ) {
+        say "LOGOUT Response: " . $response->decoded_content;
+    }
+    else {
+        say "LOGOUT failed!";
         say $response->status_line . " - " . $response->message;
     }
 }
