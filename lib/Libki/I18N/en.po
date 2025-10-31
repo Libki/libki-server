@@ -11,7 +11,7 @@ msgstr ""
 "Last-Translator:  <kyle@kylehall.info>\n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -21,19 +21,19 @@ msgid "lang.en"
 msgstr "English"
 
 msgid "lang.fr"
-msgstr "Fran&ccedil;ais"
+msgstr "Française"
 
 msgid "lang.sv"
 msgstr "Svenska"
 
 msgid "lang.es"
-msgstr "Spanish"
+msgstr "Español"
 
-msgid "lang.pt_PT"
-msgstr "Portuguese"
+msgid "lang.pt"
+msgstr "Português"
 
-msgid "lang.nb_NO"
-msgstr "Norwegian"
+msgid "lang.no"
+msgstr "Norsk"
 
 #: root/dynamic/includes/language_menu.tt:0
 msgid "('lang.' _ lang)"
