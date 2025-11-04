@@ -14,7 +14,6 @@ use Libki::Clients;
 
 use DateTime::Format::MySQL;
 use DateTime;
-use Encode qw(decode);
 use JSON qw(to_json);
 use List::Util qw(min);
 
@@ -147,8 +146,8 @@ sub index : Path : Args(0) {
             EnableClientSessionLocking   => $c->stash->{Settings}->{EnableClientSessionLocking},
             EnableClientPasswordlessMode => $c->stash->{Settings}->{EnableClientPasswordlessMode},
 
-            TermsOfService             => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfService} ),
-            TermsOfServiceDetails      => decode( 'UTF-8', $c->stash->{Settings}->{TermsOfServiceDetails} ),
+            TermsOfService             => $c->stash->{Settings}->{TermsOfService},
+            TermsOfServiceDetails      => $c->stash->{Settings}->{TermsOfServiceDetails},
 
             BannerTopURL               => $c->stash->{Settings}->{BannerTopURL},
             BannerTopWidth             => $c->stash->{Settings}->{BannerTopWidth},

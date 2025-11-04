@@ -4,8 +4,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-use Encode qw(decode);
-
 =head1 NAME
 
 Libki::Controller::API::Public::Datatables - Catalyst Controller
@@ -95,13 +93,13 @@ sub clients : Local Args(0) {
 
         my $r;
         $r->{'DT_RowId'} = $c->id;
-        $r->{'0'} = decode( 'UTF-8', $c->name );
-        $r->{'1'} = decode( 'UTF-8', $c->location );
-        $r->{'2'} = decode( 'UTF-8', $c->type );
+        $r->{'0'} = $c->name;
+        $r->{'1'} = $c->location;
+        $r->{'2'} = $c->type;
         $r->{'3'} = defined( $c->session ) ? $c->session->status : undef;
         $r->{'4'} = defined( $c->session ) ? $c->session->minutes : undef;
-        $r->{'5'} = defined( $reservation ) ? decode( 'UTF-8', $reservation->user->username ) : undef;
-        $r->{'6'} = defined( $reservation ) ? decode( 'UTF-8', $reservation->user->lastname . ", " . $reservation->user->firstname ) : undef;
+        $r->{'5'} = defined( $reservation ) ? $reservation->user->username : undef;
+        $r->{'6'} = defined( $reservation ) ? $reservation->user->lastname . ", " . $reservation->user->firstname : undef;
         $r->{'7'} = $time;
 
         push( @results, $r );
