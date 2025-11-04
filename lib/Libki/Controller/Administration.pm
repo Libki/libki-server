@@ -4,8 +4,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-use Encode qw(decode);
-
 =head1 NAME
 
 Libki::Controller::Administration - Catalyst Controller
@@ -36,7 +34,6 @@ sub index : Path : Args(0) {
             distinct => 1
         }
     )->get_column('location')->all();
-    @locations = map { decode( 'UTF-8', $_ ) } @locations;
 
     my @types = $c->model('DB::Client')->search(
         {
@@ -47,7 +44,6 @@ sub index : Path : Args(0) {
             distinct => 1
         }
     )->get_column('type')->all();
-    @types = map { decode( 'UTF-8', $_ ) } @types;
 
     $c->stash(
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),

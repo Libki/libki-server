@@ -5,7 +5,7 @@ use feature 'say';
 use Moose;
 use namespace::autoclean;
 
-use Catalyst::Runtime 5.90011;
+use Catalyst::Runtime 5.90132;
 use CatalystX::RoleApplicator;
 
 use DateTime::Format::DateParse;
