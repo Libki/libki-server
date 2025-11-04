@@ -23,7 +23,7 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-none justify-content-between">
         <ul class="navbar-nav mr-auto"></ul>
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item refresh-button-group">
                 <div class="btn-group" role="group" aria-label="Table actions">
                     <div id="user-table-refresh" class="input-group">
                         <div class="input-group-prepend">
@@ -33,7 +33,6 @@
                     </div>
                 </div>
             </li>
-			&nbsp; <!-- FIXME: Use CSS -->
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="New user actions">
                     [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
@@ -97,7 +96,7 @@
         <ul class="navbar-nav mr-auto"></ul>
 
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item refresh-button-group">
                 <div class="btn-group" role="group" aria-label="Table actions">
                     <div id="client-table-refresh" class="input-group">
                         <div class="input-group-prepend">
@@ -110,9 +109,6 @@
                     </div>
                 </div>
             </li>
-
-			&nbsp; <!-- FIXME: Use CSS -->
-
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="New user actions">
                     [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
@@ -216,7 +212,7 @@
         <ul class="navbar-nav mr-auto"></ul>
 
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item refresh-button-group">
                 <div class="btn-group" role="group" aria-label="Table actions">
                     <div id="print-table-refresh" class="input-group">
                         <div class="input-group-prepend">
@@ -229,9 +225,6 @@
                     </div>
                 </div>
             </li>
-
-			&nbsp; <!-- FIXME: Use CSS -->
-
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="New user actions">
                     [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
@@ -308,7 +301,7 @@
         <ul class="navbar-nav mr-auto"></ul>
 
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item refresh-button-group">
                 <div class="btn-group" role="group" aria-label="Table actions">
                     <div id="client-table-refresh" class="input-group">
                         <div class="input-group-prepend">
@@ -318,9 +311,6 @@
                     </div>
                 </div>
             </li>
-
-            &nbsp; <!-- FIXME: Use CSS -->
-
             <li class="nav-item">
                 <div class="btn-group" role="group" aria-label="New user actions">
                     [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]

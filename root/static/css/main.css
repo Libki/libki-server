@@ -76,6 +76,10 @@ td.group {
     width: 3em;
 }
 
+.refresh-button-group {
+    margin-right: 0.7em;
+}
+
 table {
     width: 100% !important;
 }
