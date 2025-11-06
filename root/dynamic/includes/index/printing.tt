@@ -215,6 +215,8 @@ $(document).ready(function() {
                   const not_held = row["status"] !== "Held";
 
                   let html = "<div class='btn-group' role='group' aria-label='Print actions'>";
+                  html += `<a id="view-btn-${print_job_id}" class="btn btn-info print-view" onclick="window.open('/public/api/user/view_print_job?id=${print_job_id}', '_blank' )" href="#" role="button"><i class="fa fa-eye"></i> View</a>`;
+
                   [% IF public_print_release != "disabled" %]
                   if (not_held || user_funds < row["7"]) {
                     html += `<a id="print-btn-${print_job_id}" data-jobid="${print_job_id}" class="btn btn-primary print-release disabled" disabled aria-disabled="true" href="#" role="button"><i class="fa fa-print"></i> Print</a>`;

@@ -47,6 +47,54 @@ sub funds : Local Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+
+=head2 view_print_job
+
+Returns the PDF of a given print job.
+
+=cut
+
+sub view_print_job : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    if ( !$c->user_exists ) {
+        $c->response->body('Unauthorized');
+        $c->response->status(401);
+        return;
+    }
+
+    my $id = $c->request->params->{id};
+
+    my $user = $c->user();
+    my $instance = $c->instance;
+    my $print_job = $c->model('DB::PrintJob')->find($id);
+
+    if ( $user->id != $print_job->user_id ) {
+        $c->response->body('Forbidden');
+        $c->response->status(403);
+        return;
+    }
+
+    if ($print_job) {
+        my $print_file = $c->model('DB::PrintFile')->find( $print_job->print_file_id );
+        if ($print_file) {
+            my $filename = $print_file->filename;
+
+            $c->response->body( $print_file->data );
+            $c->response->content_type('application/pdf');
+            $c->response->header( 'Content-Disposition', "inline; filename=$filename" );
+        }
+        else {
+            $c->stash( success => 0, error => 'PRINT_FILE_NOT_FOUND' );
+            $c->forward( $c->view('JSON') );
+        }
+    }
+    else {
+        $c->stash( success => 0, error => 'PRINT_JOB_NOT_FOUND' );
+        $c->forward( $c->view('JSON') );
+    }
+}
+
 =head2 release_print_job
 
 Sends the given print job to the actual print management backend.
