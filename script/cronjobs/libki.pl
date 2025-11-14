@@ -270,6 +270,21 @@ $reservation_rs->search([
     }
 ])->delete();
 
+## Auto-cancel reservations where user already got a client
+my $autocancel_time = $setting_rs->find( { name => 'ReservationAutoCancel'} );
+if (defined($autocancel_time->value()) && $autocancel_time->value() != '') {
+    say "Auto-cancelling reserves" if $opt->verbose;
+    my @reservations_to_cancel = $dbh->selectrow_array("SELECT reservations.id FROM sessions JOIN reservations USING (instance, user_id) WHERE sessions.status = 'active' AND begin_time < DATE_ADD( NOW(), INTERVAL " . $autocancel_time->value() . " MINUTE)");
+    if (@reservations_to_cancel) {
+        $reservation_rs->search({
+            'id' => { -in => \@reservations_to_cancel }
+        })->delete();
+        say "Auto-cancelled " . scalar @reservations_to_cancel . " reservations" if $opt->verbose;
+    } else {
+        say "Nothing to auto-cancel" if $opt->verbose;
+    }
+}
+
 ## Renew time for users that's reached zero if AutomaticTimeExtensionRenewal is set to 1
 my @instances = $dbh->selectrow_array("SELECT DISTINCT(instance) FROM users");
 foreach my $instance ( @instances ) {

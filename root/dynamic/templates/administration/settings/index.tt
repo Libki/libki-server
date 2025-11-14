@@ -323,6 +323,17 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="ReservationAutoCancel">[% c.loc("Reservation Auto-Cancel") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ReservationAutoCancel" name="ReservationAutoCancel" value="[% ReservationAutoCancel %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("The maximum number of minutes before an existing reservation where a patron's login to any client will cancel the reservation.  If blank, this feature is disabled.") %]</small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="MinimumReservationMinutes">[% c.loc("Minimum reservation time required") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="MinimumReservationMinutes" name="MinimumReservationMinutes" value="[% MinimumReservationMinutes %]">
