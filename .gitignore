@@ -7,3 +7,4 @@ libki_server.log
 ansible/vars.yml
 ansible/ansible.cfg
 ansible/hosts
+docker/.env
