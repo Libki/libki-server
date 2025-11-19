@@ -1,34 +1,91 @@
+#############################################
+# Instructions:
+# 
+# create a .env file in the same directory as this file with the following content:
+#
+# LIBKI_ADMIN_USERNAME=your_admin_username
+# LIBKI_ADMIN_PASSWORD=your_admin_password
+# LIBKI_INSTANCE=your instance name (defaults to '')
+# LIBKI_TZ=timezone (defaults to 'America/New_York')
+# LIBKI_PORT=port on your localhost (defaults to 3000)
+# LIBKI_MAX_WORKERS=number of workers (defaults to 4)
+# DB_NAME=your_db_name (defaults to 'libki')
+# DB_USER=your_db_user (defaults to 'libki')
+# DB_PASS=your_db_pass
+# DB_ROOT_PASS=your_db_root_pass
+# 
+# then run the following command:
+# 
+# docker compose up -d
+# (you can remove '-d' to debug output interactively)
+#############################################
 version: "3.9"
-    
+
 services:
+  libki:
+    restart: always
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../
+          target: /app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+#      dockerfile_inline: |
+#        FROM libki/libki-server:latest
+
+        # set up cronjobs; see https://manual.libki.org/master/libki-manual.html#_cronjobs
+#        RUN install_packages cron
+#        RUN (crontab -l ; echo "* * * * * /app/script/cronjobs/libki.pl") | crontab -
+#        RUN (crontab -l ; echo "0 0 * * * /app/script/cronjobs/libki_nightly.pl") | crontab -
+#        RUN update-rc.d cron defaults
+
+#        EXPOSE 3000
+
+        # capture env, initialize db, ensure admin user credentials are up-to-date, then start the server
+        # environment variables passed in from Docker get persisted at the top of the crontab file so all cron jobs have access to them
+#        CMD (set | grep LIBKI ; crontab -l) | crontab - \
+#            && ./installer/update_db.pl \
+#            && /app/script/administration/create_user.pl -u ${LIBKI_ADMIN_USERNAME} -p ${LIBKI_ADMIN_PASSWORD} -s \
+#            && service cron start \
+#            && plackup -s Gazelle --port 3000 --max-reqs-per-child 50000 --max-workers ${LIBKI_MAX_WORKERS:-4} -E production -a /app/libki.psgi
+    environment: # see https://manual.libki.org/master/libki-manual.html#_docker
+      - LIBKI_INSTANCE=${LIBKI_INSTANCE:-libki}
+      - LIBKI_DB_DSN=dbi:mysql:${DB_NAME:-libki};host=db;port=3306
+      - LIBKI_DB_USER=${DB_USER:-libki}
+      - LIBKI_DB_PASSWORD=${DB_PASS}
+      - LIBKI_DB_HOST=db
+      - LIBKI_DB_PORT=3306
+      - LIBKI_DB_DATABASE=${DB_NAME:-libki}
+      - LIBKI_TZ=${LIBKI_TZ:-America/New_York}
+    ports:
+      - "${LIBKI_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
-    image: mariadb:10.3.5
+    image: mariadb:lts
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=${DB_NAME:-libki}
+      - MYSQL_USER=${DB_USER:-libki}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - TZ=${LIBKI_TZ:-America/New_York}
     volumes:
       - db_data:/var/lib/mysql
-    restart: always
     ports:
-      - "127.0.0.1:3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: libki
-      MYSQL_USER: libki
-      MYSQL_PASSWORD: libki
-    
-  libki:
-    depends_on:
-      - db
-    image: libki/libki-server:latest
-    ports:
-      - "3000:3000"
-    restart: always
-    environment:
-      LIBKI_DB_DSN=dbi:mysql:libki;host=db;port=3306
-      LIBKI_DB_USER=root
-      LIBKI_DB_PASSWORD=password
-      LIBKI_DB_HOST=db
-      LIBKI_DB_PORT=3306
-      LIBKI_DB_DATABASE=libki
-      TZ=America/New_York
+      - "3306:3306" # you can remove this if you don't need to access MySQL directly from the host; the libki container will still be able to access it
+    healthcheck: # wait for MariaDB to be ready before starting Libki
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s # Give the database time to initialize
 
 volumes:
   db_data: {}
