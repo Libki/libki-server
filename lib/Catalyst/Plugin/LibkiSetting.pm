@@ -1,8 +1,6 @@
 package Catalyst::Plugin::LibkiSetting;
 
 use Modern::Perl;
-use feature 'say';
-use Data::Dumper;
 
 use Date::Parse qw( str2time );
 use DateTime::Format::DateParse;
@@ -73,8 +71,8 @@ sub instance_config {
     my ($c) = @_;
 
     my $config = $c->config->{instances}->{ $c->instance } || $c->config;
-    my $sip_yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'SIPConfiguration' })->value || q{};
 
+    my $sip_yaml = $c->setting('SIPConfiguration');
     if ($sip_yaml) {
         try {
             $sip_yaml = encode( 'UTF-8', $sip_yaml );
@@ -85,7 +83,7 @@ sub instance_config {
         };
     }
 
-    my $ldap_yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'LDAPConfiguration' })->value;
+    my $ldap_yaml = $c->setting('LDAPConfiguration');
     if ($ldap_yaml) {
         try {
             $ldap_yaml = encode( 'UTF-8', $ldap_yaml );
@@ -95,6 +93,7 @@ sub instance_config {
             warn "Error loading LDAP configuration YAML from system setting: $_";
         };
     }
+
     return $config;
 }
 
@@ -143,7 +142,7 @@ Returns a list of user categories as defined in the system setting UserCategorie
 sub user_categories {
     my ($c) = @_;
 
-    my $yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'UserCategories' })->value;
+    my $yaml = $c->setting('UserCategories');
 
     $yaml = encode( 'UTF-8', $yaml );
 
@@ -196,7 +195,7 @@ sub get_rules {
 
     return $c->stash->{AdvancedRules} if defined $c->stash->{AdvancedRules};
 
-    my $yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name=> 'AdvancedRules' })->value;
+    my $yaml = $c->setting( 'AdvancedRules' );
     $yaml = encode( 'UTF-8', $yaml );
 
     my $data;
@@ -268,7 +267,7 @@ Returns the printer configuration stored in the database
 sub get_printer_configuration {
     my ( $c, $params ) = @_;
 
-    my $yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'PrinterConfiguration' })->value;
+    my $yaml = $c->setting('PrinterConfiguration');
     $yaml = encode( 'UTF-8', $yaml );
 
     my $config;
@@ -293,9 +292,9 @@ Get the status of the first reservation.
 sub get_reservation_status {
     my ( $c, $client ) = @_;
 
-    my $timeout = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationTimeout'})->value || 15;
+    my $timeout = $c->setting('ReservationTimeout') || 15;
 
-    my $display = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'DisplayReservationStatusWithin'})->value || 60;
+    my $display = $c->setting('DisplayReservationStatusWithin') || 60;
 
     my $reservation
         = $c->model('DB::Reservation')
@@ -339,7 +338,7 @@ Check the time and the user, return the available time if possible.
 sub check_login {
     my ( $c, $client, $user ) = @_;
     my $minutes_until_closing = Libki::Hours::minutes_until_closing( { c => $c, location => $client->location } );
-    my $timeout = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationTimeout'})->value || 15;
+    my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
     my $reservation = $c->model( 'DB::Reservation' )->search( { user_id => $user->id(), client_id => $client->id } )->first || undef;
@@ -378,7 +377,7 @@ sub check_login {
             }
             else {
                 my $duration        = $reservation_begin_dt->subtract_datetime( $c->now );
-                my $reservation_gap = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationGap' })->value;
+                my $reservation_gap = $c->setting('ReservationGap');
 
                 $time_to_reservation = ( abs( $duration->in_units('minutes') ) - $reservation_gap );
 
@@ -403,8 +402,8 @@ sub check_login {
             }
         );
         $allowance //= $user->is_guest() eq 'Yes'
-            ? $c->model('DB::Setting')->find({ instance => $c->instance, name => 'DefaultGuestSessionTimeAllowance' })->value
-            : $c->model('DB::Setting')->find({ instance => $c->instance, name => 'DefaultSessionTimeAllowance' })->value;
+            ? $c->setting( 'DefaultGuestSessionTimeAllowance' )
+            : $c->setting( 'DefaultSessionTimeAllowance' );
 
         my @array = ( $allowance, $minutes_allotment );
         push( @array, $minutes_until_closing ) if ( $minutes_until_closing );
@@ -454,7 +453,7 @@ sub check_reservation {
 
     #2. Check allowance
     if ( !$result{'error'} ) {
-        my $allowance = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'DefaultSessionTimeAllowance' })->value;
+        my $allowance = $c->setting( 'DefaultSessionTimeAllowance' );
         if ( $allowance <= 0 ) {
             $result{'error'} = 'INVALID_TIME';
             $result{'detail'} = 'SessionTimeAlowance is 0';
@@ -536,7 +535,7 @@ sub check_reservation {
 
     #7. Check the minimum minutes limit preference
     if ( !$result{'error'} ) {
-        my $minimum = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'MinimumReservationMinutes' })->value;
+        my $minimum = $c->setting( 'MinimumReservationMinutes' );
         $minimum = 1 unless $minimum;
         $minutes = min @array;
         if ( $minutes < $minimum ) {
@@ -593,8 +592,8 @@ sub get_time_list {
     my ( @mlist, @start, %result );
     my $now_dt = DateTime->now( time_zone => $c->tz );
 
-    my $opening_hour   = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationOpeningHour' })->value   || 0;
-    my $opening_minute = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationOpeningMinute' })->value || 0;
+    my $opening_hour = $c->setting( 'ReservationOpeningHour' ) || 0;
+    my $opening_minute = $c->setting( 'ReservationOpeningMinute' ) || 0;
     my $opening_dt = $working_date_dt->clone;
     $opening_dt->set(
         hour   => $opening_hour,
@@ -671,7 +670,7 @@ sub get_time_list {
                         $reservation_begin_dt->set_time_zone( $c->tz );
                         $reservation_end_dt->set_time_zone( $c->tz );
 
-                        my $reservation_gap = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationGap' })->value;
+                        my $reservation_gap = $c->setting( 'ReservationGap' );
                         $reservation_end_dt->add( minutes => $reservation_gap ) if $reservation_gap;
 
                         my $reservation_span = DateTime::Span->from_datetimes( start => $reservation_begin_dt, end => $reservation_end_dt );
@@ -692,7 +691,7 @@ sub get_time_list {
                         my $session_begin_dt = DateTime->now( time_zone => $c->tz );
                         my $session_end_dt = $session_begin_dt + DateTime::Duration->new( minutes => $session->minutes );
 
-                        my $session_gap = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'ReservationGap' })->value;
+                        my $session_gap = $c->setting( 'ReservationGap' );
                         $session_end_dt->add( minutes => $session_gap ) if $session_gap;
 
                         my $session_span = DateTime::Span->from_datetimes( start => $session_begin_dt, end => $session_end_dt );
@@ -736,7 +735,7 @@ sub format_dt {
     my ( $c, $dt ) = @_;
 
     my $include_time = 0;
-    my $format       = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'DateDisplayFormat' })->value || '%m/%d/%Y';
+    my $format       = $c->setting('DateDisplayFormat') || '%m/%d/%Y';
 
     if ( ref $dt eq 'HASH' ) {
         $include_time = $dt->{include_time} if $dt->{include_time};
@@ -747,7 +746,7 @@ sub format_dt {
     return {} unless $dt;
 
     if ($include_time) {
-        my $TimeDisplayFormat = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'TimeDisplayFormat' })->value || '12';
+        my $TimeDisplayFormat = $c->setting('TimeDisplayFormat') || '12';
         $format .= " %I:%M %p" if $TimeDisplayFormat eq '12';
         $format .= " %H:%M"    if $TimeDisplayFormat eq '24';
     }
