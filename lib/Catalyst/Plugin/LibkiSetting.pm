@@ -73,7 +73,7 @@ sub instance_config {
     my ($c) = @_;
 
     my $config = $c->config->{instances}->{ $c->instance } || $c->config;
-    my $sip_yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'SIPConfiguration' })->value;
+    my $sip_yaml = $c->model('DB::Setting')->find({ instance => $c->instance, name => 'SIPConfiguration' })->value || q{};
 
     if ($sip_yaml) {
         try {
