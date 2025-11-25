@@ -728,7 +728,7 @@ sub logs : Local Args(0) {
 
     $c->stash(
         {
-            'recordsTotal '        => $total_records,
+            'recordsTotal'         => $total_records,
             'recordsFiltered'      => $count,
             'draw'                 => $c->request->param('draw') || undef,
             'data'                 => \@results,
