@@ -50,10 +50,11 @@ RUN install_packages \
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
-COPY . /app
+COPY cpanfile /app/cpanfile
 WORKDIR /app
 
 RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
+COPY . /app
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
