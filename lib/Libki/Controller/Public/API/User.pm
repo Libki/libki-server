@@ -44,6 +44,7 @@ sub funds : Local Args(0) {
             funds => $user->funds
         }
     );
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 

@@ -119,6 +119,7 @@ sub create : Local : Args(0) {
     }
     $c->logout() if ( !$session );
 
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 
@@ -164,6 +165,7 @@ sub delete : Local : Args(0) {
 
     $c->logout() if( !$session );
 
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 
@@ -182,6 +184,7 @@ sub gettimelist : Local : Args(0) {
     else {
         $c->stash( 'success' => 1, 'hlist' => $result{'hlist'}, 'mlist' => $result{'mlist'});
     }
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 

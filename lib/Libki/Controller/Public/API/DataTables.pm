@@ -176,6 +176,7 @@ sub prints : Local Args(0) {
             'data'               => \@results,
         }
     );
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 
@@ -279,6 +280,7 @@ sub reservations : Local Args(0) {
             'data'               => \@results,
         }
     );
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 
 }

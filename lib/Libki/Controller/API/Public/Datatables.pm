@@ -113,6 +113,7 @@ sub clients : Local Args(0) {
             'data'                => \@results,
         }
     );
+    delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
 
