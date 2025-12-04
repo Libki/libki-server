@@ -32,6 +32,7 @@ RUN apk add --no-cache \
         imagemagick-dev \
         imagemagick-perlmagick \
         mariadb-client \
+        mariadb-connector-c \
         openssl \
         perl-app-cpanminus \
         perl-dbd-mysql \
