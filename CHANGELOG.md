@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.0] [r25.12]
+### Added
+- SIP2 Telnet
+- ability to download History as CSV
+- date range filter to History
+- option to expire remaining guest pass time on logout
+- type filter to Client list (if more than 1 type available)
+- Hungarian translation
+- view PDF option to public interface
+- option to auto-cancel reservations if the patron has already logged into a client with X minutes
+- self-hosted Font Awesome
+
+### Changed
+- upgraded Catalyst Runtime (which improves UTF-8 support)
+- Perl 5.40 compatibility
+- improved WOL feature
+- only display printer selection if there are multiple printers
+- hide 'reserved' and 'from' columns if Reservations are not used
+- hide Locations filter if only 1 Location configured
+- improved Docker Compose deployment
+- fixed Norwegian and Portuguese translations in DataTables
+
 ## [5.0.0] [r25.05]
 ### Added
 - return 'filename' for print jobs
