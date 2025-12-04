@@ -35,7 +35,7 @@ RUN apk add --no-cache \
         perl-app-cpanminus \
         perl-dbd-mysql \
         perl-dev \
-        perl-exporter \
+        perl-exporter-tiny \
         perl-getopt-long \
         perl-html-parser \
         perl-http-parser-xs \
