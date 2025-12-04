@@ -221,7 +221,7 @@ jobs:
       run: cat installer/data.sql | docker exec -i libki-mariadb /usr/bin/mysql -u root --password=password libki
 
     - name: Start Libki container
-      run: docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306;mysql_ssl=0' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -e 'LIBKI_TZ=America/New_York' -d libki-server
+      run: docker run --name libki-test-server --network libki-net -e 'LIBKI_INSTANCE=demo' -e 'LIBKI_DB_DSN=dbi:mysql:libki;host=libki-mariadb;port=3306' -e 'LIBKI_DB_USER=root' -e 'LIBKI_DB_PASSWORD=password' -e 'LIBKI_DB_HOST=libki-mariadb' -e 'LIBKI_DB_PORT=3306' -e 'LIBKI_DB_DATABASE=libki' -e 'LIBKI_TZ=America/New_York' -d libki-server
 
     - name: Sleep to give Libki container time to launch
       run: sleep 30
