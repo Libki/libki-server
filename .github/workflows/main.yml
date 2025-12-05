@@ -368,3 +368,4 @@ jobs:
       with:
         generate_release_notes: true
         repository: Libki/libki-client
+        token: ${{ secrets.LIBKI_CLIENT_RELEASE_TOKEN }}
