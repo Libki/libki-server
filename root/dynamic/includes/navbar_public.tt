@@ -17,7 +17,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/public/account"><i class="fas fa-user"></i> [% c.user.username | html %]</a>
                 </li>
-
+                [% IF c.check_user_roles('admin') %]
+                <li class="nav-item">
+                    <a class="nav-link" href="/administration"><i class="fas fa-cog"></i> [% c.loc("Admin") %]</a>
+                </li>
+                [% END %]
                 <li class="nav-item">
                     <a class="nav-link" href="[% c.uri_for('/public/logout') %]"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</a>
                 </li>
