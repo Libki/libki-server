@@ -158,7 +158,18 @@ $(document).ready(function() {
                   return data.replace("In_progress", `[% c.loc("In progress") %]`);
               }
           },
-          { data: '2' }, // Copies
+          { // Copies
+              data: '2',
+              render: function(data,type,row) { 
+                  const print_job_id = row["print_job_id"];
+                  const sel_id = "copies-" + print_job_id;
+                  if (row["status"] == "Held") {
+                      return '<input id="' + sel_id + '" type="number" class="copy-select" step="1" min="1" value="' + data + '">';
+                  } else {
+                      return data;
+                  }
+              }
+          }, 
           { data: '3' }, // Pages
           { // Client
               data: '4',
@@ -183,7 +194,7 @@ $(document).ready(function() {
 
                   const printer_costs = JSON.parse(row["printer_costs"]);
 
-                  if (printer_costs.size > 1) {
+                  if (printer_costs.length > 1) {
                       let html = `<select id="${sel_id}" ${not_held ? "disabled" : ""}>`;
 
                       for (let pc of printer_costs) {
@@ -275,7 +286,7 @@ $(document).ready(function() {
 
     // Change cost on change of printer
     const printerSelections = {};
-    $('#print-table').on('change', 'select[id^="printer-select-"]', function() {
+    $('#print-table').on('change', 'select[id^="printer-select-"]', async function() {
         const print_job_id = this.id.replace("printer-select-", "");
         const cost = parseFloat(this.selectedOptions[0].dataset.cost);
 
@@ -289,7 +300,32 @@ $(document).ready(function() {
         } else {
             btn.prop("disabled", false).removeClass("disabled");
         }
+        const printer = this.value;
+        const res = await fetch(`/public/api/user/update_print_job?id=${print_job_id}&printer=${printer}`);
+        const data = await res.json();
+        alert(data.success ? "[% c.loc('Print job updated!') %]" : data.error);
+        $("#print-table").DataTable().draw(false);
+
     });
+
+    const debounce = (fn, wait) => {
+        let timer;
+        return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                fn.apply(this, args);
+            }, wait);
+        };
+    };
+
+    $('#print-table').on('change', 'input[id^="copies-"]', debounce(async function(e) {
+        const job_id = this.id.replace("copies-", "");
+        const copies = $(this).val();
+        const res = await fetch(`/public/api/user/update_print_job?id=${job_id}&copies=${copies}`);
+        const data = await res.json();
+        alert(data.success ? "[% c.loc('Print job updated!') %]" : data.error);
+        $("#print-table").DataTable().draw(false);
+    }, 500)); // The function will run 500ms after the user stops typing
 
 });
 </script>

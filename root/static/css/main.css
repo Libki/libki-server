@@ -97,3 +97,7 @@ table {
         font-size: 1rem;
     }
 }
+
+.copy-select {
+    max-width: 4rem;
+}

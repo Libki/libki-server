@@ -157,6 +157,62 @@ sub cancel_print_job : Local : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+
+=head2 update_print_job
+
+Updates the copies or printer of a given print job
+
+=cut
+
+sub update_print_job : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    if ( !$c->user_exists ) {
+        $c->response->body('Unauthorized');
+        $c->response->status(401);
+        return;
+    }
+
+    my $id = $c->request->params->{id};
+
+    my $user = $c->user();
+    my $copies = int($c->request->params->{copies});
+    my $printers = $c->get_printer_configuration;
+    my $printer  = $c->request->params->{printer} ? $printers->{printers}->{ $c->request->params->{printer} } : '' ;
+
+    my $print_job = $c->model('DB::PrintJob')->find($id);
+
+    if ( $copies || $printer ) {
+        my $now = $c->now();
+        my %update_values;
+        $update_values{updated_on} = $now;
+        if ( $copies ) {
+            $update_values{copies} = $copies;
+        }
+        if ( $printer ) {
+            $update_values{printer} = $c->request->params->{printer};
+        }
+        if ($user->id == $print_job->user_id) {
+            $print_job->update( \%update_values );
+            $c->stash( success => 1 );
+        } else {
+            $c->stash(
+                success => 0,
+                error   => 'User does not match',
+                id      => $id
+            );
+        }
+    } else {
+        $c->stash(
+            success => 0,
+            error   => 'No changes detected',
+            id      => $id
+        );
+    }
+    delete $c->stash->{Settings};
+    $c->forward( $c->view('JSON') );
+}
+
 =head1 AUTHOR
 
 Kyle M Hall <kyle@kylehall.info>
