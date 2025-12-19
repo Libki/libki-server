@@ -250,7 +250,6 @@ sub update : Local : Args(0) {
             firstname  => $firstname,
             lastname   => $lastname,
             category   => $category,
-            funds      => $funds,
             notes      => $notes,
             status     => $status,
             updated_on => $now,

@@ -7,7 +7,7 @@ CREATE TABLE transactions (
     provider VARCHAR(32) NOT NULL,                 -- stripe, paypal, cash, etc
     provider_payment_id VARCHAR(128) NULL,         -- NULL for cash/manual
 
-    amount_cents INT UNSIGNED NOT NULL,
+    amount_cents INT NOT NULL,
     currency CHAR(3) NOT NULL DEFAULT 'USD',
 
     status VARCHAR(32) NOT NULL,                   -- created, pending, succeeded, failed, refunded

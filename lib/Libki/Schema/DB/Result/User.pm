@@ -482,10 +482,27 @@ Get the total value of the users transactions
 =cut
 
 sub funds {
-    my ( $self, $c ) = @_;
-    return $self->transactions->sum('amount_cents') / 100;
+    my ( $self ) = @_;
+
+    my $sum_cents = $self->transactions->search(
+        {
+            status => { -in => [ 'succeeded', 'migrated' ] },
+        }
+    )->get_column('amount_cents')->sum // 0;
+
+    return $sum_cents / 100;
 }
 
+=head2 _dollars_to_cents
+
+Converts incoming dollar amounts to cents for the transactions table
+
+=cut
+
+sub _dollars_to_cents {
+    my ( $self, $amount ) = @_;
+    return int( sprintf( "%.0f", $amount * 100 ) );
+}
 
 =head2 credit_funds
 
@@ -494,11 +511,28 @@ Adds to the users account balance by the amount given
 =cut
 
 sub credit_funds {
-    my ( $self, $c, $funds ) = @_;
+    my ( $self, $c, $amount, %opts ) = @_;
+    warn "amount is " . $amount;
+    die "credit_funds requires a positive amount"
+        unless defined $amount && $amount > 0;
 
-    $self->funds( $self->funds + $funds );
-    $self->update();
-    $self->log_funds_change( $c, $funds );
+    my $cents = $self->_dollars_to_cents($amount);
+
+    my $provider = $opts{provider} // 'cash';
+    my $status   = $opts{status}   // 'succeeded';
+    my $notes    = $opts{notes};
+
+    return $self->create_related(
+        transactions => {
+            instance     => $self->instance,
+            user_id      => $self->id,
+            provider     => $provider,
+            amount_cents => $cents,
+            currency     => 'USD',
+            status       => $status,
+            notes        => $notes,
+        }
+    );
 }
 
 =head2 debit_funds
@@ -508,11 +542,31 @@ Remove from the users account balance by the amount given
 =cut
 
 sub debit_funds {
-    my ( $self, $c, $funds ) = @_;
+    my ( $self, $c, $amount, %opts ) = @_;
+    warn "amount is " . $amount;
+    die "debit_funds requires a positive amount"
+        unless defined $amount && $amount > 0;
 
-    $self->funds( $self->funds - $funds );
-    $self->update();
-    $self->log_funds_change( $c, $funds * -1 );
+    my $cents = $self->_dollars_to_cents($amount);
+
+    # Debits are negative
+    $cents *= -1;
+
+    my $provider = $opts{provider} // 'internal';
+    my $status   = $opts{status}   // 'succeeded';
+    my $notes    = $opts{notes};
+
+    return $self->create_related(
+        transactions => {
+            instance     => $self->instance,
+            user_id      => $self->id,
+            provider     => $provider,
+            amount_cents => $cents,
+            currency     => 'USD',
+            status       => $status,
+            notes        => $notes,
+        }
+    );
 }
 
 =head2 set_funds
@@ -527,10 +581,12 @@ sub set_funds {
     my $current_funds = $self->funds;
 
     my $delta = $funds - $current_funds;
-
-    $self->funds( $funds );
-    $self->update();
-    $self->log_funds_change( $c, $delta );
+    warn "delta is " . $delta;
+    if ($delta > 0) {
+        $self->credit_funds($c, $delta);
+    } elsif ($delta < 0 ) {
+        $self->debit_funds($c, $delta * -1);
+    }
 }
 
 =head2 log_funds_change
