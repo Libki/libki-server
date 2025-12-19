@@ -82,7 +82,7 @@ __PACKAGE__->table("users");
 
 =head2 notes
 
-  data_type: 'longtext'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 is_troublemaker
@@ -152,13 +152,6 @@ __PACKAGE__->table("users");
   is_nullable: 1
   size: 191
 
-=head2 funds
-
-  data_type: 'decimal'
-  default_value: 0.0000
-  is_nullable: 0
-  size: [13,4]
-
 =cut
 
 __PACKAGE__->add_columns(
@@ -173,7 +166,7 @@ __PACKAGE__->add_columns(
   "status",
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "notes",
-  { data_type => "longtext", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "is_troublemaker",
   {
     data_type => "enum",
@@ -218,13 +211,6 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "creation_source",
   { data_type => "varchar", is_nullable => 1, size => 191 },
-  "funds",
-  {
-    data_type => "decimal",
-    default_value => "0.0000",
-    is_nullable => 0,
-    size => [13, 4],
-  },
 );
 
 =head1 PRIMARY KEY
@@ -347,6 +333,21 @@ __PACKAGE__->might_have(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 transactions
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Transaction>
+
+=cut
+
+__PACKAGE__->has_many(
+  "transactions",
+  "Libki::Schema::DB::Result::Transaction",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 user_roles
 
 Type: has_many
@@ -373,8 +374,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OEcNHEQWgqAPGQoP1hKlUA
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2025-12-19 15:32:17
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ieWa+l+vWEQ/vWPaNZ37DQ
 
 __PACKAGE__->add_columns(
     'password' => {
@@ -472,6 +473,19 @@ sub reservation_display_name {
     return q{}                                      if $ReservationShowUsername eq 'RSD';  # disabled
     return q{};                                                                            # default
 }
+
+
+=head2 funds
+
+Get the total value of the users transactions
+
+=cut
+
+sub funds {
+    my ( $self, $c ) = @_;
+    return $self->transactions->sum('amount_cents') / 100;
+}
+
 
 =head2 credit_funds
 
