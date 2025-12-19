@@ -26,13 +26,16 @@ services:
     restart: always
     develop:
       watch:
-        - action: sync+restart
+        - action: rebuild
           path: ../
           target: /app
+          ignore:
+            - docker/
+            - ansible/
 #   sync lib and installer back to source (for DB Schema changes)
-#    volumes:
-#      - ../lib:/app/lib
-#      - ../installer:/app/installer
+    volumes:
+      - ../lib:/app/lib
+      - ../installer:/app/installer
     extra_hosts:
       - "host.docker.internal:host-gateway"
     build:
