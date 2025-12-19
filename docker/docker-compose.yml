@@ -30,9 +30,9 @@ services:
           path: ../
           target: /app
 #   sync lib and installer back to source (for DB Schema changes)
-    volumes:
-      - ../lib:/app/lib
-      - ../installer:/app/installer
+#    volumes:
+#      - ../lib:/app/lib
+#      - ../installer:/app/installer
     extra_hosts:
       - "host.docker.internal:host-gateway"
     build:
