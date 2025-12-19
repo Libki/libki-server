@@ -132,7 +132,7 @@ sub user_funds : Local : Args(0) {
         } elsif ( $c->request->method eq 'POST' ) {
             my $funds = $c->request->params->{'funds'};
 
-            $user->add_funds($funds);
+            $user->credit_funds($funds);
 
             $c->stash(
                 success => JSON::true,
