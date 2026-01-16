@@ -5,6 +5,7 @@ requires 'Module::Install';
 recommends 'LWP::Simple';
 recommends 'Net::CUPS';
 recommends 'Net::LDAP';
+recommends 'Net::Stripe';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Controller::REST';

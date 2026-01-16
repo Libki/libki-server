@@ -53,7 +53,7 @@ RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xm
 COPY cpanfile /app/cpanfile
 WORKDIR /app
 
-RUN cpanm -n --installdeps . && rm -rf /root/.cpanm
+RUN cpanm -n --installdeps --with-recommends . && rm -rf /root/.cpanm
 COPY . /app
 
 COPY docker/files/log4perl.conf /app/log4perl.conf
