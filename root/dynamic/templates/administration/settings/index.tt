@@ -19,6 +19,7 @@
                     <a class="nav-link" id="v-pills-data-retention-tab" data-toggle="pill" href="#v-pills-data-retention" role="tab" aria-controls="v-pills-data-retention" aria-selected="false">[% c.loc("Data retention") %]</a>
                     <a class="nav-link" id="v-pills-guest-passes-tab" data-toggle="pill" href="#v-pills-guest-passes" role="tab" aria-controls="v-pills-guest-passes" aria-selected="false">[% c.loc("Guest passes") %]</a>
                     <a class="nav-link" id="v-pills-ils-integration-tab" data-toggle="pill" href="#v-pills-ils-integration" role="tab" aria-controls="v-pills-ils-integration" aria-selected="false">[% c.loc("ILS integration") %]</a>
+                    <a class="nav-link" id="v-pills-payments-tab" data-toggle="pill" href="#v-pills-payments" role="tab" aria-controls="v-pills-payments" aria-selected="false">[% c.loc("Payments") %]</a>
                     <a class="nav-link" id="v-pills-print-management-tab" data-toggle="pill" href="#v-pills-print-management" role="tab" aria-controls="v-pills-print-management" aria-selected="false">[% c.loc("Print management") %]</a>
                     <a class="nav-link" id="v-pills-reservation-settings-tab" data-toggle="pill" href="#v-pills-reservation-settings" role="tab" aria-controls="v-pills-reservation-settings" aria-selected="false">[% c.loc("Reservations") %]</a>
                     <a class="nav-link" id="v-pills-terms-of-service-tab" data-toggle="pill" href="#v-pills-terms-of-service" role="tab" aria-controls="v-pills-terms-of-service" aria-selected="false">[% c.loc("Terms of service") %]</a>
@@ -934,6 +935,39 @@
                         </div>
                         <small class="form-text text-muted">[% c.loc("Define LDAP configuration in YAML format. This setting will override LDAP configuration in the Libki conf file.") %]</small>
                     </div>
+                </fieldset>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-payments" role="tabpanel" aria-labelledby="v-pills-payments-tab">
+                <fieldset>
+                    <legend>[% c.loc("Stripe Payments") %]</legend>
+
+                    <div class="form-group">
+                        <label for="StripePublishableKey">[% c.loc("Stripe Publishable Key") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="StripePublishableKey" name="StripePublishableKey" rows="2">[% StripePublishableKey %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Publishable key from Stripe Dashboard -> Developers -> API Keys.") %]</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="StripeSecretKey">[% c.loc("Stripe Secret Key") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="StripeSecretKey" name="StripeSecretKey" rows="2">[% StripeSecretKey %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Secret key from Stripe Dashboard -> Developers -> API Keys.") %]</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="StripeWebhookSigningSecret">[% c.loc("Stripe Webhook Signing Secret") %]</label>
+                        <div class="input-group">
+                            <textarea class="form-control" id="StripeWebhookSigningSecret" name="StripeWebhookSigningSecret" rows="2">[% StripeWebhookSigningSecret %]</textarea>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Webhook Signing Secret from Stripe Dashboard Workbench.  Add a link to instructions ") %]</small>
+                    </div>
+
+                </fieldset>
+                <fieldset>
+                    <legend>[% c.loc("Paypal Payments") %]</legend>
+
                 </fieldset>
             </div>
 
