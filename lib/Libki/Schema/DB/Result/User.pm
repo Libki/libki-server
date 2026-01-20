@@ -512,7 +512,6 @@ Adds to the users account balance by the amount given
 
 sub credit_funds {
     my ( $self, $c, $amount, %opts ) = @_;
-    warn "amount is " . $amount;
     die "credit_funds requires a positive amount"
         unless defined $amount && $amount > 0;
 
@@ -543,7 +542,6 @@ Remove from the users account balance by the amount given
 
 sub debit_funds {
     my ( $self, $c, $amount, %opts ) = @_;
-    warn "amount is " . $amount;
     die "debit_funds requires a positive amount"
         unless defined $amount && $amount > 0;
 
@@ -581,7 +579,6 @@ sub set_funds {
     my $current_funds = $self->funds;
 
     my $delta = $funds - $current_funds;
-    warn "delta is " . $delta;
     if ($delta > 0) {
         $self->credit_funds($c, $delta);
     } elsif ($delta < 0 ) {
