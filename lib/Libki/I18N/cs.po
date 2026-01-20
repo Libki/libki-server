@@ -1,0 +1,2080 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Michal Denar <black23@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Michal Denar <black23@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: root/dynamic/templates/administration/settings/index.tt:1138
+msgid "&nbsp;"
+msgstr ""
+
+#: root/dynamic/includes/language_menu.tt:0
+msgid "('lang.' _ lang)"
+msgstr "Čeština"
+
+#: root/dynamic/templates/administration/index.tt:786
+msgid "1 day"
+msgstr "1 den"
+
+#: root/dynamic/templates/administration/index.tt:788
+msgid "1 month"
+msgstr "1 měsíc"
+
+#: root/dynamic/templates/administration/index.tt:787
+msgid "1 week"
+msgstr "1 týden"
+
+#: root/dynamic/templates/administration/index.tt:790
+msgid "1 year"
+msgstr "1 rok"
+
+#: root/dynamic/templates/administration/settings/index.tt:100
+msgid "12-hour"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:102
+msgid "24-hour"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:789
+msgid "3 months"
+msgstr "3 měsíce"
+
+#: root/dynamic/templates/administration/hours/index.tt:135 root/dynamic/templates/administration/hours/index.tt:161
+msgid "@"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:754
+msgid "A list of the network adapter's MAC addresses for the computers to wake up."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:956
+msgid "Yes"
+msgstr "Ano"
+
+#: root/dynamic/templates/administration/index.tt:955
+msgid "No"
+msgstr "Ne"
+
+#: root/dynamic/templates/administration/settings/index.tt:1002 root/dynamic/templates/administration/settings/index.tt:27
+msgid "API keys"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:92
+msgid "Accepts standard <a href='https://man7.org/linux/man-pages/man3/strftime.3.html'>strftime</a> arguments."
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:8
+msgid "Action"
+msgstr "Akce"
+
+#: root/dynamic/templates/administration/hours/index.tt:188
+msgid "Add"
+msgstr "Přidat"
+
+#: root/dynamic/templates/administration/index.tt:619
+msgid "Add a + or - sign to increment or decrement the existing amount of time."
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:154
+msgid "Add closing hours for specific dates"
+msgstr "Přidat vyjímky v provozní době"
+
+#: root/dynamic/templates/administration/settings/index.tt:854
+msgid "Add custom CSS for batch guest passes here."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:960
+msgid "Add custom JavaScript for the administration interface here."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:968
+msgid "Add custom JavaScript for the public web interface here."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:627
+msgid "Add time to daily allotment"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:544
+msgid "Add your list of user categories here as a list in YAML syntax."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1
+msgid "Administration"
+msgstr "Administrace"
+
+#: root/dynamic/templates/administration/hours/index.tt:1
+msgid "Administration / Closing hours"
+msgstr "Administrace / Provozní doba"
+
+#: root/dynamic/templates/administration/history/index.tt:1
+msgid "Administration / History"
+msgstr "Administrace / Historie"
+
+#: root/dynamic/templates/administration/history/statistics.tt:1
+msgid "Administration / History / Statistics"
+msgstr "Administrace / Historie / Statistiky"
+
+#: root/dynamic/templates/administration/history/logs.tt:1
+msgid "Administration / Logs"
+msgstr "Administrace / Logy"
+
+#: root/dynamic/templates/administration/settings/index.tt:1
+msgid "Administration / Settings"
+msgstr "Administrace / Nastavení"
+
+#: root/dynamic/templates/administration/settings/index.tt:956
+msgid "Administration interface JavaScript"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:583
+msgid "Administrator"
+msgstr "Administrátor"
+
+#: root/dynamic/templates/administration/index.tt:1439
+msgid "Administrators cannot change a super administrator password."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1661
+msgid "Administrators cannot delete super administrators."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:978
+msgid "Advanced rules"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:26 root/dynamic/templates/administration/settings/index.tt:975
+msgid "Advanced settings"
+msgstr "Pokročilá nastavení"
+
+#: root/dynamic/includes/wrapper.tt:65
+msgid "Alert:"
+msgstr "Upozornění:"
+
+#: root/dynamic/includes/index/clients.tt:7 root/dynamic/templates/administration/index.tt:187 root/dynamic/templates/administration/index.tt:86
+msgid "All"
+msgstr "Vše"
+
+#: root/dynamic/templates/administration/hours/index.tt:136 root/dynamic/templates/administration/hours/index.tt:16 root/dynamic/templates/administration/hours/index.tt:180
+msgid "All locations"
+msgstr "Všechna umístění"
+
+#: root/dynamic/templates/administration/settings/index.tt:937
+msgid "Allow administrators to view and download user's print job files."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:933
+msgid "Allow administrators to view user print job contents"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:267
+msgid "Allows client user to lock the session which returns Libki to a locked screen. This allows the user to walk away from the client and return to resume the session. While the client is lockd, session minutes continue to count down."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:67
+msgid "Amount of time a guest user is given daily."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:1479
+msgid "Troublemaker"
+msgstr "Problémový uživatel"
+
+#: root/dynamic/templates/administration/settings/index.tt:78
+msgid "Amount of time a guest user is given per session."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:927
+msgid "Amount of time a print job can be in the status Queued before the job is set to Expired and new Pending job is added."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:45
+msgid "Amount of time a user is given daily."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:56
+msgid "Amount of time a user is given per session."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:440
+msgid "Amount of time to automatically increase a user's session time by."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:412
+msgid "Anonymous"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:459
+msgid "Any client is reserved"
+msgstr ""
+
+#: root/dynamic/includes/index/printing.tt:243 root/dynamic/templates/administration/index.tt:1851
+msgid "Are you sure you want to cancel this print job?"
+msgstr "Opravdu chcete zrušit tuto tiskovou úlohu?"
+
+#: root/dynamic/templates/administration/index.tt:1652
+msgid "Are you sure you want to delete this user?"
+msgstr "Opravdu chcete smazat tohoto uživatele?"
+
+#: root/dynamic/templates/administration/index.tt:1690
+msgid "Are you sure you want to log this user out?"
+msgstr "Opravdu chcete odhlásit tohoto uživatele?"
+
+#: root/dynamic/templates/administration/index.tt:1317
+msgid "Are you sure you want to restart all clients?"
+msgstr "Opravdu chcete restartovat všechny klienty?"
+
+#: root/dynamic/templates/administration/index.tt:1730
+msgid "Are you sure you want to restart this client?"
+msgstr "Opravdu chcete restartovat tohoto klienta?"
+
+#: root/dynamic/templates/administration/index.tt:1304
+msgid "Are you sure you want to turn off all clients?"
+msgstr "Opravdu chcete vypnout všechny klienty?"
+
+#: root/dynamic/templates/administration/index.tt:1717
+msgid "Are you sure you want to turn off this client?"
+msgstr "Opravdu chcete vypnout tohoto klienta?"
+
+#: root/dynamic/templates/administration/index.tt:1291
+msgid "Are you sure you want to turn on all clients?"
+msgstr "Opravdu chcete zapnout všechny klienty?"
+
+#: root/dynamic/templates/administration/index.tt:1704
+msgid "Are you sure you want to unlock this client?"
+msgstr "Opravdu chcete odemknout tohoto klienta?"
+
+#: root/dynamic/templates/administration/settings/index.tt:758
+msgid "Automatic power on time"
+msgstr "Automatický čas zapnutí"
+
+#: root/dynamic/templates/administration/settings/index.tt:14 root/dynamic/templates/administration/settings/index.tt:430
+msgid "Automatic time extension"
+msgstr "Automatické prodloužení času"
+
+#: root/dynamic/templates/administration/settings/index.tt:713
+msgid "Automatically turn off clients this number of minutes after closing time. Leave empty to disable automatic shutdown."
+msgstr "Automaticky vypnout klienty nastavený počet minut po zavírací době. Ponechte prázdné pro zakázání automatického vypnutí."
+
+#: root/dynamic/includes/index/clients.tt:180
+msgid "Available"
+msgstr "Dostupné"
+
+#: root/dynamic/templates/administration/history/statistics.tt:181
+msgid "Available reservations"
+msgstr "Dostupné rezervace"
+
+#: root/dynamic/templates/login.tt:74
+msgid "Bad username or password."
+msgstr "Nesprávné uživatelské jméno nebo heslo."
+
+#: root/dynamic/templates/administration/index.tt:323
+msgid "Begin"
+msgstr "Začátek"
+
+#: root/dynamic/templates/administration/settings/index.tt:617
+msgid "Bottom banner"
+msgstr "Spodní banner"
+
+#: root/dynamic/templates/administration/settings/index.tt:405
+msgid "By first and last name"
+msgstr "Podle jména a příjmení"
+
+#: root/dynamic/templates/administration/settings/index.tt:398
+msgid "By username"
+msgstr "Podle uživatelského jména"
+
+#: root/dynamic/includes/index/clients.tt:132 root/dynamic/includes/index/clients.tt:92 root/dynamic/templates/administration/index.tt:282 root/dynamic/templates/administration/index.tt:410 root/dynamic/templates/administration/index.tt:596 root/dynamic/templates/administration/index.tt:635 root/dynamic/templates/administration/index.tt:680 root/dynamic/templates/administration/index.tt:760 root/dynamic/templates/administration/index.tt:801 root/dynamic/templates/administration/index.tt:844
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: root/dynamic/includes/index/clients.tt:103 root/dynamic/includes/index/clients.tt:133 root/dynamic/includes/index/clients.tt:36 root/dynamic/templates/administration/index.tt:168 root/dynamic/templates/administration/index.tt:331 root/dynamic/templates/administration/index.tt:691 root/dynamic/templates/administration/index.tt:710
+msgid "Cancel reservation"
+msgstr "Zrušit rezervaci"
+
+#: root/dynamic/templates/public/account.tt:62
+msgid "Cancel the reservation"
+msgstr "Zrušit rezervaci"
+
+#: root/dynamic/templates/public/account.tt:41
+msgid "Cancel this reservation"
+msgstr "Zrušit tuto rezervaci"
+
+#: root/dynamic/templates/public/account.tt:51
+msgid "Cancel your reservation"
+msgstr "Zrušit vaši rezervaci"
+
+#: root/dynamic/templates/administration/settings/index.tt:877
+msgid "Card number prefix"
+msgstr "Předpona čísla karty"
+
+#: root/dynamic/templates/administration/index.tt:151 root/dynamic/templates/administration/index.tt:375 root/dynamic/templates/administration/index.tt:444 root/dynamic/templates/administration/index.tt:484 root/dynamic/templates/administration/index.tt:54 root/dynamic/templates/administration/index.tt:545 root/dynamic/templates/administration/index.tt:832
+msgid "Category"
+msgstr "Kategorie"
+
+#: root/dynamic/templates/administration/settings/index.tt:654
+msgid "Center logo"
+msgstr "Logo uprostřed obrazovky"
+
+#: root/dynamic/templates/administration/index.tt:737 root/dynamic/templates/administration/index.tt:761
+msgid "Change password"
+msgstr "Změnit heslo"                       
+
+#: root/dynamic/includes/index/printing.tt:28
+msgid "Choose file"
+msgstr "Vybrat soubor"
+
+#: root/dynamic/templates/administration/settings/index.tt:701
+msgid "Choose which action the automatic shutdown and turn off button perform. Depending on your setup, suspend may be necessary to correctly use together with the power on function."
+msgstr "Vyberte, jakou akci má provádět automatické vypnutí a vypnutí. V závislosti na vaší konfiguraci může být nutné pozastavení, aby bylo možné správně používat společně s funkcí zapnutí."
+
+#: root/dynamic/includes/index/clients.tt:19 root/dynamic/includes/index/printing.tt:64 root/dynamic/templates/administration/history/index.tt:7 root/dynamic/templates/administration/history/statistics.tt:132 root/dynamic/templates/administration/history/statistics.tt:183 root/dynamic/templates/administration/history/statistics.tt:9 root/dynamic/templates/administration/index.tt:235 root/dynamic/templates/administration/index.tt:321 root/dynamic/templates/administration/index.tt:61 root/dynamic/templates/administration/settings/index.tt:1042 root/dynamic/templates/public/account.tt:23
+msgid "Client"
+msgstr "Klient"
+
+#: root/dynamic/templates/administration/settings/index.tt:706
+msgid "Client automatic shutdown delay"
+msgstr "Zpoždění automatického vypnutí klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:15 root/dynamic/templates/administration/settings/index.tt:179
+msgid "Client behavior"
+msgstr "Chování klienta"
+
+#: root/dynamic/templates/administration/index.tt:1678
+msgid "Client deleted."
+msgstr "Klient smazán."
+
+#: root/dynamic/templates/administration/settings/index.tt:235
+msgid "Client inactivity"
+msgstr "Nečinnost klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:577
+msgid "Client login banner settings"
+msgstr "Nastavení banneru pro přihlášení klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:16
+msgid "Client login banners"
+msgstr "Bannery pro přihlášení klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:692
+msgid "Client power off settings"
+msgstr "Nastavení vypínání klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:718
+msgid "Client power on settings"
+msgstr "Nastavení zapínání klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:17
+msgid "Client power options"
+msgstr "Možnosti napájení klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:282
+msgid "Client registration"
+msgstr "Registrace klienta"
+
+#: root/dynamic/templates/administration/settings/index.tt:285
+msgid "Client registration update delay limit"
+msgstr "Limit zpoždění aktualizace registrace klienta"
+
+#: root/dynamic/templates/administration/index.tt:1733
+msgid "Client restarted."
+msgstr "Klient restartován."
+
+#: root/dynamic/templates/administration/index.tt:62
+msgid "Client status"
+msgstr "Stav klienta"
+
+#: root/dynamic/templates/administration/index.tt:1533
+msgid "Client status change to: "
+msgstr "Stav klienta změněn na: "
+
+#: root/dynamic/templates/administration/settings/index.tt:989
+msgid "Client style sheet"
+msgstr "Styl klienta"
+
+#: root/dynamic/templates/administration/index.tt:1720
+msgid "Client turned off."
+msgstr "Klient je vypnutý."
+
+#: root/dynamic/templates/administration/index.tt:1707
+msgid "Client unlocked."
+msgstr "Klient je odemknutý."
+
+#: root/dynamic/templates/administration/index.tt:9 root/dynamic/templates/public/index.tt:7
+msgid "Clients"
+msgstr "Klienti"
+
+#: root/dynamic/templates/administration/index.tt:1320
+msgid "Clients restarted."
+msgstr "Klienti restartováni."
+
+#: root/dynamic/templates/administration/index.tt:1307
+msgid "Clients turned off."
+msgstr "Klienti vypnuti."
+
+#: root/dynamic/templates/administration/index.tt:1294
+msgid "Clients turned on."
+msgstr "Klienti zapnuti."
+
+#: root/dynamic/includes/navbar_administration.tt:20 root/dynamic/templates/administration/hours/index.tt:12
+msgid "Closing hours"
+msgstr "Provozní doba"
+
+#: root/dynamic/templates/administration/settings/index.tt:359
+msgid "Configure the opening time for reservation:"
+msgstr "Nastavte otevírací dobu pro rezervaci:"
+
+#: root/dynamic/templates/administration/settings/index.tt:355
+msgid "Configure the reservation time range displayed on the client. If left blank, the default is 60 minutes."
+msgstr "Nastavte časový rozsah rezervace zobrazený na klientovi. Pokud zůstane prázdný, výchozí hodnota je 60 minut."
+
+#: root/dynamic/templates/administration/index.tt:389 root/dynamic/templates/administration/index.tt:753 root/dynamic/templates/administration/index.tt:754
+msgid "Confirm password"
+msgstr "Potvrdit heslo"
+
+#: root/dynamic/templates/administration/settings/index.tt:462
+msgid "Control whether a user's session is extended automatically unless that user's client is reserved, or any client at all is reserved."
+msgstr "Určuje, zda je čas uživatele automaticky prodloužen, pokud není jeho počítač rezervován, nebo pokud není rezervován žádný počítač."
+
+#: root/dynamic/templates/administration/settings/index.tt:478
+msgid "Control whether a user's time extension uses up minutes from the user's daily allotment, or if the minutes are \"free\"."
+msgstr "Určuje, zda prodloužení času uživatele spotřebovává minuty z denního limitu uživatele, nebo zda jsou minuty „zdarma“."
+
+#: root/dynamic/includes/index/printing.tt:62 root/dynamic/templates/administration/index.tt:232
+msgid "Copies"
+msgstr "Kopie"
+
+#: root/dynamic/includes/index/printing.tt:67
+msgid "Cost"
+msgstr "Cena"
+
+#: root/dynamic/templates/administration/index.tt:845 root/dynamic/templates/administration/index.tt:846
+msgid "Create"
+msgstr "Vytvořit"
+
+#: root/dynamic/templates/administration/settings/index.tt:1046
+msgid "Create key"
+msgstr "Vytvořit klíč"
+
+#: root/dynamic/templates/administration/index.tt:411
+msgid "Create user"
+msgstr "Vytvořit uživatele"
+
+#: root/dynamic/includes/index/printing.tt:65 root/dynamic/templates/administration/index.tt:237
+msgid "Created"
+msgstr "Vytvořeno"
+
+#: root/dynamic/templates/administration/index.tt:63
+msgid "Creation source"
+msgstr "Zdroj vytvoření"
+
+#: root/dynamic/templates/administration/settings/index.tt:18 root/dynamic/templates/administration/settings/index.tt:953
+msgid "Custom JavaScript"
+msgstr "Vlastní JavaScript"
+
+#: root/dynamic/templates/administration/index.tt:152 root/dynamic/templates/administration/index.tt:55
+msgid "Daily minutes"
+msgstr "Minut denně"
+
+#: root/dynamic/templates/administration/history/statistics.tt:128
+msgid "Daily usage by client"
+msgstr "Denní využití podle klienta"
+
+#: root/dynamic/templates/administration/history/statistics.tt:49
+msgid "Daily usage by location"
+msgstr "Denní využití podle lokace"
+
+#: root/dynamic/templates/administration/history/statistics.tt:130
+msgid "Daily usage, count of daily logins by client"
+msgstr "Denní využití, počet denních přihlášení podle klienta"
+
+#: root/dynamic/templates/administration/history/statistics.tt:51
+msgid "Daily usage, count of daily logins by location"
+msgstr "Denní využití, počet denních přihlášení podle lokace"
+
+#: root/dynamic/templates/administration/settings/index.tt:111 root/dynamic/templates/administration/settings/index.tt:19
+msgid "Data retention"
+msgstr "Uchovávání dat"
+
+#: root/dynamic/templates/administration/history/logs.tt:6 root/dynamic/templates/administration/history/statistics.tt:54
+msgid "Date"
+msgstr "Datum"
+
+#: root/dynamic/templates/administration/hours/index.tt:158
+msgid "Date and time"
+msgstr "Datum a čas"
+
+#: root/dynamic/templates/administration/settings/index.tt:88
+msgid "Date display format"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:118 root/dynamic/templates/administration/settings/index.tt:129 root/dynamic/templates/administration/settings/index.tt:140 root/dynamic/templates/administration/settings/index.tt:154 root/dynamic/templates/administration/settings/index.tt:167
+msgid "Days"
+msgstr "Dny"
+
+#: root/dynamic/templates/administration/settings/index.tt:60
+msgid "Default guest time allowance per day"
+msgstr "Výchozí časový limit pro hosty za den"
+
+#: root/dynamic/templates/administration/settings/index.tt:71
+msgid "Default guest time allowance per session"
+msgstr "Výchozí časový limit pro hosty za sezení"
+
+#: root/dynamic/templates/administration/settings/index.tt:38
+msgid "Default time allowance per day"
+msgstr "Výchozí časový limit za den"
+
+#: root/dynamic/templates/administration/settings/index.tt:49
+msgid "Default time allowance per session"
+msgstr "Výchozí časový limit za sezení"
+
+#: root/dynamic/templates/administration/settings/index.tt:902
+msgid "Define LDAP configuration in YAML format. This setting will override LDAP configuration in the Libki conf file."
+msgstr "Definuje konfiguraci LDAP ve formátu YAML. Toto nastavení přepíše konfiguraci LDAP v konfiguračním souboru Libki."
+
+#: root/dynamic/templates/administration/settings/index.tt:894
+msgid "Define SIP configuration in YAML format. This setting will override SIP configuration in the Libki conf file."
+msgstr "Definuje konfiguraci SIP ve formátu YAML. Toto nastavení přepíše konfiguraci SIP v konfiguračním souboru Libki."
+
+#: root/dynamic/templates/administration/settings/index.tt:916
+msgid "Define printer configuration in YAML format."
+msgstr "Definuje konfiguraci tiskáren ve formátu YAML."
+
+#: root/dynamic/templates/administration/index.tt:173 root/dynamic/templates/administration/index.tt:74 root/dynamic/templates/administration/settings/index.tt:1161
+msgid "Delete"
+msgstr "Smazat"
+
+#: root/dynamic/templates/administration/hours/index.tt:144
+msgid "Delete selected"
+msgstr "Smazat vybrané"
+
+#: root/dynamic/templates/administration/index.tt:515
+msgid "Details"
+msgstr "Detaily"
+
+#: root/dynamic/templates/administration/index.tt:570 root/dynamic/templates/administration/settings/index.tt:419
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: root/dynamic/templates/administration/index.tt:451 root/dynamic/templates/administration/index.tt:492
+msgid "Dismiss"
+msgstr "Zavřít"
+
+#: root/dynamic/templates/administration/settings/index.tt:556
+msgid "Display first and last names"
+msgstr "Zobrazit jméno a příjmení"
+
+#: root/dynamic/templates/administration/settings/index.tt:394
+msgid "Display the status of the first reservation"
+msgstr "Zobrazit stav první rezervace"
+
+#: root/dynamic/templates/administration/settings/index.tt:348
+msgid "Display the status of the first reservation within:"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:944
+msgid "Do not allow administrators to view and download user's print job files."
+msgstr "Nedovolit administrátorům prohlížet a stahovat soubory tiskových úloh uživatelů."
+
+#: root/dynamic/templates/administration/settings/index.tt:474
+msgid "Don't take minutes from daily allotment"
+msgstr "Neodebírat minuty z denního limitu"
+
+#: root/dynamic/templates/administration/index.tt:265
+msgid "Download"
+msgstr "Stáhnout"
+
+#: root/dynamic/templates/administration/index.tt:784 root/dynamic/templates/public/account.tt:27
+msgid "Duration"
+msgstr "Trvání"
+
+#: root/dynamic/templates/administration/index.tt:69
+msgid "Edit"
+msgstr "Upravit"
+
+#: root/dynamic/templates/administration/index.tt:503
+msgid "Edit user"
+msgstr "Upravit uživatele"
+
+#: root/dynamic/templates/login.tt:76
+msgid "Empty username or password."
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:276
+msgid "Enable passwordless mode for clients"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:266
+msgid "Enable session locking for clients"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:569
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: root/dynamic/templates/administration/index.tt:324
+msgid "End"
+msgstr "Konec"
+
+#: root/dynamic/templates/administration/settings/index.tt:869
+msgid "Entering a url here will cause a username to become a hyperlink with the user's username at the end. Make sure to add <i>http://</i> or <i>https://</i> at the beginning."
+msgstr "Zadání adresy URL zde způsobí, že se uživatelské jméno stane hypertextovým odkazem s uživatelským jménem na konci. Nezapomeňte přidat <i>http://</i> nebo <i>https://</i> na začátek."
+
+#: root/dynamic/includes/wrapper.tt:69
+msgid "Error:"
+msgstr "Chyba:"
+
+#: root/dynamic/templates/administration/settings/index.tt:545
+msgid "Example:"
+msgstr "Příklad:"
+
+#: root/dynamic/templates/administration/settings/index.tt:451
+msgid "Extend the session time when a user has less than this number of session minutes remaining."
+msgstr "Prodlužuje čas sezení, když uživateli zbývá méně než tento počet minut sezení."
+
+#: root/dynamic/templates/administration/settings/index.tt:444
+msgid "Extend time at"
+msgstr "Prodlužovat čas při"
+
+#: root/dynamic/templates/administration/settings/index.tt:455
+msgid "Extend time unless"
+msgstr "Prodlužovat čas, pokud"
+
+#: root/dynamic/templates/administration/settings/index.tt:433
+msgid "Extension length"
+msgstr "Délka prodloužení"
+
+#: root/dynamic/templates/administration/index.tt:1857
+msgid "Failed to cancel print job."
+msgstr "Nepodařilo se zrušit tiskovou úlohu."
+
+#: root/dynamic/templates/administration/index.tt:1831
+msgid "Failed to release print job: "
+msgstr "Nepodařilo se uvolnit tiskovou úlohu: "
+
+#: root/dynamic/templates/administration/index.tt:233
+msgid "File name"
+msgstr "Název souboru"
+
+#: root/dynamic/includes/index/printing.tt:9
+msgid "Filetype was invalid, file uploads must be PDF."
+msgstr "Typ souboru je neplatný, nahrané soubory musí být PDF."
+
+#: root/dynamic/templates/administration/settings/index.tt:200
+msgid "First come first served, with option to place reservation. A patron may either walk up and use an open client, or may place a reservation on one ( either open or in use )."
+msgstr "Kdo dříve přijde bude dříve obsloužen, s možností vytvářet rezervaci. Zákazník se může buď přihlásit k otevřenému počítači, nebo si na něj (otevřený nebo používaný) umístit rezervaci."
+
+#: root/dynamic/templates/administration/settings/index.tt:186
+msgid "First come, first served. A patron walks up to an open client and logs in."
+msgstr "Kdo dříve přijde bude dříve obsloužen. Zákazník se může buď přihlásit k otevřenému počítači, nebo si na něj (otevřený nebo používaný) umístit rezervaci."
+
+#: root/dynamic/templates/administration/index.tt:365 root/dynamic/templates/administration/index.tt:536
+msgid "First name"
+msgstr "Jméno"
+
+#: root/dynamic/includes/index/clients.tt:198
+msgid "First reservation"
+msgstr ""
+
+#: root/dynamic/includes/index/clients.tt:192 root/dynamic/includes/index/clients.tt:195
+msgid "First reservation by"
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:150 root/dynamic/templates/administration/index.tt:53
+msgid "Firstname"
+msgstr "Jméno"
+
+#: root/dynamic/templates/administration/settings/index.tt:872
+msgid "For example, <i>http://catalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> will link to the Koha ILS's search function for the given username."
+msgstr "Například <i>http://katalog.koha.library/cgi-bin/koha/members/member.pl?quicksearch=1&searchmember=</i> bude odkazovat na vyhledávací funkci Koha ILS pro dané uživatelské jméno."
+
+#: root/dynamic/templates/administration/settings/index.tt:93
+msgid "For example, the US format is commonly &quot;%m/%d/%Y&quot;. ISO format would by &quot;%Y-%m-%d&quot;."
+msgstr "Například formát USA je běžně &quot;%m/%d/%Y&quot;. ISO formát by byl &quot;%Y-%m-%d&quot;."
+
+#: root/dynamic/templates/administration/settings/index.tt:217
+msgid "Frequency with which to request the host OS display a message with the user's remaining time."
+msgstr "Jak často se má hostitelský operační systém požádat o zobrazení zprávy se zbývajícím časem uživatele."
+
+#: root/dynamic/templates/administration/history/statistics.tt:102 root/dynamic/templates/administration/history/statistics.tt:105 root/dynamic/templates/administration/history/statistics.tt:153 root/dynamic/templates/administration/history/statistics.tt:156 root/dynamic/templates/administration/history/statistics.tt:22 root/dynamic/templates/administration/history/statistics.tt:25 root/dynamic/templates/administration/index.tt:158 root/dynamic/templates/public/account.tt:25
+msgid "From"
+msgstr "Od"
+
+#: root/dynamic/templates/administration/index.tt:561 root/dynamic/templates/administration/index.tt:57
+msgid "Funds"
+msgstr "Kredit"
+
+#: root/dynamic/templates/administration/index.tt:1213
+msgid "Guest account created"
+msgstr "Účet hosta vytvořen"
+
+#: root/dynamic/templates/administration/settings/index.tt:850
+msgid "Guest pass CSS"
+msgstr "CSS pro hostovské přístupy"
+
+#: root/dynamic/templates/administration/settings/index.tt:20 root/dynamic/templates/administration/settings/index.tt:800
+msgid "Guest passes"
+msgstr "Hostovské přístupy"
+
+#: root/dynamic/templates/administration/settings/index.tt:605 root/dynamic/templates/administration/settings/index.tt:642 root/dynamic/templates/administration/settings/index.tt:676
+msgid "Height"
+msgstr "Výška"
+
+#: root/dynamic/templates/administration/index.tt:469
+msgid "Highest guest account created"
+msgstr "Nejvyšší vytvořený účet hosta"
+
+#: root/dynamic/includes/navbar_administration.tt:18
+msgid "History"
+msgstr "Historie"
+
+#: root/dynamic/templates/administration/settings/index.tt:114
+msgid "History anonymization"
+msgstr "Anonymizace historie"
+
+#: root/dynamic/templates/administration/settings/index.tt:125
+msgid "History retention"
+msgstr "Zachování historie"
+
+#: root/dynamic/includes/navbar_administration.tt:10 root/dynamic/includes/navbar_public.tt:17
+msgid "Home"
+msgstr "Domů"
+
+#: root/dynamic/templates/administration/history/logs.tt:8 root/dynamic/templates/administration/settings/index.tt:734
+msgid "Host"
+msgstr "Hostitel"
+
+#: root/dynamic/templates/administration/settings/index.tt:21 root/dynamic/templates/administration/settings/index.tt:861
+msgid "ILS integration"
+msgstr "Integrace s ILS"
+
+#: root/dynamic/templates/administration/settings/index.tt:738
+msgid "IP address or fully qualified domain name (FQDN) where to send the signal. Defaults to the limited broadcast address (255.255.255.255)."
+msgstr "IP adresa nebo plně kvalifikovaný název domény (FQDN), kam se má signál odeslat. Výchozí hodnota je omezená broadcast adresa (255.255.255.255)."
+
+#: root/dynamic/templates/administration/settings/index.tt:292
+msgid "If a Libki client has not re-registered itself within this amount of time, it will be removed from the list of active clients."
+msgstr "Pokud se Libki klient v této době znovu nepřihlásí, bude odebrán ze seznamu aktivních klientů."
+
+#: root/dynamic/templates/administration/settings/index.tt:882
+msgid "If all cardnumbers in your ILS have a prefix, Libki can automatically add this prefix if it is missing from the cardnumber as entered by the patron."
+msgstr "Pokud mají všechna čísla průkazů ve vašem ILS předponu, Libki může tuto předponu automaticky přidat, pokud chybí v čísle průkazu zadaném zákazníkem."
+
+#: root/dynamic/templates/administration/settings/index.tt:84
+msgid "If checked, each location has it's own time allowance shared between only the clients it contains."
+msgstr "Pokud je zaškrtnuto, každé umístění má svůj vlastní časový limit sdílený pouze mezi klienty, které obsahuje."
+
+#: root/dynamic/templates/administration/settings/index.tt:277
+msgid "If enabled, passwords will not be checked for client logins and the password field will be hidden in client v2.2.22 or later."
+msgstr "Pokud je povoleno, hesla nebudou kontrolována při přihlašování klientů a pole hesla bude skryto v klientovi v2.2.22 nebo novějším."
+
+#: root/dynamic/includes/index/printing.tt:56
+msgid "If enough funds are available, printing will start immediately when the \"Print\" button is clicked."
+msgstr "Pokud jsou k dispozici dostatečné prostředky, tisk se spustí okamžitě po kliknutí na tlačítko \"Tisk\"."
+
+#: root/dynamic/templates/administration/settings/index.tt:985
+msgid "If no match is found, the default time allowances will be used."
+msgstr "Pokud není nalezena žádná shoda, použijí se výchozí časové limity."
+
+#: root/dynamic/templates/administration/settings/index.tt:557
+msgid "If not checked, the possibility to enter users' first and last name will disappear."
+msgstr "Pokud není zaškrtnuto, zmizí možnost zadat jméno a příjmení uživatele."
+
+#: root/dynamic/templates/administration/settings/index.tt:513
+msgid "If text is added here for terms of service, it will be displayed in click-though dialog on the client before allowing a login."
+msgstr "Pokud je zde zadán text pro podmínky služby, zobrazí se v dialogovém okně na klientovi před povolením přihlášení."
+
+#: root/dynamic/includes/index/printing.tt:10 root/dynamic/includes/index/printing.tt:15
+msgid "If your file is not a PDF, you may use a PDF printer such as <a target=\"_blank\" class=\"alert-link\" href=\"https://www.cutepdf.com/Products/CutePDF/writer.asp\">CutePDF</a>,"
+msgstr "Pokud váš soubor není PDF, můžete použít PDF tiskárnu, jako je <a target=\"_blank\" class=\"alert-link\" href=\"https://www.cutepdf.com/Products/CutePDF/writer.asp\">CutePDF</a>,"
+
+#: root/dynamic/includes/index/printing.tt:134 root/dynamic/templates/administration/index.tt:1043
+msgid "In progress"
+msgstr "Probíhá"
+
+#: root/dynamic/includes/index/clients.tt:178
+msgid "In use"
+msgstr "Používá se"
+
+#: root/dynamic/templates/administration/settings/index.tt:136
+msgid "Inactive user retention"
+msgstr "ZachoUchování n eaktivních uživatelů"
+
+#: root/dynamic/templates/administration/settings/index.tt:250
+msgid "Inactivity logout"
+msgstr "Odhlášení při neaktivitě"
+
+#: root/dynamic/templates/administration/settings/index.tt:238
+msgid "Inactivity warning"
+msgstr "Varování při neaktivitě"
+
+#: root/dynamic/includes/index/clients.tt:455
+msgid "Incorrect password."
+msgstr "Nesprávné heslo."
+
+#: root/dynamic/includes/wrapper.tt:77
+msgid "Info:"
+msgstr "Informace:"
+
+#: root/dynamic/templates/administration/settings/index.tt:297
+msgid "Internet connectivity checks"
+msgstr "Kontrola internetového připojení"
+
+#: root/dynamic/templates/administration/index.tt:404
+msgid "Is not a whole number"
+msgstr "Není celé číslo"
+
+#: root/dynamic/includes/index/printing.tt:225
+msgid "Job will be released to the printer immediately, are you sure you want to do this?"
+msgstr "Úloha bude uvolněna do tiskárny okamžitě, jste si jisti, že to chcete udělat?"
+
+#: root/dynamic/templates/administration/settings/index.tt:1130
+msgid "Key"
+msgstr "Klíč"
+
+#: root/dynamic/templates/administration/settings/index.tt:898
+msgid "LDAP configuration"
+msgstr "Konfigurace LDAP"
+
+#: root/dynamic/includes/language_menu.tt:4
+msgid "Language"
+msgstr "Jazyk"
+
+#: root/dynamic/templates/administration/index.tt:368 root/dynamic/templates/administration/index.tt:539
+msgid "Last name"
+msgstr "Příjmení"
+
+#: root/dynamic/templates/administration/index.tt:149 root/dynamic/templates/administration/index.tt:52
+msgid "Lastname"
+msgstr "Příjmení"
+
+#: root/dynamic/templates/administration/settings/index.tt:929
+msgid "Leave this setting empty to disable the feature."
+msgstr "Ponechte toto nastavení prázdné pro zakázání funkce."
+
+#: root/dynamic/templates/administration/index.tt:402 root/dynamic/templates/administration/index.tt:557
+msgid "Leave unmodified for default amount of time."
+msgstr "Ponechte nezměněné pro výchozí množství času."
+
+#: root/dynamic/templates/administration/settings/index.tt:171
+msgid "Length of time to retain logs. If not set, will default to 0 and all logs will be removed nightly."
+msgstr "Délka uchovávání protokolů. Pokud není nastavena, bude výchozí hodnota 0 a všechny protokoly budou nočně odstraňovány."
+
+#: root/dynamic/templates/administration/settings/index.tt:158
+msgid "Length of time to retain print jobs. If not set, will default to 0 and print jobs will be removed nightly."
+msgstr "Délka uchovávání tiskových úloh. Pokud není nastavena, bude výchozí hodnota 0 a tiskové úlohy budou nočně odstraňovány."
+
+#: root/dynamic/templates/administration/settings/index.tt:144
+msgid "Length of time to retain user data of inactive users. If not set, data will be kept indefinitely."
+msgstr "Délka uchovávání uživatelských dat neaktivních uživatelů. Pokud není nastavena, budou data uchovávána neomezeně dlouho."
+
+#: root/dynamic/templates/administration/settings/index.tt:132
+msgid "Length of time to retain user/client data for statistics and history. If not set, data will be kept indefinitely."
+msgstr "Délka uchovávání uživatelských/klientských dat pro statistiky a historii. Pokud není nastavena, budou data uchovávána neomezeně dlouho."
+
+#: root/dynamic/templates/administration/history/logs.tt:9
+msgid "Level"
+msgstr "Úroveň"
+
+#: root/dynamic/includes/navbar_administration.tt:4 root/dynamic/includes/navbar_public.tt:4
+msgid "Libki Kiosk Management System"
+msgstr "Systém pro správu kiosků Libki"
+
+#: root/dynamic/templates/administration/history/statistics.tt:122 root/dynamic/templates/administration/history/statistics.tt:173 root/dynamic/templates/administration/history/statistics.tt:42
+msgid "Limit"
+msgstr "Limit"
+
+#: root/dynamic/includes/index/clients.tt:20 root/dynamic/includes/index/clients.tt:4 root/dynamic/templates/administration/history/statistics.tt:133 root/dynamic/templates/administration/history/statistics.tt:184 root/dynamic/templates/administration/history/statistics.tt:8 root/dynamic/templates/administration/index.tt:145 root/dynamic/templates/administration/index.tt:184 root/dynamic/templates/administration/index.tt:83 root/dynamic/templates/public/account.tt:24
+msgid "Location"
+msgstr "Umístění"
+
+#: root/dynamic/includes/navbar_public.tt:9 root/dynamic/templates/login.tt:1 root/dynamic/templates/login.tt:15 root/dynamic/templates/login.tt:64 root/dynamic/templates/public/login.tt:1 root/dynamic/templates/public/login.tt:15 root/dynamic/templates/public/login.tt:64
+msgid "Log in"
+msgstr "Přihlásit"
+
+#: root/dynamic/includes/navbar_administration.tt:37 root/dynamic/includes/navbar_public.tt:25 root/dynamic/templates/administration/index.tt:171
+msgid "Log out"
+msgstr "Odhlásit"
+
+#: root/dynamic/templates/administration/settings/index.tt:257
+msgid "Log user out automatically after this many minutes of inactivity."
+msgstr "Automaticky odhlásit uživatele po tomto počtu minut nečinnosti."
+
+#: root/dynamic/templates/administration/index.tt:1693
+msgid "Logged user out."
+msgstr "Uživatel byl odhlášen."
+
+#: root/dynamic/includes/navbar_administration.tt:23
+msgid "Logs"
+msgstr "Logy"
+
+#: root/dynamic/templates/administration/settings/index.tt:163
+msgid "Logs retention"
+msgstr "Uchovávání logů"
+
+#: root/dynamic/templates/administration/settings/index.tt:750
+msgid "MAC addresses"
+msgstr "MAC adresy"
+
+#: root/dynamic/includes/index/clients.tt:32 root/dynamic/includes/index/clients.tt:93 root/dynamic/templates/administration/index.tt:681 root/dynamic/templates/public/account.tt:16
+msgid "Make reservation"
+msgstr "Vytvořit rezervaci"
+
+#: root/dynamic/includes/index/clients.tt:46 root/dynamic/templates/administration/index.tt:646
+msgid "Make reservation for"
+msgstr "Vytvořit rezervaci pro"
+
+#: root/dynamic/templates/administration/hours/index.tt:127
+msgid "Manage existing specific dates"
+msgstr "Spravovat existující konkrétní data"
+
+#: root/dynamic/templates/administration/history/logs.tt:10
+msgid "Message"
+msgstr "Zpráva"
+
+#: root/dynamic/templates/administration/settings/index.tt:333
+msgid "Minimum minutes required for a reservation. If left blank, the default is 1 minute."
+msgstr "Minimální počet minut potřebných pro rezervaci. Pokud zůstane prázdné, výchozí hodnota je 1 minuta."
+
+#: root/dynamic/templates/administration/settings/index.tt:326
+msgid "Minimum reservation time required"
+msgstr "Minimální požadovaný čas rezervace"
+
+#: root/dynamic/includes/index/clients.tt:184 root/dynamic/templates/administration/index.tt:400 root/dynamic/templates/administration/index.tt:439 root/dynamic/templates/administration/index.tt:479 root/dynamic/templates/administration/index.tt:555 root/dynamic/templates/administration/index.tt:617 root/dynamic/templates/administration/settings/index.tt:214 root/dynamic/templates/administration/settings/index.tt:226 root/dynamic/templates/administration/settings/index.tt:242 root/dynamic/templates/administration/settings/index.tt:254 root/dynamic/templates/administration/settings/index.tt:289 root/dynamic/templates/administration/settings/index.tt:319 root/dynamic/templates/administration/settings/index.tt:330 root/dynamic/templates/administration/settings/index.tt:341 root/dynamic/templates/administration/settings/index.tt:352 root/dynamic/templates/administration/settings/index.tt:42 root/dynamic/templates/administration/settings/index.tt:437 root/dynamic/templates/administration/settings/index.tt:448 root/dynamic/templates/administration/settings/index.tt:53 root/dynamic/templates/administration/settings/index.tt:64 root/dynamic/templates/administration/settings/index.tt:710 root/dynamic/templates/administration/settings/index.tt:75 root/dynamic/templates/administration/settings/index.tt:924
+msgid "Minutes"
+msgstr "Minuty"
+
+#: root/dynamic/templates/administration/index.tt:165 root/dynamic/templates/administration/index.tt:607
+msgid "Modify time"
+msgstr "Upravit čas"
+
+#: root/dynamic/includes/navbar_administration.tt:15
+msgid "More"
+msgstr "Více"
+
+#: root/dynamic/templates/administration/index.tt:120 root/dynamic/templates/administration/index.tt:221 root/dynamic/templates/administration/index.tt:313 root/dynamic/templates/administration/index.tt:43 root/dynamic/templates/administration/index.tt:820
+msgid "Multiple guests"
+msgstr "Více hostů"
+
+#: root/dynamic/templates/public/account.tt:8
+msgid "My reservation"
+msgstr "Mé rezervace"
+
+#: root/dynamic/templates/administration/index.tt:144 root/dynamic/templates/administration/index.tt:362 root/dynamic/templates/administration/index.tt:533
+msgid "Name"
+msgstr "Jméno"
+
+#: root/dynamic/templates/administration/settings/index.tt:1101
+msgid "New API key copied to clipboard!"
+msgstr "Nový API klíč zkopírován do schránky!"
+
+#: root/dynamic/templates/administration/index.tt:119 root/dynamic/templates/administration/index.tt:220 root/dynamic/templates/administration/index.tt:312 root/dynamic/templates/administration/index.tt:42 root/dynamic/templates/administration/index.tt:815
+msgid "New guest"
+msgstr "Nový host"
+
+#: root/dynamic/templates/administration/index.tt:461
+msgid "New guest batch created"
+msgstr "Nová skupina hostů vytvořena"
+
+#: root/dynamic/templates/administration/index.tt:421
+msgid "New guest user created"
+msgstr "Nový uživatel hosta vytvořen"
+
+#: root/dynamic/templates/administration/index.tt:117 root/dynamic/templates/administration/index.tt:218 root/dynamic/templates/administration/index.tt:310 root/dynamic/templates/administration/index.tt:341 root/dynamic/templates/administration/index.tt:40
+msgid "New user"
+msgstr "Nový uživatel"
+
+#: root/dynamic/templates/public/account.tt:60
+msgid "No"
+msgstr "Ne"
+
+#: root/dynamic/templates/administration/history/statistics.tt:60
+msgid "No location set"
+msgstr "Není nastavena žádná lokalita"
+
+#: root/dynamic/templates/administration/settings/index.tt:1126
+msgid "Note"
+msgstr "Poznámka"
+
+#: root/dynamic/templates/administration/settings/index.tt:218
+msgid "Note: Host operating system may not honor message requests based on the OS configuration."
+msgstr "Poznámka: Hostitelský operační systém nemusí respektovat požadavky na zprávy na základě konfigurace operačního systému."
+
+#: root/dynamic/templates/administration/settings/index.tt:246
+msgid "Note: Libki is only able to detect mouse activity, not keyboard activity."
+msgstr "Poznámka: Libki je schopen detekovat pouze aktivitu myši, nikoli aktivitu klávesnice."
+
+#: root/dynamic/templates/administration/index.tt:155 root/dynamic/templates/administration/index.tt:575 root/dynamic/templates/administration/index.tt:59 root/dynamic/templates/administration/index.tt:796
+msgid "Notes"
+msgstr "Poznámky"
+
+#: root/dynamic/templates/administration/settings/index.tt:207
+msgid "Notifications"
+msgstr "Upozornění"
+
+#: root/dynamic/templates/administration/index.tt:474
+msgid "Number of accounts created"
+msgstr "Počet vytvořených účtů"
+
+#: root/dynamic/templates/administration/index.tt:1543
+msgid "Offline"
+msgstr "Offline"
+
+#: root/dynamic/templates/administration/index.tt:1675
+msgid "Once deleted, all the reservations of this client will be removed at the same time."
+msgstr "Po smazání budou zároveň odstraněny všechny rezervace tohoto klienta."
+
+#: root/dynamic/templates/administration/index.tt:1544
+msgid "Online"
+msgstr "Online"
+
+#: root/dynamic/templates/administration/index.tt:330
+msgid "Operation: "
+msgstr "Operace: "
+
+#: root/dynamic/templates/administration/history/logs.tt:7
+msgid "PID"
+msgstr "PID"
+
+#: root/dynamic/includes/index/printing.tt:63 root/dynamic/templates/administration/index.tt:234
+msgid "Pages"
+msgstr "Stránky"
+
+#: root/dynamic/templates/administration/settings/index.tt:815
+msgid "Passes"
+msgstr ""
+
+#: root/dynamic/templates/administration/settings/index.tt:811
+msgid "Passes to create per batch"
+msgstr ""
+
+#: root/dynamic/includes/index/clients.tt:118 root/dynamic/includes/index/clients.tt:78 root/dynamic/templates/administration/index.tt:1213 root/dynamic/templates/administration/index.tt:386 root/dynamic/templates/administration/index.tt:387 root/dynamic/templates/administration/index.tt:434 root/dynamic/templates/administration/index.tt:71 root/dynamic/templates/administration/index.tt:749 root/dynamic/templates/administration/index.tt:750 root/dynamic/templates/login.tt:45 root/dynamic/templates/login.tt:49 root/dynamic/templates/public/login.tt:45 root/dynamic/templates/public/login.tt:49
+msgid "Password"
+msgstr "Heslo"
+
+#: root/dynamic/templates/administration/index.tt:1434
+msgid "Password changed."
+msgstr "Heslo změněno."
+
+#: root/dynamic/templates/administration/index.tt:390 root/dynamic/templates/administration/index.tt:755
+msgid "Password fields must match."
+msgstr "Hesla se musí shodovat."
+
+#: root/dynamic/includes/index/clients.tt:121 root/dynamic/includes/index/clients.tt:81
+msgid "Password is required"
+msgstr "Heslo je vyžadováno"
+
+#: root/dynamic/templates/administration/settings/index.tt:832
+msgid "Password label"
+msgstr "Popisek hesla"
+
+#: root/dynamic/templates/administration/settings/index.tt:272
+msgid "Passwordless mode"
+msgstr "Režim bez hesla"
+
+#: root/dynamic/templates/administration/index.tt:395
+msgid "Passwords do not match"
+msgstr "Hesla se neshodují"
+
+#: root/dynamic/templates/administration/index.tt:392
+msgid "Passwords match"
+msgstr "Hesla se shodují"
+
+#: root/dynamic/templates/administration/settings/index.tt:864
+msgid "Patron hyperlinks"
+msgstr "Hypertextové odkazy pro čtenáře"
+
+#: root/dynamic/templates/administration/settings/index.tt:344
+msgid "Patrons will be unable to place reserations for this many minutes after the previous reservation has ended."
+msgstr "Čtenáři nebudou moci provádět rezervace po uplynutí tohoto počtu minut po skončení předchozí rezervace."
+
+#: root/dynamic/templates/administration/settings/index.tt:598 root/dynamic/templates/administration/settings/index.tt:609 root/dynamic/templates/administration/settings/index.tt:635 root/dynamic/templates/administration/settings/index.tt:646 root/dynamic/templates/administration/settings/index.tt:669 root/dynamic/templates/administration/settings/index.tt:680
+msgid "Pixels"
+msgstr "Pixely"
+
+#: root/dynamic/templates/administration/settings/index.tt:742
+msgid "Port"
+msgstr "Port"
+
+#: root/dynamic/templates/administration/settings/index.tt:746
+msgid "Port to send the signal. Defaults to the discard port (9)."
+msgstr "Port pro odeslání signálu. Výchozí hodnota je port pro odhazování (9)."
+
+#: root/dynamic/templates/administration/settings/index.tt:695
+msgid "Power off action"
+msgstr "Akce vypnutí"
+
+#: root/dynamic/templates/administration/settings/index.tt:803
+msgid "Prefix for guest passes"
+msgstr "Předpona pro hostovské průkazy"
+
+#: root/dynamic/templates/administration/settings/index.tt:807
+msgid "Prefix for guest passes, defaults to 'guest' if none is specified."
+msgstr "Předpona pro hostovské průkazy, výchozí hodnota je 'guest' pokud není specifikována."
+
+#: root/dynamic/templates/administration/index.tt:248 root/dynamic/templates/administration/index.tt:450
+msgid "Print"
+msgstr "Tisk"
+
+#: root/dynamic/includes/index/printing.tt:131 root/dynamic/templates/administration/index.tt:1040 root/dynamic/templates/administration/settings/index.tt:1041
+msgid "Print Manager"
+msgstr "Správce tisku"
+
+#: root/dynamic/templates/administration/settings/index.tt:1040
+msgid "Print Station"
+msgstr "Tisková stanice"
+
+#: root/dynamic/includes/index/printing.tt:247
+msgid "Print job canceled!"
+msgstr "Tisková úloha zrušena!"
+
+#: root/dynamic/templates/administration/index.tt:1854
+msgid "Print job has been canceled."
+msgstr "Tisková úloha byla zrušena."
+
+#: root/dynamic/templates/administration/index.tt:1840
+msgid "Print job refreshed"
+msgstr "Tisková úloha obnovena"
+
+#: root/dynamic/includes/index/printing.tt:229
+msgid "Print job released for printing!"
+msgstr "Tisková úloha odeslána na tiskárnu!"
+
+#: root/dynamic/templates/administration/settings/index.tt:150
+msgid "Print job retention"
+msgstr "Uchování tiskových úloh"
+
+#: root/dynamic/templates/administration/settings/index.tt:22 root/dynamic/templates/administration/settings/index.tt:909
+msgid "Print management"
+msgstr "Správa tisku"
+
+#: root/dynamic/includes/index/printing.tt:66 root/dynamic/templates/administration/index.tt:231
+msgid "Printer"
+msgstr "Tiskárna"
+
+#: root/dynamic/templates/administration/settings/index.tt:912
+msgid "Printer configuration"
+msgstr "Konfigurace tiskárny"
+
+#: root/dynamic/templates/public/index.tt:14
+msgid "Printing"
+msgstr "Tisk"
+
+#: root/dynamic/templates/administration/index.tt:16
+msgid "Prints"
+msgstr "Výtisky"
+
+#: root/dynamic/templates/public/account.tt:1
+msgid "Public / Account"
+msgstr "Veřejné / Účet"
+
+#: root/dynamic/templates/administration/settings/index.tt:964
+msgid "Public interface JavaScript"
+msgstr "JavaScript veřejného rozhraní"
+
+#: root/dynamic/templates/administration/settings/index.tt:920
+msgid "Queued print jobs timeout"
+msgstr "Časový limit pro tiskové úlohy ve frontě"
+
+#: root/dynamic/templates/administration/index.tt:102 root/dynamic/templates/administration/index.tt:203 root/dynamic/templates/administration/index.tt:256 root/dynamic/templates/administration/index.tt:298 root/dynamic/templates/administration/index.tt:30
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: root/dynamic/templates/administration/settings/index.tt:487
+msgid "Renew the time allotment when it reaches zero"
+msgstr "Obnovit časový limit, když dosáhne nuly"
+
+#: root/dynamic/templates/administration/history/statistics.tt:10
+msgid "Reservation"
+msgstr "Rezervace"
+
+#: root/dynamic/includes/index/clients.tt:445
+msgid "Reservation canceled."
+msgstr "Rezervace zrušena."
+
+#: root/dynamic/includes/index/clients.tt:304
+msgid "Reservation created."
+msgstr "Rezervace vytvořena."
+
+#: root/dynamic/templates/administration/index.tt:1598
+msgid "Reservation for user canceled."
+msgstr "Rezervace pro uživatele zrušena."
+
+#: root/dynamic/templates/administration/index.tt:1557
+msgid "Reservation for user created."
+msgstr "Rezervace pro uživatele vytvořena."
+
+#: root/dynamic/templates/administration/settings/index.tt:337
+msgid "Reservation gap"
+msgstr "Rezervační mezera"
+
+#: root/dynamic/templates/administration/settings/index.tt:193
+msgid "Reservation only. A patron must place a reservation for a client before logging in to it."
+msgstr "Pouze rezervace. Čtenář si musí vytvořit rezervaci pro klienta před přihlášením k němu."
+
+#: root/dynamic/includes/index/clients.tt:24
+msgid "Reservation status"
+msgstr "Stav rezervace"
+
+#: root/dynamic/templates/administration/settings/index.tt:315
+msgid "Reservation timeout"
+msgstr "Časový limit rezervace"
+
+#: root/dynamic/templates/administration/history/statistics.tt:179 root/dynamic/templates/administration/index.tt:12 root/dynamic/templates/administration/settings/index.tt:182 root/dynamic/templates/administration/settings/index.tt:23 root/dynamic/templates/administration/settings/index.tt:312
+msgid "Reservations"
+msgstr "Rezervace"
+
+#: root/dynamic/templates/administration/index.tt:167
+msgid "Reserve"
+msgstr "Rezervovat"
+
+#: root/dynamic/includes/index/clients.tt:201 root/dynamic/templates/administration/index.tt:157
+msgid "Reserved"
+msgstr "Rezervováno"
+
+#: root/dynamic/templates/administration/index.tt:174
+msgid "Restart"
+msgstr "Restartovat"
+
+#: root/dynamic/templates/administration/index.tt:135
+msgid "Restart all clients"
+msgstr "Restartovat všechny klienty"
+
+#: root/dynamic/templates/administration/index.tt:518
+msgid "Roles"
+msgstr "Role"
+
+#: root/dynamic/templates/administration/settings/index.tt:890
+msgid "SIP configuration"
+msgstr "Nastavení SIP"
+
+#: root/dynamic/includes/index/printing.tt:36
+msgid "Select a printer"
+msgstr "Vybrat tiskárnu"
+
+#: root/dynamic/includes/index/clients.tt:67 root/dynamic/templates/administration/index.tt:665
+msgid "Selected time is invalid, no time blocks are available for this hour"
+msgstr "Vybraný čas je neplatný, pro tuto hodinu nejsou k dispozici žádné časové bloky"
+
+#: root/dynamic/templates/administration/settings/index.tt:723
+msgid "Send the signal using"
+msgstr "Odeslat signál pomocí"
+
+#: root/dynamic/templates/administration/index.tt:153 root/dynamic/templates/administration/index.tt:56
+msgid "Session minutes"
+msgstr "Délka relace (minuty)"
+
+#: root/dynamic/templates/administration/settings/index.tt:262
+msgid "Session pausing"
+msgstr "Pozastavení relace"
+
+#: root/dynamic/templates/administration/index.tt:147
+msgid "Session status"
+msgstr "Stav relace"
+
+#: root/dynamic/templates/administration/index.tt:773
+msgid "Set as troublemaker"
+msgstr "Nastavit jako problémového uživatele"
+
+#: root/dynamic/includes/navbar_administration.tt:24
+msgid "Settings"
+msgstr "Nastavení"
+
+#: root/dynamic/templates/administration/settings/index.tt:1070
+msgid "Settings not updated."
+msgstr "Nastavení nebylo aktualizováno."
+
+#: root/dynamic/templates/administration/settings/index.tt:1067
+msgid "Settings updated."
+msgstr "Nastavení aktualizováno."
+
+#: root/dynamic/templates/administration/settings/index.tt:698
+msgid "Shutdown"
+msgstr "Vypnout"
+
+#: root/dynamic/templates/administration/settings/index.tt:583 root/dynamic/templates/administration/settings/index.tt:620 root/dynamic/templates/administration/settings/index.tt:657
+msgid "Source URL"
+msgstr "Zdrojová URL"
+
+#: root/dynamic/includes/navbar_administration.tt:19
+msgid "Statistics"
+msgstr "Statistiky"
+
+#: root/dynamic/templates/administration/settings/index.tt:121
+msgid "Statistics and history for users older than this number of days will be automatically anonymized. If not set, data will never be anonymized."
+msgstr "Statistiky a historie uživatelů starších než tento počet dní budou automaticky anonymizovány. Pokud není nastaveno, data nebudou nikdy anonymizována."
+
+#: root/dynamic/includes/index/clients.tt:22 root/dynamic/includes/index/printing.tt:61 root/dynamic/templates/administration/index.tt:159 root/dynamic/templates/administration/index.tt:230 root/dynamic/templates/administration/index.tt:567 root/dynamic/templates/administration/index.tt:58
+msgid "Status"
+msgstr "Stav"
+
+#: root/dynamic/templates/administration/settings/index.tt:995
+msgid "Style the Libki client using <a href='https://doc.qt.io/qt-5/stylesheet-examples.html'>Qt Style Sheets</a>"
+msgstr "Nastavete si vzhled Libki klienta pomocí <a href='https://doc.qt.io/qt-5/stylesheet-examples.html'>Qt Style Sheets</a>"
+
+#: root/dynamic/includes/wrapper.tt:73
+msgid "Success:"
+msgstr "Úspěch:"
+
+#: root/dynamic/templates/administration/index.tt:588
+msgid "Super administrator"
+msgstr "Superadministrátor"
+
+#: root/dynamic/templates/administration/settings/index.tt:700
+msgid "Suspend"
+msgstr "Pozastavit"
+
+#: root/dynamic/templates/administration/index.tt:1542
+msgid "Suspended"
+msgstr "Pozastaveno"
+
+#: root/dynamic/templates/administration/settings/index.tt:475
+msgid "Take minutes from daily allotment"
+msgstr "Použít minuty z denního limitu"
+
+#: root/dynamic/templates/administration/settings/index.tt:842
+msgid "Template"
+msgstr "Šablona"
+
+#: root/dynamic/templates/administration/settings/index.tt:846
+msgid "Template for batch guest passes uses Template Toolkit syntax."
+msgstr "Šablona pro hromadné vygenerování poukazů používá syntaxi Template Toolkit."
+
+#: root/dynamic/templates/administration/settings/index.tt:24 root/dynamic/templates/administration/settings/index.tt:509
+msgid "Terms of service"
+msgstr "Podmínky služby"
+
+#: root/dynamic/templates/administration/settings/index.tt:526
+msgid "Terms of service details text"
+msgstr "Text podrobnějších podmínek služby"
+
+#: root/dynamic/templates/administration/settings/index.tt:518
+msgid "Terms of service text"
+msgstr "Text podmínek služby"
+
+#: root/dynamic/templates/administration/settings/index.tt:590 root/dynamic/templates/administration/settings/index.tt:627 root/dynamic/templates/administration/settings/index.tt:661
+msgid "The URL for the source image or image service."
+msgstr "URL zdroje obrázku nebo obrazové služby."
+
+#: root/dynamic/templates/administration/index.tt:1602
+msgid "The cancellation failed"
+msgstr "Zrušení selhalo"
+
+#: root/dynamic/templates/administration/settings/index.tt:304
+msgid "The client will choose one of the listed URLs at randomn each time it checks for connectivity. Leave empty to disable this feature."
+msgstr "Klient si při každém ověření dostupnosti náhodně vybere jednu z uvedených adres URL. Ponechte prázdné pro zakázání této funkce."
+
+#: root/dynamic/templates/administration/settings/index.tt:612 root/dynamic/templates/administration/settings/index.tt:649 root/dynamic/templates/administration/settings/index.tt:683
+msgid "The height of the source image or image service in pixels."
+msgstr "Výška zdrojového obrázku nebo obrazové služby v pixelech."
+
+#: root/dynamic/templates/administration/settings/index.tt:818
+msgid "The number of passes to create per batch."
+msgstr "Počet poukazů, které se mají vygenerovat v jedné dávce."
+
+#: root/dynamic/templates/administration/settings/index.tt:322
+msgid "The size of the time window a patron has to log in to a client. If the patron does not do so his or her reservation will be canceled. If left blank, the default is 15 minutes."
+msgstr "Velikost časového okna, ve kterém se musí přihlášený uživatel přihlásit ke klientovi. Pokud se uživatel nepřihlásí, jeho rezervace bude zrušena. Pokud není nastaveno, výchozí hodnota je 15 minut."
+
+#: root/dynamic/templates/administration/settings/index.tt:837
+msgid "The text in this field will be prepended to the guest password, for example <i>Password:</i>. This field is displayed in monospace for ease of formatting."
+msgstr "Text v tomto poli bude předřazen k heslu hosta, například <i>Heslo:</i>. Toto pole je zobrazeno v neproporcionálním písmu pro snadnější formátování."
+
+#: root/dynamic/templates/administration/settings/index.tt:827
+msgid "The text in this field will be prepended to the guest username, for example <i>Username:</i>. This field is displayed in monospace for ease of formatting."
+msgstr "Text v tomto poli bude předřazen k uživatelskému jménu hosta, například <i>Uživatelské jméno:</i>. Toto pole je zobrazeno v neproporcionálním písmu pro snadnější formátování."
+
+#: root/dynamic/templates/administration/settings/index.tt:793
+msgid "The time at which to automatically turn on the clients. Leave empty to disable."
+msgstr "Čas, ve kterém se mají klienti automaticky zapnout. Ponechte prázdné pro zakázání této funkce."
+
+#: root/dynamic/templates/administration/index.tt:621
+msgid "The time entered is invalid"
+msgstr "Zadaný čas je neplatný"
+
+#: root/dynamic/includes/index/clients.tt:311
+msgid "The time you chose is not available."
+msgstr "Zvolený čas není k dispozici."
+
+#: root/dynamic/templates/administration/settings/index.tt:601 root/dynamic/templates/administration/settings/index.tt:638 root/dynamic/templates/administration/settings/index.tt:672
+msgid "The width of the source image or image service in pixels."
+msgstr "Šířka zdrojového obrázku nebo obrazové služby v pixelech."
+
+#: root/dynamic/templates/administration/settings/index.tt:984
+msgid "These rules override the default time allowances"
+msgstr "Tato pravidla přepisují výchozí časové limity"
+
+#: root/dynamic/includes/index/clients.tt:412
+msgid "This client has no reservation."
+msgstr "Tento klient nemá žádnou rezervaci."
+
+#: root/dynamic/includes/index/clients.tt:335
+msgid "This client is already reserved."
+msgstr "Tento klient je již rezervován."
+
+#: root/dynamic/templates/administration/settings/index.tt:885
+msgid "This feature only works for user ids that are numeric only. Alphanumeric ids will not be prefixed."
+msgstr "Tato funkce funguje pouze pro číselná uživatelská jména. Alfanumerická jména nebudou předřazena."
+
+#: root/dynamic/templates/administration/settings/index.tt:928
+msgid "This is meant to allow print jobs taken by a Print Manager that has become unresponsive to be re-printed automatically."
+msgstr "Toto je určeno k tomu, aby tiskové úlohy převzaté správcem tisku, který přestal reagovat, mohly být automaticky znovu vytištěny."
+
+#: root/dynamic/includes/index/clients.tt:326
+msgid "This kiosk is closed for the day."
+msgstr "Tento kiosek je dnes zavřený."
+
+#: root/dynamic/includes/index/clients.tt:319
+msgid "This kiosk will be closed at the time you chose."
+msgstr "Tento kiosek bude v zvoleném čase zavřený."
+
+#: root/dynamic/templates/administration/settings/index.tt:522
+msgid "This text is displayed directly on the terms of service dialog."
+msgstr "Tento text se zobrazí přímo v dialogovém okně podmínek služby."
+
+#: root/dynamic/templates/administration/settings/index.tt:530
+msgid "This text is displayed when the \"Show Details\" button is clicked."
+msgstr "Tento text se zobrazí po kliknutí na tlačítko \"Zobrazit podrobnosti\"."
+
+#: root/dynamic/templates/administration/settings/index.tt:83
+msgid "Time allowance by location"
+msgstr "Povolený čas dle umístění"
+
+#: root/dynamic/templates/administration/settings/index.tt:97
+msgid "Time display format"
+msgstr "Formát zobrazeného času"
+
+#: root/dynamic/templates/administration/index.tt:629
+msgid "Time modification will affect the allotment for the location the user is currently logged in at."
+msgstr "Úprava času ovlivní časový limit pro umístění, ke kterému je uživatel aktuálně přihlášen."
+
+#: root/dynamic/templates/administration/settings/index.tt:210
+msgid "Time notification frequency"
+msgstr "Četnost notifikací o čase"
+
+#: root/dynamic/includes/index/clients.tt:23
+msgid "Time remaining"
+msgstr "Zbývající čas"
+
+#: root/dynamic/templates/administration/settings/index.tt:13 root/dynamic/templates/administration/settings/index.tt:35
+msgid "Time settings"
+msgstr "Nastavení času"
+
+#: root/dynamic/templates/administration/settings/index.tt:222
+msgid "Time warning threshold"
+msgstr ""
+
+#: root/dynamic/templates/administration/history/index.tt:9
+msgid "Timestamp"
+msgstr "Časové razítko"
+
+#: root/dynamic/templates/administration/history/statistics.tt:112 root/dynamic/templates/administration/history/statistics.tt:115 root/dynamic/templates/administration/history/statistics.tt:163 root/dynamic/templates/administration/history/statistics.tt:166 root/dynamic/templates/administration/history/statistics.tt:32 root/dynamic/templates/administration/history/statistics.tt:35 root/dynamic/templates/public/account.tt:26
+msgid "To"
+msgstr "Do"
+
+#: root/dynamic/templates/administration/settings/index.tt:719
+msgid "To power on clients, wake on LAN must be enabled on the target computers. For more information, please refer to the Libki manual."
+msgstr "Ke spuštění počítačů musí být na cílových počítačích povoleno Wake on LAN. Další informace naleznete v manuálu Libki."
+
+#: root/dynamic/templates/administration/index.tt:172
+msgid "Toggle status"
+msgstr "Změnit stav"
+
+#: root/dynamic/templates/administration/settings/index.tt:580
+msgid "Top banner"
+msgstr "Horní banner"
+
+#: root/dynamic/templates/administration/history/statistics.tt:134 root/dynamic/templates/administration/history/statistics.tt:185
+msgid "Total"
+msgstr "Celkem"
+
+#: root/dynamic/templates/administration/history/statistics.tt:66
+msgid "Total by date"
+msgstr "Celkem podle data"
+
+#: root/dynamic/templates/administration/history/statistics.tt:87
+msgid "Total by location"
+msgstr "Celkem podle lokace"
+
+#: root/dynamic/templates/administration/index.tt:156 root/dynamic/templates/administration/index.tt:60 root/dynamic/templates/administration/index.tt:73
+msgid "Troublemaker"
+msgstr "Problémový uživatel"
+
+#: root/dynamic/templates/administration/index.tt:1482
+msgid "Troublemaker status updated."
+msgstr ""
+
+#: root/dynamic/templates/administration/index.tt:175
+msgid "Turn off"
+msgstr "Vypnout"
+
+#: root/dynamic/templates/administration/index.tt:136
+msgid "Turn off all clients"
+msgstr "Vypnout  všechny klienty"
+
+#: root/dynamic/templates/administration/index.tt:133
+msgid "Turn on all clients"
+msgstr "Zapnout všechny klienty"
+
+#: root/dynamic/includes/index/clients.tt:21 root/dynamic/includes/index/printing.tt:60 root/dynamic/templates/administration/index.tt:146 root/dynamic/templates/administration/index.tt:229 root/dynamic/templates/administration/settings/index.tt:1134
+msgid "Type"
+msgstr "Typ"
+
+#: root/dynamic/templates/administration/index.tt:1443
+msgid "Unable to change password."
+msgstr "Změna hesla selhala."
+
+#: root/dynamic/templates/administration/index.tt:1183 root/dynamic/templates/administration/index.tt:1195 root/dynamic/templates/administration/index.tt:1245 root/dynamic/templates/administration/index.tt:1257
+msgid "Unable to create guest user."
+msgstr "Nelze vytvořit uživatele hosta."
+
+#: root/dynamic/templates/administration/index.tt:1683
+msgid "Unable to delete client."
+msgstr "Nelze smazat klienta."
+
+#: root/dynamic/templates/administration/index.tt:1667
+msgid "Unable to delete user."
+msgstr "Nelze smazat uživatele."
+
+#: root/dynamic/templates/administration/index.tt:1697
+msgid "Unable to log user out."
+msgstr "Nelze odhlásit uživatele."
+
+#: root/dynamic/templates/administration/index.tt:1574
+msgid "Unable to make reservation: Reason unknown."
+msgstr "Nelze vytvořit rezervaci: Neznámý důvod."
+
+#: root/dynamic/templates/administration/index.tt:1570
+msgid "Unable to make reservation: The time you choose is not available."
+msgstr "Nelze vytvořit rezervaci: Vybraný čas není k dispozici."
+
+#: root/dynamic/templates/administration/index.tt:1566
+msgid "Unable to make reservation: The user has no time remaining.."
+msgstr "Nelze vytvořit rezervaci: Uživatel nemá žádný zbývající čas."
+
+#: root/dynamic/templates/administration/index.tt:1572
+msgid "Unable to make reservation: This kiosk will be closed for the time.."
+msgstr "Nelze vytvořit rezervaci: Tento kiosk bude v daném čase zavřený."
+
+#: root/dynamic/templates/administration/index.tt:1568
+msgid "Unable to make reservation: This user has not enough time left."
+msgstr "Nelze vytvořit rezervaci: Tento uživatel nemá dostatek zbývajícího času."
+
+#: root/dynamic/templates/administration/index.tt:1562
+msgid "Unable to make reservation: User already has a reservation."
+msgstr "Nelze vytvořit rezervaci: Uživatel již má rezervaci."
+
+#: root/dynamic/templates/administration/index.tt:1564
+msgid "Unable to make reservation: User not found."
+msgstr "Nelze vytvořit rezervaci: Uživatel nebyl nalezen."
+
+#: root/dynamic/templates/administration/index.tt:1323
+msgid "Unable to restart all clients."
+msgstr "Nelze restartovat všechny klienty."
+
+#: root/dynamic/templates/administration/index.tt:1736
+msgid "Unable to restart client."
+msgstr "Nelze restartovat klienta."
+
+#: root/dynamic/templates/administration/index.tt:1536
+msgid "Unable to switch client status."
+msgstr "Nelze změnit stav klienta."
+
+#: root/dynamic/templates/administration/index.tt:1310
+msgid "Unable to turn off all clients."
+msgstr "Nelze vypnout všechny klienty."
+
+#: root/dynamic/templates/administration/index.tt:1723
+msgid "Unable to turn off client."
+msgstr "Nelze vypnout klienta."
+
+#: root/dynamic/templates/administration/index.tt:1297
+msgid "Unable to turn on all clients."
+msgstr "Nelze zapnout všechny klienty."
+
+#: root/dynamic/templates/administration/index.tt:1710
+msgid "Unable to unlock client."
+msgstr "Nelze odemknout klienta."
+
+#: root/dynamic/templates/administration/index.tt:1485
+msgid "Unable to update troublemaker status."
+msgstr "Nelze aktualizovat stav problémového uživatele."
+
+#: root/dynamic/templates/administration/index.tt:1515
+msgid "Unable to update user's time."
+msgstr "Nelze aktualizovat čas uživatele."
+
+#: root/dynamic/templates/administration/index.tt:1391
+msgid "Unable to update user."
+msgstr "Nelze aktualizovat uživatele."
+
+#: root/dynamic/templates/administration/index.tt:1545
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: root/dynamic/templates/administration/index.tt:170
+msgid "Unlock"
+msgstr "Odemknout"
+
+#: root/dynamic/templates/administration/hours/index.tt:117 root/dynamic/templates/administration/settings/index.tt:1054
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: root/dynamic/templates/administration/hours/index.tt:118
+msgid "Update hours for all locations."
+msgstr "Aktualizovat otevírací dobu pro všechny lokace."
+
+#: root/dynamic/templates/administration/index.tt:636
+msgid "Update time"
+msgstr "Aktualizovat čas"
+
+#: root/dynamic/templates/administration/index.tt:802
+msgid "Update troublemaker"
+msgstr "Aktualizovat problémového uživatele"
+
+#: root/dynamic/templates/administration/index.tt:597
+msgid "Update user"
+msgstr "Aktualizovat uživatele"
+
+#: root/dynamic/includes/index/printing.tt:23 root/dynamic/includes/index/printing.tt:45
+msgid "Upload"
+msgstr "Nahrát"
+
+#: root/dynamic/includes/index/printing.tt:6
+msgid "Upload file to print"
+msgstr "Nahrát soubor k tisku"
+
+#: root/dynamic/includes/index/printing.tt:137 root/dynamic/templates/administration/index.tt:1046
+msgid "Uploaded from Web"
+msgstr "Nahráno z webu"
+
+#: root/dynamic/templates/administration/index.tt:563
+msgid "Use period as separator when editing funds."
+msgstr "Použijte tečku jako oddělovač při úpravě fondů."
+
+#: root/dynamic/templates/administration/settings/index.tt:300
+msgid "Use the following URLs to check if client can connect to the Internet"
+msgstr "Použijte následující adresy URL ke kontrole, zda se klient může připojit k internetu"
+
+#: root/dynamic/templates/administration/settings/index.tt:145
+msgid "Useful for implementing <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
+msgstr "Užitečné pro implementaci <a href='https://eugdpr.org/' target='_blank'>GDPR</a>"
+
+#: root/dynamic/templates/administration/index.tt:236 root/dynamic/templates/administration/index.tt:322
+msgid "User"
+msgstr "Uživatel"
+
+#: root/dynamic/templates/administration/settings/index.tt:540
+msgid "User categories"
+msgstr "Kategorie uživatelů"
+
+#: root/dynamic/templates/administration/index.tt:1156
+msgid "User created."
+msgstr "Uživatel vytvořen."
+
+#: root/dynamic/templates/administration/index.tt:1655
+msgid "User deleted."
+msgstr "Uživatel smazán."
+
+#: root/dynamic/templates/administration/index.tt:1159
+msgid "User not created."
+msgstr "Uživatel nebyl vytvořen."
+
+#: root/dynamic/templates/administration/settings/index.tt:25 root/dynamic/templates/administration/settings/index.tt:537
+msgid "User settings"
+msgstr "Nastavení uživatele"
+
+#: root/dynamic/templates/administration/index.tt:154
+msgid "User status"
+msgstr "Stav uživatele"
+
+#: root/dynamic/templates/administration/index.tt:1388
+msgid "User updated."
+msgstr "Uživatel aktualizován."
+
+#: root/dynamic/templates/administration/settings/index.tt:458
+msgid "User's client is reserved"
+msgstr "Klient uživatele je rezervován"
+
+#: root/dynamic/templates/administration/index.tt:1512
+msgid "User's time updated."
+msgstr "Čas uživatele aktualizován."
+
+#: root/dynamic/includes/index/clients.tt:113 root/dynamic/includes/index/clients.tt:72 root/dynamic/templates/administration/history/index.tt:6 root/dynamic/templates/administration/index.tt:1213 root/dynamic/templates/administration/index.tt:148 root/dynamic/templates/administration/index.tt:349 root/dynamic/templates/administration/index.tt:350 root/dynamic/templates/administration/index.tt:429 root/dynamic/templates/administration/index.tt:51 root/dynamic/templates/administration/index.tt:527 root/dynamic/templates/administration/index.tt:528 root/dynamic/templates/administration/index.tt:670 root/dynamic/templates/administration/index.tt:700 root/dynamic/templates/login.tt:23 root/dynamic/templates/login.tt:27 root/dynamic/templates/public/login.tt:23 root/dynamic/templates/public/login.tt:27
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: root/dynamic/includes/index/clients.tt:315
+msgid "Username & password do not match."
+msgstr "Uživatelské jméno a heslo se neshodují."
+
+#: root/dynamic/templates/administration/index.tt:356
+msgid "Username already used"
+msgstr "Uživatelské jméno je již použito"
+
+#: root/dynamic/templates/administration/index.tt:674 root/dynamic/templates/administration/index.tt:704
+msgid "Username is invalid"
+msgstr "Uživatelské jméno je neplatné"
+
+#: root/dynamic/includes/index/clients.tt:116 root/dynamic/includes/index/clients.tt:75
+msgid "Username is required"
+msgstr "Uživatelské jméno je vyžadováno"
+
+#: root/dynamic/templates/administration/index.tt:353
+msgid "Username is unique"
+msgstr "Uživatelské jméno je jedinečné"
+
+#: root/dynamic/templates/administration/settings/index.tt:822
+msgid "Username label"
+msgstr "Popisek uživatelského jména"
+
+#: root/dynamic/templates/administration/index.tt:529
+msgid "Username may not be edited."
+msgstr "Uživatelské jméno nelze upravit."
+
+#: root/dynamic/templates/administration/index.tt:351
+msgid "Username must be unique."
+msgstr "Uživatelské jméno musí být jedinečné."
+
+#: root/dynamic/templates/administration/index.tt:702
+msgid "Username of user to cancel reservation for."
+msgstr "Uživatelské jméno uživatele, pro kterého se má zrušit rezervace."
+
+#: root/dynamic/templates/administration/index.tt:672
+msgid "Username of user to make reservation for."
+msgstr "Uživatelské jméno uživatele, pro kterého se má provést rezervace."
+
+#: root/dynamic/templates/administration/index.tt:6
+msgid "Users"
+msgstr "Uživatelé"
+
+#: root/dynamic/templates/administration/index.tt:273
+msgid "View"
+msgstr "Zobrazit"
+
+#: root/dynamic/templates/administration/index.tt:488
+msgid "View & print guest passes"
+msgstr "Zobrazit a vytisknout průkazy hostů"
+
+#: root/dynamic/templates/administration/settings/index.tt:245
+msgid "Warn user that they will be logged out automatically after this many minutes of inactivity."
+msgstr "Upozornit uživatele, že bude automaticky odhlášen po tomto počtu minut nečinnosti."
+
+#: root/dynamic/templates/administration/index.tt:1213
+msgid "Welcome"
+msgstr "Vítejte"
+
+#: root/dynamic/templates/administration/settings/index.tt:423
+msgid "When a Libki client is reserved and waiting, display the reservation status of the person it is waiting for."
+msgstr "Pokud je klient Libki rezervován a čeká, zobrazí se stav rezervace osoby, na kterou čeká."
+
+#: root/dynamic/templates/administration/settings/index.tt:488
+msgid "When a user's time allotment reaches zero, it's automatically renewed with the value of Extension length. This makes it possible for the user to log in again."
+msgstr "Když uživateli vyprší čas, automaticky se obnoví s hodnotou Délka prodloužení. To umožňuje uživateli se znovu přihlásit."
+
+#: root/dynamic/templates/administration/settings/index.tt:471
+msgid "When extending time"
+msgstr "Při prodlužování času"
+
+#: root/dynamic/templates/administration/settings/index.tt:229
+msgid "When the user's remaining remaining time drops below the threshold, Libki will request the OS display the user's remaining time in a warning message once per minute."
+msgstr "Když uživateli zbývající čas klesne pod tuto hodnotu, Libki požádá operační systém, aby zobrazil zbývající čas uživatele v upozornění jednou za minutu."
+
+#: root/dynamic/templates/administration/settings/index.tt:729
+msgid "When using the client, at least one Libki client must be running at the time when the wake up signal is received."
+msgstr "Při používání klienta musí být v okamžiku přijetí signálu probuzení spuštěn alespoň jeden klient Libki."
+
+#: root/dynamic/templates/administration/settings/index.tt:103
+msgid "When you switch to the 12-hour format, the am/pm unit will display."
+msgstr "Při přepnutí na 12hodinový formát se zobrazí jednotka am/pm."
+
+#: root/dynamic/templates/administration/settings/index.tt:594 root/dynamic/templates/administration/settings/index.tt:631 root/dynamic/templates/administration/settings/index.tt:665
+msgid "Width"
+msgstr "Šířka"
+
+#: root/dynamic/templates/public/account.tt:57
+msgid "Would you like to cancel your reservation?"
+msgstr "Chcete zrušit svou rezervaci?"
+
+#: root/dynamic/templates/administration/index.tt:1664
+msgid "You are logged in as this user."
+msgstr "Jste přihlášeni jako tento uživatel."
+
+#: root/dynamic/includes/index/clients.tt:383
+msgid "You are not of the appropriate age to use this client."
+msgstr "Nejste dostatečně staří pro použití tohoto počítače."
+
+#: root/dynamic/templates/public/account.tt:15
+msgid "You don't have a reservation."
+msgstr "Nemáte žádnou rezervaci."
+
+#: root/dynamic/includes/index/clients.tt:308
+msgid "You don't have enough time for a minimum reservation."
+msgstr "Nemáte dostatek času pro minimální délku rezervace."
+
+#: root/dynamic/includes/index/clients.tt:332
+msgid "You have already reserved a client."
+msgstr "Již máte rezervovaný počítač."
+
+#: root/dynamic/includes/index/clients.tt:329
+msgid "You have already reserved this client."
+msgstr "Tento počítač již máte rezervovaný."
+
+#: root/dynamic/includes/index/clients.tt:377
+msgid "You have an overdue item recall."
+msgstr "Máte upomínku za nevrácenou jednotku."
+
+#: root/dynamic/includes/index/clients.tt:380
+msgid "You have been billed for too many items."
+msgstr "Máte dluh za příliš mnoho jednotek po datu vrácení."
+
+#: root/dynamic/includes/index/clients.tt:365
+msgid "You have claimed returned for too many items."
+msgstr ""
+
+#: root/dynamic/includes/index/clients.tt:338
+msgid "You have excessive oustanding fees."
+msgstr "Máte příliš vysoký dluh."
+
+#: root/dynamic/includes/index/clients.tt:374
+msgid "You have excessive outstanding fees."
+msgstr "Máte příliš vysoký dluh."
+
+#: root/dynamic/includes/index/clients.tt:371
+msgid "You have excessive outstanding fines."
+msgstr "Máte příliš vysoké pokuty."
+
+#: root/dynamic/includes/index/clients.tt:368
+msgid "You have lost too many items."
+msgstr "Ztratili jste příliš mnoho jednotek."
+
+#: root/dynamic/includes/index/clients.tt:452
+msgid "You have no reservation on this kiosk."
+msgstr "Nemáte rezervaci na tento počítač."
+
+#: root/dynamic/includes/index/clients.tt:323
+msgid "You have no time remaining."
+msgstr "Nemáte žádný zbývající čas."
+
+#: root/dynamic/includes/index/clients.tt:362
+msgid "You have renewed too many items."
+msgstr "Máte příliš mnoho prodloužených jednotek."
+
+#: root/dynamic/includes/index/clients.tt:356
+msgid "You have too many items checked out."
+msgstr "Máte příliš mnoho vypůjčených jednotek."
+
+#: root/dynamic/includes/index/clients.tt:359
+msgid "You have too many overdue items."
+msgstr "Máte příliš mnoho jednotek po datu vrácení."
+
+#: root/dynamic/includes/wrapper.tt:110
+msgid "You've been logged out."
+msgstr "Byli jste odhlášeni."
+
+#: root/dynamic/includes/index/clients.tt:341
+msgid "Your checkout privileges have been denied."
+msgstr "Nemáte oprávnění k výpůjčkám."
+
+#: root/dynamic/includes/index/clients.tt:350
+msgid "Your hold privileges have been denied."
+msgstr "Nemáte oprávnění k rezervacím."
+
+#: root/dynamic/includes/index/clients.tt:353
+msgid "Your library card has been reported lost or stolen."
+msgstr "Váš průkaz do knihovny byl nahlášen jako ztracený nebo odcizený."
+
+#: root/dynamic/includes/index/clients.tt:347
+msgid "Your recall privileges have been denied."
+msgstr "Nemáte oprávnění k upomínkám."
+
+#: root/dynamic/includes/index/clients.tt:344
+msgid "Your renewal privileges have been denied."
+msgstr "Nemáte oprávnění k prodlužování."
+
+#: root/dynamic/includes/index/clients.tt:449
+msgid "Your reservation cancelation failed for an unknown reason."
+msgstr "Vaše rezervace selhala z neznámého důvodu."
+
+#: root/dynamic/templates/administration/hours/index.tt:0
+msgid "d"
+msgstr ""
+
+#: root/dynamic/templates/administration/hours/index.tt:136 root/dynamic/templates/administration/hours/index.tt:177
+msgid "for"
+msgstr "pro"
+
+#: root/dynamic/templates/administration/index.tt:791
+msgid "forever"
+msgstr "navždy"
+
+#: root/dynamic/includes/breadcrumbs.tt:5 root/dynamic/includes/breadcrumbs.tt:9
+msgid "item.label"
+msgstr ""
+
+#: root/dynamic/includes/index/printing.tt:11 root/dynamic/includes/index/printing.tt:16
+msgid "or a <a target=\"_blank\" class=\"alert-link\" href=\"https://www.freepdfconvert.com/\">web based PDF converter</a>."
+msgstr ""
+
+#: root/dynamic/includes/index/clients.tt:192 root/dynamic/includes/index/clients.tt:195 root/dynamic/includes/index/clients.tt:198
+msgid "starting"
+msgstr "spouštění"
+
+#: root/dynamic/templates/administration/settings/index.tt:728
+msgid "the client"
+msgstr "klient"
+
+#: root/dynamic/templates/administration/settings/index.tt:726
+msgid "the server"
+msgstr "server"
+
+# Not generated by xgettext.pl
+
+# Language menu
+
+# English
+msgid "lang.en"
+msgstr "English"
+
+# French
+msgid "lang.fr"
+msgstr "Français"
+
+# Swedish
+msgid "lang.sv"
+msgstr "Svenska"
+
+# Spanish
+msgid "lang.es"
+msgstr "Español"
+
+# Portuguese
+msgid "lang.pt_PT"
+msgstr "Português"
+
+# Norwegian
+msgid "lang.nb_NO"
+msgstr "Norsk bokmål"
+
+# Czech
+msgid "lang.cs"
+msgstr "Čeština"
+
+# Days of the week
+
+msgid "Monday"
+msgstr "Pondělí"
+
+msgid "Tuesday"
+msgstr "Úterý"
+
+msgid "Wednesday"
+msgstr "Středa"
+
+msgid "Thursday"
+msgstr "Čtvrtek"
+
+msgid "Friday"
+msgstr "Pátek"
+
+msgid "Saturday"
+msgstr "Sobota"
+
+msgid "Sunday"
+msgstr ""
+
+# Breadcrumb words
+
+msgid "Hours"
+msgstr "Provozní doba"
+
+msgid "Login"
+msgstr "Přihlášení"
+
+msgid "Restart clients"
+msgstr "Restartovat klienty"
+
+msgid "Turn off clients"
+msgstr "Vypnout klienty"
+
+msgid "Turn on clients"
+msgstr "Zapnout klienty"
+
+msgid "lang.pt"
+msgstr "Português"
+
+msgid "lang.no"
+msgstr "Norsk"
+
+msgid "lang.hu"
+msgstr "Magyar"
+
+msgid "No data available in table"
+msgstr "V tabulce nejsou k dispozici žádná data"
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Zobrazeno _START_ až _END_ z _TOTAL_ záznamů"
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Zobrazeno 0 až 0 z 0 záznamů"
+
+msgid "(filtered from _MAX_ total entries)"
+msgstr "(filtrováno z _MAX_ celkových záznamů)"
+
+msgid "Show _MENU_ entries"
+msgstr "Zobrazit _MENU_ záznamů"
+
+msgid "Loading..."
+msgstr "Načítání..."
+
+msgid "Processing..."
+msgstr "Zpracování..."
+
+msgid "Search:"
+msgstr "Hledat:"
+
+msgid "No matching records found"
+msgstr "Nebyly nalezeny žádné odpovídající záznamy"
+
+msgid "First"
+msgstr "První"
+
+msgid "Last"
+msgstr "Poslední"
+
+msgid "Next"
+msgstr "Další"
+
+msgid "Previous"
+msgstr "Předchozí"
+
+msgid ": activate to sort column ascending"
+msgstr ": aktivujte pro seřazení sloupce vzestupně"
+
+msgid ": activate to sort column descending"
+msgstr ": aktivujte pro seřazení sloupce sestupně"
+
+msgid "Enabled"
+msgstr "Povoleno"
+
+msgid "Disabled"
+msgstr "Zakázáno"
+
+msgid "No"
+msgstr "Ne"
+
+msgid "Yes"
+msgstr "Ano"
+
+msgid "Local"
+msgstr "Místní"
