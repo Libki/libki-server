@@ -377,7 +377,7 @@ sub check_login {
             }
             else {
                 my $duration        = $reservation_begin_dt->subtract_datetime( $c->now );
-                my $reservation_gap = $c->setting('ReservationGap');
+                my $reservation_gap = $c->setting('ReservationGap') || 0;
 
                 $time_to_reservation = ( abs( $duration->in_units('minutes') ) - $reservation_gap );
 
@@ -670,7 +670,7 @@ sub get_time_list {
                         $reservation_begin_dt->set_time_zone( $c->tz );
                         $reservation_end_dt->set_time_zone( $c->tz );
 
-                        my $reservation_gap = $c->setting( 'ReservationGap' );
+                        my $reservation_gap = $c->setting( 'ReservationGap' ) || 0;
                         $reservation_end_dt->add( minutes => $reservation_gap ) if $reservation_gap;
 
                         my $reservation_span = DateTime::Span->from_datetimes( start => $reservation_begin_dt, end => $reservation_end_dt );
@@ -691,7 +691,7 @@ sub get_time_list {
                         my $session_begin_dt = DateTime->now( time_zone => $c->tz );
                         my $session_end_dt = $session_begin_dt + DateTime::Duration->new( minutes => $session->minutes );
 
-                        my $session_gap = $c->setting( 'ReservationGap' );
+                        my $session_gap = $c->setting( 'ReservationGap' ) || 0;
                         $session_end_dt->add( minutes => $session_gap ) if $session_gap;
 
                         my $session_span = DateTime::Span->from_datetimes( start => $session_begin_dt, end => $session_end_dt );
