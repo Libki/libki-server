@@ -132,7 +132,10 @@ sub user_funds : Local : Args(0) {
         } elsif ( $c->request->method eq 'POST' ) {
             my $funds = $c->request->params->{'funds'};
 
-            $user->credit_funds($funds);
+            my %opts = {
+                provider => "Libki Print Station"
+            };
+            $user->credit_funds($c, $funds, %opts);
 
             $c->stash(
                 success => JSON::true,
