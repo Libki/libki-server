@@ -219,6 +219,17 @@ sub index : Path : Args(0) {
                         username => $username,
                         password => $password,
                     );
+                    if ($c->setting('EnableClientSessionLocking')) {
+                        $c->model('DB::Message')->create( {
+                            instance => $instance,
+                            user_id  => $user->id,
+                            content  => $c->loc(
+                                "Your PIN for locking this client is $password; please remember it, as it will not be displayed again.",
+                                "Your PIN for locking this client is $password; please remember it, as it will not be displayed again.",
+                                $password
+                            )
+                        } );
+                    }
                 }
                 else {
                     delete( $c->stash->{Settings} );
