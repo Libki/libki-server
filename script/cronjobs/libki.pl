@@ -132,8 +132,11 @@ my $sessions = $dbh->selectall_arrayref(
                AutomaticTimeExtensionLength.value       AS 'AutomaticTimeExtensionLength', 
                AutomaticTimeExtensionUnless.value       AS 'AutomaticTimeExtensionUnless', 
                AutomaticTimeExtensionUseAllotment.value AS 'AutomaticTimeExtensionUseAllotment', 
+               Cast(ReservationGap.value AS Unsigned)   AS 'ReservationGap',
                Count(any_reserved.instance)             AS 'AnyReservedCount', 
-               Count(this_reserved.client_id)           AS 'ThisReservedCount' 
+               Count(this_reserved.client_id)           AS 'ThisReservedCount',
+               Timestampdiff(minute, Now(), Min(any_reserved.begin_time)) AS 'AnyReservedMinutesUntilNext',
+               Timestampdiff(minute, Now(), Min(this_reserved.begin_time)) AS 'ThisReservedMinutesUntilNext'
         FROM   sessions 
         LEFT JOIN clients
               ON ( clients.instance = sessions.instance 
@@ -157,6 +160,9 @@ my $sessions = $dbh->selectall_arrayref(
         LEFT JOIN settings AutomaticTimeExtensionUseAllotment 
               ON ( users.instance = AutomaticTimeExtensionUseAllotment.instance 
                    AND AutomaticTimeExtensionUseAllotment.name = 'AutomaticTimeExtensionUseAllotment' ) 
+        LEFT JOIN settings ReservationGap
+              ON ( users.instance = ReservationGap.instance
+                   AND ReservationGap.name = 'ReservationGap' )
         LEFT JOIN reservations any_reserved 
                ON ( users.instance = any_reserved.instance ) 
         LEFT JOIN reservations this_reserved 
@@ -182,8 +188,8 @@ my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
 
     # TODO Integrate this into the query
-    next if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved' && $s->{ThisReservedCount} > 0;
-    next if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved'  && $s->{AnyReservedCount} > 0;
+    # next if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved' && $s->{ThisReservedCount} > 0;
+    # next if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved'  && $s->{AnyReservedCount} > 0;
 
     my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
@@ -199,6 +205,20 @@ foreach my $s ( @$sessions ) {
         );
 
     my $minutes_until_closing = $all_minutes_until_closing->{ $s->{instance} }->{ $s->{location} };
+
+    # Calculate the minutes until the next reservation
+    my $minutes_until_next_reservation = 0;
+    $minutes_until_next_reservation = $s->{ThisReservedMinutesUntilNext} if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved';
+    $minutes_until_next_reservation = $s->{AnyReservedMinutesUntilNext} if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved';
+    # Allow for a reserve gap, if applicable
+    $minutes_until_next_reservation -= $s->{ReservationGap} if ( $minutes_until_next_reservation && $s->{ReservationGap} );
+
+    # If adding this many minutes would overlap the next reservation, reduce the minutes added.
+    if ( defined($minutes_until_next_reservation) && $minutes_until_next_reservation < $minutes_to_add_to_session )
+    {
+        #Set the minutes to add so it will be exactly until the next reservation
+        $minutes_to_add_to_session = $minutes_until_next_reservation - $s->{minutes};
+    }
 
     # If adding this many minutes would go past closing time, we need to reduce the minutes added
     if ( defined($minutes_until_closing)
