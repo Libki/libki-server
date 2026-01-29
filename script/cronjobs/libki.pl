@@ -187,10 +187,6 @@ my $update_user_sth = $dbh->prepare(qq{
 my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
 
-    # TODO Integrate this into the query
-    # next if $s->{AutomaticTimeExtensionUnless} eq 'this_reserved' && $s->{ThisReservedCount} > 0;
-    # next if $s->{AutomaticTimeExtensionUnless} eq 'any_reserved'  && $s->{AnyReservedCount} > 0;
-
     my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
     # If we are nearing closing time, we need to only add minutes up to the cloasing time
