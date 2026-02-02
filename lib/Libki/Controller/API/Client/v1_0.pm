@@ -224,8 +224,8 @@ sub index : Path : Args(0) {
                             instance => $instance,
                             user_id  => $user->id,
                             content  => $c->loc(
-                                "Your password for your guest account is $password; please remember it, as it will not be displayed again.",
-                                "Your password for your guest account is $password; please remember it, as it will not be displayed again.",
+                                "Your username is $username and your password is $password; please remember these, as they will not be displayed again.",
+                                "Your username is $username and your password is $password; please remember these, as they will not be displayed again.",
                                 $password
                             )
                         } );
