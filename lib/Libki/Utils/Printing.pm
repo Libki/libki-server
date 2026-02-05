@@ -124,7 +124,7 @@ sub create_print_job_and_file {
             );
         }
 
-        if ( $print_job
+        if ( $print_job && $printer->{auto_release}
             && (  $printer->{auto_release} eq 'yes'
                 || ( $printer->{auto_release} eq 'client' && $client_name ne PRINT_FROM_WEB ) 
                 || ( $printer->{auto_release} eq 'public' && $client_name eq PRINT_FROM_WEB ) 
