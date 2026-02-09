@@ -29,29 +29,20 @@ sub create_checkout {
     });
 
     my $stripe = Net::Stripe->new(
-        api_key => $c->setting('StripeSecretKey')
+        api_key => $c->setting('StripeSecretKey'),
+        api_version => '2020-03-02'
     );
 
-    my $session = $stripe->checkout->sessions->create({
-        mode => 'payment',
-        success_url => $c->uri_for(
-            '/account',
-            { payment => 'success' }
-        ),
-        cancel_url => $c->uri_for(
-            '/account',
-            { payment => 'cancelled' }
-        ),
-        line_items => [{
-            quantity => 1,
-            price_data => {
-                currency => 'usd',
-                unit_amount => $cents,
-                product_data => {
-                    name => 'Libki Account Credit',
-                },
-            },
-        }],
+    # ---- Create PaymentIntent ----
+    my $intent = $stripe->create_payment_intent({
+        amount   => $cents,
+        currency => 'usd',
+        description => 'Libki Account Transaction',
+
+#        automatic_payment_methods => {
+#            enabled => \1,
+#        },
+
         metadata => {
             transaction_id => $txn->id,
             user_id        => $user->id,
@@ -60,12 +51,12 @@ sub create_checkout {
     });
 
     $txn->update({
-        provider_payment_id => $session->id,
+        provider_payment_id => $intent->id,
         status              => 'pending',
     });
 
     return {
-        checkout_url => $session->url,
+        client_secret => $intent->client_secret,
         transaction  => $txn,
     };
 }
