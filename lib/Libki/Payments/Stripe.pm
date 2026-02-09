@@ -7,6 +7,14 @@ with 'Libki::Payments::Provider';
 
 use POSIX qw(round);
 
+=head2 create_checkout
+
+Creates Payment Intent with Stripe for the given user and amount.
+Logs pending transaction and updates with provider-given ID value.
+Returns client_secret and transaction
+
+=cut
+
 sub create_checkout {
     require Net::Stripe;
 
@@ -60,6 +68,13 @@ sub create_checkout {
         transaction  => $txn,
     };
 }
+
+=head2 handle_webhook
+
+Receives incoming webhook call from Stripe with payload and signature.
+Updates transaction from pending to successful
+
+=cut
 
 sub handle_webhook {
     require Net::Stripe;

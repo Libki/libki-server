@@ -13,6 +13,26 @@ __PACKAGE__->config(
 
 use POSIX qw(round);
 
+=head1 NAME
+
+Libki::Controller::API::V2::Transactions - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller for financial transactions in Libki
+
+=head1 METHODS
+
+=cut
+
+=head2 list
+
+/api/v2/transactions?user_id=1&
+
+Returns JSON listing user's transactions; if user_id param is not specified, shows transactions for currently logged-in user
+
+=cut
+
 sub list : Path('') Args(0) Method('GET') {
     my ( $self, $c ) = @_;
 
@@ -52,6 +72,14 @@ sub list : Path('') Args(0) Method('GET') {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 cash_credit
+
+/api/v2/transactions/cash/credit
+
+Adds a cash credit transaction to the user. Accepts POST data with amount, user_id, and notes
+
+=cut
+
 sub cash_credit : Path('cash/credit') Args(0) Method('POST') {
     my ( $self, $c ) = @_;
 
@@ -85,6 +113,15 @@ sub cash_credit : Path('cash/credit') Args(0) Method('POST') {
     delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
+
+=head2 cash_debit
+
+/api/v2/transactions/cash/debit
+
+Adds a cash debit transaction to the user. Accepts POST data with amount, user_id, and notes
+
+=cut
+
 
 sub cash_debit : Path('cash/debit') Args(0) Method('POST') {
     my ( $self, $c ) = @_;

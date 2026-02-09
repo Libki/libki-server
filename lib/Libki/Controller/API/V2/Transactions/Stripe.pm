@@ -11,6 +11,26 @@ __PACKAGE__->config(
     namespace => 'api/v2/transactions/stripe'
 );
 
+=head1 NAME
+
+Libki::Controller::API::V2::Transactions::Stripe - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller for Stripe transactions in Libki
+
+=head1 METHODS
+
+=cut
+
+=head2 checkout
+
+/api/v2/transactions/stripe/checkout?amount=0.01
+
+Returns JSON client_secret and return_url
+
+=cut
+
 sub checkout : POST Path('checkout') Args(0) {
     my ( $self, $c ) = @_;
 
@@ -35,6 +55,14 @@ sub checkout : POST Path('checkout') Args(0) {
 
     $c->forward('View::JSON');
 }
+
+=head2 webhook
+
+/api/v2/transactions/stripe/webhook
+
+Returns 200 status on success
+
+=cut
 
 sub webhook : POST Path('webhook') Args(0) {
     my ( $self, $c ) = @_;
