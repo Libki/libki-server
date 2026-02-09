@@ -1,6 +1,6 @@
 package Libki::Payments::Provider;
 
-use Moo::Role;
+use Moose::Role;
 
 requires qw(
     create_checkout
