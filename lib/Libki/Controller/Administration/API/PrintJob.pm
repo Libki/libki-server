@@ -224,7 +224,7 @@ sub view : Local : Args(0) {
 
             if ( $type eq 'view' ) {
                 $c->response->content_type('application/pdf');
-                $c->response->header( 'Content-Disposition', "inline; filename=$filename" );
+                $c->response->header( 'Content-Disposition', "inline; filename=\"$filename\"" );
             } else {
                 $c->response->content_type('application/octet-stream');
                 $c->response->header( 'attachment', $filename );
