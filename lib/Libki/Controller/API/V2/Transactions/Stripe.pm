@@ -2,6 +2,7 @@ package Libki::Controller::API::V2::Transactions::Stripe;
 
 use Moose;
 use namespace::autoclean;
+use JSON qw(decode_json);
 
 use Libki::Payments::Stripe;
 
@@ -60,17 +61,36 @@ sub checkout : POST Path('checkout') Args(0) {
 
 /api/v2/transactions/stripe/webhook
 
-Returns 200 status on success
+Accepts update on payment intent status
 
 =cut
 
 sub webhook : POST Path('webhook') Args(0) {
     my ( $self, $c ) = @_;
 
+    my $body_fh = $c->request->body;
+    my $payload = do { local $/; <$body_fh> };
+
+    my $json_data;
+    eval {
+        $json_data = decode_json($payload);
+        1;
+    } or do {
+        $c->log->error('Stripe webhook: invalid JSON');
+        $c->response->status(400);
+        $c->response->body('invalid payload');
+        return;
+    };
+
     my $provider = Libki::Payments::Stripe->new;
-    $provider->handle_webhook( c => $c );
+    $provider->handle_webhook(
+        c    => $c,
+        data => $json_data,
+    );
 
     $c->response->status(200);
+    $c->response->content_type('text/plain');
+    $c->response->body('ok');
 }
 
 __PACKAGE__->meta->make_immutable;

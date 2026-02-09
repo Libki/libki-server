@@ -2,6 +2,7 @@ package Libki::Payments::Stripe;
 
 use Moose;
 use namespace::autoclean;
+use Data::Dumper;
 
 with 'Libki::Payments::Provider';
 
@@ -72,35 +73,60 @@ sub create_checkout {
 =head2 handle_webhook
 
 Receives incoming webhook call from Stripe with payload and signature.
-Updates transaction from pending to successful
+Updates transaction from pending to successful or failed
 
 =cut
 
 sub handle_webhook {
-    require Net::Stripe;
-
     my ( $self, %args ) = @_;
 
-    my $c = $args{c};
+    my $data = $args{data};
+    my $c    = $args{c};
 
-    my $payload   = $c->request->body_data;
-    my $signature = $c->request->header('Stripe-Signature');
+    my $event_type = $data->{type} // '';
+    my $object     = $data->{data}{object} // {};
 
-    my $event = Net::Stripe::Webhook::construct_event(
-        $payload,
-        $signature,
-        $c->setting('StripeWebhookSigningSecret')
-    );
+    return 1 unless $object->{id};
 
-    if ( $event->type eq 'checkout.session.completed' ) {
-        my $session = $event->data->object;
+    my $pi_id = $object->{id};
 
-        my $txn = $c->model('DB::Transaction')->find({
-            provider => 'stripe',
-            provider_payment_id => $session->id,
+    my $txn = $c->model('DB::Transaction')->find({
+        provider            => 'stripe',
+        provider_payment_id => $pi_id,
+    });
+
+    unless ($txn) {
+        $c->log->warn("Stripe webhook: no transaction for $pi_id");
+        return 1;
+    }
+
+    # Idempotency: don't touch terminal states
+    return 1 if $txn->status =~ /^(succeeded|failed|cancelled)$/;
+
+    if ( $event_type eq 'payment_intent.succeeded' ) {
+
+        $txn->update({
+            status => 'succeeded',
         });
 
-        $txn->update({ status => 'succeeded' }) if $txn;
+    }
+    elsif ( $event_type eq 'payment_intent.payment_failed' ) {
+
+        my $reason =
+            $object->{last_payment_error}{message}
+            || 'Payment failed';
+
+        $txn->update({
+            status        => 'failed',
+            failure_reason => $reason,
+        });
+
+    }
+    elsif ( $event_type eq 'payment_intent.canceled' ) {
+
+        $txn->update({
+            status => 'cancelled',
+        });
     }
 
     return 1;
