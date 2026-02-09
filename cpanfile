@@ -6,6 +6,7 @@ recommends 'LWP::Simple';
 recommends 'Net::CUPS';
 recommends 'Net::LDAP';
 recommends 'Net::Stripe';
+requires 'Alt::Devel::CallParser::ButWorking';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Controller::REST';
