@@ -22,7 +22,7 @@
                 [% ELSE %]
                     [% IF pdf_conversion_service %]
                     <div class="alert alert-warning" role="alert">
-                        [% c.loc('<strong>PDFs work best</strong>; non-PDF printing is currently experimental.  Best of luck!') %]
+                        <strong>[% c.loc('PDFs work best') %]</strong>
                         [% c.loc('Currently supporting: ') %]
 			[% c.get_printer_configuration.pdf_conversion_service.supported_extensions.join(", ") %].
                     </div>
