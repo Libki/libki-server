@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 use Libki::Payments::Stripe;
 
-BEGIN { extends 'Catalyst::Controller'; }
+BEGIN { extends 'Libki::Controller::API::V2::Transactions'; }
 
 __PACKAGE__->config(
     namespace => 'api/v2/transactions/stripe'
@@ -28,11 +28,11 @@ sub checkout : POST Path('checkout') Args(0) {
         instance => $c->instance,
     );
 
-    $c->stash->{json} = {
-        checkout_url => $result->{checkout_url},
-    };
+    $c->stash(
+        client_secret => $result->{client_secret},
+        return_url    => $c->uri_for('/account', { payment => 'processing' })->as_string,
+    );
 
-    $c->stash->delete('Settings');
     $c->forward('View::JSON');
 }
 
