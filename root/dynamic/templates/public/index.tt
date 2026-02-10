@@ -1,12 +1,20 @@
 [% SET active_class = "public__index" %]
 
+[% IF !c.user_exists && c.setting('DisplayPublicReservationsPage') == 'disabled' %]
+    [% INCLUDE login.tt %]
+[% ELSE %]
+
 <ul class="nav nav-tabs" id="topTabs" role="tablist">
+    [% IF c.setting('DisplayPublicReservationsPage') == 'enabled' %]
     <li class="nav-item">
         <a class="nav-link [% IF tab == 'clients' %]active[% END %]" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="true">
             <i class="fas fa-desktop" aria-hidden="true"></i>
             [% c.loc("Clients") %]
         </a>
     </li>
+    [% ELSE %]
+        [% SET tab = "printing" %]
+    [% END %]
     [% IF c.user_exists && c.setting('PrinterConfiguration') %]
         <li class="nav-item">
             <a class="nav-link [% IF tab == 'printing' %]active[% END %]" id="printing-tab" data-toggle="tab" href="#printing" role="tab" aria-controls="printing" aria-selected="false">
@@ -17,9 +25,11 @@
     [% END %]
 </ul>
 <div class="tab-content" id="myTabContent">
+    [% IF c.setting('DisplayPublicReservationsPage') == 'enabled' %]
     <div class="tab-pane fade [% IF tab == 'clients' %]show active[% END %]" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 	[% INCLUDE index/clients.tt %]
     </div>
+    [% END %]
     [% IF c.user_exists %]
         <div class="tab-pane fade [% IF tab == 'printing' %]show active[% END %]" id="printing" role="tabpanel" aria-labelledby="printing-tab">
             [% INCLUDE index/printing.tt %]
@@ -27,3 +37,4 @@
     [% END %]
 </div>
 
+[% END %]

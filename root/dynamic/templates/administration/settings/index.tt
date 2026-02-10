@@ -357,6 +357,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="DisplayPublicReservationsPage">[% c.loc("Display Public Reservations Page") %]</label>
+                        <div>
+                            <input type="radio" id="enabled" name="DisplayPublicReservationsPage" value="enabled" style="margin-left:20px;" [% IF DisplayPublicReservationsPage == 'enabled' %]checked[% END %]>
+                            <label for="enabled" style="margin-bottom:3px;"> [% c.loc("Enabled") %]</label>
+                            <input type="radio" id="disabled" name="DisplayPublicReservationsPage" value="disabled" style="margin-left:15px;" [% IF !DisplayPublicReservationsPage || DisplayPublicReservationsPage == 'disabled' %]checked[% END %]>
+                            <label for="disabled" style="margin-bottom:3px;"> [% c.loc("Disabled") %]</label>
+                            <small class="form-text text-muted" style="margin-top:0px">[% c.loc("If enabled, current reservations will be visible on the Libki public page, without requiring login.") %]</small>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
                         <label for="DisplayReservationStatusWithin">[% c.loc("Display the status of the first reservation within:") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="DisplayReservationStatusWithin" name="DisplayReservationStatusWithin" value="[% DisplayReservationStatusWithin %]">
