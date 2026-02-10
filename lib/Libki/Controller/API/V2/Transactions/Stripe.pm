@@ -71,6 +71,23 @@ sub webhook : POST Path('webhook') Args(0) {
     my $body_fh = $c->request->body;
     my $payload = do { local $/; <$body_fh> };
 
+    my $signature = $c->request->header('Stripe-Signature');
+
+    my $provider = Libki::Payments::Stripe->new;
+
+    unless (
+        $provider->verify_webhook_signature(
+            payload   => $payload,
+            signature => $signature,
+            secret    => $c->setting('StripeWebhookSigningSecret'),
+        )
+    ) {
+        $c->log->warn('Stripe webhook: signature verification failed');
+        $c->response->status(400);
+        $c->response->body('invalid signature');
+        return;
+    }
+
     my $json_data;
     eval {
         $json_data = decode_json($payload);
@@ -82,7 +99,6 @@ sub webhook : POST Path('webhook') Args(0) {
         return;
     };
 
-    my $provider = Libki::Payments::Stripe->new;
     $provider->handle_webhook(
         c    => $c,
         data => $json_data,
