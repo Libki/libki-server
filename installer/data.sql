@@ -168,6 +168,7 @@ INSERT INTO `settings` VALUES ('','DefaultGuestTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DefaultSessionTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DefaultTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DisplayReservationStatusWithin','60');
+INSERT INTO `settings` VALUES ('','DisplayPublicReservationsPage','enabled');
 INSERT INTO `settings` VALUES ('','GuestBatchCount','40');
 INSERT INTO `settings` VALUES ('','MinimumReservationMinutes','5');
 INSERT INTO `settings` VALUES ('','PostCrashTimeout','5');
@@ -178,7 +179,7 @@ INSERT INTO `settings` VALUES ('','ShowFirstLastNames','1');
 INSERT INTO `settings` VALUES ('','ThirdPartyURL','');
 INSERT INTO `settings` VALUES ('','TimeDisplayFormat','24');
 INSERT INTO `settings` VALUES ('','UserCategories','');
-INSERT INTO `settings` VALUES ('','Version','5.2.0');
+INSERT INTO `settings` VALUES ('','Version','5.2.1');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
