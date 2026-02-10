@@ -961,12 +961,8 @@
                         <div class="input-group">
                             <textarea class="form-control" id="StripeWebhookSigningSecret" name="StripeWebhookSigningSecret" rows="2">[% StripeWebhookSigningSecret %]</textarea>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("Webhook Signing Secret from Stripe Dashboard Workbench.  Add a link to instructions ") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Webhook Signing Secret from Stripe Dashboard Workbench. Create an event destination, follow the prompts, and place the signing secrete here. ") %]</small>
                     </div>
-
-                </fieldset>
-                <fieldset>
-                    <legend>[% c.loc("Paypal Payments") %]</legend>
 
                 </fieldset>
             </div>
