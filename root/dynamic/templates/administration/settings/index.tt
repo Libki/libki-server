@@ -1021,6 +1021,75 @@
                             </label>
                         </div>
                     </div>
+                    
+                    <h4>[% c.loc("Gratis printing") %]</h4>
+                    <div class="form-group">
+                        <label for="GratisPrintingValue">[% c.loc("Gratis prints default value") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="GratisPrintingValue" name="GratisPrintingValue" value="[% GratisPrintingValue %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("pages or funds") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Default number of gratis pages or funds to give users for free printing.") %]</small>
+                        
+                        <label for="GratisPrintingValueGuest">[% c.loc("Gratis prints default value for guests") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="GratisPrintingValueGuest" name="GratisPrintingValueGuest" value="[% GratisPrintingValueGuest %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("pages or funds") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Default number of gratis pages or funds to give guests for free printing.") %]</small>
+                        
+                        <label for="GratisPrintingMethod">[% c.loc('Gratis printing method') %]</label>
+                        <div class="input-group">
+                            <select class="form-control" id="GratisPrintingMethod" name="GratisPrintingMethod">
+                                <option value="pages" [% IF GratisPrintingMethod == 'pages' %]selected="selected"[% END %]>[% c.loc("Pages") %]</option>
+                                <option value="funds" [% IF GratisPrintingMethod == 'funds' %]selected="selected"[% END %]>[% c.loc("Funds") %]</option>
+                            </select>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Method to use for gratis printing.") %]</small>
+
+                        <label for="GratisPrintingResetFrequency">[% c.loc('Gratis printing reset frequency') %]</label>
+                        <div class="input-group">
+                            <select class="form-control" id="GratisPrintingResetFrequency" name="GratisPrintingResetFrequency">
+                                <option value="daily" [% IF GratisPrintingResetFrequency == 'daily' %]selected="selected"[% END %]>[% c.loc("Daily") %]</option>
+                                <option value="weekly" [% IF GratisPrintingResetFrequency == 'weekly' %]selected="selected"[% END %]>[% c.loc("Weekly") %]</option>
+                                <option value="monthly" [% IF GratisPrintingResetFrequency == 'monthly' %]selected="selected"[% END %]>[% c.loc("Monthly") %]</option>
+                            </select>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Frequency to reset gratis printing to the default value.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("Daily will reset each night, monthly will reset on the first day of the month, and weekly will reset on the day of the week selected in <em>Gratis printing reset day</em>.") %]</small>
+
+                        <div id="GratisPrintingResetDayGroup" style="display:[% IF GratisPrintingResetFrequency == 'weekly' %]block[% ELSE %]none[% END %]">
+                            <label for="GratisPrintingResetDay">[% c.loc('Gratis printing reset day') %]</label>
+                            <div class="input-group">
+                                <select class="form-control" id="GratisPrintingResetDay" name="GratisPrintingResetDay">
+                                    <option value="Sunday" [% IF GratisPrintingResetDay == 'Sunday' %]selected="selected"[% END %]>[% c.loc("Sunday") %]</option>
+                                    <option value="Monday" [% IF GratisPrintingResetDay == 'Monday' %]selected="selected"[% END %]>[% c.loc("Monday") %]</option>
+                                    <option value="Tuesday" [% IF GratisPrintingResetDay == 'Tuesday' %]selected="selected"[% END %]>[% c.loc("Tuesday") %]</option>
+                                    <option value="Wednesday" [% IF GratisPrintingResetDay == 'Wednesday' %]selected="selected"[% END %]>[% c.loc("Wednesday") %]</option>
+                                    <option value="Thursday" [% IF GratisPrintingResetDay == 'Thursday' %]selected="selected"[% END %]>[% c.loc("Thursday") %]</option>
+                                    <option value="Friday" [% IF GratisPrintingResetDay == 'Friday' %]selected="selected"[% END %]>[% c.loc("Friday") %]</option>
+                                    <option value="Saturday" [% IF GratisPrintingResetDay == 'Saturday' %]selected="selected"[% END %]>[% c.loc("Saturday") %]</option>
+                                </select>
+                            </div>
+                            <small class="form-text text-muted">[% c.loc("Day of the week to reset gratis printing.") %]</small>
+                        </div>
+
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                $('#GratisPrintingResetFrequency').change(function() {
+                                    if ($(this).val() == 'weekly') {
+                                        $('#GratisPrintingResetDayGroup').show();
+                                    } else {
+                                        $('#GratisPrintingResetDayGroup').hide();
+                                    }
+                                });
+                            });
+                        </script>
+                    </div> 
                 </fieldset>
             </div>
 
