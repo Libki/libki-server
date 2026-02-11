@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.11.13-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19  Distrib 10.5.29-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: libki
+-- Host: libki-mariadb    Database: libki
 -- ------------------------------------------------------
--- Server version	11.8.5-MariaDB-ubu2404
+-- Server version	12.1.2-MariaDB-ubu2404
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -374,7 +375,7 @@ CREATE TABLE `transactions` (
   KEY `idx_instance_status` (`instance`,`status`),
   KEY `idx_created_on` (`created_on`),
   CONSTRAINT `user_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,11 +415,11 @@ CREATE TABLE `users` (
   `birthdate` date DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_on` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `gratis_print_balance` int(11) NOT NULL DEFAULT 0, -- number of free prints remaining, will either be a number of pages or a number of cents depending on system settings
   `firstname` varchar(191) DEFAULT '',
   `lastname` varchar(191) DEFAULT '',
   `category` varchar(191) DEFAULT '',
   `creation_source` varchar(191) DEFAULT NULL,
+  `gratis_print_balance` int(11) NOT NULL DEFAULT 0 COMMENT 'Number of free prints remaining; represents pages or cents depending on system settings',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_username` (`instance`,`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -433,4 +434,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-19 13:32:36
+-- Dump completed on 2026-02-11 10:59:54
