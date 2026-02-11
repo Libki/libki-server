@@ -414,6 +414,7 @@ CREATE TABLE `users` (
   `birthdate` date DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_on` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `gratis_print_balance` int(11) NOT NULL DEFAULT 0, -- number of free prints remaining, will either be a number of pages or a number of cents depending on system settings
   `firstname` varchar(191) DEFAULT '',
   `lastname` varchar(191) DEFAULT '',
   `category` varchar(191) DEFAULT '',
