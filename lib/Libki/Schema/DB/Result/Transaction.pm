@@ -83,7 +83,6 @@ __PACKAGE__->table("transactions");
 =head2 amount_cents
 
   data_type: 'integer'
-  extra: {unsigned => 1}
   is_nullable: 0
 
 =head2 currency
@@ -132,7 +131,7 @@ __PACKAGE__->add_columns(
   "provider_payment_id",
   { data_type => "varchar", is_nullable => 1, size => 128 },
   "amount_cents",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "integer", is_nullable => 0 },
   "currency",
   { data_type => "char", default_value => "USD", is_nullable => 0, size => 3 },
   "status",
@@ -206,8 +205,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2025-12-19 15:32:17
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:C5vxDal47UNOSdaRn9nouQ
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-02-11 10:59:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wTt5kG0X0tOz/Mq55tR78w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

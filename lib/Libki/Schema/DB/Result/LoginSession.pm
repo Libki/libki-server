@@ -57,7 +57,7 @@ __PACKAGE__->table("login_sessions");
 
 =head2 session_data
 
-  data_type: 'longtext'
+  data_type: 'mediumtext'
   is_nullable: 1
 
 =head2 expires
@@ -71,7 +71,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "char", is_nullable => 0, size => 72 },
   "session_data",
-  { data_type => "longtext", is_nullable => 1 },
+  { data_type => "mediumtext", is_nullable => 1 },
   "expires",
   { data_type => "integer", is_nullable => 1 },
 );
@@ -89,8 +89,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2021-04-27 09:23:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:m+OJsvQRg7FrVcbnVJwBxg
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-02-11 10:59:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6VF4JGAZI2UkY4knbkR/XQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
