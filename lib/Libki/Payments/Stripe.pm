@@ -145,7 +145,7 @@ sub handle_webhook {
 
 Verifies the authenticity of a Stripe webhook request.
 
-This method implements Stripe’s recommended webhook verification procedure.
+This method implements Stripe's recommended webhook verification procedure.
 It ensures that the request payload was sent by Stripe and has not been
 tampered with in transit.
 
