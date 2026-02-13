@@ -54,6 +54,7 @@
                 <th>[% c.loc("Daily minutes") %]</th>
                 <th>[% c.loc("Session minutes") %]</th>
                 <th>[% c.loc("Funds") %]</th>
+                <th>[% c.loc("Gratis print balance") %]</th>
                 <th>[% c.loc("Status") %]</th>
                 <th>[% c.loc("Notes") %]</th>
                 <th>[% c.loc("Troublemaker") %]</th>
@@ -570,6 +571,13 @@
                     <small class="form-text text-muted">[% c.loc("Use period as separator when editing funds.") %]</small>
                 </div>
 
+                [% IF GratisPrintingValue > 0 %]
+                <div class="form-group">
+                    <label for="edit-user-modal-form-gratis_print_balance">[% c.loc("Gratis print balance") %]</label>
+                    <input class="form-control" id="edit-user-modal-form-gratis_print_balance" name="gratis_print_balance" class="input-mini" type="text">
+                </div>
+                [% END %]
+
                 <div class="form-group">
                     <label for="edit-user-modal-form-status">[% c.loc("Status") %]</label>
                     <select class="form-control" id="edit-user-modal-form-status" name="status">
@@ -937,6 +945,10 @@ $(document).ready(function() {
                     return new Intl.NumberFormat('[% c.language %]', { style: 'currency', currency: 'USD' }).format(data.funds);
                 },
                 "visible": [% IF PrinterConfiguration %]true[% ELSE %]false[% END %]
+            },
+            {
+                "data": "gratis_print_balance",
+                "visible": [% IF GratisPrintingValue > 0 %]true[% ELSE %]false[% END %]
             },
             { "data": "status" }, // User stats
             { "data": "notes" },
@@ -1390,6 +1402,7 @@ $(document).ready(function() {
             $('#edit-user-modal-form-category').val( data.category );
             $('#edit-user-modal-form-minutes').val( data.minutes );
             $('#edit-user-modal-form-funds').val( Number.parseFloat(data.funds).toFixed(2) );
+            $('#edit-user-modal-form-gratis_print_balance').val( data.gratis_print_balance );
             $('#edit-user-modal-form-status').val( data.status );
             $('#edit-user-modal-form-notes').val( data.notes );
 

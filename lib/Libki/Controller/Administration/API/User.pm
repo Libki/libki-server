@@ -50,8 +50,9 @@ sub get : Local : Args(1) {
             minutes            => $user->minutes($c),
             status             => $user->status,
             notes              => $user->notes,
-            funds              => $user->funds,
-            is_troublemaker    => $user->is_troublemaker,
+            funds                => $user->funds,
+            gratis_print_balance => $user->gratis_print_balance,
+            is_troublemaker      => $user->is_troublemaker,
             troublemaker_until => defined( $user->troublemaker_until )
             ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59')
             : undef,
@@ -226,8 +227,9 @@ sub update : Local : Args(0) {
     my $category  = $c->request->params->{category};
     my $minutes   = $c->request->params->{'minutes'};
     my $funds     = $c->request->params->{'funds'};
-    my $notes     = $c->request->params->{'notes'};
-    my $status    = $c->request->params->{'status'};
+    my $notes                = $c->request->params->{'notes'};
+    my $gratis_print_balance = $c->request->params->{'gratis_print_balance'} || 0;
+    my $status               = $c->request->params->{'status'};
     my @roles     = $c->request->params->{'roles'} || [];
 
     # For some reason the list of checkboxes are created
@@ -249,8 +251,9 @@ sub update : Local : Args(0) {
 
             firstname  => $firstname,
             lastname   => $lastname,
-            category   => $category,
-            notes      => $notes,
+            category             => $category,
+            gratis_print_balance => $gratis_print_balance,
+            notes                => $notes,
             status     => $status,
             updated_on => $now,
         }
