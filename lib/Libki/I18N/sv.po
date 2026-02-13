@@ -39,6 +39,9 @@ msgstr "Norsk"
 msgid "lang.hu"
 msgstr "Magyar"
 
+msgid "lang.cs"
+msgstr "Česky"
+
 #: root/dynamic/templates/administration/settings/index.tt:1149
 msgid "&nbsp;"
 msgstr ""

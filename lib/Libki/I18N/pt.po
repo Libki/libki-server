@@ -38,6 +38,9 @@ msgstr "Norsk"
 msgid "lang.hu"
 msgstr "Magyar"
 
+msgid "lang.cs"
+msgstr "Česky"
+
 #: root/dynamic/includes/language_menu.tt:0
 msgid "('lang.' _ lang)"
 msgstr "('lang.' _ lang)"
