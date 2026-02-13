@@ -41,7 +41,8 @@ sub funds : Local Args(0) {
     delete $c->stash->{$_} for keys %{$c->stash};
     $c->stash(
         {
-            funds => $user->funds
+            funds => $user->funds,
+            gratis_print_balance => $user->gratis_print_balance,
         }
     );
     delete $c->stash->{Settings};
