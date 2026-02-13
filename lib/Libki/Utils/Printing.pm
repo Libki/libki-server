@@ -4,6 +4,7 @@ use Modern::Perl;
 
 use File::Slurp qw( write_file );
 use File::Temp qw( tempfile );
+use JSON qw( to_json );
 use PDF::API2;
 use Try::Tiny;
 
@@ -148,7 +149,10 @@ sub create_print_job_and_file {
 
 =head2 calculate_job_cost
 
-Helper function to calculate the cost of a print job for a given printer
+Helper function to calculate the cost of a print job for a given printer.
+Returns a list containing the calculated cost and the gratis discount applied.
+
+    my ( $cost, $gratis_discount ) = calculate_job_cost( $c, { print_job => $job } );
 
 =cut
 
@@ -179,18 +183,31 @@ sub calculate_job_cost {
 
     my $total_pages = $pages * $copies;
 
-    # Fetch grais print settings and decrement pages or balance as needed
+    my $gratis_discount = 0;
+
     if ( $GratisPrintingMethod  eq 'pages' ) {
-        $total_pages -= $c->user->gratis_print_balance;        
+        if ( $total_pages >= $c->user->gratis_print_balance ) {
+            $gratis_discount = $c->user->gratis_print_balance;
+            $total_pages -= $c->user->gratis_print_balance;        
+        } else {
+            $gratis_discount = $total_pages;
+            $total_pages = 0;
+        }
     } 
 
     my $cost = $total_pages * $cpp;
 
     if ( $GratisPrintingMethod  eq 'balance' ) {
-        $cost -= $c->user->gratis_print_balance;        
+        if ( $cost >= $c->user->gratis_print_balance ) {
+            $gratis_discount = $c->user->gratis_print_balance;
+            $cost -= $c->user->gratis_print_balance;        
+        } else {
+            $gratis_discount = $cost;
+            $cost = 0;
+        }
     } 
 
-    return $cost;
+    return ($cost, $gratis_discount);
 }
 
 =head2 cancel
@@ -311,7 +328,7 @@ sub release {
         printer    => $printer,
     };
 
-    my $total_cost = calculate_job_cost( $c,
+    my ($total_cost, $gratis_discount) = calculate_job_cost( $c,
         {
             print_job => $print_job,
             printer   => $printer,
@@ -323,12 +340,33 @@ sub release {
     if ( $total_cost <= $user->funds ) {
         $user->debit_funds( $c, $total_cost );
 
+        $user->gratis_print_balance( $user->gratis_print_balance - $gratis_discount );
+
         $print_job->status(PRINT_STATUS_PENDING);
 
         $c->model('DB')->txn_do(
             sub {
                 $user->update();
                 $print_job->update();
+
+                # Add statistic indicating gratis discount was used
+                if ( $gratis_discount > 0 ) {
+                    $c->model('DB::Statistic')->create(
+                        {
+                            instance   => $c->instance,
+                            username   => $c->user->username,
+                            action     => 'GRATIS_DISCOUNT',
+                            created_on => $c->now,
+                            session_id => $c->sessionid,
+                            info       => to_json(
+                                {
+                                    print_job_id    => $print_job->id,
+                                    gratis_discount => $gratis_discount,
+                                }
+                            ),
+                        }
+                    );
+                }
             }
         );
     }
