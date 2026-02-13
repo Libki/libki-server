@@ -178,8 +178,9 @@ INSERT INTO `settings` VALUES ('','ReservationShowUsername','RSD');
 INSERT INTO `settings` VALUES ('','ReservationTimeout','15');
 INSERT INTO `settings` VALUES ('','ShowFirstLastNames','1');
 INSERT INTO `settings` VALUES ('','ThirdPartyURL','');
+INSERT INTO `settings` VALUES ('','TimeDisplayFormat', '24');
 INSERT INTO `settings` VALUES ('','UserCategories','');
-INSERT INTO `settings` VALUES ('','Version','5.2.x');
+INSERT INTO `settings` VALUES ('','Version','5.2.2');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
