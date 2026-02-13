@@ -16,7 +16,7 @@
 
 # Start with the previous image for speed,
 # it has all the dependencies installed already
-FROM bitnami/minideb:bullseye
+FROM bitnami/minideb:trixie
 
 LABEL maintainer="Kyle M Hall <kyle@kylehall.info>"
 
@@ -32,6 +32,7 @@ RUN install_packages \
     cpanminus \
     libdbd-mysql-perl \
     libimage-magick-perl \
+    ghostscript \
     # for cpanm --installdeps .
     libmodule-install-perl \
     # for DBD::mysql
@@ -47,8 +48,6 @@ RUN install_packages \
     mariadb-client \
     # for https support in PDF conversion services
     liblwp-protocol-https-perl
-
-RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
 COPY cpanfile /app/cpanfile
 WORKDIR /app
