@@ -118,6 +118,7 @@ sub prints : Local Args(0) {
                 print_job => $print_job,
                 print_file => $print_file,
                 printer => $printers->{printers}->{ $print_job->printer },
+                user => $user,
             }
         );
 
