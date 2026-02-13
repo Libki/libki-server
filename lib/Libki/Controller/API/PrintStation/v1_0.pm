@@ -134,20 +134,22 @@ sub print_jobs : Path('print_jobs') : Args(0) {
 
     my $print_jobs = [];
     while ( my $j = $jobs->next ) {
-        my $cost = Libki::Utils::Printing::calculate_job_cost( $c, { print_job => $j } );
+        my ( $cost, $gratis_discount ) = Libki::Utils::Printing::calculate_job_cost( $c, { print_job => $j } );
 
         push(
             @$print_jobs,
             {
-                print_job_id  => $j->id,
-                printer       => $j->printer,
-                copies        => $j->copies,
-                created_on    => $c->format_dt( { dt => $j->created_on, include_time => 1 } ),
-                print_file_id => $j->print_file_id,
-                pages         => $j->print_file->pages,
-                cost          => $cost,
+                print_job_id => $j->id,
+                printer      => $j->printer,
+                copies       => $j->copies,
+                created_on   => $c->format_dt( { dt => $j->created_on, include_time => 1 } ),
+                print_file_id   => $j->print_file_id,
+                pages           => $j->print_file->pages,
+                cost            => $cost,
+                gratis_discount => $gratis_discount,
             }
         );
+
     }
 
     my $data = {

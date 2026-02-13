@@ -70,6 +70,7 @@ sub create_or_update_user {
                         is_troublemaker => 'No',
                         created_on      => $now,
                         updated_on      => $now,
+                        gratis_print_balance => $c->setting('GratisPrintingValue') || 0,
                     }
                 );
 
@@ -158,6 +159,7 @@ sub create_guest {
                     updated_on      => $now,
                     category        => $category,
                     creation_source => 'local',
+                    gratis_print_balance => $c->setting('GratisPrintingValueGuest') || 0,
                 }
             );
 

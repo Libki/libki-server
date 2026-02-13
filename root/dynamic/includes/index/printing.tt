@@ -68,7 +68,32 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4>[% c.loc("Funds available for printing") %]: <span id="user-funds">0</span></h4>
+            <h4 class="user-funds">[% c.loc("Funds available for printing") %]: <span id="user-funds">0</span></h4>
+
+            [% IF c.setting("GratisPrintingValue") > 0 %]
+            <h4 class="gratis-print-balance">
+                <span id="gratis-print-balance">0</span>
+
+                [% IF c.setting("GratisPrintingMethod") == "balance" %]
+                    [% c.loc("gratis funds remaining for the") %]
+                [% ELSE %]
+                    [% c.loc("gratis pages remaining for the") %]
+                [% END %]
+
+                [% IF c.setting("GratisPrintingResetFrequency") == "daily" %]
+                    [% c.loc("day") %]
+                [% ELSIF c.setting("GratisPrintingResetFrequency") == "weekly" %]
+                    [% c.loc("week") %]
+                [% ELSIF c.setting("GratisPrintingResetFrequency") == "monthly" %]
+                    [% c.loc("month") %]
+                [% END %]
+            </h4>
+            <span id="print-button-warning-text" class="form-text text-muted">
+                [% c.loc('All print job valus include any free printing you may have.') %]
+                [% c.loc('Print job costs may change if a released job uses some or all of your free printing balance') %]
+            </span>
+            [% END %]
+
             <span id="print-button-warning-text" class="form-text text-muted">
                 [% c.loc('If enough funds are available, printing will start immediately when the "Print" button is clicked.') %]
             </span>
@@ -251,7 +276,10 @@ $(document).ready(function() {
             const res = await fetch("/public/api/user/funds");
             const data = await res.json();
             user_funds = data.funds;
+            gratis_print_balance = data.gratis_print_balance;
+
             $('#user-funds').html(formatter.format(user_funds));
+            $('#gratis-print-balance').html(formatter.format(gratis_print_balance));
         } catch (err) {
             console.error("Error fetching user funds:", err);
         }

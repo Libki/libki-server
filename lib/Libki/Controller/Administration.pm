@@ -51,6 +51,7 @@ sub index : Path : Args(0) {
         PrinterConfiguration   => $c->setting('PrinterConfiguration'),
         ShowFirstLastNames     => $c->setting('ShowFirstLastNames'),
         UserCategories         => $c->setting('UserCategories'),
+        GratisPrintingValue    => $c->setting('GratisPrintingValue'),
         locations              => \@locations,
         types                  => \@types,
     );

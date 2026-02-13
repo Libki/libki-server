@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19  Distrib 10.5.29-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: libki-mariadb    Database: libki
 -- ------------------------------------------------------
--- Server version	10.3.5-MariaDB-10.3.5+maria~jessie
+-- Server version	12.1.2-MariaDB-ubu2404
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -167,8 +168,8 @@ INSERT INTO `settings` VALUES ('','DefaultGuestSessionTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DefaultGuestTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DefaultSessionTimeAllowance','45');
 INSERT INTO `settings` VALUES ('','DefaultTimeAllowance','45');
-INSERT INTO `settings` VALUES ('','DisplayReservationStatusWithin','60');
 INSERT INTO `settings` VALUES ('','DisplayPublicReservationsPage','enabled');
+INSERT INTO `settings` VALUES ('','DisplayReservationStatusWithin','60');
 INSERT INTO `settings` VALUES ('','GuestBatchCount','40');
 INSERT INTO `settings` VALUES ('','MinimumReservationMinutes','5');
 INSERT INTO `settings` VALUES ('','PostCrashTimeout','5');
@@ -177,9 +178,8 @@ INSERT INTO `settings` VALUES ('','ReservationShowUsername','RSD');
 INSERT INTO `settings` VALUES ('','ReservationTimeout','15');
 INSERT INTO `settings` VALUES ('','ShowFirstLastNames','1');
 INSERT INTO `settings` VALUES ('','ThirdPartyURL','');
-INSERT INTO `settings` VALUES ('','TimeDisplayFormat','24');
 INSERT INTO `settings` VALUES ('','UserCategories','');
-INSERT INTO `settings` VALUES ('','Version','5.2.1');
+INSERT INTO `settings` VALUES ('','Version','5.2.x');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -190,6 +190,15 @@ UNLOCK TABLES;
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `transactions`
+--
+
+LOCK TABLES `transactions` WRITE;
+/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -218,4 +227,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-17  7:52:06
+-- Dump completed on 2026-02-11 10:59:54

@@ -112,12 +112,13 @@ sub prints : Local Args(0) {
     foreach my $print_job (@prints) {
         my $print_file = $print_job->print_file;
 
-        my $total_cost = Libki::Utils::Printing::calculate_job_cost(
+        my ($total_cost, $gratis_discount) = Libki::Utils::Printing::calculate_job_cost(
             $c,
             {
                 print_job => $print_job,
                 print_file => $print_file,
                 printer => $printers->{printers}->{ $print_job->printer },
+                user => $user,
             }
         );
 
@@ -130,7 +131,7 @@ sub prints : Local Args(0) {
         }
         keys %{$printers->{printers}} ) {
             my $printer = $printers->{printers}->{ $key };
-            my $total_cost = Libki::Utils::Printing::calculate_job_cost(
+            my ($total_cost, $gratis_discount) = Libki::Utils::Printing::calculate_job_cost(
                 $c,
                 {
                     print_job => $print_job,
@@ -143,6 +144,7 @@ sub prints : Local Args(0) {
                 selected => $key eq $print_job->printer ? 1 : 0,
                 name => $printer->{public_printer_name},
                 cost => $total_cost,
+                gratis_discount => $gratis_discount,
             };
 
             push( @printer_costs, $data );

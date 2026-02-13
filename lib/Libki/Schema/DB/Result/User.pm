@@ -152,6 +152,14 @@ __PACKAGE__->table("users");
   is_nullable: 1
   size: 191
 
+=head2 gratis_print_balance
+
+  data_type: 'integer'
+  default_value: 0
+  is_nullable: 0
+
+Number of free prints remaining; represents pages or cents depending on system settings
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -211,6 +219,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 191 },
   "creation_source",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "gratis_print_balance",
+  { data_type => "integer", default_value => 0, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -374,8 +384,8 @@ Composing rels: L</user_roles> -> role
 __PACKAGE__->many_to_many("roles", "user_roles", "role");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2025-12-19 15:32:17
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ieWa+l+vWEQ/vWPaNZ37DQ
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-02-11 10:59:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tV3lA7kB36cKoCgfsJq4wg
 
 __PACKAGE__->add_columns(
     'password' => {
