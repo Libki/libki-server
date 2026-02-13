@@ -20,8 +20,8 @@ FROM bitnami/minideb:bullseye
 
 LABEL maintainer="Kyle M Hall <kyle@kylehall.info>"
 
-ENV LIBKI_SERVER_PORT 3000
-ENV LIBKI_MAX_WORKERS 4
+ENV LIBKI_SERVER_PORT=3000
+ENV LIBKI_MAX_WORKERS=4
 
 # Install needed packages
 RUN install_packages \
@@ -60,6 +60,6 @@ COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
 COPY docker/files/bashrc /root/.bashrc
 
-ENV PERL5LIB /app/lib
+ENV PERL5LIB=/app/lib
 
 CMD ./installer/update_db.pl && plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 --max-workers ${LIBKI_MAX_WORKERS} -E production -a /app/libki.psgi
