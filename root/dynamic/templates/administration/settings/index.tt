@@ -1032,7 +1032,8 @@
                             </div>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Default number of gratis pages or funds to give users for free printing.") %]</small>
-                        
+                    </div>
+                    <div class="form-group">
                         <label for="GratisPrintingValueGuest">[% c.loc("Gratis prints default value for guests") %]</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="GratisPrintingValueGuest" name="GratisPrintingValueGuest" value="[% GratisPrintingValueGuest %]">
@@ -1041,7 +1042,8 @@
                             </div>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Default number of gratis pages or funds to give guests for free printing.") %]</small>
-                        
+                    </div>
+                    <div class="form-group">
                         <label for="GratisPrintingMethod">[% c.loc('Gratis printing method') %]</label>
                         <div class="input-group">
                             <select class="form-control" id="GratisPrintingMethod" name="GratisPrintingMethod">
@@ -1050,7 +1052,8 @@
                             </select>
                         </div>
                         <small class="form-text text-muted">[% c.loc("Method to use for gratis printing.") %]</small>
-
+                    </div>
+                    <div class="form-group">
                         <label for="GratisPrintingResetFrequency">[% c.loc('Gratis printing reset frequency') %]</label>
                         <div class="input-group">
                             <select class="form-control" id="GratisPrintingResetFrequency" name="GratisPrintingResetFrequency">
@@ -1059,9 +1062,10 @@
                                 <option value="monthly" [% IF GratisPrintingResetFrequency == 'monthly' %]selected="selected"[% END %]>[% c.loc("Monthly") %]</option>
                             </select>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("Frequency to reset gratis printing to the default value.") %]</small>
-                        <small class="form-text text-muted">[% c.loc("Daily will reset each night, monthly will reset on the first day of the month, and weekly will reset on the day of the week selected in <em>Gratis printing reset day</em>.") %]</small>
-
+                        <small class="form-text text-muted">
+                            [% c.loc("Frequency to reset gratis printing to the default value.") %]
+                            [% c.loc("Daily will reset each night, monthly will reset on the first day of the month, and weekly will reset on the day of the week selected in <em>Gratis printing reset day</em>.") %]
+                        </small>
                         <div id="GratisPrintingResetDayGroup" style="display:[% IF GratisPrintingResetFrequency == 'weekly' %]block[% ELSE %]none[% END %]">
                             <label for="GratisPrintingResetDay">[% c.loc('Gratis printing reset day') %]</label>
                             <div class="input-group">
