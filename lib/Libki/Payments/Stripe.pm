@@ -8,6 +8,10 @@ use Time::HiRes qw(time);
 
 with 'Libki::Payments::Provider';
 
+use LWP::UserAgent;
+use HTTP::Request::Common qw(POST);
+use MIME::Base64 qw(encode_base64);
+use JSON qw(decode_json);
 use POSIX qw(round);
 
 =head2 create_checkout
@@ -19,8 +23,6 @@ Returns client_secret and transaction
 =cut
 
 sub create_checkout {
-    require Net::Stripe;
-
     my ( $self, %args ) = @_;
 
     my $c        = $args{c};
@@ -39,36 +41,47 @@ sub create_checkout {
         status       => 'created',
     });
 
-    my $stripe = Net::Stripe->new(
-        api_key => $c->setting('StripeSecretKey'),
-        api_version => '2020-03-02'
+    my $secret = $c->setting('StripeSecretKey');
+
+    my $ua = LWP::UserAgent->new(
+        timeout => 15,
     );
 
-    # ---- Create PaymentIntent ----
-    my $intent = $stripe->create_payment_intent({
-        amount   => $cents,
-        currency => 'usd',
-        description => 'Libki Account Transaction',
+    my $auth = encode_base64("$secret:", '');
 
-#        automatic_payment_methods => {
-#            enabled => \1,
-#        },
+    my %form = (
+        amount                   => $cents,
+        currency                 => 'usd',
+        description              => 'Libki Account Transaction',
+        'metadata[transaction_id]' => $txn->id,
+        'metadata[user_id]'        => $user->id,
+        'metadata[instance]'       => $instance,
+    );
 
-        metadata => {
-            transaction_id => $txn->id,
-            user_id        => $user->id,
-            instance       => $instance,
-        },
-    });
+    my $req = POST(
+        'https://api.stripe.com/v1/payment_intents',
+        \%form,
+        'Content-Type'  => 'application/x-www-form-urlencoded',
+        'Authorization' => "Basic $auth",
+        'Stripe-Version' => '2020-03-02',
+    );
+
+    my $res = $ua->request($req);
+
+    unless ($res->is_success) {
+        die "Stripe API error: " . $res->status_line . " " . $res->decoded_content;
+    }
+
+    my $intent = decode_json($res->decoded_content);
 
     $txn->update({
-        provider_payment_id => $intent->id,
+        provider_payment_id => $intent->{id},
         status              => 'pending',
     });
 
     return {
-        client_secret => $intent->client_secret,
-        transaction  => $txn,
+        client_secret => $intent->{client_secret},
+        transaction   => $txn,
     };
 }
 
