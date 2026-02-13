@@ -1,5 +1,5 @@
 # Libki Kiosk Management System
-# Copyright (C) 2018 Kyle M Hall <kyle@kylehall.info>
+# Copyright (C) 2026 Kyle M Hall <kyle@kylehall.info>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,16 +18,17 @@
 # it has all the dependencies installed already
 FROM alpine:3.22
 
-MAINTAINER Kyle M Hall <kyle@kylehall.info>
+LABEL maintainer="Kyle M Hall <kyle@kylehall.info>"
 
-ENV LIBKI_SERVER_PORT 3000
-ENV LIBKI_MAX_WORKERS 4
+ENV LIBKI_SERVER_PORT=3000
+ENV LIBKI_MAX_WORKERS=4
 
 RUN apk add --no-cache \
         build-base \
 #       cups-dev \
 #       cups-filters-dev \
         curl \
+        ghostscript \
         imagemagick \
         imagemagick-dev \
         imagemagick-perlmagick \
@@ -55,8 +56,6 @@ RUN apk add --no-cache \
         shared-mime-info \
         wget
 
-#RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
-
 COPY . /app
 WORKDIR /app
 
@@ -68,6 +67,6 @@ COPY docker/files/log4perl.conf /app/log4perl.conf
 COPY docker/files/libki_local.conf /app/libki_local.conf
 COPY docker/files/bashrc /root/.profile
 
-ENV PERL5LIB /app/lib
+ENV PERL5LIB=/app/lib
 
 CMD ./installer/update_db.pl && plackup -s Gazelle --port ${LIBKI_SERVER_PORT} --max-reqs-per-child 50000 --max-workers ${LIBKI_MAX_WORKERS} -E production -a /app/libki.psgi
