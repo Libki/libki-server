@@ -155,6 +155,8 @@ Helper function to calculate the cost of a print job for a given printer
 sub calculate_job_cost {
     my ( $c, $params ) = @_;
 
+    my $GratisPrintingMethod = $c->setting("GratisPrintingMethod");
+
     my $print_job  = $params->{print_job};
     my $print_file = $params->{print_file};
     my $printer    = $params->{printer};
@@ -175,7 +177,18 @@ sub calculate_job_cost {
     my $copies = $print_job->copies        || 1;
     my $cpp    = $printer->{cost_per_page} || 0;
 
-    my $cost = $copies * $pages * $cpp;
+    my $total_pages = $pages * $copies;
+
+    # Fetch grais print settings and decrement pages or balance as needed
+    if ( $GratisPrintingMethod  eq 'pages' ) {
+        $total_pages -= $c->user->gratis_print_balance;        
+    } 
+
+    my $cost = $total_pages * $cpp;
+
+    if ( $GratisPrintingMethod  eq 'balance' ) {
+        $cost -= $c->user->gratis_print_balance;        
+    } 
 
     return $cost;
 }
