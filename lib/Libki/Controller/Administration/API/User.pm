@@ -42,18 +42,18 @@ sub get : Local : Args(1) {
 
     $c->stash(
         {
-            id                 => $user->id,
-            username           => $user->username,
-            firstname          => $user->firstname,
-            lastname           => $user->lastname,
-            category           => $user->category,
-            minutes            => $user->minutes($c),
-            status             => $user->status,
-            notes              => $user->notes,
+            id                   => $user->id,
+            username             => $user->username,
+            firstname            => $user->firstname,
+            lastname             => $user->lastname,
+            category             => $user->category,
+            minutes              => $user->minutes($c),
+            status               => $user->status,
+            notes                => $user->notes,
             funds                => $user->funds,
             gratis_print_balance => $user->gratis_print_balance,
             is_troublemaker      => $user->is_troublemaker,
-            troublemaker_until => defined( $user->troublemaker_until )
+            troublemaker_until   => defined( $user->troublemaker_until )
             ? $user->troublemaker_until->strftime('%Y-%m-%d 23:59')
             : undef,
             roles => \@roles,
@@ -221,16 +221,16 @@ sub update : Local : Args(0) {
 
     my $success = 0;
 
-    my $id        = $c->request->params->{'id'};
-    my $firstname = $c->request->params->{firstname};
-    my $lastname  = $c->request->params->{lastname};
-    my $category  = $c->request->params->{category};
-    my $minutes   = $c->request->params->{'minutes'};
-    my $funds     = $c->request->params->{'funds'};
+    my $id                   = $c->request->params->{'id'};
+    my $firstname            = $c->request->params->{firstname};
+    my $lastname             = $c->request->params->{lastname};
+    my $category             = $c->request->params->{category};
+    my $minutes              = $c->request->params->{'minutes'};
+    my $funds                = $c->request->params->{'funds'};
     my $notes                = $c->request->params->{'notes'};
     my $gratis_print_balance = $c->request->params->{'gratis_print_balance'} || 0;
     my $status               = $c->request->params->{'status'};
-    my @roles     = $c->request->params->{'roles'} || [];
+    my @roles                = $c->request->params->{'roles'} || [];
 
     # For some reason the list of checkboxes are created
     # as a list within a list if multiple are checked
@@ -249,13 +249,13 @@ sub update : Local : Args(0) {
     $success = 1 if $user->update(
         {
 
-            firstname  => $firstname,
-            lastname   => $lastname,
+            firstname            => $firstname,
+            lastname             => $lastname,
             category             => $category,
             gratis_print_balance => $gratis_print_balance,
             notes                => $notes,
-            status     => $status,
-            updated_on => $now,
+            status               => $status,
+            updated_on           => $now,
         }
     );
 
