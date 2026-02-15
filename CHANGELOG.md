@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.2] [r26.02]
+### Added
+- Czech language support
+- Free Prints feature (grant users pages or funds for printing on a recurring basis)
+
+### Changed
+- Updated Debian Dockerfile to minideb:trixie as base (Perl 5.40)
+
+### Fixed
+- Dockerfile warnings
+- added ghostscript as required module (to allow Print Station to fetch thumbnails)
+
+## [5.2.1]
+### Added
+- Message to self-registered guests on client with username/password (one-time message)
+- Option in printer auto-release to differentiate between Client uploads and Web uploads
+- API v2 (just for transactions so far)
+- Stripe payments
+- Config option to disable the display of the clients on the public webpage
+
+### Changed
+- Auto-extend goes up to next reservation (plus gap)
+- Set resource limits on default docker-compose
+- Remove "experimental" phrasing from non-PDF web print
+
+### Fixed
+- Default ReservationGap to 0
+- API issues resulting from transaction table introduction
+- Typo in Libki banner
+- Quotes around filenames in HTTP headers
+
+## [5.2.0]
+### Added
+- Ability to instantly save changes to print jobs from public interface
+- Finanical Transactions table (replacing static users.funds field)
+- Add link to Admin interface to public page if user is admin
+
+### Changed
+- removed users.funds field in DB; functions in User.pm now do the calculation within transactions
+
 ## [5.1.0] [r25.12]
 ### Added
 - SIP2 Telnet
