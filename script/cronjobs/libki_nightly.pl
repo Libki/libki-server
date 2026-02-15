@@ -153,14 +153,14 @@ foreach my $urd (@user_retention_days) {
 ## Reset gratis printing
 my $reset_frequency = $c->setting('GratisPrintingResetFrequency');
 my $reset_day       = $c->setting('GratisPrintingResetDay');
-if ( $reset_frequency && $reset_day ) {
+if ( $reset_frequency ) {
     my $today = DateTime->today( time_zone => $ENV{LIBKI_TZ} );
 
     my $do_reset = 0;
     if ( $reset_frequency eq 'daily' ) {
         $do_reset = 1;
     }
-    elsif ( $reset_frequency eq 'weekly' ) {
+    elsif ( $reset_frequency eq 'weekly' && $reset_day ) {
         if ( $today->day_name eq $reset_day ) {
             $do_reset = 1;
         }
@@ -173,8 +173,6 @@ if ( $reset_frequency && $reset_day ) {
 
     if ( $do_reset ) {
         my $gratis_printing_value       = $c->setting('GratisPrintingValue')       || 0;
-        my $gratis_printing_value_guest = $c->setting('GratisPrintingValueGuest')  || 0;
-
         $c->model('DB::User')->search( { is_guest => 'No' } )->update( { gratis_print_balance => $gratis_printing_value } );
     }
 }
