@@ -156,6 +156,7 @@ sub prints : Local Args(0) {
         $r->{'status'}           = $print_job->status;
         $r->{'sufficient_funds'} = $total_cost <= $user->funds;
         $r->{'printer_costs'}    = to_json( \@printer_costs );
+        $r->{'job_cost'}         = Libki::Utils::Printing::calculate_job_cost($c, { print_job => $print_job });
         $r->{'filename'}         = $print_file->filename;
         $r->{'0'}                = $print_job->type;
         $r->{'1'}                = $print_job->status;
