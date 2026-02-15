@@ -1057,6 +1057,7 @@
                         <label for="GratisPrintingResetFrequency">[% c.loc('Gratis printing reset frequency') %]</label>
                         <div class="input-group">
                             <select class="form-control" id="GratisPrintingResetFrequency" name="GratisPrintingResetFrequency">
+                                <option value="" [% IF !GratisPrintingResetFrequency %]selected="selected"[% END %]>[% c.loc("Do not reset") %]</option>
                                 <option value="daily" [% IF GratisPrintingResetFrequency == 'daily' %]selected="selected"[% END %]>[% c.loc("Daily") %]</option>
                                 <option value="weekly" [% IF GratisPrintingResetFrequency == 'weekly' %]selected="selected"[% END %]>[% c.loc("Weekly") %]</option>
                                 <option value="monthly" [% IF GratisPrintingResetFrequency == 'monthly' %]selected="selected"[% END %]>[% c.loc("Monthly") %]</option>
