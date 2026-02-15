@@ -184,11 +184,12 @@ sub calculate_job_cost {
     my $total_pages = $pages * $copies;
 
     my $gratis_discount = 0;
+    my $user = $print_job->user();
 
     if ( $GratisPrintingMethod  eq 'pages' ) {
-        if ( $total_pages >= $c->user->gratis_print_balance ) {
-            $gratis_discount = $c->user->gratis_print_balance;
-            $total_pages -= $c->user->gratis_print_balance;        
+        if ( $total_pages >= $user->gratis_print_balance ) {
+            $gratis_discount = $user->gratis_print_balance;
+            $total_pages -= $user->gratis_print_balance;        
         } else {
             $gratis_discount = $total_pages;
             $total_pages = 0;
@@ -197,10 +198,10 @@ sub calculate_job_cost {
 
     my $cost = $total_pages * $cpp;
 
-    if ( $GratisPrintingMethod  eq 'balance' ) {
-        if ( $cost >= $c->user->gratis_print_balance ) {
-            $gratis_discount = $c->user->gratis_print_balance;
-            $cost -= $c->user->gratis_print_balance;        
+    if ( $GratisPrintingMethod  eq 'funds' ) {
+        if ( $cost >= $user->gratis_print_balance ) {
+            $gratis_discount = $user->gratis_print_balance;
+            $cost -= $user->gratis_print_balance;
         } else {
             $gratis_discount = $cost;
             $cost = 0;
@@ -338,7 +339,7 @@ sub release {
     $user->discard_changes; # Let's make absolutely sure we have the correct funds
 
     if ( $total_cost <= $user->funds ) {
-        $user->debit_funds( $c, $total_cost );
+        $user->debit_funds( $c, $total_cost ) if $total_cost;
 
         $user->gratis_print_balance( $user->gratis_print_balance - $gratis_discount );
 
