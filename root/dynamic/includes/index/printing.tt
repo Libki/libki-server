@@ -72,12 +72,12 @@
 
             [% IF c.setting("GratisPrintingValue") > 0 %]
             <h4 class="gratis-print-balance">
-                <span id="gratis-print-balance">0</span>
-
-                [% IF c.setting("GratisPrintingMethod") == "balance" %]
-                    [% c.loc("gratis funds remaining for the") %]
+                [% IF c.setting("GratisPrintingMethod") == "funds" %]
+                    <span id="gratis-print-funds">0</span>
+                    [% c.loc("of free printing remaining for the") %]
                 [% ELSE %]
-                    [% c.loc("gratis pages remaining for the") %]
+                    <span id="gratis-print-pages">0</span>
+                    [% c.loc("free pages remaining for the") %]
                 [% END %]
 
                 [% IF c.setting("GratisPrintingResetFrequency") == "daily" %]
@@ -89,8 +89,8 @@
                 [% END %]
             </h4>
             <span id="print-button-warning-text" class="form-text text-muted">
-                [% c.loc('All print job valus include any free printing you may have.') %]
-                [% c.loc('Print job costs may change if a released job uses some or all of your free printing balance') %]
+                [% c.loc('All print job values include any free printing you may have.') %]
+                [% c.loc('Print job costs may change if a released job uses some or all of your free printing balance.') %]
             </span>
             [% END %]
 
@@ -279,7 +279,8 @@ $(document).ready(function() {
             gratis_print_balance = data.gratis_print_balance;
 
             $('#user-funds').html(formatter.format(user_funds));
-            $('#gratis-print-balance').html(formatter.format(gratis_print_balance));
+            $('#gratis-print-funds').html(formatter.format(gratis_print_balance));
+            $('#gratis-print-pages').html(gratis_print_balance);
         } catch (err) {
             console.error("Error fetching user funds:", err);
         }
