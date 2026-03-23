@@ -113,6 +113,32 @@ sub create_print_job_and_file {
                             updated_on    => $now,
                         }
                     );
+
+                    $c->model('DB::Statistic')->create(
+                        {
+                            instance   => $c->instance,
+                            username   => $c->user->username,
+                            action     => 'PRINT_JOB_CREATED',
+                            created_on => $c->now,
+                            session_id => $c->sessionid,
+                            info       => to_json(
+                                {
+                                    print_job_id    => $print_job->id,
+                                    print_file_id   => $print_file->id,
+                                    client_id       => $client_id,
+                                    client_location => $client_location,
+                                    client_name     => $client_name,
+                                    client_type     => $client_type,
+                                    content_type    => $print_file->type,
+                                    copies          => $copies,
+                                    filename        => $print_file->filename,
+                                    pages           => $pages,
+                                    printer         => $printer_id,
+                                    user_id         => $user->id,
+                                }
+                            ),
+                        }
+                    );
                 }
             );
         }
@@ -240,6 +266,22 @@ sub cancel {
     } unless $print_job;
 
     $print_job->status(PRINT_STATUS_CANCELED);
+
+    $c->model('DB::Statistic')->create(
+        {
+            instance   => $c->instance,
+            username   => $c->user->username,
+            action     => 'PRINT_JOB_CANCELED',
+            created_on => $c->now,
+            session_id => $c->sessionid,
+            info       => to_json(
+                {
+                    print_job_id    => $print_job->id,
+                }
+            ),
+        }
+    );
+
     return { success => $print_job->update() ? 1 : 0 };
 
 }
@@ -396,6 +438,21 @@ sub release_for_print_manager {
 
     my $success = $print_job->update( { status => PRINT_STATUS_PENDING } );
 
+    $c->model('DB::Statistic')->create(
+        {
+            instance   => $c->instance,
+            username   => $c->user->username,
+            action     => 'PRINT_JOB_RELEASED',
+            created_on => $c->now,
+            session_id => $c->sessionid,
+            info       => to_json(
+                {
+                    print_job_id    => $print_job->id,
+                }
+            ),
+        }
+    );
+
     return {
         success => $success ? 1 : 0,
         message => 'Ok'
@@ -454,6 +511,21 @@ sub release_for_cups {
             data       => $cups_print_job_data,
             status     => $cups_print_job_state,
             updated_on => $c->now(),
+        }
+    );
+
+    $c->model('DB::Statistic')->create(
+        {
+            instance   => $c->instance,
+            username   => $c->user->username,
+            action     => 'PRINT_JOB_RELEASED',
+            created_on => $c->now,
+            session_id => $c->sessionid,
+            info       => to_json(
+                {
+                    print_job_id    => $print_job->id,
+                }
+            ),
         }
     );
 
