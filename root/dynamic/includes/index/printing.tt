@@ -74,18 +74,18 @@
             <h4 class="gratis-print-balance">
                 [% IF c.setting("GratisPrintingMethod") == "funds" %]
                     <span id="gratis-print-funds">0</span>
-                    [% c.loc("of free printing remaining for the") %]
+                    [% c.loc("of free printing remaining") %]
                 [% ELSE %]
                     <span id="gratis-print-pages">0</span>
-                    [% c.loc("free pages remaining for the") %]
+                    [% c.loc("free pages remaining") %]
                 [% END %]
 
                 [% IF c.setting("GratisPrintingResetFrequency") == "daily" %]
-                    [% c.loc("day") %]
+                    [% c.loc("for the day") %]
                 [% ELSIF c.setting("GratisPrintingResetFrequency") == "weekly" %]
-                    [% c.loc("week") %]
+                    [% c.loc("for the week") %]
                 [% ELSIF c.setting("GratisPrintingResetFrequency") == "monthly" %]
-                    [% c.loc("month") %]
+                    [% c.loc("for month") %]
                 [% END %]
             </h4>
             <span id="print-button-warning-text" class="form-text text-muted">
