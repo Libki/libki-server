@@ -1,0 +1,40 @@
+ALTER TABLE locations
+    ADD COLUMN parent_id INT(11) NULL AFTER id,
+    ADD CONSTRAINT fk_locations_parent
+    FOREIGN KEY (parent_id) REFERENCES locations(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
+
+CREATE TABLE `location_hours` (
+    `instance` varchar(32) NOT NULL DEFAULT '',
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `location_id` int(11) NOT NULL REFERENCES locations(id),
+    `day_of_week` SMALLINT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
+    `open_time` TIME NOT NULL,
+    `close_time` TIME NOT NULL,
+    UNIQUE(location_id, day_of_week, open_time, close_time),
+    PRIMARY KEY (`id`)
+);
+CREATE INDEX idx_hours_lookup ON location_hours(location_id, day_of_week);
+
+CREATE TABLE `location_hours_exceptions` (
+    `instance` varchar(32) NOT NULL DEFAULT '',
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `location_id` int(11) NOT NULL REFERENCES locations(id),
+    `description` TEXT NULL,
+    `service_date` DATE NOT NULL,
+    `is_closed` BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE(location_id, service_date),
+    PRIMARY KEY (`id`)
+);
+CREATE INDEX idx_exception_lookup  ON location_hours_exceptions(location_id, service_date);
+
+CREATE TABLE `location_hours_exception_intervals` (
+    `instance` varchar(32) NOT NULL DEFAULT '',
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `exception_id` int(11) NOT NULL REFERENCES location_hours_exceptions(id),
+    `open_time` TIME NOT NULL,
+    `close_time` TIME NOT NULL,
+     PRIMARY KEY (`id`)
+);
+

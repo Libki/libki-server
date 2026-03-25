@@ -62,6 +62,12 @@ __PACKAGE__->table("locations");
   is_auto_increment: 1
   is_nullable: 0
 
+=head2 parent_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =head2 code
 
   data_type: 'varchar'
@@ -75,6 +81,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "parent_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "code",
   { data_type => "varchar", is_nullable => 0, size => 191 },
 );
@@ -124,9 +132,74 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 location_hours
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-01-06 13:33:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MgNIrJnXYM9WC565X/h1HA
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::LocationHour>
+
+=cut
+
+__PACKAGE__->has_many(
+  "location_hours",
+  "Libki::Schema::DB::Result::LocationHour",
+  { "foreign.location_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 location_hours_exceptions
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::LocationHoursException>
+
+=cut
+
+__PACKAGE__->has_many(
+  "location_hours_exceptions",
+  "Libki::Schema::DB::Result::LocationHoursException",
+  { "foreign.location_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 locations
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->has_many(
+  "locations",
+  "Libki::Schema::DB::Result::Location",
+  { "foreign.parent_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 parent
+
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "parent",
+  "Libki::Schema::DB::Result::Location",
+  { id => "parent_id" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "SET NULL",
+    on_update     => "CASCADE",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-03-23 19:39:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QMeIx7YGzeRF0HNC8Gfffg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

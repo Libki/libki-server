@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.5.29-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-11.8.6-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: libki-mariadb    Database: libki
+-- Host: db    Database: libki
 -- ------------------------------------------------------
--- Server version	12.1.2-MariaDB-ubu2404
+-- Server version	11.8.5-MariaDB-ubu2404
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -13,7 +14,7 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
 -- Table structure for table `allotments`
@@ -119,6 +120,67 @@ CREATE TABLE `jobs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `location_hours`
+--
+
+DROP TABLE IF EXISTS `location_hours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `location_hours` (
+  `instance` varchar(32) NOT NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_id` int(11) NOT NULL,
+  `day_of_week` smallint(6) NOT NULL CHECK (`day_of_week` between 0 and 6),
+  `open_time` time NOT NULL,
+  `close_time` time NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_id` (`location_id`,`day_of_week`,`open_time`,`close_time`),
+  KEY `idx_hours_lookup` (`location_id`,`day_of_week`),
+  CONSTRAINT `location_hours_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `location_hours_exception_intervals`
+--
+
+DROP TABLE IF EXISTS `location_hours_exception_intervals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `location_hours_exception_intervals` (
+  `instance` varchar(32) NOT NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `exception_id` int(11) NOT NULL,
+  `open_time` time NOT NULL,
+  `close_time` time NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `exception_id` (`exception_id`),
+  CONSTRAINT `location_hours_exception_intervals_ibfk_1` FOREIGN KEY (`exception_id`) REFERENCES `location_hours_exceptions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `location_hours_exceptions`
+--
+
+DROP TABLE IF EXISTS `location_hours_exceptions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `location_hours_exceptions` (
+  `instance` varchar(32) NOT NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_id` int(11) NOT NULL,
+  `description` text DEFAULT NULL,
+  `service_date` date NOT NULL,
+  `is_closed` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_id` (`location_id`,`service_date`),
+  KEY `idx_exception_lookup` (`location_id`,`service_date`),
+  CONSTRAINT `location_hours_exceptions_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `locations`
 --
 
@@ -128,10 +190,13 @@ DROP TABLE IF EXISTS `locations`;
 CREATE TABLE `locations` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
   `code` varchar(191) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_code` (`instance`,`code`),
-  KEY `instance` (`instance`)
+  KEY `instance` (`instance`),
+  KEY `fk_locations_parent` (`parent_id`),
+  CONSTRAINT `fk_locations_parent` FOREIGN KEY (`parent_id`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -374,7 +439,7 @@ CREATE TABLE `transactions` (
   KEY `idx_instance_status` (`instance`,`status`),
   KEY `idx_created_on` (`created_on`),
   CONSTRAINT `user_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,6 +496,6 @@ CREATE TABLE `users` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-02-11 10:59:54
+-- Dump completed on 2026-03-25 16:44:59
