@@ -47,10 +47,16 @@ RUN install_packages \
     # For cli access to the database
     mariadb-client \
     # for https support in PDF conversion services
-    liblwp-protocol-https-perl
+    liblwp-protocol-https-perl \
+    libnet-server-perl \
+    libssl-dev \
+    libcatalyst-perl
 
 COPY cpanfile /app/cpanfile
 WORKDIR /app
+
+# Bootstrap toolchain
+RUN cpanm --notest ExtUtils::MakeMaker@7.76
 
 RUN cpanm -n --installdeps --with-recommends . && rm -rf /root/.cpanm
 COPY . /app

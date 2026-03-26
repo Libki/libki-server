@@ -45,7 +45,7 @@ requires 'File::Find::Rule';
 requires 'File::Slurp';
 requires 'Gazelle';
 requires 'Getopt::Long';
-requires 'Getopt::Long::Descriptive';
+requires 'Getopt::Long::Descriptive', '==0.116';
 requires 'HTTP::Request::Common';
 requires 'Image::Magick';
 requires 'Image::Magick::Thumbnail::PDF';
