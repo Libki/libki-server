@@ -88,13 +88,13 @@
                     [% c.loc("for month") %]
                 [% END %]
             </h4>
-            <span id="print-button-warning-text" class="form-text text-muted">
+            <span id="print-button-warning-text-gratis" class="form-text text-muted">
                 [% c.loc('All print job values include any free printing you may have.') %]
                 [% c.loc('Print job costs may change if a released job uses some or all of your free printing balance.') %]
             </span>
             [% END %]
 
-            <span id="print-button-warning-text" class="form-text text-muted">
+            <span id="print-button-warning-text-funds" class="form-text text-muted">
                 [% c.loc('If enough funds are available, printing will start immediately when the "Print" button is clicked.') %]
             </span>
 
