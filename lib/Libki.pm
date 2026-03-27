@@ -80,7 +80,7 @@ __PACKAGE__->config(
 __PACKAGE__->config(
     'Plugin::Session' => {
         dbic_class => 'DB::LoginSession',
-        expires    => 3600,
+        expires    => $ENV{LIBKI_SESSION_TIMEOUT} // 3600,
     },
 );
 

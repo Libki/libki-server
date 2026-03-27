@@ -68,6 +68,7 @@ services:
       - LIBKI_DB_PORT=3306
       - LIBKI_DB_DATABASE=${DB_NAME:-libki}
       - LIBKI_TZ=${LIBKI_TZ:-America/New_York}
+      - LIBKI_SESSION_TIMEOUT=${LIBKI_SESSION_TIMEOUT:-3600}
     ports:
       - "${LIBKI_PORT:-3000}:3000"
     depends_on:
