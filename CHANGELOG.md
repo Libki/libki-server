@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.3] [r26.03]
+### Added
+- Print statistics
+- LIBKI_SESSION_TIMEOUT environment variable
+
+### Changed
+- Remove sorting options from unsortable client table columns
+
+### Fixed
+- Dockerfile.alpine and associate GitHub actions
+- string boundaries on public printing page
+- Dark mode for responsive tables
+
 ## [5.2.2] [r26.02]
 ### Added
 - Czech language support
