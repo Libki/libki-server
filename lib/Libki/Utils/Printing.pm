@@ -117,7 +117,7 @@ sub create_print_job_and_file {
                     $c->model('DB::Statistic')->create(
                         {
                             instance   => $c->instance,
-                            username   => $c->user->username,
+                            username   => $username,
                             action     => 'PRINT_JOB_CREATED',
                             created_on => $c->now,
                             session_id => $c->sessionid,
@@ -129,7 +129,7 @@ sub create_print_job_and_file {
                                     client_location => $client_location,
                                     client_name     => $client_name,
                                     client_type     => $client_type,
-                                    content_type    => $print_file->type,
+                                    content_type    => $print_file->content_type,
                                     copies          => $copies,
                                     filename        => $print_file->filename,
                                     pages           => $pages,
@@ -270,7 +270,7 @@ sub cancel {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user->username,
+            username   => $user->username,
             action     => 'PRINT_JOB_CANCELED',
             created_on => $c->now,
             session_id => $c->sessionid,
@@ -397,7 +397,7 @@ sub release {
                     $c->model('DB::Statistic')->create(
                         {
                             instance   => $c->instance,
-                            username   => $c->user->username,
+                            username   => $user->username,
                             action     => 'GRATIS_DISCOUNT',
                             created_on => $c->now,
                             session_id => $c->sessionid,
@@ -441,7 +441,7 @@ sub release_for_print_manager {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user->username,
+            username   => $c->user->username // '',
             action     => 'PRINT_JOB_RELEASED',
             created_on => $c->now,
             session_id => $c->sessionid,
@@ -517,7 +517,7 @@ sub release_for_cups {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user->username,
+            username   => $c->user->username // '',
             action     => 'PRINT_JOB_RELEASED',
             created_on => $c->now,
             session_id => $c->sessionid,
