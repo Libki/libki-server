@@ -300,7 +300,7 @@ sub release {
     my $new_printer  = $params->{printer};
 
     my $log  = $c->log();
-    $log->info("Libki::Utils::Printing::release print_job_id: $params->{print_job_id}, user: $params->{user}->username");
+    $log->info("Libki::Utils::Printing::release print_job_id: $params->{print_job_id}, user: $user->username");
 
     my $instance = $c->instance;
 
