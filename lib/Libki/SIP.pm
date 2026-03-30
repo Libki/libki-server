@@ -298,6 +298,7 @@ sub authenticate_via_sip {
                 firstname         => $firstname,
                 category          => $category,
                 creation_source   => 'SIP',
+                gratis_print_balance => $c->setting('GratisPrintingValue') || 0
             }
         );
     }
