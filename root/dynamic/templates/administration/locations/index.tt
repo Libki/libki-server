@@ -153,17 +153,18 @@ function renderHoursEditor(loc){
 
     el.appendChild(container);
 
-    rows.forEach(r=>addInterval(i,r.open_time,r.close_time));
+    rows.forEach(r=>addInterval(i,r.open_time,r.close_time,r.reservable));
   });
 }
 
-function addInterval(day,open='',close=''){
+function addInterval(day,open='',close='',reservable=false){
   const row=document.createElement('div');
   row.className='interval-row';
   row.innerHTML=`
     <input type="time" value="${open}">
     <input type="time" value="${close}">
     <button type="button" class="btn btn-sm btn-danger">x</button>
+    <input type="checkbox" ${reservable?'checked':''}> [% c.loc('Reservable') %]
   `;
   row.querySelector('button').onclick=()=>row.remove();
   document.getElementById(`day-${day}`).appendChild(row);
@@ -180,10 +181,10 @@ function addException(e={}){
   div.className='border p-2 mb-2';
   div.innerHTML=`
     <input type="date" value="${e.service_date||''}">
-    <label><input type="checkbox" ${e.is_closed?'checked':''}> Closed</label>
+    <label><input type="checkbox" ${e.is_closed?'checked':''}> [% c.loc('Closed') %]</label>
     <div class="intervals"></div>
-    <button type="button" class="btn btn-sm btn-outline-secondary">+ interval</button>
-    <button type="button" class="btn btn-sm btn-danger">Remove</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary">+ [% c.loc('interval') %]</button>
+    <button type="button" class="btn btn-sm btn-danger">[% c.loc('Remove') %]</button>
   `;
 
   const intervalsDiv=div.querySelector('.intervals');
@@ -202,6 +203,7 @@ function addExceptionInterval(container,i={}){
     <input type="time" value="${i.open_time||''}">
     <input type="time" value="${i.close_time||''}">
     <button class="btn btn-sm btn-danger">x</button>
+    <label><input type="checkbox" ${i.reservable?'checked':''}> [% c.loc('Reservable') %]</label>
   `;
   row.querySelector('button').onclick=()=>row.remove();
   container.appendChild(row);
@@ -223,6 +225,44 @@ async function saveLocation(e){
 
   if(!data.code){ alert('Code required'); return; }
 
+  data.parent_id = data.parent_id || null;
+
+  data.hours = [];
+  for(let day=0; day<7; day++){
+    document.querySelectorAll(`#day-${day} .interval-row`).forEach(row=>{
+      const inputs=row.querySelectorAll('input');
+      const open_time=inputs[0].value;
+      const close_time=inputs[1].value;
+      const reservable=inputs[2].checked;
+      if(open_time && close_time){
+        data.hours.push({ day_of_week: day, open_time, close_time, reservable });
+      }
+
+    });
+  }
+
+  data.exceptions = [];
+  document.querySelectorAll('#exceptionEditor > .border').forEach(box=>{
+    const inputs=box.querySelectorAll('input');
+    const service_date=inputs[0].value;
+    const is_closed=inputs[1].checked;
+    if(!service_date) return;
+
+    const ex={ service_date, is_closed, intervals: [] };
+
+    box.querySelectorAll('.intervals .interval-row').forEach(row=>{
+      const vals=row.querySelectorAll('input');
+      const open_time=vals[0].value;
+      const close_time=vals[1].value;
+      const reservable=vals[2].checked;
+      if(open_time && close_time){
+        ex.intervals.push({ open_time, close_time, reservable });
+      }
+    });
+
+    data.exceptions.push(ex);
+  });
+
   const method=data.id?'PUT':'POST';
   const url=data.id?`/api/v2/locations/${data.id}`:'/api/v2/locations';
 
@@ -234,7 +274,7 @@ async function saveLocation(e){
     DisplayMessage( "error", error.error );
   }
   fetchLocations();
-
+  if(data.id) loadLocation(data.id);
 }
 
 async function deleteLocation(id){

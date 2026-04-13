@@ -37,16 +37,18 @@ sub locations_POST {
     my ( $self, $c ) = @_;
 
     my $params = $c->req->data;
+    my $schema = $c->model('DB')->schema;
+    my $location;
 
-    my $location_values = {
-        code      => $params->{code},
-        instance  => $c->instance
-    };
-    if ($params->{parent_id}) {
-       $location_values->{parent_id} = $params->{parent_id},
-    }
+    $schema->txn_do(sub {
+        $location = $c->model('DB::Location')->create({
+            code      => $params->{code},
+            parent_id => $params->{parent_id},
+            instance  => $c->instance
+        });
 
-    my $location = $c->model('DB::Location')->create($location_values);
+        _replace_related( $location, $params );
+    });
 
     $self->status_created(
         $c,
@@ -73,17 +75,19 @@ sub location_PUT {
         or return $self->status_not_found($c, message => 'Location not found');
 
     my $params = $c->req->data;
+    my $schema = $c->model('DB')->schema;
 
     die "Invalid parent_id" if defined $params->{parent_id} && $params->{parent_id} == $location->id;
 
-    my $location_values = {
-        code      => $params->{code}
-    };
-    if ($params->{parent_id}) {
-        $location_values->{parent_id} = $params->{parent_id}
-    };
+    $schema->txn_do(sub {
 
-    $location->update($location_values);
+        $location->update({
+            code      => $params->{code},
+            parent_id => $params->{parent_id},
+        });
+
+        _replace_related( $location, $params );
+    });
 
     $self->status_ok($c, entity => _serialize_location($c, $location));
 }
@@ -224,6 +228,45 @@ sub _build_location_chain {
     }
 
     return @chain; # child → root
+}
+
+sub _replace_related {
+    my ( $location, $params ) = @_;
+
+    # delete existing weekly hours
+    $location->location_hours->delete;
+
+    # delete existing exceptions (cascade should remove intervals)
+    $location->location_hours_exceptions->delete;
+
+    # recreate weekly hours
+    foreach my $h ( @{ $params->{hours} || [] } ) {
+
+        $location->location_hours->create({
+            day_of_week => $h->{day_of_week},
+            open_time   => $h->{open_time},
+            close_time  => $h->{close_time},
+            reservable  => $h->{reservable},
+        });
+    }
+
+    # recreate exceptions
+    foreach my $e ( @{ $params->{exceptions} || [] } ) {
+
+        my $exception = $location->location_hours_exceptions->create({
+            service_date => $e->{service_date},
+            is_closed    => $e->{is_closed} ? 1 : 0,
+        });
+
+        foreach my $i ( @{ $e->{intervals} || [] } ) {
+
+            $exception->location_hours_exception_intervals->create({
+                open_time  => $i->{open_time},
+                close_time => $i->{close_time},
+                reservable => $i->{reservable},
+            });
+        }
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
