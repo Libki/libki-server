@@ -12,6 +12,7 @@ CREATE TABLE `location_hours` (
     `day_of_week` SMALLINT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
     `open_time` TIME NOT NULL,
     `close_time` TIME NOT NULL,
+    `reservable` BOOLEAN DEFAULT FALSE,
     UNIQUE(location_id, day_of_week, open_time, close_time),
     PRIMARY KEY (`id`)
 );
@@ -35,6 +36,7 @@ CREATE TABLE `location_hours_exception_intervals` (
     `exception_id` int(11) NOT NULL REFERENCES location_hours_exceptions(id),
     `open_time` TIME NOT NULL,
     `close_time` TIME NOT NULL,
+    `reservable` BOOLEAN DEFAULT FALSE,
      PRIMARY KEY (`id`)
 );
 

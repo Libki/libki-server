@@ -133,6 +133,7 @@ CREATE TABLE `location_hours` (
   `day_of_week` smallint(6) NOT NULL CHECK (`day_of_week` between 0 and 6),
   `open_time` time NOT NULL,
   `close_time` time NOT NULL,
+  `reservable` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `location_id` (`location_id`,`day_of_week`,`open_time`,`close_time`),
   KEY `idx_hours_lookup` (`location_id`,`day_of_week`),
@@ -153,6 +154,7 @@ CREATE TABLE `location_hours_exception_intervals` (
   `exception_id` int(11) NOT NULL,
   `open_time` time NOT NULL,
   `close_time` time NOT NULL,
+  `reservable` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `exception_id` (`exception_id`),
   CONSTRAINT `location_hours_exception_intervals_ibfk_1` FOREIGN KEY (`exception_id`) REFERENCES `location_hours_exceptions` (`id`)
@@ -498,4 +500,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-03-25 16:44:59
+-- Dump completed on 2026-04-13 14:01:31

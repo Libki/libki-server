@@ -83,6 +83,12 @@ __PACKAGE__->table("location_hours");
   data_type: 'time'
   is_nullable: 0
 
+=head2 reservable
+
+  data_type: 'tinyint'
+  default_value: 0
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -98,6 +104,8 @@ __PACKAGE__->add_columns(
   { data_type => "time", is_nullable => 0 },
   "close_time",
   { data_type => "time", is_nullable => 0 },
+  "reservable",
+  { data_type => "tinyint", default_value => 0, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -153,8 +161,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-03-23 19:39:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MVUzICcGZ0mRxXsiohtcmw
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-13 14:01:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/XujjAij3lI18xEDQYMzEA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

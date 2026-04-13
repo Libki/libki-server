@@ -129,6 +129,7 @@ sub _serialize_location {
             day_of_week => $_->day_of_week,
             open_time   => $_->open_time . '',
             close_time  => $_->close_time . '',
+            reservable  => $_->reservable,
         }
     } $location->location_hours;
 
@@ -141,6 +142,7 @@ sub _serialize_location {
                     {
                         open_time  => $_->open_time . '',
                         close_time => $_->close_time . '',
+                        reservable => $_->reservable,
                     }
                 } $_->location_hours_exception_intervals
             ],
