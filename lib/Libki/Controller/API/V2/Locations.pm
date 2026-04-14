@@ -114,7 +114,7 @@ sub hours_GET {
     my $location = $c->model('DB::Location')->find($id)
         or return $self->status_not_found($c, message => 'Location not found');
 
-    my $intervals = _resolve_hours($c, $location, $date);
+    my $intervals = $location->hours_for_date($date);
 
     $self->status_ok($c, entity => {
         location_id => $id,
@@ -139,7 +139,7 @@ sub _serialize_location {
 
     my @exceptions = map {
         {
-            service_date => $_->service_date . '',
+            service_date => $c->format_dt( { dt => $_->service_date, format => '%Y-%m-%d' } ),
             is_closed    => $_->is_closed ? \1 : \0,
             intervals    => [
                 map {
@@ -160,74 +160,6 @@ sub _serialize_location {
         hours     => \@hours,
         exceptions => \@exceptions,
     };
-}
-
-sub _resolve_hours {
-    my ( $c, $location, $date_str ) = @_;
-
-    my $dt = DateTime->new(
-        year  => substr($date_str, 0, 4),
-        month => substr($date_str, 5, 2),
-        day   => substr($date_str, 8, 2),
-    );
-
-    my $dow = ($dt->day_of_week % 7); # 0 = Sunday
-
-    my @chain = _build_location_chain($location);
-
-    # Step 1: exceptions
-    foreach my $loc (@chain) {
-        my $exception = $c->model('DB::LocationHoursException')->find({
-            location_id  => $loc->id,
-            service_date => $date_str,
-        });
-
-        next unless $exception;
-
-        return [] if $exception->is_closed;
-
-        return [
-            map {
-                {
-                    open_time  => $_->open_time . '',
-                    close_time => $_->close_time . '',
-                }
-            } $exception->location_hours_exception_intervals
-        ];
-    }
-
-    # Step 2: weekly hours
-    foreach my $loc (@chain) {
-        my @hours = $c->model('DB::LocationHour')->search({
-            location_id => $loc->id,
-            day_of_week => $dow,
-        });
-
-        return [
-            map {
-                {
-                    open_time  => $_->open_time . '',
-                    close_time => $_->close_time . '',
-                }
-            } @hours
-        ] if @hours;
-    }
-
-    return [];
-}
-
-sub _build_location_chain {
-    my ($location) = @_;
-
-    my @chain;
-    my $current = $location;
-
-    while ($current) {
-        push @chain, $current;
-        $current = $current->parent;
-    }
-
-    return @chain; # child → root
 }
 
 sub _replace_related {

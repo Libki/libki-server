@@ -201,6 +201,126 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-03-23 19:39:29
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QMeIx7YGzeRF0HNC8Gfffg
 
+=head2 ancestors
+
+Return an array of ancestor locations for this location (starting with self)
+
+=cut
+
+sub ancestors {
+    my ( $self ) = @_;
+
+    my @chain;
+    my $current = $self;
+
+    while ($current) {
+        push @chain, $current;
+        $current = $current->parent;
+    }
+
+    return @chain; # child → root
+}
+
+
+=head2 hours_for_date
+
+Returns the hours intervals for this location on the given date; first
+checks exceptions for self then ancestors, then regular hours for self
+then ancestors.
+
+=cut
+
+sub hours_for_date {
+    my ( $self, $date_str ) = @_;
+
+    my $schema = $self->result_source->schema;
+
+    my $dt = DateTime->now( time_zone => $ENV{LIBKI_TZ} );
+    if ( $date_str ) {
+        $dt = DateTime->new(
+            year  => substr($date_str, 0, 4),
+            month => substr($date_str, 5, 2),
+            day   => substr($date_str, 8, 2),
+        );
+    }
+
+    my $dow = ($dt->day_of_week % 7);
+    my @chain = $self->ancestors();
+
+    # Step 1: exceptions
+    foreach my $loc (@chain) {
+        my $exception = $schema->resultset('LocationHoursException')->find({
+            location_id  => $loc->id,
+            service_date => $dt->ymd,
+        });
+
+        next unless $exception;
+
+        return [] if $exception->is_closed;
+
+        return [
+            map {
+                {
+                    open_time  => $_->open_time . '',
+                    close_time => $_->close_time . '',
+                }
+            } $exception->location_hours_exception_intervals->all
+        ];
+    }
+
+    # Step 2: weekly hours
+    foreach my $loc (@chain) {
+        my @hours = $schema->resultset('LocationHour')->search({
+            location_id => $loc->id,
+            day_of_week => $dow,
+        })->all;
+
+        return [
+            map {
+                {
+                    open_time  => $_->open_time . '',
+                    close_time => $_->close_time . '',
+                }
+            } @hours
+        ] if @hours;
+    }
+
+    return [];
+}
+
+=head2 is_open
+
+Returns whether the current Location is open for the given datetime
+
+=cut
+
+sub is_open {
+    my ( $self, $dt ) = @_;
+
+    $dt = DateTime->now( time_zone => $ENV{LIBKI_TZ} ) unless $dt;
+    my $intervals = $self->hours_for_date($dt->ymd);
+    foreach my $int (@$intervals) {
+       my @open_time_parts  = split( ':', $int->{open_time} );
+       my @close_time_parts = split( ':', $int->{close_time} );
+       my $open_datetime  = DateTime->now( time_zone => $ENV{LIBKI_TZ} )
+                                    ->set( hour   => $open_time_parts[0],
+                                           minute => $open_time_parts[1] );
+       my $close_datetime = DateTime->now( time_zone => $ENV{LIBKI_TZ} )
+                                    ->set( hour   => $close_time_parts[0],
+                                           minute => $close_time_parts[1] );
+       # is_between is strictly less/greater than, so push open/close datetimes by a nanosecond to get inclusion
+       $open_datetime->subtract(nanoseconds => 1);
+       $close_datetime->add(nanoseconds => 1);
+
+       if ( $dt->is_between($open_datetime, $close_datetime) ) {
+           return 1;
+       } else {
+           next;
+       }
+    }
+
+    return 0;
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

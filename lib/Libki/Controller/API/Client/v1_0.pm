@@ -314,8 +314,6 @@ sub index : Path : Args(0) {
                         }
                     );
 
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
-
                     #TODO: Move this to a unified sub, see TODO below
                     my $minutes_allotment = $user->minutes($c, $client);
 
@@ -345,7 +343,8 @@ sub index : Path : Args(0) {
                     }
 
                     my $error = {};    # Must be initialized as a hashref
-                    if ( defined $minutes_until_closing && $minutes_until_closing <= 0 )
+                    my $location = $c->model('DB::Location')->single({ 'code' => $client_location });
+                    if ( $location && !$location->is_open() )
                     {
                         $c->stash( error => 'CLOSED' );
                     }
