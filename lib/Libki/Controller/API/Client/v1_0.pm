@@ -344,7 +344,7 @@ sub index : Path : Args(0) {
 
                     my $error = {};    # Must be initialized as a hashref
                     my $location = $c->model('DB::Location')->single({ 'code' => $client_location });
-                    if ( $location && !$location->is_open() )
+                    if ( $location && !$location->minutes_until_closed() )
                     {
                         $c->stash( error => 'CLOSED' );
                     }

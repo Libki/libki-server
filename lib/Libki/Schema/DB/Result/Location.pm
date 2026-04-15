@@ -226,7 +226,7 @@ sub ancestors {
 
 Returns the hours intervals for this location on the given date; first
 checks exceptions for self then ancestors, then regular hours for self
-then ancestors.
+then ancestors.  Intervals are returned sorted by close_time.
 
 =cut
 
@@ -258,22 +258,32 @@ sub hours_for_date {
 
         return [] if $exception->is_closed;
 
+        my @rows = $exception->location_hours_exception_intervals->search(
+            {},
+            { order_by => { -asc => 'close_time' } }
+        )->all;
+
         return [
             map {
                 {
                     open_time  => $_->open_time . '',
                     close_time => $_->close_time . '',
                 }
-            } $exception->location_hours_exception_intervals->all
+            } @rows
         ];
     }
 
     # Step 2: weekly hours
     foreach my $loc (@chain) {
-        my @hours = $schema->resultset('LocationHour')->search({
-            location_id => $loc->id,
-            day_of_week => $dow,
-        })->all;
+        my @hours = $schema->resultset('LocationHour')->search(
+            {
+                location_id => $loc->id,
+                day_of_week => $dow,
+            },
+            {
+                order_by => { -asc => 'close_time' },
+            }
+        )->all;
 
         return [
             map {
@@ -288,17 +298,22 @@ sub hours_for_date {
     return [];
 }
 
-=head2 is_open
+=head2 minutes_until_closed
 
-Returns whether the current Location is open for the given datetime
+Returns the number of minutes until the given Location is closed (or
+0 if already closed).  Can be used as a Boolean check for "is open".
 
 =cut
 
-sub is_open {
+sub minutes_until_closed {
     my ( $self, $dt ) = @_;
 
     $dt = DateTime->now( time_zone => $ENV{LIBKI_TZ} ) unless $dt;
     my $intervals = $self->hours_for_date($dt->ymd);
+
+    my $minutes_until_closed = 0;
+    my $last_closed_time = '';
+
     foreach my $int (@$intervals) {
        my @open_time_parts  = split( ':', $int->{open_time} );
        my @close_time_parts = split( ':', $int->{close_time} );
@@ -313,13 +328,17 @@ sub is_open {
        $close_datetime->add(nanoseconds => 1);
 
        if ( $dt->is_between($open_datetime, $close_datetime) ) {
-           return 1;
-       } else {
-           next;
+           my $delta = $close_datetime->subtract_datetime($dt);
+           $minutes_until_closed += $delta->in_units('minutes');
+           $last_closed_time = $int->{close_time};
+       } elsif ($int->{open_time} eq $last_closed_time) {
+           my $delta = $close_datetime->subtract_datetime($open_datetime);
+           $minutes_until_closed += $delta->in_units('minutes');
+           $last_closed_time = $int->{close_time};
        }
     }
-
-    return 0;
+warn "Minutes until closed: " . $minutes_until_closed;
+    return $minutes_until_closed;
 }
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
