@@ -337,7 +337,8 @@ Check the time and the user, return the available time if possible.
 
 sub check_login {
     my ( $c, $client, $user ) = @_;
-    my $minutes_until_closing = Libki::Hours::minutes_until_closing( { c => $c, location => $client->location } );
+    my $location = $c->model('DB::Location')->single({ 'code' => $client->location });
+    my $minutes_until_closed = $location->minutes_until_closed();
     my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
@@ -406,7 +407,7 @@ sub check_login {
             : $c->setting( 'DefaultSessionTimeAllowance' );
 
         my @array = ( $allowance, $minutes_allotment );
-        push( @array, $minutes_until_closing ) if ( $minutes_until_closing );
+        push( @array, $minutes_until_closed ) if ( $minutes_until_closed );
         push( @array, $time_to_reservation ) if ( $time_to_reservation > 0 );
         my $min = min @array;
 
@@ -437,13 +438,10 @@ sub check_reservation {
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'allotment' => 0, 'end_time' => $begin_time_dt->clone );
 
     my @array;
-    my $minutes_to_closing = Libki::Hours::minutes_until_closing(
-        {
-            c        => $c,
-            location => $client->location,
-            datetime => $begin_time_dt,
-        }
-    );
+
+    my $location = $c->model('DB::Location')->find({ 'code' => $client->location });
+    my $minutes_until_closed = $location->minutes_until_closed($begin_time_dt);
+
     my ( $minutes_left, $minutes ) = ( 0, 0 );
 
     #1. Check to see if the time has been past
@@ -464,9 +462,9 @@ sub check_reservation {
     }
 
     #3. Check the closing time
-    if ( !$result{'error'} && defined( $minutes_to_closing ) ) {
-        if ( $minutes_to_closing > 0 ) {
-            push( @array, $minutes_to_closing );
+    if ( !$result{'error'} && defined( $minutes_until_closed ) ) {
+        if ( $minutes_until_closed ) {
+            push( @array, $minutes_until_closed );
         }
         else {
             $result{'error'} = 'CLOSING_TIME';
