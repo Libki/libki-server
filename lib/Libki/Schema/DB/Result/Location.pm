@@ -262,7 +262,6 @@ sub hours_for_date {
             {},
             { order_by => { -asc => 'close_time' } }
         )->all;
-
         return [
             map {
                 {
@@ -317,12 +316,12 @@ sub minutes_until_closed {
     foreach my $int (@$intervals) {
        my @open_time_parts  = split( ':', $int->{open_time} );
        my @close_time_parts = split( ':', $int->{close_time} );
-       my $open_datetime  = DateTime->now( time_zone => $ENV{LIBKI_TZ} )
-                                    ->set( hour   => $open_time_parts[0],
-                                           minute => $open_time_parts[1] );
-       my $close_datetime = DateTime->now( time_zone => $ENV{LIBKI_TZ} )
-                                    ->set( hour   => $close_time_parts[0],
-                                           minute => $close_time_parts[1] );
+       my $open_datetime  = $dt->clone()
+                               ->set( hour   => $open_time_parts[0],
+                                      minute => $open_time_parts[1] );
+       my $close_datetime = $dt->clone()
+                               ->set( hour   => $close_time_parts[0],
+                                      minute => $close_time_parts[1] );
        # is_between is strictly less/greater than, so push open/close datetimes by a nanosecond to get inclusion
        $open_datetime->subtract(nanoseconds => 1);
        $close_datetime->add(nanoseconds => 1);
