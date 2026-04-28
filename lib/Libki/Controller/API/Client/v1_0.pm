@@ -7,7 +7,6 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 use Libki::SIP;
 use Libki::LDAP;
-use Libki::Hours;
 use Libki::Utils::Printing;
 use Libki::Utils::User;
 use Libki::Clients;

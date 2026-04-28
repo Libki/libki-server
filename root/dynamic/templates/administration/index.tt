@@ -1935,16 +1935,6 @@ function postForm(url, fields) {
     $form.submit();
 }
 
-  $('#datepicker').datepicker({
-    dateFormat:'yy-mm-dd',
-    minDate:'%y-%M-%d',
-    gotoCurrent: true,
-  });
-  $("#datepicker").datepicker("setDate", new Date());
-  $("#datepicker").change(function() {
-    format = [% Settings.TimeDisplayFormat %];
-    getTime("[% c.uri_for("/api/public/reservations/gettimelist") %]",format);
-  });
 });
 
 
