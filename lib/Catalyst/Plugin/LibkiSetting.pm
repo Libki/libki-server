@@ -440,7 +440,7 @@ sub check_reservation {
     my @array;
 
     my $location = $c->model('DB::Location')->find({ 'code' => $client->location });
-    my $minutes_until_closed = $location->minutes_until_closed($begin_time_dt);
+    my $minutes_until_unreservable = $location->minutes_until_closed($begin_time_dt, 1);
 
     my ( $minutes_left, $minutes ) = ( 0, 0 );
 
@@ -462,9 +462,9 @@ sub check_reservation {
     }
 
     #3. Check the closing time
-    if ( !$result{'error'} && defined( $minutes_until_closed ) ) {
-        if ( $minutes_until_closed ) {
-            push( @array, $minutes_until_closed );
+    if ( !$result{'error'} && defined( $minutes_until_unreservable ) ) {
+        if ( $minutes_until_unreservable ) {
+            push( @array, $minutes_until_unreservable );
         }
         else {
             $result{'error'} = 'CLOSING_TIME';

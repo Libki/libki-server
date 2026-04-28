@@ -277,7 +277,9 @@ then ancestors.  Intervals are returned sorted by close_time.
 =cut
 
 sub hours_for_date {
-    my ( $self, $date_str ) = @_;
+    my ( $self, $date_str, $limit_to_reservable ) = @_;
+
+warn "Limiting to reservable!" if $limit_to_reservable;
 
     my $schema = $self->result_source->schema;
 
@@ -303,9 +305,13 @@ sub hours_for_date {
         next unless $exception;
 
         return [] if $exception->is_closed;
+        my $exceptions_filter = {};
+        if ($limit_to_reservable) {
+            $exceptions_filter = { reservable => 1 };
+        }
 
         my @rows = $exception->location_hours_exception_intervals->search(
-            {},
+            $exceptions_filter,
             { order_by => { -asc => 'close_time' } }
         )->all;
         return [
@@ -320,11 +326,15 @@ sub hours_for_date {
 
     # Step 2: weekly hours
     foreach my $loc (@chain) {
-        my @hours = $schema->resultset('LocationHour')->search(
-            {
+        my $weekly_filter = {
                 location_id => $loc->id,
                 day_of_week => $dow,
-            },
+        };
+        if ($limit_to_reservable) {
+            $weekly_filter->{reservable} = 1;
+        }
+        my @hours = $schema->resultset('LocationHour')->search(
+            $weekly_filter,
             {
                 order_by => { -asc => 'close_time' },
             }
@@ -351,10 +361,10 @@ Returns the number of minutes until the given Location is closed (or
 =cut
 
 sub minutes_until_closed {
-    my ( $self, $dt ) = @_;
+    my ( $self, $dt, $limit_to_reservable ) = @_;
 
     $dt = DateTime->now( time_zone => $ENV{LIBKI_TZ} ) unless $dt;
-    my $intervals = $self->hours_for_date($dt->ymd);
+    my $intervals = $self->hours_for_date($dt->ymd, $limit_to_reservable);
 
     my $minutes_until_closed = 0;
     my $last_closed_time = '';
