@@ -138,25 +138,67 @@ function renderForm(loc={}){
   }
 }
 
+function formatTime(t){
+  if (!t) return '';
+
+  // Expect "HH:MM" or "HH:MM:SS"
+  const parts = t.split(':');
+  let hour = parseInt(parts[0], 10);
+  const minute = parts[1];
+
+  if (TimeDisplayFormat.includes('%I')) {
+    // 12-hour format
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    let hour12 = hour % 12;
+    if (hour12 === 0) hour12 = 12;
+
+    return `${hour12}:${minute} ${ampm}`;
+  } else {
+    // 24-hour format
+    return `${String(hour).padStart(2,'0')}:${minute}`;
+  }
+}
+
 function renderHoursEditor(loc){
   const days=['[% c.loc("Sunday") %]','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const el=document.getElementById('hoursEditor'); el.innerHTML='';
+  const el=document.getElementById('hoursEditor'); 
+  el.innerHTML='';
 
   days.forEach((d,i)=>{
     const container=document.createElement('div');
     container.className='border p-2 mb-2';
 
-    const rows=(loc.hours||[]).filter(h=>h.day_of_week===i);
+    const rows = (loc.hours || []).filter(h => h.day_of_week === i);
+    const effective = (loc.effective_hours || [])[i] || [];
 
-    container.innerHTML=`<strong>${d}</strong><div id="day-${i}"></div>
-      <button class="btn btn-sm btn-outline-secondary" type="button" onclick="addInterval(${i})">+ [% c.loc("interval") %]</button>`;
+    // build inherited label (only if no local rows)
+    let inheritedText = '';
+    if (rows.length === 0 && effective.length > 0) {
+      const formatted = effective.map(e => {
+        const reservable = e.reservable ? "[% c.loc('Reservable') %]" : "[% c.loc('Not Reservable') %]";
+        return formatTime(e.open_time) + '-' + formatTime(e.close_time) + ' (' + reservable + ')';
+      }).join(', ');
+      inheritedText = `<small class="text-muted ml-2">
+        [% c.loc("inherits") %]: ${formatted}
+      </small>`;
+    }
+
+    container.innerHTML = `
+      <strong>${d}</strong>
+      <div id="day-${i}"></div>
+      <div class="mt-1">
+        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="addInterval(${i})">
+          + [% c.loc("interval") %]
+        </button>
+        ${inheritedText}
+      </div>
+    `;
 
     el.appendChild(container);
 
-    rows.forEach(r=>addInterval(i,r.open_time,r.close_time,r.reservable));
+    rows.forEach(r => addInterval(i, r.open_time, r.close_time, r.reservable));
   });
 }
-
 function addInterval(day,open='',close='',reservable=false){
   const row=document.createElement('div');
   row.className='interval-row';

@@ -221,6 +221,52 @@ sub ancestors {
     return @chain; # child → root
 }
 
+=head2 effective_hours
+
+Returns the day-of-the-week hours intervals that will be used by this
+Location; either the values defined on the object itself, or the values
+inherited from ancestors.
+
+=cut
+
+sub effective_hours {
+    my ($self) = @_;
+    my $schema = $self->result_source->schema;
+
+    my @effective_hours;
+
+    for (my $i=0;$i<7;$i++) {
+        my @chain = $self->ancestors();
+        my $loc = shift @chain;
+        my @hours;
+
+        while (!@hours && $loc) {
+            @hours = $schema->resultset('LocationHour')->search(
+                {
+                    location_id => $loc->id,
+                    day_of_week => $i,
+                },
+                {
+                    order_by => { -asc => 'close_time' },
+                }
+            )->all;
+            $loc = shift @chain;
+        }
+        $effective_hours[$i] = [
+            map {
+                {
+                    day_of_week => $_->day_of_week,
+                    open_time   => $_->open_time . '',
+                    close_time  => $_->close_time . '',
+                    reservable  => $_->reservable,
+                }
+            } @hours
+        ];
+
+    }
+    return \@effective_hours;
+}
+
 
 =head2 hours_for_date
 

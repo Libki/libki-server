@@ -154,11 +154,12 @@ sub _serialize_location {
     } $location->location_hours_exceptions;
 
     return {
-        id        => $location->id,
-        code      => $location->code,
-        parent_id => $location->parent_id,
-        hours     => \@hours,
-        exceptions => \@exceptions,
+        id              => $location->id,
+        code            => $location->code,
+        parent_id       => $location->parent_id,
+        hours           => \@hours,
+        effective_hours => $location->effective_hours,
+        exceptions      => \@exceptions,
     };
 }
 
