@@ -317,8 +317,12 @@ sub reservation : Local : Args(1) {
             my $date   = $c->request->params->{reservation_date};
             my $hour   = $c->request->params->{reservation_hour};
             my $minute = $c->request->params->{reservation_minute};
+            my $datetime = $c->request->params->{reservation_datetime};
 
             my $begin_time = "$date $hour:$minute:00";
+            if ($datetime) {
+                $begin_time = $datetime =~ s/T/ /r;
+            }
 
             my %check  = $c->check_reservation( $client, $user, $begin_time );
             my $error  = $check{error};

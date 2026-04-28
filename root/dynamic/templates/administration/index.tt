@@ -668,14 +668,8 @@
             <input id="make-reservation-modal-form-id" name="id" type="hidden" />
 
             <div class="form-group">
-                <input id="datepicker" type="text" value="" width='400px' readonly="readonly" name="reservation_date">
-
-                <select id="reservation-hour" name="reservation_hour" onchange="getMinute()"></select>
-                 :
-                <select id="reservation-minute" name="reservation_minute"></select>
-
-                <span id="make-reservation-ampm-label" style="visibility:[% IF Settings.TimeDisplayFormat == '12' %]visible[% ELSE %]hidden[% END %];"></span>
-
+		<label for="reservation_datetime">Time</label>
+                <input id="reservation_datetime" name="reservation_datetime" type="datetime-local" step="300" min="[% now = c.now; c.format_dt(dt => now, format => '%Y-%m-%d %H:%M') %]" required>
                 <div id="reservation-time-invalid-feedback" class="invalid-feedback">
                     [% c.loc("Selected time is invalid, no time blocks are available for this hour") %]
                 </div>
@@ -727,22 +721,6 @@
     </div>
   </div>
 </div>
-
-<script>
-    $('#make-reservation-modal').on('shown.bs.modal', function () {
-      $('#make-reservation-modal-form-username').trigger('focus');
-      $('#datepicker').trigger('change');
-    });
-
-    $('#datepicker').on('change', function(){
-        $("#make-reservation-ampm-label").text('');
-    });
-
-    $('#reservation-hour').on('change',function(){
-        formatHour("reservation-hour","make-reservation-ampm-label");
-    });
-
-</script>
 <div class="modal fade" id="change-password-modal" tabindex="-1" role="dialog" aria-labelledby="change-password-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -1615,7 +1593,6 @@ $(document).ready(function() {
 
     /* Reserve */
     $('#client-table-row-toolbar-reserve').click(function(){
-      setTime();
       $('#make-reservation-modal-form-username').removeClass('is-invalid');
 
       const id = window.selected_id;
@@ -1634,7 +1611,7 @@ $(document).ready(function() {
     $('#client-table-row-toolbar-cancel').click(function(){
       const id = window.selected_id;
 
-      $('$cancel-reservation-modal-form-username').removeAttr("readonly");
+      $('#cancel-reservation-modal-form-username').removeAttr("readonly");
       $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
       $('#client-table-row-toolbar').hide();
       $('#cancel-reservation-modal-form-id').val( id );
