@@ -74,6 +74,12 @@ __PACKAGE__->table("clients");
   is_nullable: 1
   size: 191
 
+=head2 location_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =head2 status
 
   data_type: 'varchar'
@@ -122,6 +128,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 0, size => 191 },
   "location",
   { data_type => "varchar", is_nullable => 1, size => 191 },
+  "location_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "status",
   {
     data_type => "varchar",
@@ -190,6 +198,26 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 location
+
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "location",
+  "Libki::Schema::DB::Result::Location",
+  { id => "location_id" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "SET NULL",
+    on_update     => "CASCADE",
+  },
+);
+
 =head2 print_files
 
 Type: has_many
@@ -236,8 +264,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-07-17 07:52:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ti/ZkUiszWr7QBlvpKEe6Q
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-30 14:43:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:75zcOaPG0pbfSlEYLp/qzA
 
 =head2 can_user_use
 

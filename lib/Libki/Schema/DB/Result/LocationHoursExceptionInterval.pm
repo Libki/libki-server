@@ -127,12 +127,12 @@ __PACKAGE__->belongs_to(
   "exception",
   "Libki::Schema::DB::Result::LocationHoursException",
   { id => "exception_id" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-13 14:01:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QnBUtO9W7f9UoQ7kC9j3FQ
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-30 14:43:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZJvxT3fna4aaKQ9krVzSRQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -66,6 +66,7 @@ CREATE TABLE `clients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(191) NOT NULL,
   `location` varchar(191) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
   `status` varchar(191) DEFAULT 'online',
   `type` varchar(191) DEFAULT NULL,
   `ipaddress` varchar(191) DEFAULT NULL,
@@ -74,7 +75,9 @@ CREATE TABLE `clients` (
   `last_registered` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`instance`,`name`),
-  KEY `instance` (`instance`)
+  KEY `instance` (`instance`),
+  KEY `fk_client_location` (`location_id`),
+  CONSTRAINT `fk_client_location` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -500,4 +503,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-04-13 14:01:31
+-- Dump completed on 2026-04-30 14:43:30

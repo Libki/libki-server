@@ -40,3 +40,14 @@ CREATE TABLE `location_hours_exception_intervals` (
      PRIMARY KEY (`id`)
 );
 
+ALTER TABLE `clients`
+    ADD COLUMN location_id INT(11) NULL AFTER location,
+    ADD CONSTRAINT fk_client_location
+    FOREIGN KEY (location_id) REFERENCES locations(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
+
+UPDATE clients c
+LEFT JOIN locations l
+  ON l.code = c.location
+SET c.location_id = l.id;

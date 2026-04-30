@@ -117,6 +117,21 @@ __PACKAGE__->add_unique_constraint("unique_code", ["instance", "code"]);
 
 =head1 RELATIONS
 
+=head2 clients
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Client>
+
+=cut
+
+__PACKAGE__->has_many(
+  "clients",
+  "Libki::Schema::DB::Result::Client",
+  { "foreign.location_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 closing_hours
 
 Type: has_many
@@ -198,8 +213,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-03-23 19:39:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QMeIx7YGzeRF0HNC8Gfffg
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-30 14:43:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IUD61Yr36WnTZ4mGfWZI5g
 
 =head2 ancestors
 
