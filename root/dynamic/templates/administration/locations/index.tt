@@ -65,15 +65,12 @@ function renderTree() {
     li.appendChild(s);
     if(n.children.length){
       const ul=document.createElement('ul');
-      ul.classList.add('list-group', 'list-group-flush');
       n.children.forEach(c=>ul.appendChild(node(c)));
       li.appendChild(ul);
     }
-    li.classList.add('list-group-item');
     return li;
   }
   const ul=document.createElement('ul');
-  ul.classList.add('list-group', 'list-group-flush');
   tree.forEach(n=>ul.appendChild(node(n)));
   el.appendChild(ul);
 }
@@ -82,7 +79,6 @@ async function loadLocation(id){
   const res = await fetch(`/api/v2/locations/${id}`);
   currentLocation = await res.json();
   renderForm(currentLocation);
-  renderResolved(currentLocation.id);
   $('#locationTree li').removeClass('active');
   $('#location-' + currentLocation.id).parent().addClass('active');
   $('#location-' + currentLocation.id).parent().find('li').addClass('active');
@@ -112,11 +108,6 @@ function renderForm(loc={}){
       <h5>[% c.loc("Exceptions") %]</h5>
       <div id="exceptionEditor"></div>
       <button class="btn btn-sm btn-outline-primary" type="button" onclick="addException()">+ [% c.loc("Add Exception") %]</button>
-
-      <hr>
-      <h5>Resolved Hours Preview</h5>
-      <input type="date" id="previewDate" class="form-control mb-2">
-      <div id="resolvedPreview"></div>
 
       <button class="btn btn-success" type="submit">[% c.loc("Save") %]</button>
       ${loc.id?'<button class="btn btn-danger ml-2" type="button" id="deleteBtn">[% c.loc("Delete") %]</button>':''}
@@ -249,15 +240,6 @@ function addExceptionInterval(container,i={}){
   `;
   row.querySelector('button').onclick=()=>row.remove();
   container.appendChild(row);
-}
-
-async function renderResolved(id){
-  const input=document.getElementById('previewDate');
-  input.onchange=async()=>{
-    const res=await fetch(`/api/v2/locations/${id}/hours?date=${input.value}`);
-    const data=await res.json();
-    document.getElementById('resolvedPreview').innerText=JSON.stringify(data.intervals,null,2);
-  };
 }
 
 async function saveLocation(e){

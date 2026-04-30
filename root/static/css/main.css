@@ -101,3 +101,58 @@ table {
 .copy-select {
     max-width: 4rem;
 }
+.tree ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.tree li {
+  position: relative;
+  margin: 4px 0;
+}
+.tree li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -12px;
+  width: 12px;
+  height: 100%;
+  border-left: 1px solid #ccc;
+}
+
+.tree li::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: -12px;
+  width: 12px;
+  border-top: 1px solid #ccc;
+}
+.tree li:last-child::before {
+  height: 14px;
+}
+.tree li > span {
+  display: block;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.tree li > span:hover {
+  background: #dee2e6;
+}
+
+.tree li:not(:has(ul)) > span::after {
+  content: '';
+}
+.tree li.active > span {
+  background: #007bff;
+  color: #000;
+  font-weight: bolder;
+}
+
+.tree li.active ul li > span {
+  background: #66A6FF;
+  color: #6c757d;
+}
