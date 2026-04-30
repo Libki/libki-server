@@ -25,15 +25,11 @@ sub index : Path : Args(0) {
 
     my $instance = $c->instance;
 
-    my @locations = $c->model('DB::Client')->search(
+    my @locations = $c->model('DB::Location')->search(
         {
             instance => $instance,
         },
-        {
-            columns  => [qw/location/],
-            distinct => 1
-        }
-    )->get_column('location')->all();
+    )->get_column('code')->all();
 
     my @types = $c->model('DB::Client')->search(
         {
