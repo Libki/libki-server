@@ -51,3 +51,6 @@ UPDATE clients c
 LEFT JOIN locations l
   ON l.code = c.location
 SET c.location_id = l.id;
+
+ALTER TABLE `clients`
+    DROP COLUMN location;
