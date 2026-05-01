@@ -156,3 +156,8 @@ table {
   background: #66A6FF;
   color: #6c757d;
 }
+
+.nav.flex-column .nav-item .nav-link.active {
+    font-weight: bolder;
+    color: #000;
+}

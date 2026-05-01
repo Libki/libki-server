@@ -6,7 +6,10 @@
       <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true"><i class="fas fa-users"></i> [% c.loc("Users") %]</a>
   </li>
   <li class="nav-item">
-      <a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> [% c.loc("Clients") %]</a>
+      <a class="nav-link" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="false"><i class="fas fa-desktop"></i> [% c.loc("Clients") %]</a>
+  </li>
+    <li class="nav-item">
+      <a class="nav-link active" id="sessions-tab" data-toggle="tab" href="#sessions" role="tab" aria-controls="sessions" aria-selected="true"><i class="fas fa-terminal"></i> [% c.loc("Sessions") %]</a>
   </li>
   <li class="nav-item">
       <a class="nav-link" id="reservations-tab" data-toggle="tab" href="#reservations" role="tab" aria-controls="reservations" aria-selected="false"><i class="fas fa-clock"></i> [% c.loc("Reservations") %]</a>
@@ -75,122 +78,140 @@
             </div>
         </div>
   </div>
-  <div class="tab-pane fade show active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
+  <div class="tab-pane fade" id="clients" role="tabpanel" aria-labelledby="clients-tab">
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-none">
+	
+    <div class="row">
+        <div class="col-sm-2 border-right pt-3">
         [% IF locations.size > 1 %]
-        <ul class="nav nav-pills" id="client-locations">
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">[% c.loc("Location") %]:</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link active" data-toggle="pill" href="#" data-location="">[% c.loc("All") %]</a>
-          </li>
-          [% FOREACH location IN locations %]
-              <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" data-location="[% location %]">[% location %]</a>
-              </li>
-          [% END %]
-        </ul>
+            <h4>[% c.loc("Location") %]</h4>
+            <div id="clientLocationTree" class="locationtree tree pb-3"></div>
         [% END %]
-
-        <ul class="navbar-nav mr-auto"></ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-item refresh-button-group">
-                <div class="btn-group" role="group" aria-label="Table actions">
-                    <div id="client-table-refresh" class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
-                        </div>
-                        <a href="#" id="client-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
-                        <div class="input-group-append">
-                            <span class="input-group-text libki-refresh-counter" id="client-table-refresh-counter">30</span>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item">
-                <div class="btn-group" role="group" aria-label="New user actions">
-                    [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
-                        <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
-                    [% END %]
-                    <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
-                    <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
-                </div>
-            </li>
-        </ul>
-	</nav>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-none">
         [% IF types.size > 1 %]
-        <ul class="nav nav-pills" id="client-types">
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">[% c.loc("Type") %]:</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link active" data-toggle="pill" href="#" data-type="">[% c.loc("All") %]</a>
-          </li>
-          [% FOREACH type IN types %]
-              <li class="nav-item">
-                  <a class="nav-link" data-toggle="pill" href="#" data-type="[% type %]">[% type %]</a>
-              </li>
-          [% END %]
-        </ul>
-        [% END %]
-
-        <ul class="navbar-nav mr-auto"></ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <div class="btn-group" role="group" aria-label="Client actions">
-                    [% IF c.setting('ClientMACAddresses') %]
-                        <a href="#" class="turn-on-button btn btn-success"><i class="fas fa-power-off"></i> [% c.loc("Turn on clients") %]</a>
-                    [% END %]
-                    <a href="#" class="restart-button btn btn-warning"><i class="fas fa-redo"></i> [% c.loc("Restart clients") %]</a>
-                    <a href="#" class="shutdown-button btn btn-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off clients") %]</a>
-                </div>
-            </li>
-        </ul>
-    </nav>
-
-        <table id="client-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-            <thead>
-                <th>[% c.loc("Name") %]</th>
-                <th>[% c.loc("Location") %]</th>
-                <th>[% c.loc("Type") %]</th>
-                <th>[% c.loc("Session status") %]</th>
-                <th>[% c.loc("Username") %]</th>
-                <th>[% c.loc("First name") %] </th>
-                <th>[% c.loc("Last name") %] </th>
-                <th>[% c.loc("Category") %]</th>
-                <th>[% c.loc("Daily minutes") %]</th>
-                <th>[% c.loc("Session minutes") %]</th>
-                <th>[% c.loc("User status") %]</th>
-                <th>[% c.loc("Notes") %]</th>
-                <th>[% c.loc("Troublemaker") %]</th>
-                <th>[% c.loc("Reserved") %]</th>
-                <th>[% c.loc("From") %]</th>
-                <th>[% c.loc("Status") %]</th>
-            </thead>
-        </table>
-
-        <div id="client-table-row-toolbar" class="table-row-toolbar" role="toolbar">
-            <div class="btn-group" role="group">
-                <button id="client-table-row-toolbar-time" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
-                [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                <button id="client-table-row-toolbar-reserve" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
-                <button id="client-table-row-toolbar-cancel" class="btn libki-toolbar-btn btn-outline-danger" ><i class="fas fa-times"></i> [% c.loc("Cancel reservation") %]</button>
+            <h4>[% c.loc("Type") %]</h4>
+            <ul class="nav flex-column pb-3" id="client-types">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-type="">[% c.loc("All") %]</a>
+                </li>
+                [% FOREACH type IN types %]
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-type="[% type %]">[% type %]</a>
+                </li>
                 [% END %]
-                <button id="client-table-row-toolbar-unlock" class="btn libki-toolbar-btn btn-outline-primary"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</button>
-                <button id="client-table-row-toolbar-logout" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
-                <button id="client-table-row-toolbar-status" class="btn libki-toolbar-btn btn-outline-secondary"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</button>
-                <button id="client-table-row-toolbar-delete" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-times"></i> [% c.loc("Delete") %]</button>
-                <button id="client-table-row-toolbar-restart" class="btn libki-toolbar-btn btn-outline-warning"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</button>
-                <button id="client-table-row-toolbar-shutdown" class="btn libki-toolbar-btn btn-outline-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</button>
-            </div>
+            </ul>
+        [% END %]
         </div>
+        <div class="col-sm-10">
+            <nav class="navbar navbar-expand-lg navbar-light bg-none">
+                <ul class="navbar-nav mr-auto"></ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item mr-2">
+                        <div class="btn-group" role="group" aria-label="Table actions">
+                            <div id="client-table-refresh" class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                                </div>
+                                <a href="#" id="client-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item mr-2">
+                        <div class="btn-group" role="group" aria-label="New user actions">
+                            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                                <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                            [% END %]
+                            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="btn-group" role="group" aria-label="Client actions">
+                            [% IF c.setting('ClientMACAddresses') %]
+                                <a href="#" class="turn-on-button btn btn-success"><i class="fas fa-power-off"></i> [% c.loc("Turn on clients") %]</a>
+                            [% END %]
+                            <a href="#" class="restart-button btn btn-warning"><i class="fas fa-redo"></i> [% c.loc("Restart clients") %]</a>
+                            <a href="#" class="shutdown-button btn btn-danger"><i class="fas fa-power-off"></i> [% c.loc("Turn off clients") %]</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <table id="clients-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+                <thead>
+                    <th>[% c.loc("Name") %]</th>
+                    <th>[% c.loc("Location") %]</th>
+                    <th>[% c.loc("Type") %]</th>
+                    <th>[% c.loc("Status") %]</th>
+                    <th>ancestors</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+        
   </div>
+
+  <div class="tab-pane fade show active" id="sessions" role="tabpanel" aria-labelledby="sessions-tab">
+    <div class="row">
+        <div class="col-sm-2 border-right pt-3">
+        [% IF locations.size > 1 %]
+            <h4>[% c.loc("Location") %]</h4>
+            <div id="sessionLocationTree" class="locationtree tree pb-3"></div>
+        [% END %]
+        [% IF UserCategories %]
+            <h4>[% c.loc("User Category") %]</h4>
+            <ul class="nav flex-column pb-3" id="session-user-categories">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-category="">[% c.loc("All") %]</a>
+                </li>
+                [% FOREACH category IN c.user_categories %]
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-category="[% category %]">[% category %]</a>
+                </li>
+                [% END %]
+            </ul>
+        [% END %]
+        </div>
+        <div class="col-sm-10">
+            <nav class="navbar navbar-expand-lg navbar-light bg-none">
+                <ul class="navbar-nav mr-auto"></ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item mr-2">
+                        <div class="btn-group" role="group" aria-label="Table actions">
+                            <div id="session-table-refresh" class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="btnGroupAddon">[% c.loc("Refresh") %]</div>
+                                </div>
+                                <a href="#" id="session-table-refresh-button" class="btn btn-secondary form-control"><i class="fas fa-sync"></i></a>
+                                <div class="input-group-append">
+                                    <span class="input-group-text libki-refresh-counter" id="session-table-refresh-counter">30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item mr-2">
+                        <div class="btn-group" role="group" aria-label="New user actions">
+                            [% IF !c.config.SIP.enable || c.check_user_roles('superadmin') %]
+                                <a href="#" class="new-user-button btn btn-info"><i class="fas fa-user-plus"></i> [% c.loc("New user") %]</i></a>
+                            [% END %]
+                            <a href="#" class="new-guest-button btn btn-primary">[% c.loc("New guest") %] <i class="fas fa-user"></i></a>
+                            <a href="#" class="multi-guest-button btn btn-info">[% c.loc("Multiple guests") %] <i class="fas fa-users"></i></a>
+                        </div>
+                    </li>
+                </nav>
+            <table id="sessions-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+                <thead>
+                    <th>[% c.loc("Client") %]</th>
+                    <th>[% c.loc("Location") %]</th>
+                    <th>[% c.loc("User") %]</th>
+                    <th>[% c.loc("User Category") %]</th>
+                    <th>[% c.loc("Minutes Remaining") %]</th>
+                    <th>[% c.loc("Session Status") %]</th>
+                    <th>ancestors</th>
+                    <th>[% c.loc("Actions") %]</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
   <div class="tab-pane fade" id="prints" role="tabpanel" aria-labelledby="prints-tab">
 	<nav class="navbar navbar-expand-lg navbar-light bg-none">
@@ -846,18 +867,23 @@
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
     // Refresh the client and print jobs tables automatically, as its date will go stale quickly
-    clientRefreshCounter = setInterval( function(){HandleClientTableRefreshCounter()}, 1000 );
+    clientRefreshCounter = setInterval( function(){HandleSessionTableRefreshCounter()}, 1000 );
     printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
 
-    // Client Table refreshing on location limit
-    $('#client-locations .nav-link').click(function() {
-        const location = $(this).data('location');
-        ClientTableUpdateLocationFilter(location);
-    });
+
     // Client Table refreshing on type limit
     $('#client-types .nav-link').click(function() {
         const type = $(this).data('type');
         ClientTableUpdateTypeFilter(type);
+        $(this).parent().parent().find('.nav-link').removeClass('active');
+        $(this).addClass('active');
+    });
+    // Session Table refreshing on category limit
+    $('#session-user-categories .nav-link').click(function() {
+        const category = $(this).data('category');
+        SessionTableUpdateUserCategoryFilter(category);
+        $(this).parent().parent().find('.nav-link').removeClass('active');
+        $(this).addClass('active');
     });
     // Print Table refreshing on location limit
     $('#print-locations .nav-link').click(function() {
@@ -949,27 +975,18 @@ $(document).ready(function() {
     });
 
     // Initalize the Clients table as a datatable
-    const cTable = $('#client-table').DataTable( {
+    const cTable = $('#clients-table').DataTable( {
         [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
-        "processing": true,  // Indicate when the table is processing data
-        "serverSide": true,  // Indicate that the datatable gets data from a
-        "ajax": function (data, callback, settings ) {
-            if ( window.location_filter ) {
-                data.location_filter = window.location_filter;
-            }
-            if ( window.type_filter ) {
-                data.type_filter = window.type_filter;
-            }
-
-            $.getJSON("[% c.uri_for('/administration/api/datatables/clients') %]", data, function (json) {
-                callback(json);
-            } );
-        },
-        "drawCallback": function(oSettings, json) {
-            AddTableRowToolbar( $('#client-table-row-toolbar'), $('#client-table'), $('#client-table tbody tr') );
+        "processing": true,
+        "serverSide": false,
+        "ajax": {
+          "url": '[% c.uri_for('/api/v2/clients') %]',
+          "dataSrc": ''
         },
         columns: [
-            { data: 'name' },
+            { 
+                "data": "name"
+            },
             { 
                 "data": "location",
                 "visible": [% IF locations.size > 1 %]true[% ELSE %]false[% END %]
@@ -978,57 +995,20 @@ $(document).ready(function() {
                 "data": "type",
                 "visible": [% IF types.size > 1 %]true[% ELSE %]false[% END %]
             },
-            { data: 'session_status' },
-            { data: 'username' },
-            {
-                data: "firstname",
-                visible: [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
-            },
-            {
-                data: "lastname",
-                visible: [% IF ShowFirstLastNames %]true[% ELSE %]false[% END %]
-            },
-            {
-                "data": "category",
-                "visible": [% IF UserCategories %]true[% ELSE %]false[% END %]
-            },
-            { data: 'minutes_allotment' },
-            { data: 'minutes' },
-            { data: 'user_status' },
-            { data: 'notes' },
-            { data: 'is_troublemaker' },
-            { 
-                "data": "reservation",
-                "visible": [% IF Settings.ClientBehavior.match("RES") %]true[% ELSE %]false[% END %],
-                "orderable": false
-            },
-            { 
-                "data": "reservation_start", 
-                "visible": [% IF Settings.ClientBehavior.match("RES") %]true[% ELSE %]false[% END %],
-                "orderable": false
-            },
             { // Client status
                 data: function( row, type, val, meta ) {
-                    return TranslateStatus( row.client_status );
+                    return TranslateStatus( row.status );
                 },
                 "orderable": false
+            },
+            { // Client Location Hierarchy (for searching)
+                data: function( row, type, val, meta ) {
+                    return "|" + row.location_hierarchy.join("|") + "|";
+                },
+                "visible": false
             }
-        ],
-        "rowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            [% IF Settings.ThirdPartyURL %]
-                if ( aData[3] ) {
-                    $('td:eq(3)', nRow).html( '<a target="_blank" href="[% Settings.ThirdPartyURL %]' + aData[3] + '">' + aData[3] + '</b>' );
-                }
-            [% END %]
-        },
-        "columnDefs": [
-            [% UNLESS Settings.ClientBehavior.match("RES") # Setting supports reservations %]
-                { "bVisible": false, "aTargets": [ 13 ] },
-            [% END %]
-        ],
+        ]
     } );
-
-    $('#client-table-toolbar').prependTo($('#client-table_filter'));
 
     /* Add a click handler to the rows */
     $("#client-table tbody").click(function(event) {
@@ -1039,6 +1019,68 @@ $(document).ready(function() {
 
         // Set the class for the selected row
         $(event.target.parentNode).addClass('row_selected');
+    });
+
+    // Initialize the Sessions table as a datatable
+    const sTable = $('#sessions-table').DataTable( {
+        [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
+        "processing": true,  // Indicate when the table is processing data
+        "serverSide": false,
+        "ajax": {
+          "url": '[% c.uri_for('/api/v2/sessions') %]',
+          "dataSrc": ''
+        },
+        columns: [
+            { 
+                "data": "client"
+            },
+            { 
+                "data": "location",
+                "visible": [% IF locations.size > 1 %]true[% ELSE %]false[% END %]
+            },
+            { 
+                "data": "user"
+            },
+            {
+                "data": "user_category",
+                "visible": [% IF UserCategories %]true[% ELSE %]false[% END %]
+            },
+            {
+                "data": "minutes_remaining"
+            },
+            { // Session Status
+                data: function( row, type, val, meta ) {
+                    return TranslateStatus( row.status );
+                },
+                "orderable": false
+            },
+            { // Client Location Hierarchy (for searching)
+                data: function( row, type, val, meta ) {
+                    return "|" + row.location_hierarchy.join("|") + "|";
+                },
+                "visible": false
+            },
+            { // Actions
+                data: null,
+                title: 'Actions', 
+                orderable: false, 
+                searchable: false,
+                render: function(data,type,row) {
+                    const session_id = row["id"];
+                    const client_id = row["client_id"];
+
+                    let html = `<div id="client-table-row-toolbar"  role="toolbar">
+                        <div class="btn-group" role="group">
+
+                        <button class="client-table-row-toolbar-time btn libki-toolbar-btn btn-outline-secondary" data-clientid="${client_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+
+                        <button class="client-table-row-toolbar-logout btn libki-toolbar-btn btn-outline-danger" data-clientid="${client_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+
+                    </div>`;
+                    return html;
+                }
+            }
+        ]
     });
 
     //Initalize the Reservations table as a datatable
@@ -1107,7 +1149,6 @@ $(document).ready(function() {
     // Set up the 'new user' button
     $('.new-user-button').click(function(){
         $('#user-table-row-toolbar').hide();
-        $('#client-table-row-toolbar').hide();
 
         $('#new-user-modal-form-username').val('');
         $('#new-user-modal-form-username').removeClass('is-valid is-invalid');
@@ -1192,7 +1233,6 @@ $(document).ready(function() {
     $('.new-guest-button').click(function(){
         [% IF UserCategories %]
             $('#user-table-row-toolbar').hide();
-            $('#client-table-row-toolbar').hide();
 
             $('#one-guest-title').show();
             $('#create-new-guest-modal-button').show();
@@ -1254,7 +1294,6 @@ $(document).ready(function() {
     $('.multi-guest-button').click(function(){
         [% IF UserCategories %]
             $('#user-table-row-toolbar').hide();
-            $('#client-table-row-toolbar').hide();
 
             $('#one-guest-title').hide();
             $('#create-new-guest-modal-button').hide();
@@ -1291,7 +1330,6 @@ $(document).ready(function() {
         ForceClientTableRefresh();
 
         $('#user-table-row-toolbar').hide();
-        $('#client-table-row-toolbar').hide();
 
         $('#multi-guest-modal-form-highest').val( data.highest );
         $('#multi-guest-modal-form-number').val( data.number );
@@ -1597,7 +1635,6 @@ $(document).ready(function() {
 
       const id = window.selected_id;
       const client_name = $(`#client-table tr[id="${id}"] td:eq(0)`).text();
-      $('#client-table-row-toolbar').hide();
       $('#make-reservation-modal-title-client-name').text(client_name);
 
       $('#make-reservation-modal-form-id').val( window.selected_id );
@@ -1613,7 +1650,6 @@ $(document).ready(function() {
 
       $('#cancel-reservation-modal-form-username').removeAttr("readonly");
       $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
-      $('#client-table-row-toolbar').hide();
       $('#cancel-reservation-modal-form-id').val( id );
       $('#cancel-reservation-modal-form-username').val("");
       $('#cancel-reservation-modal').modal();
@@ -1623,7 +1659,6 @@ $(document).ready(function() {
     /* Cancel Reservation from Reservation table */
     $('#reservation-table-row-toolbar-cancel').click(function() {
       $('#cancel-reservation-modal-form-username').removeClass('is-invalid');
-      $('#client-table-row-toolbar').hide();
       $('#cancel-reservation-modal-form-id').val( window.selected_id );
       $('#cancel-reservation-modal-form-username').val(window.selected_id);
       $('#cancel-reservation-modal-form-username').attr("readonly","readonly");
@@ -1647,12 +1682,13 @@ $(document).ready(function() {
     });
 
     /* Log out */
-    $('#client-table-row-toolbar-logout').click(function(){
+    $("#sessions-table").on("click", '.client-table-row-toolbar-logout', async function(){
+      console.log('clicked on the thing');
       if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + window.selected_id, function(data) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + $(this).data('clientid'), function(data) {
            if ( data.success ) {
                DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
-               cTable.draw(true);
+               sTable.draw(true);
            } else {
                DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
            }
@@ -1677,6 +1713,8 @@ $(document).ready(function() {
         return status == 'suspended' ? '[% c.loc("Suspended") %]' :
                status == 'offline'   ? '[% c.loc("Offline") %]'   :
                status == 'online'    ? '[% c.loc("Online") %]'    :
+               status == 'active'    ? '[% c.loc("Active") %]'    :
+               status == 'locked'    ? '[% c.loc("Locked") %]'    :               
                '[% c.loc("Unknown") %]';
     }
 
@@ -1794,10 +1832,9 @@ $(document).ready(function() {
         }
     });
 
-    $('#client-table-row-toolbar-time').click(function(){
-        $('#client-table-row-toolbar').hide();
+    $("#sessions-table").on("click", '.client-table-row-toolbar-time', async function(){
 
-        $('#modify-time-modal-form-id').val( window.selected_id );
+        $('#modify-time-modal-form-id').val( $(this).data('clientid') );
 
         $('#modify-time-modal-form-minutes').val('');
         $('#modify-time-modal-form-minutes').removeClass('is-valid is-invalid');
@@ -1850,45 +1887,62 @@ $(document).ready(function() {
       }
     });
 
+
 /*********** Helper Functions ***********/
 
-// Add a filter for a specific column
-function filter_woo() {
-    var t = $('#user-table').dataTable();
-
-    // In this case, only search if the <input> value is long enough (stops
-    // stupid searches on single chars)
-    if ( $('#filter_woo').val().length > 3 ) {
-        t.fnFilter($('#filter_woo').val(),0);
-    }
-    else {
-        t.fnFilter('',0);
-    };
-}
-
-function HandleClientTableRefreshCounter() {
-    var countdown = parseInt( $('#client-table-refresh-counter').text() ) - 1;
+function HandleSessionTableRefreshCounter() {
+    var countdown = parseInt( $('#session-table-refresh-counter').text() ) - 1;
 
     if ( countdown ) {
-        $('#client-table-refresh-counter').text( countdown );
+        $('#session-table-refresh-counter').text( countdown );
     } else {
-        ForceClientTableRefresh();
+        ForceSessionTableRefresh();
     }
 }
 
 window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
+    cTable
+        .columns(4)
+        .search(location)
+        .draw();
     ForceClientTableRefresh();
 }
 
 window.ClientTableUpdateTypeFilter = function( type ) {
     window.type_filter = type;
+    cTable
+        .columns(2)
+        .search(type)
+        .draw();    
     ForceClientTableRefresh();
+}
+
+window.SessionTableUpdateLocationFilter = function( location ) {
+    window.location_filter = location;
+    sTable
+        .columns(6)
+        .search(location)
+        .draw();
+    ForceSessionTableRefresh();
+}
+
+window.SessionTableUpdateUserCategoryFilter = function( category ) {
+    window.category_filter = category;
+    sTable
+        .columns(3)
+        .search(category)
+        .draw();
+    ForceSessionTableRefresh();
 }
 
 function ForceClientTableRefresh() {
      cTable.draw(true);
-     $('#client-table-refresh-counter').text( '30' );
+}
+
+function ForceSessionTableRefresh() {
+     sTable.draw(true);
+     $('#session-table-refresh-counter').text( '30' );
 }
 
 function ForceUserTableRefresh() {
@@ -1935,7 +1989,53 @@ function postForm(url, fields) {
     $form.submit();
 }
 
+let locations = [];
+let currentLocation = null;
+fetchLocations();
+
+async function fetchLocations() {
+  const res = await fetch('/api/v2/locations');
+  locations = await res.json();
+  const tree = buildTree(locations);
+  renderTree('clientLocationTree', tree);
+  renderTree('sessionLocationTree', tree);
+}
+
+function buildTree(data, parentId = null) {
+  return data.filter(l => l.parent_id == parentId)
+    .map(l => ({...l, children: buildTree(data, l.id)}));
+}
+
+function renderTree(target_id, tree) {
+  const el = document.getElementById(target_id);
+  el.innerHTML='';
+  function node(n){
+    const li=document.createElement('li');
+    const s=document.createElement('span');
+    s.textContent=n.code;
+    s.dataset.location=n.id;
+    s.onclick=()=>UpdateLocationFilters(n.id);
+    li.appendChild(s);
+    if(n.children.length){
+      const ul=document.createElement('ul');
+      n.children.forEach(c=>ul.appendChild(node(c)));
+      li.appendChild(ul);
+    }
+    return li;
+  }
+  const ul=document.createElement('ul');
+  tree.forEach(n=>ul.appendChild(node(n)));
+  el.appendChild(ul);
+}
+
+function UpdateLocationFilters(location_id) {
+    $('.locationtree li').removeClass('active');
+    $('.locationtree').find('[data-location="' + location_id + '"]').parent().addClass('active');
+    $('.locationtree').find('[data-location="' + location_id + '"]').parent().find('li').addClass('active');
+
+    ClientTableUpdateLocationFilter(location_id);
+    SessionTableUpdateLocationFilter(location_id);
+}
+
 });
-
-
 </script>
