@@ -34,7 +34,7 @@ sub clients_GET {
 sub clients_POST {
     my ( $self, $c ) = @_;
 
-    $c->assert_user_roles( qw/admin/ );
+    ($c->user && $c->assert_user_roles( qw/admin/ ) ) or return $self->status_forbidden($c, message => "access denied");
 
     my $params = $c->req->data;
     my $schema = $c->model('DB')->schema;
@@ -74,7 +74,7 @@ sub client_GET {
 sub client_PUT {
     my ( $self, $c, $id ) = @_;
 
-    $c->assert_user_roles( qw/admin/ );
+    ($c->user && $c->assert_user_roles( qw/admin/ ) ) or return $self->status_forbidden($c, message => "access denied");
 
     my $client = $c->model('DB::Client')->find($id)
         or return $self->status_not_found($c, message => 'Client not found');
@@ -102,7 +102,7 @@ sub client_PUT {
 sub client_DELETE {
     my ( $self, $c, $id ) = @_;
 
-    $c->assert_user_roles( qw/superadmin/ );
+    ($c->user && $c->assert_user_roles( qw/superadmin/ ) ) or return $self->status_forbidden($c, message => "access denied");
 
     my $client = $c->model('DB::Client')->find($id)
         or return $self->status_not_found($c, message => 'Client not found');
@@ -117,16 +117,21 @@ sub client_DELETE {
 sub _serialize_client {
     my ( $c, $client ) = @_;
 
+    my @location_hierarchy = map {
+        $_->id
+    } $client->location->ancestors;
+
     return {
-        id              => $client->id,
-        name            => $client->name,
-        location        => $client->location->code,
-        location_id     => $client->location_id,
-        status          => $client->status,
-        type            => $client->type,
-        ipaddress       => $client->ipaddress,
-        macaddress      => $client->macaddress,
-        hostname        => $client->hostname,
+        id                 => $client->id,
+        name               => $client->name,
+        location           => $client->location->code,
+        location_id        => $client->location_id,
+        location_hierarchy => \@location_hierarchy,
+        status             => $client->status,
+        type               => $client->type,
+        ipaddress          => $client->ipaddress,
+        macaddress         => $client->macaddress,
+        hostname           => $client->hostname,
     };
 }
 
