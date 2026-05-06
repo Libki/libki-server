@@ -227,9 +227,19 @@
                                 <span class="input-group-text">[% c.loc("Minutes") %]</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">[% c.loc("When the user's remaining remaining time drops below the threshold, Libki will request the OS display the user's remaining time in a warning message once per minute.") %]</small>
+                        <small class="form-text text-muted">[% c.loc("When the user's remaining time drops below the threshold, Libki will request the OS display the user's remaining time in a warning message.") %]</small>
                     </div>
 
+                    <div class="form-group">
+                        <label for="ClientTimeWarningFrequency"> [% c.loc("Time notification frequency after threshold") %]</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ClientTimeWarningFrequency" name="ClientTimeWarningFrequency" value="[% ClientTimeWarningFrequency %]">
+                            <div class="input-group-append">
+                                <span class="input-group-text">[% c.loc("Minutes") %]</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">[% c.loc("Frequency in minutes with which to request the host OS display a message with the user's remaining time after the warning threshold is reached. Defaults to 1.") %]</small>
+                    </div>
                 </fieldset>
 
                 <fieldset>

@@ -166,6 +166,7 @@ sub index : Path : Args(0) {
 
             ClientTimeNotificationFrequency => $c->stash->{Settings}->{ClientTimeNotificationFrequency} || 5,
             ClientTimeWarningThreshold      => $c->stash->{Settings}->{ClientTimeWarningThreshold} || 5,
+            ClientTimeWarningFrequency      => $c->stash->{Settings}->{ClientTimeWarningFrequency} || 1,
 
             ClientStyleSheet           => $c->stash->{Settings}->{ClientStyleSheet},
 
