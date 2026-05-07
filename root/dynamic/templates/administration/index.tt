@@ -142,6 +142,7 @@
                     <th>[% c.loc("Type") %]</th>
                     <th>[% c.loc("Status") %]</th>
                     <th>ancestors</th>
+                    <th>[% c.loc("Actions") %]</th>
                 </thead>
             </table>
         </div>
@@ -867,7 +868,7 @@
 $(document).ready(function() {
     /**** Handle refreshing of tables ****/
     // Refresh the client and print jobs tables automatically, as its date will go stale quickly
-    clientRefreshCounter = setInterval( function(){HandleSessionTableRefreshCounter()}, 1000 );
+    sessionRefreshCounter = setInterval( function(){HandleSessionTableRefreshCounter()}, 1000 );
     printsRefreshCounter = setInterval( function(){HandlePrintTableRefreshCounter()}, 1000 );
 
 
@@ -896,6 +897,10 @@ $(document).ready(function() {
         ForceClientTableRefresh();
         return false;
     });
+    $('#session-table-refresh-button').on( 'click', function() {
+        ForceSessionTableRefresh();
+        return false;
+    });
     $('#user-table-refresh-button').on('click', function() {
         ForceUserTableRefresh();
         return false;
@@ -912,6 +917,7 @@ $(document).ready(function() {
     // When we switch tabs, refresh the new tab automatically
     $('#users-tab').click( function(){ ForceUserTableRefresh() });
     $('#clients-tab').click( function(){ ForceClientTableRefresh() });
+    $('#sessions-tab').click( function(){ ForceSessionTableRefresh() });
     $('#reservations-tab').click( function(){ ForceReservationTableRefresh() });
 
     /**** Initialize Datatables ****/
@@ -1006,6 +1012,37 @@ $(document).ready(function() {
                     return "|" + row.location_hierarchy.join("|") + "|";
                 },
                 "visible": false
+            },
+            { // Actions
+                data: null,
+                title: 'Actions', 
+                orderable: false, 
+                searchable: false,
+                render: function(data,type,row) {
+                    const client_id = row["id"];
+                    const client_name = row["name"];
+
+                    let html = `<div id="client-table-row-toolbar"  role="toolbar">
+                        <div class="btn-group" role="group">
+
+                [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
+                <button class="client-table-row-toolbar-reserve btn btn-primary" data-clientid="${client_id}" data-clientname="${client_name}"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
+                [% END %]
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-wrench"></i> [% c.loc("Manage") %]</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item client-table-row-toolbar-unlock" href="#" data-clientid="${client_id}"><i class="fas fa-unlock"></i> [% c.loc("Unlock") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-status" href="#" data-clientid="${client_id}"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-delete" href="#" data-clientid="${client_id}"><i class="fas fa-times"></i> [% c.loc("Delete") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-restart" href="#" data-clientid="${client_id}"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-shutdown" href="#" data-clientid="${client_id}"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</a>
+                    </div>
+                </div>
+
+                      </div>`;
+                    return html;
+                }
             }
         ]
     } );
@@ -1072,9 +1109,9 @@ $(document).ready(function() {
                     let html = `<div id="client-table-row-toolbar"  role="toolbar">
                         <div class="btn-group" role="group">
 
-                        <button class="client-table-row-toolbar-time btn libki-toolbar-btn btn-outline-secondary" data-clientid="${client_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+                        <button class="client-table-row-toolbar-time btn btn-primary" data-clientid="${client_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
 
-                        <button class="client-table-row-toolbar-logout btn libki-toolbar-btn btn-outline-danger" data-clientid="${client_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+                        <button class="client-table-row-toolbar-logout btn btn-danger" data-clientid="${client_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
 
                     </div>`;
                     return html;
@@ -1614,6 +1651,7 @@ $(document).ready(function() {
 
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("User's time updated.") %]" );
+                    ForceSessionTableRefresh();
                     ForceClientTableRefresh();
                 } else {
                     DisplayMessage( "error", "[% c.loc("Unable to update user's time.") %]" );
@@ -1630,11 +1668,11 @@ $(document).ready(function() {
     });
 
     /* Reserve */
-    $('#client-table-row-toolbar-reserve').click(function(){
+    $("#clients-table").on("click", '.client-table-row-toolbar-reserve', async function(){
       $('#make-reservation-modal-form-username').removeClass('is-invalid');
 
-      const id = window.selected_id;
-      const client_name = $(`#client-table tr[id="${id}"] td:eq(0)`).text();
+      const id = $(this).data('clientid');
+      const client_name = $(this).data('clientname');
       $('#make-reservation-modal-title-client-name').text(client_name);
 
       $('#make-reservation-modal-form-id').val( window.selected_id );
@@ -1668,12 +1706,12 @@ $(document).ready(function() {
 
 
     /* Unlock */
-    $('#client-table-row-toolbar-unlock').click(function(){
+    $("#clients-table").on("click", '.client-table-row-toolbar-unlock', async function(){
       if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + window.selected_id, function(data) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + $(this).data('clientid'), function(data) {
            if ( data.success ) {
                DisplayMessage( "success", "[% c.loc("Client unlocked.") %]" );
-               cTable.draw(true);
+               cTable.ajax.reload();
            } else {
                DisplayMessage( "error", "[% c.loc("Unable to unlock client.") %]" );
            }
@@ -1683,12 +1721,11 @@ $(document).ready(function() {
 
     /* Log out */
     $("#sessions-table").on("click", '.client-table-row-toolbar-logout', async function(){
-      console.log('clicked on the thing');
       if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
         $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + $(this).data('clientid'), function(data) {
            if ( data.success ) {
                DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
-               sTable.draw(true);
+               sTable.ajax.reload();
            } else {
                DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
            }
@@ -1697,12 +1734,12 @@ $(document).ready(function() {
     });
 
     /* Toggle client status */
-    $('#client-table-row-toolbar-status').click(function(){
-        $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + window.selected_id, function(data) {
+    $("#clients-table").on("click", '.client-table-row-toolbar-status', async function(){
+        $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + $(this).data('clientid'), function(data) {
             if ( parseInt( data.success ) ) {
                     const status = TranslateStatus( data.status );
                     DisplayMessage( "success", "[% c.loc("Client status change to: ") %]" + status );
-                    cTable.draw(true);
+                    cTable.ajax.reload();
             } else {
                     DisplayMessage( "error", "[% c.loc("Unable to switch client status.") %]" );
             }
@@ -1719,13 +1756,13 @@ $(document).ready(function() {
     }
 
     /* Delete Client*/
-    $('#client-table-row-toolbar-delete').click(function(){
+    $("#clients-table").on("click", '.client-table-row-toolbar-delete', async function(){
       if ( confirm("[% c.loc("Once deleted, all the reservations of this client will be removed at the same time.") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + window.selected_id, function( data ) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + $(this).data('clientid'), function( data ) {
           if ( data.success ) {
             DisplayMessage( "success", "[% c.loc("Client deleted.") %]" );
             // Refresh the table to remove the deleted row
-            cTable.draw(true);
+            cTable.ajax.reload();
             rTable.draw(true);
           } else {
             DisplayMessage( "error", "[% c.loc("Unable to delete client.") %]" );
@@ -1735,12 +1772,12 @@ $(document).ready(function() {
     });
 
     /* Restart Client */
-    $('#client-table-row-toolbar-restart').click(function(){
+    $("#clients-table").on("click", '.client-table-row-toolbar-restart', async function(){
       if ( confirm("[% c.loc("Are you sure you want to restart this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/restart') %]' + '/' + window.selected_id, function(data) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/restart') %]' + '/' + $(this).data('clientid'), function(data) {
           if ( data.success ) {
             DisplayMessage( "success", "[% c.loc("Client restarted.") %]" );
-            cTable.draw(true);
+            cTable.ajax.reload();
           } else {
             DisplayMessage( "error", "[% c.loc("Unable to restart client.") %]" );
           }
@@ -1749,12 +1786,12 @@ $(document).ready(function() {
     });
 
     /* Turn off Client */
-    $('#client-table-row-toolbar-shutdown').click(function(){
+    $("#clients-table").on("click", '.client-table-row-toolbar-shutdown', async function(){
       if ( confirm("[% c.loc("Are you sure you want to turn off this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/shutdown') %]' + '/' + window.selected_id, function(data) {
+        $.getJSON( '[% c.uri_for('/administration/api/client/shutdown') %]' + '/' + $(this).data('clientid'), function(data) {
           if ( data.success ) {
             DisplayMessage( "success", "[% c.loc("Client turned off.") %]" );
-            cTable.draw(true);
+            cTable.ajax.reload();
           } else {
             DisplayMessage( "error", "[% c.loc("Unable to turn off client.") %]" );
           }
@@ -1892,7 +1929,6 @@ $(document).ready(function() {
 
 function HandleSessionTableRefreshCounter() {
     var countdown = parseInt( $('#session-table-refresh-counter').text() ) - 1;
-
     if ( countdown ) {
         $('#session-table-refresh-counter').text( countdown );
     } else {
@@ -1937,11 +1973,11 @@ window.SessionTableUpdateUserCategoryFilter = function( category ) {
 }
 
 function ForceClientTableRefresh() {
-     cTable.draw(true);
+     cTable.ajax.reload();
 }
 
 function ForceSessionTableRefresh() {
-     sTable.draw(true);
+     sTable.ajax.reload();
      $('#session-table-refresh-counter').text( '30' );
 }
 
