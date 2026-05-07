@@ -132,6 +132,7 @@ sub _serialize_client {
         ipaddress          => $client->ipaddress,
         macaddress         => $client->macaddress,
         hostname           => $client->hostname,
+        current_session    => $client->session ? $client->session->session_id : '',
     };
 }
 

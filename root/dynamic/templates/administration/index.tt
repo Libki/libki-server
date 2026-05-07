@@ -100,6 +100,18 @@
                 [% END %]
             </ul>
         [% END %]
+        <h4>[% c.loc("Status") %]</h4>
+        <ul class="nav flex-column pb-3" id="client-statuses">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">[% c.loc("All") %]</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">[% c.loc("Online") %]</a>
+                <a class="nav-link" href="#">[% c.loc("Offline") %]</a>
+                <a class="nav-link" href="#">[% c.loc("Suspended") %]</a>
+                <a class="nav-link" href="#">[% c.loc("In Use") %]</a>
+            </li>
+        </ul>
         </div>
         <div class="col-sm-10">
             <nav class="navbar navbar-expand-lg navbar-light bg-none">
@@ -879,6 +891,13 @@ $(document).ready(function() {
         $(this).parent().parent().find('.nav-link').removeClass('active');
         $(this).addClass('active');
     });
+    // Client Table refreshing on status limit
+    $('#client-statuses .nav-link').click(function() {
+        const status = $(this).text();
+        ClientTableUpdateStatusFilter(status);
+        $(this).parent().parent().find('.nav-link').removeClass('active');
+        $(this).addClass('active');
+    });
     // Session Table refreshing on category limit
     $('#session-user-categories .nav-link').click(function() {
         const category = $(this).data('category');
@@ -1003,9 +1022,12 @@ $(document).ready(function() {
             },
             { // Client status
                 data: function( row, type, val, meta ) {
-                    return TranslateStatus( row.status );
-                },
-                "orderable": false
+                    var status = row.status;
+                    if (row.current_session) {
+                        status = 'in_use';
+                    }
+                    return TranslateStatus( status );
+                }
             },
             { // Client Location Hierarchy (for searching)
                 data: function( row, type, val, meta ) {
@@ -1751,7 +1773,8 @@ $(document).ready(function() {
                status == 'offline'   ? '[% c.loc("Offline") %]'   :
                status == 'online'    ? '[% c.loc("Online") %]'    :
                status == 'active'    ? '[% c.loc("Active") %]'    :
-               status == 'locked'    ? '[% c.loc("Locked") %]'    :               
+               status == 'locked'    ? '[% c.loc("Locked") %]'    :
+               status == 'in_use'    ? '[% c.loc("In Use") %]'    :
                '[% c.loc("Unknown") %]';
     }
 
@@ -1950,6 +1973,18 @@ window.ClientTableUpdateTypeFilter = function( type ) {
     cTable
         .columns(2)
         .search(type)
+        .draw();    
+    ForceClientTableRefresh();
+}
+
+window.ClientTableUpdateStatusFilter = function( status ) {
+    if (status == '[% c.loc("All") %]') {
+        status = '';
+    }
+    window.client_status_filter = status;
+    cTable
+        .columns(3)
+        .search(status)
         .draw();    
     ForceClientTableRefresh();
 }
