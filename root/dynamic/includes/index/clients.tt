@@ -166,11 +166,16 @@ $(document).ready(function() {
             },
             { // Client status
                 data: function( row, type, val, meta ) {
-                    var status = row.status;
+                  var status = row.status;
                     if (row.current_session) {
                         status = 'in_use';
                     }
-                    return TranslateStatus( status );
+                    var translated_status = TranslateStatus( status );
+                    if (row.current_session) {
+                        return translated_status + " <small>(" + row.current_session.minutes + " [% c.loc('minutes left') %])</small>";
+                    } else {
+                        return translated_status;
+                    }
                 }
             },
             { // Client Location Hierarchy (for searching)

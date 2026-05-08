@@ -1026,7 +1026,12 @@ $(document).ready(function() {
                     if (row.current_session) {
                         status = 'in_use';
                     }
-                    return TranslateStatus( status );
+                    var translated_status = TranslateStatus( status );
+                    if (row.current_session) {
+                        return translated_status + " <small>(" + row.current_session.minutes + " [% c.loc('minutes left') %])</small>";
+                    } else {
+                        return translated_status;
+                    }
                 }
             },
             { // Client Location Hierarchy (for searching)

@@ -121,6 +121,16 @@ sub _serialize_client {
         $_->id
     } $client->location->ancestors;
 
+    my $session = $client->session;
+
+    my $serialized_session;
+    if ($session) {
+        $serialized_session = {
+            'id'      => $session->session_id,
+            'minutes' => $session->minutes,
+        };
+    }
+
     return {
         id                 => $client->id,
         name               => $client->name,
@@ -132,7 +142,7 @@ sub _serialize_client {
         ipaddress          => $client->ipaddress,
         macaddress         => $client->macaddress,
         hostname           => $client->hostname,
-        current_session    => $client->session ? $client->session->session_id : '',
+        current_session    => $serialized_session,
     };
 }
 
