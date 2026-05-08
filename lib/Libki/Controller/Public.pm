@@ -37,17 +37,60 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path {
-    my ( $self, $c, $tab ) = @_;
-
-    my $instance = $c->instance;
-
-    $tab ||= 'clients';
-    $tab = 'clients' if $tab ne 'printing';
+# /public
+sub index :Path('/public') :Args(0) {
+    my ( $self, $c ) = @_;
 
     $c->stash(
-        tab => $tab,
-        CustomJsPublic => $c->setting('CustomJsPublic'),
+        tab              => 'clients',
+        current_location => undef,
+        CustomJsPublic   => $c->setting('CustomJsPublic'),
+    );
+}
+
+# /public/:id
+sub index_location :Path('/public') :Args(1) {
+    my ( $self, $c, $id ) = @_;
+
+    $c->detach('/default')
+        unless $id =~ /^\d+$/;
+    my $location = $c->model('DB::Location')->find($id)
+        or $c->detach('/default');
+
+    $c->stash(
+        template         => 'public/index.tt',
+        tab              => 'clients',
+        current_location => $id,
+        CustomJsPublic   => $c->setting('CustomJsPublic'),
+    );
+}
+
+# /public/printing
+sub printing :Path('/public/printing') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash(
+        template         => 'public/index.tt',
+        tab              => 'printing',
+        current_location => undef,
+        CustomJsPublic   => $c->setting('CustomJsPublic'),
+    );
+}
+
+# /public/printing/:id
+sub printing_location :Path('/public/printing') :Args(1) {
+    my ( $self, $c, $id ) = @_;
+
+    $c->detach('/default')
+        unless $id =~ /^\d+$/;
+    my $location = $c->model('DB::Location')->find($id)
+        or $c->detach('/default');
+
+    $c->stash(
+        template         => 'public/index.tt',
+        tab              => 'printing',
+        current_location => $id,
+        CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
 }
 
@@ -137,9 +180,20 @@ sub auto : Private {
         },
     )->get_column('code')->all();
 
+    my @types = $c->model('DB::Client')->search(
+        {
+            instance => $instance,
+        },
+        {
+            columns  => [qw/type/],
+            distinct => 1
+        }
+    )->get_column('type')->all();
+
     $c->stash( 
         interface => 'public',
         locations => \@locations,
+        types     => \@types,
     );
 }
 
