@@ -382,10 +382,8 @@ $(document).ready(function() {
   /*********** Helper Functions ***********/
     function TranslateStatus( status ) {
         return status == 'suspended' ? '[% c.loc("Out of Order") %]' :
-               status == 'offline'   ? '[% c.loc("Offline") %]'   :
-               status == 'online'    ? '[% c.loc("Online") %]'    :
-               status == 'active'    ? '[% c.loc("Active") %]'    :
-               status == 'locked'    ? '[% c.loc("Locked") %]'    :
+               status == 'offline'   ? '[% c.loc("Unavailable") %]'   :
+               status == 'online'    ? '[% c.loc("Available") %]'    :
                status == 'in_use'    ? '[% c.loc("In Use") %]'    :
                '[% c.loc("Unknown") %]';
     }
