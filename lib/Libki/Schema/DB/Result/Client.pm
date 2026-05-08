@@ -278,7 +278,7 @@ sub can_user_use {
     my $c     = $params->{c};
 
     my $log = $c->log();
-    $log->debug("Client::can_user_user( $self, { user => $user, error => $error, c => $c }");
+    $log->debug("Client::can_user_use( $self, { user => $user, error => $error, c => $c }");
 
     unless ( $user ) {
         $error->{reason}  = 'NO_USER';
@@ -303,7 +303,7 @@ sub can_user_use {
             } elsif ( $comparison eq 'gt' ) {
                 $bool = $age > $limit;
             } elsif ( $comparison eq 'lt' ) {
-                $bool = $age > $limit;
+                $bool = $age < $limit;
             } elsif ( $comparison eq 'ge' ) {
                 $bool = $age >= $limit;
             } elsif ( $comparison eq 'le' ) {
