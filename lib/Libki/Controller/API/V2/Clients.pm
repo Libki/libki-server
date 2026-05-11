@@ -117,9 +117,12 @@ sub client_DELETE {
 sub _serialize_client {
     my ( $c, $client ) = @_;
 
-    my @location_hierarchy = map {
-        $_->id
-    } $client->location->ancestors;
+    my @location_hierarchy;
+    if ($client->location) {
+        @location_hierarchy = map {
+            $_->id
+        } $client->location->ancestors;
+    }
 
     my $session = $client->session;
 
@@ -134,7 +137,7 @@ sub _serialize_client {
     return {
         id                 => $client->id,
         name               => $client->name,
-        location           => $client->location->code,
+        location           => $client->location ? $client->location->code : undef,
         location_id        => $client->location_id,
         location_hierarchy => \@location_hierarchy,
         status             => $client->status,

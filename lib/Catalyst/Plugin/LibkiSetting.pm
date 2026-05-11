@@ -337,8 +337,7 @@ Check the time and the user, return the available time if possible.
 
 sub check_login {
     my ( $c, $client, $user ) = @_;
-    my $location = $c->model('DB::Location')->single({ 'code' => $client->location });
-    my $minutes_until_closed = $location->minutes_until_closed();
+    my $minutes_until_closed = $client->location ? $client->location->minutes_until_closed() : 0;
     my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
@@ -439,8 +438,7 @@ sub check_reservation {
 
     my @array;
 
-    my $location = $client->location;
-    my $minutes_until_unreservable = $location->minutes_until_closed($begin_time_dt, 1);
+    my $minutes_until_unreservable = $client->location ? $client->location->minutes_until_closed($begin_time_dt, 1) : 0;
 
     my ( $minutes_left, $minutes ) = ( 0, 0 );
 

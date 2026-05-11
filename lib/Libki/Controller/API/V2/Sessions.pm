@@ -53,15 +53,18 @@ sub session_GET {
 sub _serialize_session {
     my ( $c, $session ) = @_;
 
-    my @client_location_hierarchy = map {
-        $_->id
-    } $session->client->location->ancestors;
+    my @client_location_hierarchy;
+    if ($session->client->location) {
+        @client_location_hierarchy = map {
+            $_->id
+        } $session->client->location->ancestors;
+    }
 
     return {
         id                 => $session->session_id,
         client             => $session->client->name,
         client_id          => $session->client_id,
-        location           => $session->client->location->code,
+        location           => $session->client->location ? $session->client->location->code : undef,
         location_id        => $session->client->location_id,
         location_hierarchy => \@client_location_hierarchy,
         status             => $session->status,
