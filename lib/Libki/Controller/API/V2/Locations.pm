@@ -14,6 +14,21 @@ sub locations : Path('/api/v2/locations') : Args(0) : ActionClass('REST') {}
 sub location  : Path('/api/v2/locations') : Args(1) : ActionClass('REST') {}
 sub hours     : Path('/api/v2/locations') : Args(2) : ActionClass('REST') {}
 
+=head1 NAME
+
+Libki::Controller::API::V2::Locations - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller for location in Libki
+
+=head1 METHODS
+
+
+=head2 locations_GET
+
+=cut
+
 # GET /api/v2/locations
 sub locations_GET {
     my ( $self, $c ) = @_;
@@ -32,6 +47,10 @@ sub locations_GET {
 
     $self->status_ok($c, entity => \@data);
 }
+
+=head2 locations_POST
+
+=cut
 
 # POST /api/v2/locations
 sub locations_POST {
@@ -58,6 +77,10 @@ sub locations_POST {
     );
 }
 
+=head2 location_GET
+
+=cut
+
 # GET /api/v2/locations/:id
 sub location_GET {
     my ( $self, $c, $id ) = @_;
@@ -67,6 +90,10 @@ sub location_GET {
 
     $self->status_ok($c, entity => _serialize_location($c, $location));
 }
+
+=head2 location_PUT
+
+=cut
 
 # PUT /api/v2/locations/:id
 sub location_PUT {
@@ -93,6 +120,10 @@ sub location_PUT {
     $self->status_ok($c, entity => _serialize_location($c, $location));
 }
 
+=head2 location_DELETE
+
+=cut
+
 # DELETE /api/v2/locations/:id
 sub location_DELETE {
     my ( $self, $c, $id ) = @_;
@@ -104,6 +135,11 @@ sub location_DELETE {
 
     $self->status_no_content($c);
 }
+
+=head2 hours_GET
+
+=cut
+
 
 # GET /api/v2/locations/:id/hours?date=YYYY-MM-DD
 sub hours_GET {
@@ -125,6 +161,11 @@ sub hours_GET {
 }
 
 # ---- Helper serialization ----
+
+=head2 _serialize_location
+
+=cut
+
 
 sub _serialize_location {
     my ( $c, $location ) = @_;
@@ -163,6 +204,10 @@ sub _serialize_location {
         exceptions      => \@exceptions,
     };
 }
+
+=head2 _replace_related
+
+=cut
 
 sub _replace_related {
     my ( $location, $params ) = @_;

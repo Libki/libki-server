@@ -10,8 +10,23 @@ __PACKAGE__->config(
     default => 'application/json',
 );
 
+=head1 NAME
+
+Libki::Controller::API::V2::Clients - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller for clients in Libki
+
+=head1 METHODS
+
+
 sub clients : Path('/api/v2/clients') : Args(0) : ActionClass('REST') {}
 sub client  : Path('/api/v2/clients') : Args(1) : ActionClass('REST') {}
+
+=head2 clients_GET
+
+=cut
 
 # GET /api/v2/clients
 sub clients_GET {
@@ -29,6 +44,10 @@ sub clients_GET {
 
     $self->status_ok($c, entity => \@data);
 }
+
+=head2 clients_POST
+
+=cut
 
 # POST /api/v2/clients
 sub clients_POST {
@@ -60,6 +79,10 @@ sub clients_POST {
     );
 }
 
+=head2 client_GET
+
+=cut
+
 # GET /api/v2/clients/:id
 sub client_GET {
     my ( $self, $c, $id ) = @_;
@@ -69,6 +92,10 @@ sub client_GET {
 
     $self->status_ok($c, entity => _serialize_client($c, $client));
 }
+
+=head2 client_PUT
+
+=cut
 
 # PUT /api/v2/clients/:id
 sub client_PUT {
@@ -98,6 +125,10 @@ sub client_PUT {
     $self->status_ok($c, entity => _serialize_client($c, $client));
 }
 
+=head2 client_DELETE
+
+=cut
+
 # DELETE /api/v2/clients/:id
 sub client_DELETE {
     my ( $self, $c, $id ) = @_;
@@ -113,6 +144,10 @@ sub client_DELETE {
 }
 
 # ---- Helper serialization ----
+
+=head2 _serialize_client
+
+=cut
 
 sub _serialize_client {
     my ( $c, $client ) = @_;

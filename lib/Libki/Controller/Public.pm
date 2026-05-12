@@ -48,6 +48,10 @@ sub index :Path('/public') :Args(0) {
     );
 }
 
+=head2 index_location
+
+=cut
+
 # /public/:id
 sub index_location :Path('/public') :Args(1) {
     my ( $self, $c, $id ) = @_;
@@ -65,6 +69,10 @@ sub index_location :Path('/public') :Args(1) {
     );
 }
 
+=head2 printing
+
+=cut
+
 # /public/printing
 sub printing :Path('/public/printing') :Args(0) {
     my ( $self, $c ) = @_;
@@ -76,6 +84,12 @@ sub printing :Path('/public/printing') :Args(0) {
         CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
 }
+
+
+=head2 printing_location
+
+=cut
+
 
 # /public/printing/:id
 sub printing_location :Path('/public/printing') :Args(1) {

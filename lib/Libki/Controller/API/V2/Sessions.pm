@@ -10,8 +10,23 @@ __PACKAGE__->config(
     default => 'application/json',
 );
 
+=head1 NAME
+
+Libki::Controller::API::V2::Sessions - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller for client sessions in Libki
+
+=head1 METHODS
+
+
 sub sessions : Path('/api/v2/sessions') : Args(0) : ActionClass('REST') {}
 sub session  : Path('/api/v2/sessions') : Args(1) : ActionClass('REST') {}
+
+=head2 sessions_GET
+
+=cut
 
 # GET /api/v2/sessions
 sub sessions_GET {
@@ -33,6 +48,10 @@ sub sessions_GET {
     $self->status_ok($c, entity => \@data);
 }
 
+=head2 session_GET
+
+=cut
+
 # GET /api/v2/sessions/:id
 sub session_GET {
     my ( $self, $c, $id ) = @_;
@@ -49,6 +68,9 @@ sub session_GET {
 }
 
 # ---- Helper serialization ----
+=head2 _serialize_session
+
+=cut
 
 sub _serialize_session {
     my ( $c, $session ) = @_;
