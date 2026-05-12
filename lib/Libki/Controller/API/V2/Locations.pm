@@ -21,6 +21,7 @@ sub locations_GET {
     my @locations = $c->model('DB::Location')->search(
         {},
         {
+            order_by => 'code',
             prefetch => [
                 'location_hours',
                 { location_hours_exceptions => 'location_hours_exception_intervals' }

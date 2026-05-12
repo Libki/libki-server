@@ -1118,7 +1118,7 @@ $(document).ready(function() {
                 },
                 "orderable": false
             },
-            { // Client Location Hierarchy (for searching)
+            { // Session Location Hierarchy (for searching)
                 data: function( row, type, val, meta ) {
                     return "|" + row.location_hierarchy.join("|") + "|";
                 },
@@ -1968,7 +1968,7 @@ window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     cTable
         .columns(4)
-        .search(location)
+        .search('|' + location + '|')
         .draw();
     ForceClientTableRefresh();
 }
@@ -1998,7 +1998,7 @@ window.SessionTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     sTable
         .columns(6)
-        .search(location)
+        .search('|' + location + '|')
         .draw();
     ForceSessionTableRefresh();
 }
