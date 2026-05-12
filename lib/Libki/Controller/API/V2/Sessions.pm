@@ -20,15 +20,23 @@ Catalyst Controller for client sessions in Libki
 
 =head1 METHODS
 
+=head2 sessions
 
+=cut
 sub sessions : Path('/api/v2/sessions') : Args(0) : ActionClass('REST') {}
+
+=head2 session
+
+=cut
+
 sub session  : Path('/api/v2/sessions') : Args(1) : ActionClass('REST') {}
 
 =head2 sessions_GET
 
+GET /api/v2/sessions
+
 =cut
 
-# GET /api/v2/sessions
 sub sessions_GET {
     my ( $self, $c ) = @_;
 
@@ -50,9 +58,10 @@ sub sessions_GET {
 
 =head2 session_GET
 
+GET /api/v2/sessions/:id
+
 =cut
 
-# GET /api/v2/sessions/:id
 sub session_GET {
     my ( $self, $c, $id ) = @_;
 
@@ -67,8 +76,9 @@ sub session_GET {
     $self->status_ok($c, entity => _serialize_session($c, $session));
 }
 
-# ---- Helper serialization ----
 =head2 _serialize_session
+
+Serialize session data
 
 =cut
 

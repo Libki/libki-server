@@ -23,8 +23,6 @@ Catalyst Controller for financial transactions in Libki
 
 =head1 METHODS
 
-=cut
-
 =head2 list
 
 /api/v2/transactions?user_id=1&
@@ -156,6 +154,12 @@ sub cash_debit : Path('cash/debit') Args(0) Method('POST') {
     $c->forward( $c->view('JSON') );
 }
 
+=head3
+
+valid that the amount provide is a positive number
+
+=cut
+
 sub _validate_positive_amount {
     my ( $self, $c, $amount ) = @_;
     delete $c->stash->{Settings};
@@ -189,7 +193,6 @@ sub _validate_positive_amount {
 
     return 1;
 }
-
 
 
 __PACKAGE__->meta->make_immutable;

@@ -10,10 +10,6 @@ __PACKAGE__->config(
     default => 'application/json',
 );
 
-sub locations : Path('/api/v2/locations') : Args(0) : ActionClass('REST') {}
-sub location  : Path('/api/v2/locations') : Args(1) : ActionClass('REST') {}
-sub hours     : Path('/api/v2/locations') : Args(2) : ActionClass('REST') {}
-
 =head1 NAME
 
 Libki::Controller::API::V2::Locations - Catalyst Controller
@@ -24,12 +20,30 @@ Catalyst Controller for location in Libki
 
 =head1 METHODS
 
-
-=head2 locations_GET
+=head2 locations
 
 =cut
 
-# GET /api/v2/locations
+sub locations : Path('/api/v2/locations') : Args(0) : ActionClass('REST') {}
+
+=head2 location
+
+=cut
+
+sub location  : Path('/api/v2/locations') : Args(1) : ActionClass('REST') {}
+
+=head2 hours
+
+=cut
+
+sub hours     : Path('/api/v2/locations') : Args(2) : ActionClass('REST') {}
+
+=head2 locations_GET
+
+GET /api/v2/locations
+
+=cut
+
 sub locations_GET {
     my ( $self, $c ) = @_;
 
@@ -50,9 +64,10 @@ sub locations_GET {
 
 =head2 locations_POST
 
+POST /api/v2/locations
+
 =cut
 
-# POST /api/v2/locations
 sub locations_POST {
     my ( $self, $c ) = @_;
 
@@ -79,9 +94,10 @@ sub locations_POST {
 
 =head2 location_GET
 
+GET /api/v2/locations/:id
+
 =cut
 
-# GET /api/v2/locations/:id
 sub location_GET {
     my ( $self, $c, $id ) = @_;
 
@@ -93,9 +109,10 @@ sub location_GET {
 
 =head2 location_PUT
 
+PUT /api/v2/locations/:id
+
 =cut
 
-# PUT /api/v2/locations/:id
 sub location_PUT {
     my ( $self, $c, $id ) = @_;
 
@@ -122,9 +139,10 @@ sub location_PUT {
 
 =head2 location_DELETE
 
+DELETE /api/v2/locations/:id
+
 =cut
 
-# DELETE /api/v2/locations/:id
 sub location_DELETE {
     my ( $self, $c, $id ) = @_;
 
@@ -138,10 +156,10 @@ sub location_DELETE {
 
 =head2 hours_GET
 
+GET /api/v2/locations/:id/hours?date=YYYY-MM-DD
+
 =cut
 
-
-# GET /api/v2/locations/:id/hours?date=YYYY-MM-DD
 sub hours_GET {
     my ( $self, $c, $id ) = @_;
 
@@ -161,11 +179,11 @@ sub hours_GET {
 }
 
 # ---- Helper serialization ----
-
 =head2 _serialize_location
 
-=cut
+Consistently format what a 'location' looks like in the API
 
+=cut
 
 sub _serialize_location {
     my ( $c, $location ) = @_;
@@ -206,6 +224,8 @@ sub _serialize_location {
 }
 
 =head2 _replace_related
+
+Replace hours and hours exceptions completely when new data is received
 
 =cut
 

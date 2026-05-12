@@ -20,15 +20,24 @@ Catalyst Controller for clients in Libki
 
 =head1 METHODS
 
+=head2 clients
+
+=cut
 
 sub clients : Path('/api/v2/clients') : Args(0) : ActionClass('REST') {}
+
+=head2 client
+
+=cut
+
 sub client  : Path('/api/v2/clients') : Args(1) : ActionClass('REST') {}
 
 =head2 clients_GET
 
+GET /api/v2/clients
+
 =cut
 
-# GET /api/v2/clients
 sub clients_GET {
     my ( $self, $c ) = @_;
 
@@ -47,9 +56,10 @@ sub clients_GET {
 
 =head2 clients_POST
 
+POST /api/v2/clients
+
 =cut
 
-# POST /api/v2/clients
 sub clients_POST {
     my ( $self, $c ) = @_;
 
@@ -81,9 +91,10 @@ sub clients_POST {
 
 =head2 client_GET
 
+GET /api/v2/clients/:id
+
 =cut
 
-# GET /api/v2/clients/:id
 sub client_GET {
     my ( $self, $c, $id ) = @_;
 
@@ -95,9 +106,10 @@ sub client_GET {
 
 =head2 client_PUT
 
+PUT /api/v2/clients/:id
+
 =cut
 
-# PUT /api/v2/clients/:id
 sub client_PUT {
     my ( $self, $c, $id ) = @_;
 
@@ -127,9 +139,10 @@ sub client_PUT {
 
 =head2 client_DELETE
 
+DELETE /api/v2/clients/:id
+
 =cut
 
-# DELETE /api/v2/clients/:id
 sub client_DELETE {
     my ( $self, $c, $id ) = @_;
 
@@ -143,9 +156,10 @@ sub client_DELETE {
     $self->status_no_content($c);
 }
 
-# ---- Helper serialization ----
 
 =head2 _serialize_client
+
+Serialize client data
 
 =cut
 
