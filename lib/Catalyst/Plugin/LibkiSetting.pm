@@ -337,7 +337,7 @@ Check the time and the user, return the available time if possible.
 
 sub check_login {
     my ( $c, $client, $user ) = @_;
-    my $minutes_until_closing = Libki::Hours::minutes_until_closing( { c => $c, location => $client->location } );
+    my $minutes_until_closed = $client->location ? $client->location->minutes_until_closed() : 0;
     my $timeout = $c->setting( 'ReservationTimeout' ) ? $c->setting( 'ReservationTimeout' ) : 15;
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'reservation' => undef );
     my $time_to_reservation = 0;
@@ -406,7 +406,7 @@ sub check_login {
             : $c->setting( 'DefaultSessionTimeAllowance' );
 
         my @array = ( $allowance, $minutes_allotment );
-        push( @array, $minutes_until_closing ) if ( $minutes_until_closing );
+        push( @array, $minutes_until_closed ) if ( $minutes_until_closed );
         push( @array, $time_to_reservation ) if ( $time_to_reservation > 0 );
         my $min = min @array;
 
@@ -437,13 +437,9 @@ sub check_reservation {
     my %result = ( 'error' => 0, 'detail' => 0, 'minutes' => 0, 'allotment' => 0, 'end_time' => $begin_time_dt->clone );
 
     my @array;
-    my $minutes_to_closing = Libki::Hours::minutes_until_closing(
-        {
-            c        => $c,
-            location => $client->location,
-            datetime => $begin_time_dt,
-        }
-    );
+
+    my $minutes_until_unreservable = $client->location ? $client->location->minutes_until_closed($begin_time_dt, 1) : 0;
+
     my ( $minutes_left, $minutes ) = ( 0, 0 );
 
     #1. Check to see if the time has been past
@@ -464,9 +460,9 @@ sub check_reservation {
     }
 
     #3. Check the closing time
-    if ( !$result{'error'} && defined( $minutes_to_closing ) ) {
-        if ( $minutes_to_closing > 0 ) {
-            push( @array, $minutes_to_closing );
+    if ( !$result{'error'} && defined( $minutes_until_unreservable ) ) {
+        if ( $minutes_until_unreservable ) {
+            push( @array, $minutes_until_unreservable );
         }
         else {
             $result{'error'} = 'CLOSING_TIME';
@@ -545,176 +541,6 @@ sub check_reservation {
             $result{'minutes'} = $minutes;
             $result{'end_time'} = $result{'end_time'}->add( minutes => $minutes );
         }
-    }
-
-    return %result;
-}
-
-=head2 get_time_list
-
- Get the available time list for new reservation
-
-=cut
-
-sub get_time_list {
-    my ( $c, $client_id, $date ) = @_;
-
-    my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d %H:%M' );
-    my $working_date_dt = $parser->parse_datetime( "$date 0:0" );
-    $working_date_dt->set_time_zone( $c->tz );
-
-    # Find existing reservations for the date requested
-    my @reservations = $c->model( 'DB::Reservation' )->search(
-        {
-            -and => [
-                instance => $c->instance,
-                client_id => $client_id,
-                -or       => [
-                    \[ 'DATE(begin_time) = ?', $working_date_dt->ymd ],
-                    \[ 'DATE(end_time) = ?', $working_date_dt->ymd ],
-                ],
-            ]
-        }
-    );
-
-    # Find existing sessions for the client
-    my @sessions = $c->model('DB::Session')->search(
-        {
-            -and => [
-                instance  => $c->instance,
-                client_id => $client_id,
-            ]
-        }
-    );
-
-    my $client = $c->model( 'DB::Client' )->find( $client_id );
-
-    my ( @mlist, @start, %result );
-    my $now_dt = DateTime->now( time_zone => $c->tz );
-
-    my $opening_hour = $c->setting( 'ReservationOpeningHour' ) || 0;
-    my $opening_minute = $c->setting( 'ReservationOpeningMinute' ) || 0;
-    my $opening_dt = $working_date_dt->clone;
-    $opening_dt->set(
-        hour   => $opening_hour,
-        minute => $opening_minute,
-    );
-
-    my $end_dt = $working_date_dt->clone;
-    $end_dt->set(
-        hour   => 23,
-        minute => 59,
-    );
-
-    my @hours = ( '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23' );
-    my @minutes = ( '00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55' );
-
-    if ( $client ) {
-        push( @start, $opening_dt );
-
-        if ( $now_dt->ymd eq $opening_dt->ymd ) {
-            push( @start, $now_dt );
-
-            if ( defined( $client ) && defined( $client->session ) ) {
-                my $session_end_dt = $now_dt->clone();
-                $session_end_dt->add( seconds => $client->session->minutes * 60 );
-                push( @start, $session_end_dt );
-            }
-        }
-
-        my $start_dt = max @start;
-
-        for ( my $i = 0; $i < $start_dt->hour; $i++ ) {
-            $hours[$i] = 'hide';
-        }
-
-        my $minutes_to_closing = Libki::Hours::minutes_until_closing(
-            {
-                c        => $c,
-                location => $client->location(),
-                datetime => $start_dt,
-            }
-        );
-
-        if ( $minutes_to_closing ) {
-            my $close_dt = $start_dt->clone;
-            $close_dt->add( minutes => $minutes_to_closing );
-
-            # Hide all the hours after closing
-            for ( my $j = $close_dt->hour + 1; $j < 24; $j++ ) {
-                $hours[$j] = 'hide';
-            }
-
-            $end_dt = $close_dt if $minutes_to_closing > 0;
-        }
-
-        for ( my $h = 0; $h < 24; $h++ ) {
-            my @minutes_availability = @minutes;
-
-            if ( $hours[$h] ne 'hide' ) {
-                for ( my $min = 0; $min < scalar @minutes_availability; $min++ ) {
-                    my $time_to_check_dt = $start_dt->clone;
-                    $time_to_check_dt->set(
-                        hour   => $h,
-                        minute => $minutes_availability[$min]
-                    );
-
-                    $minutes_availability[$min] = 'hide' if $time_to_check_dt < $now_dt;
-                    $minutes_availability[$min] = 'hide' if $time_to_check_dt > $end_dt;
-
-                    foreach my $reservation ( @reservations ) {
-                        my $reservation_begin_dt = DateTime::Format::MySQL->parse_datetime( $reservation->begin_time );
-                        my $reservation_end_dt = DateTime::Format::MySQL->parse_datetime( $reservation->end_time );
-
-                        $reservation_begin_dt->set_time_zone( $c->tz );
-                        $reservation_end_dt->set_time_zone( $c->tz );
-
-                        my $reservation_gap = $c->setting( 'ReservationGap' ) || 0;
-                        $reservation_end_dt->add( minutes => $reservation_gap ) if $reservation_gap;
-
-                        my $reservation_span = DateTime::Span->from_datetimes( start => $reservation_begin_dt, end => $reservation_end_dt );
-
-                        if ( $reservation_span->contains( $time_to_check_dt )
-                            || $time_to_check_dt < $start_dt
-                            || $time_to_check_dt > $end_dt
-                        ) {
-                            $minutes_availability[$min] = 'hide';
-                            last;
-                        }
-                    }
-
-
-                    # Remove hour/minutes selection based on current sessions the same as we do for existing reservations above
-                    # Reduces the ability to select an invalid time for a new reservation. GitHub Issue #211
-                    foreach my $session ( @sessions ) {
-                        my $session_begin_dt = DateTime->now( time_zone => $c->tz );
-                        my $session_end_dt = $session_begin_dt + DateTime::Duration->new( minutes => $session->minutes );
-
-                        my $session_gap = $c->setting( 'ReservationGap' ) || 0;
-                        $session_end_dt->add( minutes => $session_gap ) if $session_gap;
-
-                        my $session_span = DateTime::Span->from_datetimes( start => $session_begin_dt, end => $session_end_dt );
-
-                        if ( $session_span->contains( $time_to_check_dt )
-                            || $time_to_check_dt < $start_dt
-                            || $time_to_check_dt > $end_dt
-                        ) {
-                            $minutes_availability[$min] = 'hide';
-                            last;
-                        }
-                    }
-                }
-            }
-
-            push( @mlist, \@minutes_availability );
-        }
-
-        $result{'hlist'} = \@hours;
-        $result{'mlist'} = \@mlist;
-    }
-    else {
-        $result{'error'} = "Couldn't find the client";
     }
 
     return %result;

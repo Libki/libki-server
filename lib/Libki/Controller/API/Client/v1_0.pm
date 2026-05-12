@@ -7,7 +7,6 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 use Libki::SIP;
 use Libki::LDAP;
-use Libki::Hours;
 use Libki::Utils::Printing;
 use Libki::Utils::User;
 use Libki::Clients;
@@ -60,22 +59,27 @@ sub index : Path : Args(0) {
         my $macaddress= $c->request->params->{'macaddress'};
         my $hostname  = $c->request->params->{'hostname'};
 
-        $c->model('DB::Location')->update_or_create(
-            {
-                instance => $instance,
-                code     => $location,
-            }
-        ) if $location;
+        my $location_obj;
+        if ($location =~ /^\d+$/) {
+            $location_obj = $c->model('DB::Location')->find($location);
+        } elsif ($location) {
+            $location_obj = $c->model('DB::Location')->update_or_create(
+                {
+                    instance => $instance,
+                    code     => $location,
+                }
+            )
+        }
 
         my $client = $c->model('DB::Client')->update_or_new(
             {
                 instance        => $instance,
                 name            => $node_name,
-                location        => $location ? $location : undef,
-                type            => $type     ? $type     : undef,
-                ipaddress       => $ipaddress? $ipaddress: undef,
-                macaddress      => $macaddress? $macaddress: undef,
-                hostname        => $hostname ? $hostname : undef,
+                location_id     => $location_obj ? $location_obj->id : undef,
+                type            => $type         ? $type             : undef,
+                ipaddress       => $ipaddress    ? $ipaddress        : undef,
+                macaddress      => $macaddress   ? $macaddress       : undef,
+                hostname        => $hostname     ? $hostname         : undef,
                 last_registered => $now,
             }
         );
@@ -314,8 +318,6 @@ sub index : Path : Args(0) {
                         }
                     );
 
-                    my $minutes_until_closing = Libki::Hours::minutes_until_closing({ c => $c, location => $client_location });
-
                     #TODO: Move this to a unified sub, see TODO below
                     my $minutes_allotment = $user->minutes($c, $client);
 
@@ -323,7 +325,7 @@ sub index : Path : Args(0) {
                     my $advanced_rule = $c->get_rule(
                             {
                                 rule            => $is_guest ? 'guest_daily' : 'daily',
-                                client_location => $client->location,
+                                client_location => $client->location ? $client->location->code : '',
                                 client_type     => $client->type,
                                 client_name     => $client_name,
                                 client_type     => $client_type,
@@ -345,7 +347,8 @@ sub index : Path : Args(0) {
                     }
 
                     my $error = {};    # Must be initialized as a hashref
-                    if ( defined $minutes_until_closing && $minutes_until_closing <= 0 )
+                    my $location = $client->location;
+                    if ( $location && !$location->minutes_until_closed() )
                     {
                         $c->stash( error => 'CLOSED' );
                     }
@@ -375,7 +378,7 @@ sub index : Path : Args(0) {
                                     {
                                         instance => $c->instance,
                                         user_id  => $user->id,
-                                        location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location : '',
+                                        location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location->code : '',
                                         minutes  => $minutes_allotment,
                                     }
                                 );
@@ -387,7 +390,7 @@ sub index : Path : Args(0) {
                             my $no_reservation_required = $c->get_rule(
                                 {
                                     rule            => 'no_reservation_required',
-                                    client_location => $client->location,
+                                    client_location => $client->location ? $client->location->code : '',
                                     client_type     => $client->type,
                                     client_name     => $client_name,
                                     client_type     => $client_type,
@@ -428,7 +431,7 @@ sub index : Path : Args(0) {
                                                 instance        => $instance,
                                                 username        => $session->user->username,
                                                 client_name     => $client->name,
-                                                client_location => $client->location,
+                                                client_location => $client->location ? $client->location->code : undef,
                                                 client_type     => $client->type,
                                                 action          => 'LOGOUT',
                                                 created_on      => $c->now,
@@ -537,7 +540,7 @@ sub index : Path : Args(0) {
 
             if ($session) {
                 my $session_id = $session->session_id;
-                my $location   = $session->client->location;
+                my $location   = $session->client->location ? $session->client->location->code: undef;
                 my $type       = $session->client->type;
                 # If ExpireRemainingGuestPassTimeOnLogout enabled and user is guest, set minutes to 0
                 if ($user->is_guest eq 'Yes' && $c->setting('ExpireRemainingGuestPassTimeOnLogout') eq 'enabled' ) {
@@ -612,7 +615,7 @@ sub statistics : Path('statistics') : Args(0) {
             instance        => $c->instance,
             username        => $username,
             client_name     => $client->name,
-            client_location => $client->location,
+            client_location => $client->location ? $client->location->code : undef,
             client_type     => $client->type,
             action          => $action,
             created_on      => $c->now,

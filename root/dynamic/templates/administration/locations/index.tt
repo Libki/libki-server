@@ -1,0 +1,344 @@
+[% meta.title = c.loc('Administration / Locations') %]
+[% SET active_class = 'administration__locations' %]
+
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- LEFT MENU -->
+    <div class="col-2 border-right sidebar">
+      <button class="btn btn-success btn-sm my-2" id="newLocationBtn">+ [% c.loc("New Location") %]</button>
+      <div id="locationTree" class="tree"></div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="col-10">
+      <div id="locationFormContainer">
+        <p class="text-muted">[% c.loc("Select a location to edit, or create a new location") %]</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">[% c.loc("Confirm Delete") %]</h5>
+      </div>
+      <div class="modal-body">
+        <p>[% c.loc("Are you sure you want to delete this location?") %]</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="confirmDelete">[% c.loc("Delete") %]</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">[% c.loc("Cancel") %]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let locations = [];
+let currentLocation = null;
+
+async function fetchLocations() {
+  const res = await fetch('/api/v2/locations');
+  locations = await res.json();
+  renderTree();
+}
+
+function buildTree(data, parentId = null) {
+  return data.filter(l => l.parent_id == parentId)
+    .map(l => ({...l, children: buildTree(data, l.id)}));
+}
+
+function renderTree() {
+  const tree = buildTree(locations);
+  const el = document.getElementById('locationTree'); el.innerHTML='';
+  function node(n){
+    const li=document.createElement('li');
+    const s=document.createElement('span');
+    s.textContent=n.code;
+    s.id="location-" + n.id;
+    s.onclick=()=>loadLocation(n.id);
+    li.appendChild(s);
+    if(n.children.length){
+      const ul=document.createElement('ul');
+      n.children.forEach(c=>ul.appendChild(node(c)));
+      li.appendChild(ul);
+    }
+    return li;
+  }
+  const ul=document.createElement('ul');
+  tree.forEach(n=>ul.appendChild(node(n)));
+  el.appendChild(ul);
+}
+
+async function loadLocation(id){
+  const res = await fetch(`/api/v2/locations/${id}`);
+  currentLocation = await res.json();
+  renderForm(currentLocation);
+  $('#locationTree li').removeClass('active');
+  $('#location-' + currentLocation.id).parent().addClass('active');
+  $('#location-' + currentLocation.id).parent().find('li').addClass('active');
+}
+
+function renderForm(loc={}){
+  const el=document.getElementById('locationFormContainer');
+  el.innerHTML=`
+    <form id="locationForm">
+      <legend>${loc.id?'[% c.loc("Edit Location") %]':'[% c.loc("Create New Location") %]'}</legend>
+      <input type="hidden" name="id" value="${loc.id||''}">
+      <div class="form-group">
+        <label>[% c.loc("Location Name") %]</label>
+        <input class="form-control" name="code" required value="${loc.code||''}">
+      </div>
+      <div class="form-group">
+        <label>[% c.loc("Parent Location") %]</label>
+        <select class="form-control" name="parent_id">
+          <option value="">-- none --</option>
+          ${locations.map(l=>`<option value="${l.id}" ${l.id===loc.parent_id?'selected':''}>${l.code}</option>`).join('')}
+        </select>
+      </div>
+
+      <h5>[% c.loc("Weekly Hours") %]</h5>
+      <div id="hoursEditor"></div>
+
+      <h5>[% c.loc("Exceptions") %]</h5>
+      <div id="exceptionEditor"></div>
+      <button class="btn btn-sm btn-outline-primary" type="button" onclick="addException()">+ [% c.loc("Add Exception") %]</button>
+
+      <button class="btn btn-success" type="submit">[% c.loc("Save") %]</button>
+      ${loc.id?'<button class="btn btn-danger ml-2" type="button" id="deleteBtn">[% c.loc("Delete") %]</button>':''}
+    </form>
+  `;
+
+  renderHoursEditor(loc);
+  renderExceptionEditor(loc);
+
+  document.getElementById('locationForm').onsubmit = saveLocation;
+
+  if(loc.id){
+    document.getElementById('deleteBtn').onclick=()=>{
+      $('#deleteModal').modal('show');
+      document.getElementById('confirmDelete').onclick=()=>deleteLocation(loc.id);
+    };
+  } else {
+    $('#locationTree li').removeClass('active');
+  }
+}
+
+function formatTime(t){
+  if (!t) return '';
+
+  // Expect "HH:MM" or "HH:MM:SS"
+  const parts = t.split(':');
+  let hour = parseInt(parts[0], 10);
+  const minute = parts[1];
+
+  if (TimeDisplayFormat.includes('%I')) {
+    // 12-hour format
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    let hour12 = hour % 12;
+    if (hour12 === 0) hour12 = 12;
+
+    return `${hour12}:${minute} ${ampm}`;
+  } else {
+    // 24-hour format
+    return `${String(hour).padStart(2,'0')}:${minute}`;
+  }
+}
+
+function renderHoursEditor(loc){
+  const days=['[% c.loc("Sunday") %]','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const el=document.getElementById('hoursEditor'); 
+  el.innerHTML='';
+
+  days.forEach((d,i)=>{
+    const container=document.createElement('div');
+    container.className='border p-2 mb-2';
+
+    const rows = (loc.hours || []).filter(h => h.day_of_week === i);
+    const effective = (loc.effective_hours || [])[i] || [];
+
+    // build inherited label (only if no local rows)
+    let inheritedText = '';
+    if (rows.length === 0 && effective.length > 0) {
+      const formatted = effective.map(e => {
+        const reservable = e.reservable ? "[% c.loc('Reservable') %]" : "[% c.loc('Not Reservable') %]";
+        return formatTime(e.open_time) + '-' + formatTime(e.close_time) + ' (' + reservable + ')';
+      }).join(', ');
+      inheritedText = `<small class="text-muted ml-2">
+        [% c.loc("inherits") %]: ${formatted}
+      </small>`;
+    }
+
+    container.innerHTML = `
+      <strong>${d}</strong>
+      <div id="day-${i}"></div>
+      <div class="mt-1">
+        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="addInterval(${i})">
+          + [% c.loc("interval") %]
+        </button>
+        ${inheritedText}
+      </div>
+    `;
+
+    el.appendChild(container);
+
+    rows.forEach(r => addInterval(i, r.open_time, r.close_time, r.reservable));
+  });
+}
+function addInterval(day,open='',close='',reservable=false){
+  const row=document.createElement('div');
+  row.className='interval-row';
+  row.innerHTML=`
+    <input type="time" value="${open}">
+    <input type="time" value="${close}">
+    <button type="button" class="btn btn-sm btn-danger">x</button>
+    <input type="checkbox" ${reservable?'checked':''}> [% c.loc('Reservable') %]
+  `;
+  row.querySelector('button').onclick=()=>row.remove();
+  document.getElementById(`day-${day}`).appendChild(row);
+}
+
+function renderExceptionEditor(loc){
+  const el=document.getElementById('exceptionEditor'); el.innerHTML='';
+  (loc.exceptions||[]).forEach(e=>addException(e));
+}
+
+function addException(e={}){
+  const el=document.getElementById('exceptionEditor');
+  const div=document.createElement('div');
+  div.className='border p-2 mb-2';
+  div.innerHTML=`
+    <input type="date" value="${e.service_date||''}">
+    <label><input type="checkbox" ${e.is_closed?'checked':''}> [% c.loc('Closed') %]</label>
+    <div class="intervals"></div>
+    <button type="button" class="btn btn-sm btn-outline-secondary">+ [% c.loc('interval') %]</button>
+    <button type="button" class="btn btn-sm btn-danger">[% c.loc('Remove') %]</button>
+  `;
+
+  const intervalsDiv=div.querySelector('.intervals');
+  (e.intervals||[]).forEach(i=>addExceptionInterval(intervalsDiv,i));
+
+  div.querySelector('button').onclick=()=>addExceptionInterval(intervalsDiv);
+  div.querySelectorAll('button')[1].onclick=()=>div.remove();
+
+  el.appendChild(div);
+}
+
+function addExceptionInterval(container,i={}){
+  const row=document.createElement('div');
+  row.className='interval-row';
+  row.innerHTML=`
+    <input type="time" value="${i.open_time||''}">
+    <input type="time" value="${i.close_time||''}">
+    <button class="btn btn-sm btn-danger">x</button>
+    <label><input type="checkbox" ${i.reservable?'checked':''}> [% c.loc('Reservable') %]</label>
+  `;
+  row.querySelector('button').onclick=()=>row.remove();
+  container.appendChild(row);
+}
+
+async function saveLocation(e){
+  e.preventDefault();
+  const form=e.target;
+  const data=Object.fromEntries(new FormData(form));
+
+  if(!data.code){ alert('Code required'); return; }
+
+  data.parent_id = data.parent_id || null;
+
+  data.hours = [];
+  for(let day=0; day<7; day++){
+    document.querySelectorAll(`#day-${day} .interval-row`).forEach(row=>{
+      const inputs=row.querySelectorAll('input');
+      const open_time=inputs[0].value;
+      const close_time=inputs[1].value;
+      const reservable=inputs[2].checked;
+      if(open_time && close_time){
+        data.hours.push({ day_of_week: day, open_time, close_time, reservable });
+      }
+
+    });
+  }
+
+  data.exceptions = [];
+  document.querySelectorAll('#exceptionEditor > .border').forEach(box=>{
+    const inputs=box.querySelectorAll('input');
+    const service_date=inputs[0].value;
+    const is_closed=inputs[1].checked;
+    if(!service_date) return;
+
+    const ex={ service_date, is_closed, intervals: [] };
+
+    box.querySelectorAll('.intervals .interval-row').forEach(row=>{
+      const vals=row.querySelectorAll('input');
+      const open_time=vals[0].value;
+      const close_time=vals[1].value;
+      const reservable=vals[2].checked;
+      if(open_time && close_time){
+        ex.intervals.push({ open_time, close_time, reservable });
+      }
+    });
+
+    data.exceptions.push(ex);
+  });
+
+  const method=data.id?'PUT':'POST';
+  const url=data.id?`/api/v2/locations/${data.id}`:'/api/v2/locations';
+
+  const response = await fetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if (response.ok) {
+    DisplayMessage( "success", "[% c.loc('Location saved') %]");
+  } else {
+    error = await response.json();
+    DisplayMessage( "error", error.error );
+  }
+  fetchLocations();
+  if(data.id) loadLocation(data.id);
+}
+
+async function deleteLocation(id){
+  const response = await fetch(`/api/v2/locations/${id}`,{method:'DELETE'});
+  $('#deleteModal').modal('hide');
+  if (response.ok) {
+    document.getElementById('locationFormContainer').innerHTML='';
+    DisplayMessage( "success", "[% c.loc('Location deleted') %]");
+  } else {
+    error = await response.json();
+    DisplayMessage( "error", error.error );
+  }
+  fetchLocations();
+}
+
+document.getElementById('newLocationBtn').onclick=()=>renderForm({});
+fetchLocations();
+</script>
+
+<!--
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="nav nav-tabs flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active " data-toggle="pill" role="tab"> Location 1</a>
+                <a class="nav-link" data-toggle="pill" role="tab" > Location 2</a>
+                <a class="nav-link" data-toggle="pill" role="tab"> Location 3</a>
+            </div>
+        </div>
+        <div class="col-sm-10">
+            <h2>Locations</h2>
+            <p>placeholder content for now.  Once this is finished, you should see:</p>
+            <ul>
+                <li>a menu on the left of all the Locations</li>
+                <li>a 'create new location' button</li>
+                <li>a form to edit the location details if a location has been selected</li>
+                <li>a delete button for the location (with confirmation dialog)</li>
+                <li>other stuff</li>
+           </ul>
+        </div>
+    </div>
+</div>
+-->

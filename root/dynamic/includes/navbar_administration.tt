@@ -17,10 +17,10 @@
                 <div class="dropdown-menu" aria-labelledby="navbarMoreDropdown">
                     <a class="dropdown-item [% IF active_class == 'administration__history' %]active[% END %]" href="[% c.uri_for('/administration/history') %]">[% c.loc("History") %]</a>
                     <a class="dropdown-item [% IF active_class == 'administration__history__statistics' %]active[% END %]" href="[% c.uri_for('/administration/history/statistics') %]">[% c.loc("Statistics") %]</a>
-                    <a class="dropdown-item [% IF active_class.search('^administration__hours') %] active [% END %]" href="[% c.uri_for('/administration/hours') %]">[% c.loc("Closing hours") %]</a>
                     [% IF c.check_user_roles('superadmin') %]
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item [% IF active_class == 'administration__history__logs' %]active[% END %]" href="[% c.uri_for('/administration/history/logs') %]">[% c.loc("Logs") %]</a>
+                        <a class="dropdown-item [% IF active_class == 'administration__locations' %]active[% END %]" href="[% c.uri_for('/administration/locations') %]">[% c.loc("Locations") %]</a>
                         <a class="dropdown-item [% IF active_class == 'administration__settings' %]active[% END %]" href="[% c.uri_for('/administration/settings') %]">[% c.loc("Settings") %]</a>
                     [% END %]
                 </div>

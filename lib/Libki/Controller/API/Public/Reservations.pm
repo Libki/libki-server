@@ -31,6 +31,12 @@ sub create : Local : Args(0) {
     my $password  = $c->request->params->{'password'} || undef;
     my $client_id = $c->request->params->{'id'};
     my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
+
+    my $datetime = $c->request->params->{reservation_datetime};
+    if ($datetime) {
+        $begin_time = $datetime =~ s/T/ /r;
+    }
+
     my $client = $c->model('DB::Client')->find( $client_id );
     my $log = $c->log();
     $log->debug("Creating reservation for $username / $client_id");
@@ -165,25 +171,6 @@ sub delete : Local : Args(0) {
 
     $c->logout() if( !$session );
 
-    delete $c->stash->{Settings};
-    $c->forward( $c->view('JSON') );
-}
-
-=head2 gettimelist
-
-=cut
-
-sub gettimelist : Local : Args(0) {
-    my ( $self, $c ) = @_;
-    my $client_id = $c->request->params->{'id'};
-    my $date = $c->request->params->{'reservation_date'};
-    my %result = $c->get_time_list($client_id,$date);
-    if ($result{'error'}) {
-        $c->stash( 'success' => 0, 'reason' => $result{'error'} );
-    }
-    else {
-        $c->stash( 'success' => 1, 'hlist' => $result{'hlist'}, 'mlist' => $result{'mlist'});
-    }
     delete $c->stash->{Settings};
     $c->forward( $c->view('JSON') );
 }
