@@ -74,11 +74,14 @@ sub create_print_job_and_file {
         my $printer  = $printers->{printers}->{$printer_id};
 
         my $client_id       = $client ? $client->id       : undef;
-        my $client_location = $client ? $client->location : undef;
         my $client_type     = $client ? $client->type     : undef;
+        my $client_location = $client && $client->location ? $client->location->code : undef;
 
         my $print_job;
         if ($printer) {
+            my $printer_location = $printer->{location};
+            my $printfile_location = $printer_location ? $printer_location : $client_location;
+
             $c->model('DB')->txn_do(
                 sub {
                     $print_file = $c->model('DB::PrintFile')->create(
@@ -90,7 +93,7 @@ sub create_print_job_and_file {
                             pages           => $pages,
                             client_id       => $client_id,
                             client_name     => $client_name,
-                            client_location => $client_location,
+                            client_location => $printfile_location,
                             client_type     => $client_type,
                             user_id         => $user->id,
                             username        => $username,
@@ -126,7 +129,7 @@ sub create_print_job_and_file {
                                     print_job_id    => $print_job->id,
                                     print_file_id   => $print_file->id,
                                     client_id       => $client_id,
-                                    client_location => $client_location,
+                                    client_location => $printfile_location,
                                     client_name     => $client_name,
                                     client_type     => $client_type,
                                     content_type    => $print_file->content_type,
