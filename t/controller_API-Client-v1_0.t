@@ -49,6 +49,20 @@ my $user2
     = Libki::Utils::User::create_or_update_user( $c, { username => "test2", password => "test2" } );
 isa_ok( $user2, "Libki::Model::DB::User", "Got another user" );
 
+my $test_location = $c->model('DB::Location')->find({ instance => $c->instance, code => 'testLocation'});
+for(my $i=0;$i<7;$i++) {
+    $c->model('DB::LocationHour')->update_or_create( 
+        { 
+            instance => $c->instance,
+            open_time => '00:00:00',
+            close_time => '23:59:59',
+            location_id => $test_location->id,
+            day_of_week => $i,
+            reservable => 1
+        }
+    );
+}
+
 subtest 'Client login' => sub {
 
     # Test bad logins
