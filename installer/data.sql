@@ -240,6 +240,7 @@ INSERT INTO `settings` VALUES ('','BatchGuestPassPasswordLabel','Computer Guest 
 INSERT INTO `settings` VALUES ('','BatchGuestPassTemplate','<html>\n  <head>\n    <style type=\"text/css\">[% batch_guest_pass_custom_css %]</style>\n  </head>\n  <body>\n    [% FOREACH g IN guests %]\n      <p class=\"guest-pass\">\n        <p class=\"guest-pass-username\">\n          <span class=\"guest-pass-username-label\">[% batch_guest_pass_username_label %]</span><span class=\"guest-pass-username-content\">[% g.username %]</span>\n        </p>\n        <p class=\"guest-pass-password\">\n          <span class=\"guest-pass-password-label\">[% batch_guest_pass_password_label %]</span><span class=\"guest-pass-password-content\">[%g. password %]</span>\n        </p>\n      </p>\n      <br/>\n    [% END %]\n  </body>\n</html>');
 INSERT INTO `settings` VALUES ('','BatchGuestPassUsernameLabel','Your Library            Username=  ');
 INSERT INTO `settings` VALUES ('','ClientBehavior','FCFS+RES');
+INSERT INTO `settings` VALUES ('','ClientTimeWarningFrequency','1');
 INSERT INTO `settings` VALUES ('','CurrentGuestNumber','1');
 INSERT INTO `settings` VALUES ('','CustomJsAdministration','');
 INSERT INTO `settings` VALUES ('','CustomJsPublic','');
