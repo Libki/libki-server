@@ -86,6 +86,16 @@ sub printing :Path('/public/printing') :Args(0) {
         current_location => undef,
         CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
+
+    # If user is authenticated, let them through
+    if ($c->user_exists) {
+        return 1;
+    }
+
+    # Otherwise, save the requested URL and redirect to login
+    $c->session->{redirect_to} = $c->req->uri->path;
+    $c->res->redirect($c->uri_for($c->controller('Public::Login')->action_for('login')));
+    return 0; # Stop processing this request
 }
 
 
@@ -109,6 +119,16 @@ sub printing_location :Path('/public/printing') :Args(1) {
         current_location => $location,
         CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
+
+    # If user is authenticated, let them through
+    if ($c->user_exists) {
+        return 1;
+    }
+
+    # Otherwise, save the requested URL and redirect to login
+    $c->session->{redirect_to} = $c->req->uri->path;
+    $c->res->redirect($c->uri_for($c->controller('Public::Login')->action_for('login')));
+    return 0; # Stop processing this request
 }
 
 =head2 upload_print_file

@@ -59,11 +59,8 @@ sub index : Path : Args(0) {
         }
 
         if ( $auth ) {
-            $c->response->redirect(
-                $c->uri_for(
-                    $c->controller('Public')->action_for('index')
-                )
-            );
+            my $url = delete $c->session->{redirect_to} || $c->uri_for($c->controller('Public')->action_for('index'));
+            $c->res->redirect($url);
         }
         else {
             $c->stash( error_message => "Wrong username or password." );
