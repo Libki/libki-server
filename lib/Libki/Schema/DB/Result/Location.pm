@@ -183,8 +183,6 @@ Type: has_many
 
 Related object: L<Libki::Schema::DB::Result::Location>
 
-=cut
-
 __PACKAGE__->has_many(
   "locations",
   "Libki::Schema::DB::Result::Location",
@@ -293,8 +291,6 @@ then ancestors.  Intervals are returned sorted by close_time.
 
 sub hours_for_date {
     my ( $self, $date_str, $limit_to_reservable ) = @_;
-
-warn "Limiting to reservable!" if $limit_to_reservable;
 
     my $schema = $self->result_source->schema;
 
@@ -407,7 +403,6 @@ sub minutes_until_closed {
            $last_closed_time = $int->{close_time};
        }
     }
-warn "Minutes until closed: " . $minutes_until_closed;
     return $minutes_until_closed;
 }
 
