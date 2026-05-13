@@ -11,7 +11,6 @@ use FindBin;
 use lib "$FindBin::Bin/../../lib";
 
 use Libki;
-use Libki::Hours;
 
 my ( $opt, $usage ) = describe_options(
     'script/cronjobs/libki.pl %o',
@@ -54,8 +53,8 @@ my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone =>
 
 # strings depending on TimeAllowanceByLocation for queries using minutes allotments
 my $timeAllowanceByLocation = $c->setting('TimeAllowanceByLocation');
-my $location = ($timeAllowanceByLocation) ? "clients.location" : "''";
-my $join_clients_sessions     = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )" : "";
+my $location = ($timeAllowanceByLocation) ? "locations.code" : "''";
+my $join_clients_sessions     = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id ) LEFT JOIN location ON ( location.instance = sessions.instance AND locations.id = clients.location_id )" : "";
 my $join_clients_reservations = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = reservations.instance AND clients.id = reservations.client_id )" : "";
 
 # Gather the sessions to delete for statistical purposes
@@ -64,6 +63,7 @@ my $sessions_to_delete = $dbh->selectall_arrayref(
         SELECT * FROM sessions
         LEFT JOIN users ON ( users.instance = sessions.instance AND users.id = sessions.user_id )
         LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id )
+        LEFT JOIN locations ON ( locations.instance = sessions.instance AND locations.id = clients.location_id )
         LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
         WHERE sessions.minutes <= 0 OR allotments.minutes <= 0
     },
@@ -126,7 +126,7 @@ my $sessions = $dbh->selectall_arrayref(
     qq{
         SELECT users.*, 
                sessions.*, 
-               clients.location,
+               locations.code                           AS 'location',
                allotments.minutes                       AS 'minutes_allotment',
                AutomaticTimeExtensionAt.value           AS 'AutomaticTimeExtensionAt', 
                AutomaticTimeExtensionLength.value       AS 'AutomaticTimeExtensionLength', 
@@ -141,6 +141,9 @@ my $sessions = $dbh->selectall_arrayref(
         LEFT JOIN clients
               ON ( clients.instance = sessions.instance 
                    AND clients.id = sessions.client_id ) 
+        LEFT JOIN locations
+              ON ( locations.instance = sessions.instance 
+                   AND locations.id = clients.location_id ) 
         LEFT JOIN users 
               ON ( users.instance = sessions.instance 
                    AND users.id = sessions.user_id ) 
@@ -184,23 +187,12 @@ my $update_user_sth = $dbh->prepare(qq{
     LEFT JOIN allotments ON ( allotments.instance = sessions.instance AND allotments.user_id = sessions.user_id AND allotments.location = $location )
     SET sessions.minutes = sessions.minutes + ?, allotments.minutes = allotments.minutes + ? WHERE allotments.user_id = ?});
 
-my $all_minutes_until_closing = {};
 foreach my $s ( @$sessions ) {
 
     my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
-    # If we are nearing closing time, we need to only add minutes up to the cloasing time
-    # TODO We could possibly integrate this into the main query, or at least speed it up with raw SQL
-    $all_minutes_until_closing->{ $s->{instance} }->{ $s->{location} }
-        ||= Libki::Hours::minutes_until_closing(
-            {
-                c        => $c,
-                location => $s->{location},
-                instance => $s->{instance}
-            }
-        );
-
-    my $minutes_until_closing = $all_minutes_until_closing->{ $s->{instance} }->{ $s->{location} };
+    my $location2 = $c->model('DB::Location')->find({ instance => $s->instance, code => $s->location });
+    my $minutes_until_closing = $location2->minutes_until_closed();
 
     # Calculate the minutes until the next reservation
     my $minutes_until_next_reservation = 0;
@@ -340,11 +332,7 @@ if (length($minutes_to_shutdown)) {
     my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
     while ( my $client = $clients->next() ) {
         if ( $client->status eq 'online' ) {
-            my $minutes_until_closing = Libki::Hours::minutes_until_closing({
-                c        => $c,
-                location => $client->location,
-                instance => $client->instance
-            });
+            my $minutes_until_closing = $client->location->minutes_until_closed();
 
             if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {
                 $client->update({ status => $status });
