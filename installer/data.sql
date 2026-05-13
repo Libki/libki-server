@@ -260,7 +260,7 @@ INSERT INTO `settings` VALUES ('','ReservationTimeout','15');
 INSERT INTO `settings` VALUES ('','ShowFirstLastNames','1');
 INSERT INTO `settings` VALUES ('','ThirdPartyURL','');
 INSERT INTO `settings` VALUES ('','UserCategories','');
-INSERT INTO `settings` VALUES ('','Version','5.3.0');
+INSERT INTO `settings` VALUES ('','Version','5.3.1');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -322,4 +322,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-04-30 15:18:42
+-- Dump completed on 2026-05-13 12:51:40

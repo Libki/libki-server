@@ -157,12 +157,12 @@ __PACKAGE__->belongs_to(
   "location",
   "Libki::Schema::DB::Result::Location",
   { id => "location_id" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-13 14:01:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/XujjAij3lI18xEDQYMzEA
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-05-13 12:51:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5Mc2EVi35moTOyfRn1ge8w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

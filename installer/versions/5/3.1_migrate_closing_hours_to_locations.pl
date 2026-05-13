@@ -37,8 +37,6 @@ foreach my $closing_hour (@closing_hr_data) {
         saturday  => 6
     );
 
-    say $closing_hour->{'day'} . ": " . $closing_hour->{'close_time'};
-
     if ($closing_hour->{'date'}) {
         my $location_hours_exception;
         my $location_hours_exception_interval;

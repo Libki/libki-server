@@ -144,7 +144,7 @@ __PACKAGE__->belongs_to(
   "location",
   "Libki::Schema::DB::Result::Location",
   { id => "location_id" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 =head2 location_hours_exception_intervals
@@ -163,8 +163,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-03-25 16:44:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0bVwBpby6CUtLrAUQlKj4g
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-05-13 12:51:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VLQfVbqTHLWWEpqqjAeeMQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

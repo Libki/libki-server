@@ -65,7 +65,6 @@ CREATE TABLE `clients` (
   `instance` varchar(32) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(191) NOT NULL,
-  `location` varchar(191) DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `status` varchar(191) DEFAULT 'online',
   `type` varchar(191) DEFAULT NULL,
@@ -140,7 +139,7 @@ CREATE TABLE `location_hours` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `location_id` (`location_id`,`day_of_week`,`open_time`,`close_time`),
   KEY `idx_hours_lookup` (`location_id`,`day_of_week`),
-  CONSTRAINT `location_hours_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+  CONSTRAINT `fk_location_hours_location` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -159,8 +158,8 @@ CREATE TABLE `location_hours_exception_intervals` (
   `close_time` time NOT NULL,
   `reservable` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `exception_id` (`exception_id`),
-  CONSTRAINT `location_hours_exception_intervals_ibfk_1` FOREIGN KEY (`exception_id`) REFERENCES `location_hours_exceptions` (`id`)
+  KEY `fk_location_hours_exception_intervals_exception` (`exception_id`),
+  CONSTRAINT `fk_location_hours_exception_intervals_exception` FOREIGN KEY (`exception_id`) REFERENCES `location_hours_exceptions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -181,7 +180,7 @@ CREATE TABLE `location_hours_exceptions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `location_id` (`location_id`,`service_date`),
   KEY `idx_exception_lookup` (`location_id`,`service_date`),
-  CONSTRAINT `location_hours_exceptions_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+  CONSTRAINT `fk_location_hours_exceptions_location` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -503,4 +502,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-04-30 15:18:42
+-- Dump completed on 2026-05-13 12:51:40
