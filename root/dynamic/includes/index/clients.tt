@@ -430,7 +430,7 @@ function renderTree(target_id, tree) {
   tree.forEach(n=>ul.appendChild(node(n)));
   el.appendChild(ul);
   [% IF current_location %]
-    UpdateLocationFilters([% current_location %]);
+    UpdateLocationFilters([% current_location.id %]);
   [% END %]
 }
 

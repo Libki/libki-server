@@ -35,9 +35,10 @@ Catalyst Controller.
 
 =head2 index
 
+/public
+
 =cut
 
-# /public
 sub index :Path('/public') :Args(0) {
     my ( $self, $c ) = @_;
 
@@ -50,9 +51,10 @@ sub index :Path('/public') :Args(0) {
 
 =head2 index_location
 
+/public/:id
+
 =cut
 
-# /public/:id
 sub index_location :Path('/public') :Args(1) {
     my ( $self, $c, $id ) = @_;
 
@@ -64,16 +66,17 @@ sub index_location :Path('/public') :Args(1) {
     $c->stash(
         template         => 'public/index.tt',
         tab              => 'clients',
-        current_location => $id,
+        current_location => $location,
         CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
 }
 
 =head2 printing
 
+/public/printing
+
 =cut
 
-# /public/printing
 sub printing :Path('/public/printing') :Args(0) {
     my ( $self, $c ) = @_;
 
@@ -88,10 +91,10 @@ sub printing :Path('/public/printing') :Args(0) {
 
 =head2 printing_location
 
+/public/printing/:id
+
 =cut
 
-
-# /public/printing/:id
 sub printing_location :Path('/public/printing') :Args(1) {
     my ( $self, $c, $id ) = @_;
 
@@ -103,7 +106,7 @@ sub printing_location :Path('/public/printing') :Args(1) {
     $c->stash(
         template         => 'public/index.tt',
         tab              => 'printing',
-        current_location => $id,
+        current_location => $location,
         CustomJsPublic   => $c->setting('CustomJsPublic'),
     );
 }

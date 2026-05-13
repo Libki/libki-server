@@ -46,12 +46,14 @@
 
                     <div class="form-group mt-3">
                         [% IF c.get_printer_configuration.printers.size > 1 %]
-                        <label for="printer_id">[% c.loc("Select a printer") %]</label>
+                        <label for="printer_id">[% c.loc("Select a printer") %][% IF current_location %] [% c.loc("at") %] [% current_location.code %][% END %]</label>
                             [% FOREACH p IN c.get_printer_configuration.printers %]
+                                [% IF current_location.code == '' || current_location.code == p.value.location %]
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
                                     <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name | html %]</label>
                                 </div>
+                                [% END %]
                             [% END %]
                         [% ELSE %]
                             [% FOREACH p IN c.get_printer_configuration.printers %]
