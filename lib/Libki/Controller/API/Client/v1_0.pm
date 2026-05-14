@@ -377,10 +377,10 @@ sub index : Path : Args(0) {
                             if (defined $minutes_allotment) {
                                 $c->model('DB::Allotment')->update_or_create(
                                     {
-                                        instance => $c->instance,
-                                        user_id  => $user->id,
-                                        location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location->code : '',
-                                        minutes  => $minutes_allotment,
+                                        instance    => $c->instance,
+                                        user_id     => $user->id,
+                                        location_id => ( $c->setting('TimeAllowanceByLocation') && defined($client->location_id) ) ? $client->location->code : undef,
+                                        minutes     => $minutes_allotment,
                                     }
                                 );
                             }

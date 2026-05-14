@@ -459,7 +459,7 @@ sub minutes {
     my $user_minutes = $self->allotments->find(
         {
             instance => $c->instance,
-            location => ( $c->setting('TimeAllowanceByLocation') && defined($client) && defined($client->location) ) ? $client->location : '',
+            location_id => ( $c->setting('TimeAllowanceByLocation') && defined($client) && defined($client->location_id) ) ? $client->location_id : undef,
         }
     ) || undef;
 
