@@ -681,6 +681,15 @@ sub print : Path('print') : Args(0) {
             }
         );
 
+        $c->model('DB::Message')->create( {
+            instance => $instance,
+            user_id  => $user->id,
+            content  => $c->loc(
+                "Your print job, ([_1]), has been created", $print_file->filename
+            )
+        } );
+
+
         $c->stash( success => 1 );
     }
     elsif ($client_name) {
