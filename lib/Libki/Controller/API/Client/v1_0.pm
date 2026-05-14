@@ -685,7 +685,7 @@ sub print : Path('print') : Args(0) {
             instance => $instance,
             user_id  => $user->id,
             content  => $c->loc(
-                "Your print job, ([_1]), has been created", $print_file->filename
+                "Your print job, ([_1], copies: [_2]), has been received", $print_file->filename, $copies
             )
         } );
 
