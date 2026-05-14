@@ -444,10 +444,10 @@ sub release_for_print_manager {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user->username // '',
+            username   => $c->user ? $c-user->username : '',
             action     => 'PRINT_JOB_RELEASED',
             created_on => $c->now,
-            session_id => $c->sessionid,
+            session_id => $c->sessionid // '',
             info       => to_json(
                 {
                     print_job_id    => $print_job->id,
@@ -520,10 +520,10 @@ sub release_for_cups {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user->username // '',
+            username   => $c->user ? $c->user->username : '',
             action     => 'PRINT_JOB_RELEASED',
             created_on => $c->now,
-            session_id => $c->sessionid,
+            session_id => $c->sessionid // '',
             info       => to_json(
                 {
                     print_job_id    => $print_job->id,
