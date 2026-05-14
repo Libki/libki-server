@@ -33,7 +33,7 @@ sub live : Path('/health/live') Args(0) {
     });
 }
 
-=head2
+=head2 ready
 
 GET /health/ready
 
