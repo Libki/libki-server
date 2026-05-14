@@ -67,11 +67,11 @@ sub modify_time : Local : Args(0) {
             my $minutes_allotment = $u->allotments->find(
                 {
                     'instance' => $instance,
-                    'location' => ( $c->setting('TimeAllowanceByLocation') )
+                    'location_id' => ( $c->setting('TimeAllowanceByLocation') )
                     ? (
-                        ( defined( $u->session ) && defined( $u->session->client->location ) )
-                        ? $u->session->client->location
-                        : ''
+                        ( defined( $u->session ) && defined( $u->session->client->location_id ) )
+                        ? $u->session->client->location_id
+                        : undef
                         )
                     : '',
                 }

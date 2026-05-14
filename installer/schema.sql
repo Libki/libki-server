@@ -24,12 +24,16 @@ DROP TABLE IF EXISTS `allotments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `allotments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `instance` varchar(32) NOT NULL DEFAULT '',
   `user_id` int(11) NOT NULL,
-  `location` varchar(191) NOT NULL,
+  `location_id` int(11) DEFAULT NULL,
   `minutes` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`user_id`,`location`),
-  CONSTRAINT `allotments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_allotments_user_location` (`user_id`,`location_id`),
+  KEY `fk_allotment_location` (`location_id`),
+  CONSTRAINT `allotments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_allotment_location` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -502,4 +506,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-05-13 12:51:40
+-- Dump completed on 2026-05-14 12:08:50

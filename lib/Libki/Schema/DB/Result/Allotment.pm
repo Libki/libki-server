@@ -49,6 +49,12 @@ __PACKAGE__->table("allotments");
 
 =head1 ACCESSORS
 
+=head2 id
+
+  data_type: 'integer'
+  is_auto_increment: 1
+  is_nullable: 0
+
 =head2 instance
 
   data_type: 'varchar'
@@ -62,11 +68,11 @@ __PACKAGE__->table("allotments");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 location
+=head2 location_id
 
-  data_type: 'varchar'
-  is_nullable: 0
-  size: 191
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
 
 =head2 minutes
 
@@ -77,12 +83,14 @@ __PACKAGE__->table("allotments");
 =cut
 
 __PACKAGE__->add_columns(
+  "id",
+  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "instance",
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 32 },
   "user_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "location",
-  { data_type => "varchar", is_nullable => 0, size => 191 },
+  "location_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "minutes",
   { data_type => "integer", default_value => 0, is_nullable => 0 },
 );
@@ -91,17 +99,51 @@ __PACKAGE__->add_columns(
 
 =over 4
 
-=item * L</user_id>
-
-=item * L</location>
+=item * L</id>
 
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("user_id", "location");
+__PACKAGE__->set_primary_key("id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<uq_allotments_user_location>
+
+=over 4
+
+=item * L</user_id>
+
+=item * L</location_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("uq_allotments_user_location", ["user_id", "location_id"]);
 
 =head1 RELATIONS
+
+=head2 location
+
+Type: belongs_to
+
+Related object: L<Libki::Schema::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "location",
+  "Libki::Schema::DB::Result::Location",
+  { id => "location_id" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "SET NULL",
+    on_update     => "CASCADE",
+  },
+);
 
 =head2 user
 
@@ -119,8 +161,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07048 @ 2020-06-04 03:13:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:pX5yuaz3N7W2MGb9LPuyDQ
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-05-14 12:04:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qbFTn1ceu98qZG3MmYTlBQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

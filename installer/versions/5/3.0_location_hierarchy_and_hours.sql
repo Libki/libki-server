@@ -71,3 +71,25 @@ SET c.location_id = l.id;
 
 ALTER TABLE `clients`
     DROP COLUMN location;
+
+ALTER TABLE `allotments`
+    ADD COLUMN location_id INT(11) NULL AFTER location,
+    ADD CONSTRAINT fk_allotment_location
+        FOREIGN KEY (location_id)
+        REFERENCES locations(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE;
+
+UPDATE allotments a
+LEFT JOIN locations l
+  ON l.code = a.location
+SET a.location_id = l.id;
+
+ALTER TABLE allotments
+    DROP PRIMARY KEY,
+    ADD COLUMN id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST,
+    ADD UNIQUE KEY uq_allotments_user_location (
+        user_id,
+        location_id
+    ),
+    DROP COLUMN location;

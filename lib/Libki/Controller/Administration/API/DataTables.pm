@@ -117,8 +117,8 @@ sub users : Local Args(0) {
         # logic should be moved to User method, exists in lib/Libki/Controller/Administration/API/Client.pm as well
         my $minutes_allotment = $u->allotments->find({
             'instance' => $instance,
-            'location' => ($c->setting('TimeAllowanceByLocation'))
-                ? ( ( defined($u->session) && defined($u->session->client->location) ) ? $u->session->client->location : '' )
+            'location_id' => ($c->setting('TimeAllowanceByLocation'))
+                ? ( ( defined($u->session) && defined($u->session->client->location_id) ) ? $u->session->client->location_id : undef )
                 : '',
         });
 

@@ -117,6 +117,21 @@ __PACKAGE__->add_unique_constraint("unique_code", ["instance", "code"]);
 
 =head1 RELATIONS
 
+=head2 allotments
+
+Type: has_many
+
+Related object: L<Libki::Schema::DB::Result::Allotment>
+
+=cut
+
+__PACKAGE__->has_many(
+  "allotments",
+  "Libki::Schema::DB::Result::Allotment",
+  { "foreign.location_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 clients
 
 Type: has_many
@@ -183,6 +198,8 @@ Type: has_many
 
 Related object: L<Libki::Schema::DB::Result::Location>
 
+=cut
+
 __PACKAGE__->has_many(
   "locations",
   "Libki::Schema::DB::Result::Location",
@@ -211,8 +228,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-30 14:43:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IUD61Yr36WnTZ4mGfWZI5g
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-05-14 12:08:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5Fa/HXsTZfKmodHPdqMs1w
 
 =head2 ancestors
 
