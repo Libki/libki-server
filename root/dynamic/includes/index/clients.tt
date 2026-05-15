@@ -446,7 +446,7 @@ window.ClientTableUpdateLocationFilter = function( location ) {
     window.location_filter = location;
     cTable
         .columns(4)
-        .search(location)
+        .search("|" + location + "|")
         .draw();
     ForceClientTableRefresh();
 }
