@@ -4,6 +4,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.1] [r26.05]
+### Added
+- good-faith migration script from Closing Hours to Locations Hours
+- "print job received" message to Clients on successful print upload from Client
+- optional 'location' attribute to printer configuration that tells print job's for that printer to associate with that location instead of the uploading Clients location (good for web uploads)
+- Health check endpoints
+
+### Changed
+- Allotments associated with Location ID, not code
+
+### Fixed
+ - login to admin page properly redirects to /admininstration instead of /public now
+ - libki.pl changes necessary
+ - statistics logging for auto-released print jobs
+ - unit tests to run properly for new structures; t/controller_API-Client-v1_0.t now sets hours intervals for it's test location
+
+## [5.3.0]
+### Added
+ - Locations are now hierarchical
+ - Multiple open/close hours intervals can be associated with a Location for each day of the week
+ - Exceptions for specific dates can also have multiple open/close hours intervals
+ - Hours intervals can be indicated as 'reservable' or not
+ - Locations subroutines for "hours_for_date" and "is_open" that inherit from ancestor locations if intervals unset
+ - replace Libki::Hours::minutes_until_closing with Locations->minutes_until_closed(); negative values no longer returned if the closing time has passed
+ - API V2 endpoints for
+   - Locations
+   - Clients
+   - Sessions
+ - Client Status filter on left menu of Clients tab in admin, including "in use"
+ - ClientTimeWarningFrequency setting
+
+### Changed
+ - Locations can have a parent Location
+ - Clients are now associated with Location by ID, not the string of the name
+ - Split Clients and Sessions tabs in admin UI, and point them at API/V2 endpoints for data
+ - Action buttons on Clients and Sessions are part of the table, no longer only appearing on hover
+ - Clients and Sessions data tables filter locally, not server-side
+ - Locations filtering on Clients and Sessions tables is hierarchical and on the left (instead of pills at the top)
+ - Client table does not auto-refresh, while Sessions table does
+ - Client Type filter moved to left menu (if more than 1 type defined)
+ - public reservations page also has hierarchical Locations filtering, if enabled
+ - public URLs can take Location ID as a path (public/:id, public/printing/:id) to pre-filter Location menu
+ - POD improvements for API/V2
+
+### Fixed
+ - give Alpine tests more time to launch
+ - print statistics logging
+ - setting Gratis Print balance for SIP-created users
+ - logging of print release debug message
+ - age comparison error
+
+### Removed
+ - Hours.pm
+ - link to Closing hours page in menu
+ - 'Cancel Reservation' button on all Clients, even that don't have reservations
+
 ## [5.2.3] [r26.03]
 ### Added
 - Print statistics
@@ -13,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove sorting options from unsortable client table columns
 
 ### Fixed
-- Dockerfile.alpine and associate GitHub actions
+- Dockerfile.alpine and associated GitHub actions
 - string boundaries on public printing page
 - Dark mode for responsive tables
 
