@@ -53,7 +53,7 @@ my $when = DateTime::Format::MySQL->format_datetime( DateTime->now( time_zone =>
 
 # strings depending on TimeAllowanceByLocation for queries using minutes allotments
 my $timeAllowanceByLocation = $c->setting('TimeAllowanceByLocation');
-my $allotments_location_phrase = ($timeAllowanceByLocation) ? " = clients.location_id" : "'IS NULL'";
+my $allotments_location_phrase = ($timeAllowanceByLocation) ? " = clients.location_id" : " IS NULL";
 my $join_clients_sessions     = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = sessions.instance AND clients.id = sessions.client_id ) LEFT JOIN locations ON ( locations.instance = sessions.instance AND locations.id = clients.location_id )" : "";
 my $join_clients_reservations = ($timeAllowanceByLocation) ? "LEFT JOIN clients ON ( clients.instance = reservations.instance AND clients.id = reservations.client_id )" : "";
 
