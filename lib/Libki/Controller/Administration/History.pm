@@ -173,7 +173,7 @@ sub statistics : Local : Args(0) {
         my $client = $c->model('DB::Client')->find($client_id);
         $reservation{'count'} = $r->{'_column_data'}->{'count'};
         $reservation{'client'} = $client->name;
-        $reservation{'location'} = $client->location;
+        $reservation{'location'} = $client->location->code;
         push ( @reservation_result, \%reservation );
     }
     $c->stash(
