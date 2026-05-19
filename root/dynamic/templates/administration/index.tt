@@ -1702,7 +1702,7 @@ $(document).ready(function() {
       const client_name = $(this).data('clientname');
       $('#make-reservation-modal-title-client-name').text(client_name);
 
-      $('#make-reservation-modal-form-id').val( window.selected_id );
+      $('#make-reservation-modal-form-id').val( id );
       $('#make-reservation-modal-form-username').val("");
 
       $('#make-reservation-modal').modal();
