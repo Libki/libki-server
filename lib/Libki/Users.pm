@@ -154,10 +154,10 @@ sub create_user {
         if (defined $minutes) {
             $c->model('DB::Allotment')->update_or_create(
                 {
-                    instance => $user->instance,
-                    user_id  => $user->id,
-                    location => '',
-                    minutes  => $minutes,
+                    instance    => $user->instance,
+                    user_id     => $user->id,
+                    location_id => undef,
+                    minutes     => $minutes,
                 }
             );
         }

@@ -262,10 +262,10 @@ sub update : Local : Args(0) {
     if ( defined $minutes ) {
         $c->model('DB::Allotment')->update_or_create(
             {
-                instance => $instance,
-                user_id  => $user->id,
-                location => '',
-                minutes  => $minutes,
+                instance    => $instance,
+                user_id     => $user->id,
+                location_id => undef,
+                minutes     => $minutes,
             }
         );
     }

@@ -131,10 +131,10 @@ sub logout : Local : Args(1) {
         if ($user->is_guest eq 'Yes' && $c->setting('ExpireRemainingGuestPassTimeOnLogout') eq 'enabled' ) {
             $c->model('DB::Allotment')->update_or_create(
                 {
-                    instance => $c->instance,
-                    user_id  => $user->id,
-                    location => '',
-                    minutes  => 0,
+                    instance    => $c->instance,
+                    user_id     => $user->id,
+                    location_id => undef,
+                    minutes     => 0,
                 }
             );
         }
@@ -221,10 +221,10 @@ sub unlock : Local : Args(1) {
 
         $c->model('DB::Allotment')->update_or_create(
             {
-                instance => $c->instance,
-                user_id  => $user->id,
-                location => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location : '',
-                minutes  => $minutes_allotment,
+                instance    => $c->instance,
+                user_id     => $user->id,
+                location_id => ( $c->setting('TimeAllowanceByLocation') && defined($client->location) ) ? $client->location_id : undef,
+                minutes     => $minutes_allotment,
             }
         );
 
