@@ -379,7 +379,7 @@ sub index : Path : Args(0) {
                                     {
                                         instance    => $c->instance,
                                         user_id     => $user->id,
-                                        location_id => ( $c->setting('TimeAllowanceByLocation') && defined($client->location_id) ) ? $client->location->code : undef,
+                                        location_id => ( $c->setting('TimeAllowanceByLocation') ) ? $client->location_id : undef,
                                         minutes     => $minutes_allotment,
                                     }
                                 );
@@ -547,10 +547,10 @@ sub index : Path : Args(0) {
                 if ($user->is_guest eq 'Yes' && $c->setting('ExpireRemainingGuestPassTimeOnLogout') eq 'enabled' ) {
                     $c->model('DB::Allotment')->update_or_create(
                         {
-                            instance => $c->instance,
-                            user_id  => $user->id,
-                            location => '',
-                            minutes  => 0,
+                            instance    => $c->instance,
+                            user_id     => $user->id,
+                            location_id => undef,
+                            minutes     => 0,
                         }
                     );
                 }
