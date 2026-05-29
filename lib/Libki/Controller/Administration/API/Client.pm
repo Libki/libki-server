@@ -319,9 +319,12 @@ sub reservation : Local : Args(1) {
             my $minute = $c->request->params->{reservation_minute};
             my $datetime = $c->request->params->{reservation_datetime};
 
-            my $begin_time = "$date $hour:$minute:00";
+            # default to the distant past (will return INVALID_TIME error)
+            my $begin_time = "2000-01-01 00:00:00";
             if ($datetime) {
                 $begin_time = $datetime =~ s/T/ /r;
+            } else {
+                $begin_time = "$date $hour:$minute:00";
             }
 
             my %check  = $c->check_reservation( $client, $user, $begin_time );
