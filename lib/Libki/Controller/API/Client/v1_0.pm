@@ -506,6 +506,7 @@ sub index : Path : Args(0) {
             unless ( $user ) {
                 $c->response->body('User not found');
                 $c->response->status(404);
+                $c->detach();
             }
 
             my $status;
@@ -535,6 +536,7 @@ sub index : Path : Args(0) {
             unless ( $user ) {
                 $c->response->body('User not found');
                 $c->response->status(404);
+                $c->detach();
             }
 
             my $session    = $user->session;
