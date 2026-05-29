@@ -72,7 +72,7 @@
         <div class="col">
             <h4 class="user-funds">[% c.loc("Funds available for printing") %]: <span id="user-funds">0</span></h4>
 
-            [% IF c.setting("GratisPrintingValue") > 0 %]
+            [% IF c.setting("GratisPrintingValue") && c.setting("GratisPrintingValue") > 0 %]
             <h4 class="gratis-print-balance">
                 [% IF c.setting("GratisPrintingMethod") == "funds" %]
                     <span id="gratis-print-funds">0</span>

@@ -1036,7 +1036,7 @@
                     <div class="form-group">
                         <label for="GratisPrintingValue">[% c.loc("Gratis prints default value") %]</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="GratisPrintingValue" name="GratisPrintingValue" value="[% GratisPrintingValue %]">
+                            <input type="number" min="0" step="1" class="form-control" id="GratisPrintingValue" name="GratisPrintingValue" value="[% GratisPrintingValue %]">
                             <div class="input-group-append">
                                 <span class="input-group-text gratis-print-append">[% IF GratisPrintingMethod %][% c.loc(GratisPrintingMethod) %][% ELSE %][% c.loc("pages or funds") %][% END %]</span>
                             </div>
@@ -1046,7 +1046,7 @@
                     <div class="form-group">
                         <label for="GratisPrintingValueGuest">[% c.loc("Gratis prints default value for guests") %]</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="GratisPrintingValueGuest" name="GratisPrintingValueGuest" value="[% GratisPrintingValueGuest %]">
+                            <input type="number" min="0" step="1" class="form-control" id="GratisPrintingValueGuest" name="GratisPrintingValueGuest" value="[% GratisPrintingValueGuest %]">
                             <div class="input-group-append">
                                 <span class="input-group-text gratis-print-append">[% IF GratisPrintingMethod %][% c.loc(GratisPrintingMethod) %][% ELSE %][% c.loc("pages or funds") %][% END %]</span>
                             </div>
