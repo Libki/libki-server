@@ -444,7 +444,7 @@ sub release_for_print_manager {
     $c->model('DB::Statistic')->create(
         {
             instance   => $c->instance,
-            username   => $c->user ? $c-user->username : '',
+            username   => $c->user ? $c->user->username : '',
             action     => 'PRINT_JOB_RELEASED',
             created_on => $c->now,
             session_id => $c->sessionid // '',

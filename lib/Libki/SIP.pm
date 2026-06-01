@@ -5,6 +5,7 @@ use feature 'say';
 use Data::Dumper;
 use IO::Socket::INET;
 use Net::Telnet;
+use JSON qw( to_json );
 use POSIX qw(strftime);
 use Socket qw(:crlf);
 
