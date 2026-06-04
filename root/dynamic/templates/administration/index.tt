@@ -1188,6 +1188,11 @@ $(document).ready(function() {
 
             // DateTime created
             $('td:eq(8)', nRow).html(aData[8].replace('T', ' '));
+
+            // add class to row
+            if (aData[1] === 'Done') {
+                $(nRow).addClass('print-row-done');
+            }
         },
         "initComplete": function(){
             $('#print-table-toolbar').prependTo($('#print-table_filter'));

@@ -161,3 +161,7 @@ table {
     font-weight: bolder;
     color: #000;
 }
+
+.print-row-done {
+    color: #999999;
+}
