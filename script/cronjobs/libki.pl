@@ -191,7 +191,7 @@ foreach my $s ( @$sessions ) {
 
     my $minutes_to_add_to_session = $s->{AutomaticTimeExtensionLength};
 
-    my $location = $c->model('DB::Location')->find({ instance => $s->instance, code => $s->location });
+    my $location = $c->model('DB::Location')->find({ instance => $s->{instance}, code => $s->{location} });
     my $minutes_until_closing = $location->minutes_until_closed();
 
     # Calculate the minutes until the next reservation
