@@ -1,5 +1,6 @@
-[%- SET public_print_release = c.get_printer_configuration.public_print_release %]
-[%- SET pdf_conversion_service = c.get_printer_configuration.pdf_conversion_service %]
+[%- SET printer_configuration = c.get_printer_configuration %]
+[%- SET public_print_release = printer_configuration.public_print_release %]
+[%- SET pdf_conversion_service = printer_configuration.pdf_conversion_service %]
 <div class="container">
     <div class="row">
         <div class="col">
@@ -24,7 +25,7 @@
                     <div class="alert alert-warning" role="alert">
                         <strong>[% c.loc('PDFs work best') %]</strong>
                         [% c.loc('Currently supporting: ') %]
-			[% c.get_printer_configuration.pdf_conversion_service.supported_extensions.join(", ") %].
+			[% printer_configuration.pdf_conversion_service.supported_extensions.join(", ") %].
                     </div>
                     [% ELSE %]
                     <div class="alert alert-info" role="alert">
@@ -37,7 +38,7 @@
                     <div class="form-group">
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" accept="application/pdf[% IF pdf_conversion_service %],.[% c.get_printer_configuration.pdf_conversion_service.supported_extensions.join(",.") %][% END %]" class="form-control custom-file-input" name="print_file" id="print_file"
+                                <input type="file" accept="application/pdf[% IF pdf_conversion_service %],.[% printer_configuration.pdf_conversion_service.supported_extensions.join(",.") %][% END %]" class="form-control custom-file-input" name="print_file" id="print_file"
                                     aria-describedby="inputGroupFileAddon01" required/>
                                 <label class="custom-file-label" for="inputGroupFile01">[% c.loc("Choose file") %]</label>
                             </div>
@@ -45,9 +46,9 @@
                     </div>
 
                     <div class="form-group mt-3">
-                        [% IF c.get_printer_configuration.printers.size > 1 %]
+                        [% IF printer_configuration && printer_configuration.printers.size > 1 %]
                         <label for="printer_id">[% c.loc("Select a printer") %][% IF current_location %] [% c.loc("at") %] [% current_location.code %][% END %]</label>
-                            [% FOREACH p IN c.get_printer_configuration.printers %]
+                            [% FOREACH p IN printer_configuration.printers %]
                                 [% IF current_location.code == '' || current_location.code == p.value.location %]
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
@@ -56,7 +57,7 @@
                                 [% END %]
                             [% END %]
                         [% ELSE %]
-                            [% FOREACH p IN c.get_printer_configuration.printers %]
+                            [% FOREACH p IN printer_configuration.printers %]
                                 <input type="hidden" name="printer_id" value="[% p.key %]">
                             [% END %]
                         [% END %]
@@ -350,7 +351,7 @@ $(document).ready(function() {
           },
           { data: 'filename' }, // Filename
           { // Printer
-              visible: [% c.get_printer_configuration.printers.size > 1 ? 'true' : 'false' %],
+              visible: [% printer_configuration && printer_configuration.printers.size > 1 ? 'true' : 'false' %],
               data: 'printer_costs',
               render: function(data,type,row) {
                   const print_job_id = row["print_job_id"];
