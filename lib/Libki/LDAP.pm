@@ -133,10 +133,6 @@ sub testGuid {
     my $ldaps = shift;
     my $match_attribute = shift;
 
-    my $userDn = getUserDn($guid, $adminDn, $adminPwd, $searchBase, $host, $port, $ldaps, $match_attribute );
-
-    return undef unless $userDn;
-    
     if ($ldaps) {
         require Net::LDAPS;
         $ldap = Net::LDAPS->new($host, verify=>'none') or die "$@";
@@ -145,6 +141,10 @@ sub testGuid {
         $ldap = Net::LDAP->new($host, verify=>'none') or die "$@";    
     }
 
+    my $userDn = getUserDn($guid, $adminDn, $adminPwd, $searchBase, $host, $port, $ldaps, $match_attribute );
+
+    return undef unless $userDn;
+    
     my $mesg = $ldap->bind ($userDn, password=>"$userPwd");
     
     if ($mesg->code) {
