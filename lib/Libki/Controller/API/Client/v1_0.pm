@@ -666,7 +666,8 @@ sub print : Path('print') : Args(0) {
     if ( $client && $user ) {
         my $print_file = $c->req->upload('print_file');
 
-        $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
+        # expected pattern is <documentname><someconstantchar><copies>_<somenumber>.<fileextension>
+        $print_file->filename =~ m/[a-zA-z]+(\d+)_(\d+)\.[a-zA-Z]+$/;
         my $copies = $1 || 1;
 
         Libki::Utils::Printing::create_print_job_and_file(
