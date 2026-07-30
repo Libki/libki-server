@@ -50,7 +50,7 @@
                         <label for="printer_id">[% c.loc("Select a printer") %][% IF current_location %] [% c.loc("at") %] [% current_location.code %][% END %]</label>
                             [% FOREACH p IN printer_configuration.printers %]
                                 [% IF current_location.code == '' || current_location.code == p.value.location %]
-                                <div class="form-check">
+                                <div class="form-check notranslate" translate="no">
                                     <input class="form-check-input" type="radio" name="printer_id" id="printer-[% p.key %]" value="[% p.key %]" required>
                                     <label class="form-check-label" for="printer-[% p.key %]">[% p.value.public_printer_name | html %]</label>
                                 </div>
