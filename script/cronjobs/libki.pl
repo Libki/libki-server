@@ -333,7 +333,7 @@ if (length($minutes_to_shutdown)) {
     my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
     my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
     while ( my $client = $clients->next() ) {
-        if ( $client->status eq 'online' ) {
+        if ( $client->status eq 'online' && defined($client->location) ) {
             my $minutes_until_closing = $client->location->minutes_until_closed();
 
             if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {
