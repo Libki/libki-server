@@ -1172,6 +1172,9 @@ $(document).ready(function() {
                 callback(json);
             } );
         },
+        columnDefs: [
+            { targets: [4], className: 'truncate-cell' }
+        ],
         "order": [[ 7, "desc" ]],
         "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
