@@ -735,7 +735,8 @@ sub print : Path('print') : Args(0) {
     if ( $client && $user ) {
         my $print_file = $c->req->upload('print_file');
 
-        $print_file->filename =~ m/[a-zA-z]*(\d+)_(\d+)\.[a-zA-Z]+/;
+        # expected pattern is <documentname><someconstantchar><copies>_<somenumber>.<fileextension>
+        $print_file->filename =~ m/[a-zA-z]+(\d+)_(\d+)\.[a-zA-Z]+$/;
         if (!$copies) {
             $copies = $1 || 1;
         }
