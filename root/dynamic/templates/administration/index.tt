@@ -1061,9 +1061,9 @@ $(document).ready(function() {
                     <div class="dropdown-menu">
                         <a class="dropdown-item client-table-row-toolbar-unlock" href="#" data-clientid="${client_id}"><i class="fas fa-unlock"></i> [% c.loc("Create Guest Session") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-status" href="#" data-clientid="${client_id}"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</a>
-                        <a class="dropdown-item client-table-row-toolbar-delete" href="#" data-clientid="${client_id}"><i class="fas fa-times"></i> [% c.loc("Delete") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-restart" href="#" data-clientid="${client_id}"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-shutdown" href="#" data-clientid="${client_id}"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</a>
+                        [% IF c.check_user_roles('superadmin') %]<a class="dropdown-item client-table-row-toolbar-delete" href="#" data-clientid="${client_id}"><i class="fas fa-times"></i> [% c.loc("Delete") %]</a>[% END %]
                     </div>
                 </div>
 
@@ -1172,6 +1172,9 @@ $(document).ready(function() {
                 callback(json);
             } );
         },
+        columnDefs: [
+            { targets: [4], className: 'truncate-cell' }
+        ],
         "order": [[ 7, "desc" ]],
         "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
@@ -1422,12 +1425,13 @@ $(document).ready(function() {
 
     $(".turn-on-button").click(function () {
         const location = window.location_filter || "";
+        const location_name = $('#clientLocationTree ul li span[data-location="' + location + '"]').text();
 
         let msg = "[% c.loc("Are you sure you want to turn on all clients?") %]";
-        if ( location ) msg = "[% c.loc("Are you sure you want to turn on all clients at location ") %]" + location;
+        if ( location ) msg = "[% c.loc("Are you sure you want to turn on all clients at ") %]" + location_name + "?";
 
         if ( confirm( msg ) ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/wakeup/') %]' + location, function(data) {
+            $.getJSON( '[% c.uri_for('/api/v2/clients/wakeup') %]' + "?location=" + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients turned on: ") %]" + data.count );
                     cTable.draw(true);
@@ -1440,12 +1444,13 @@ $(document).ready(function() {
 
     $(".shutdown-button").click(function () {
         const location = window.location_filter || "";
+        const location_name = $('#clientLocationTree ul li span[data-location="' + location + '"]').text();
 
         let msg = "[% c.loc("Are you sure you want to shutdown all clients?") %]";
-        if ( location ) msg = "[% c.loc("Are you sure you want to turn off all clients at location ") %]" + location;
+        if ( location ) msg = "[% c.loc("Are you sure you want to turn off all clients at ") %]" + location_name + "?";
 
         if ( confirm( msg ) ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/shutdown_all/') %]' + location, function(data) {
+            $.getJSON( '[% c.uri_for('/api/v2/clients/shutdown') %]' + "?location=" + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients turned off: ") %]" + data.count );
                     cTable.draw(true);
@@ -1458,12 +1463,13 @@ $(document).ready(function() {
 
     $(".restart-button").click(function () {
         const location = window.location_filter || "";
+        const location_name = $('#clientLocationTree ul li span[data-location="' + location + '"]').text();
 
         let msg = "[% c.loc("Are you sure you want to restart all clients?") %]";
-        if ( location ) msg = "[% c.loc("Are you sure you want to restart all clients at location ") %]" + location;
+        if ( location ) msg = "[% c.loc("Are you sure you want to restart all clients at ") %]" + location_name + "?";
 
         if ( confirm( msg ) ) {
-            $.getJSON( '[% c.uri_for('/administration/api/client/restart_all/') %]' + location, function(data) {
+            $.getJSON( '[% c.uri_for('/api/v2/clients/restart') %]' + "?/location=" + location, function(data) {
                 if ( data.success ) {
                     DisplayMessage( "success", "[% c.loc("Clients restarted: ") %]" + data.count );
                     cTable.draw(true);
@@ -1790,6 +1796,9 @@ $(document).ready(function() {
 
     /* Delete Client*/
     $("#clients-table").on("click", '.client-table-row-toolbar-delete', async function(){
+      [% UNLESS c.check_user_roles('superadmin') %]
+      return false;
+      [% END %]
       if ( confirm("[% c.loc("Once deleted, all the reservations of this client will be removed at the same time.") %]") ) {
         $.getJSON( '[% c.uri_for('/administration/api/client/delete_client') %]' + '/' + $(this).data('clientid'), function( data ) {
           if ( data.success ) {

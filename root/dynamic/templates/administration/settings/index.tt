@@ -205,6 +205,20 @@
                 </fieldset>
 
                 <fieldset>
+                    <legend>[% c.loc("Time remaining display") %]</legend>
+                    <div class="form-group">
+                        <div>
+                            <input  id="ShowTimeRemainingInTray" name="ShowTimeRemainingInTray" type="checkbox" [% IF ShowTimeRemainingInTray %]checked="checked"[% END %]>
+                            <label for="ShowTimeRemainingInTray">[% c.loc("Show time remaining in an icon in the system tray") %]</label>
+                        </div>
+                        <div>
+                            <input  id="ShowTimeRemainingInSplash" name="ShowTimeRemainingInSplash" type="checkbox" [% IF ShowTimeRemainingInSplash %]checked="checked"[% END %]>
+                            <label for="ShowTimeRemainingInSplash">[% c.loc("Show time remaining in the corner of the client screen") %]</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
                     <legend>[% c.loc("Notifications") %]</legend>
 
                     <div class="form-group">

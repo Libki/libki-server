@@ -258,13 +258,15 @@ foreach my $pct (@post_crash_timeouts) {
 
 ## Clear out any expired reservations
 #FIXME We need to deal with timezones at some point
-my $timeout =  $setting_rs->find( { name => 'ReservationTimeout'} );
+my $timeout_setting =  $setting_rs->find( { name => 'ReservationTimeout'} );
+my $timeout = defined($timeout_setting) ? $timeout_setting->value() : 15;
+
 $reservation_rs->search([
     {
         'begin_time' => {
             '<',
             DateTime::Format::MySQL->format_datetime(
-                DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration( DateTime::Duration->new(minutes => $timeout->value()) )
+                DateTime->now( time_zone => $ENV{LIBKI_TZ} )->subtract_duration( DateTime::Duration->new(minutes => $timeout) )
             )
         }
     },
@@ -331,7 +333,7 @@ if (length($minutes_to_shutdown)) {
     my $status  = $c->setting('ClientShutdownAction') || 'shutdown';
     my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
     while ( my $client = $clients->next() ) {
-        if ( $client->status eq 'online' ) {
+        if ( $client->status eq 'online' && defined($client->location) ) {
             my $minutes_until_closing = $client->location->minutes_until_closed();
 
             if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {

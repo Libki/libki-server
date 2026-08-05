@@ -6,7 +6,7 @@ ALTER TABLE locations
         ON DELETE SET NULL
         ON UPDATE CASCADE;
 
-CREATE TABLE `location_hours` (
+CREATE TABLE IF NOT EXISTS `location_hours` (
     `instance` varchar(32) NOT NULL DEFAULT '',
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `location_id` int(11) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE `location_hours` (
 );
 CREATE INDEX idx_hours_lookup ON location_hours(location_id, day_of_week);
 
-CREATE TABLE `location_hours_exceptions` (
+CREATE TABLE IF NOT EXISTS `location_hours_exceptions` (
     `instance` varchar(32) NOT NULL DEFAULT '',
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `location_id` int(11) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `location_hours_exceptions` (
 );
 CREATE INDEX idx_exception_lookup  ON location_hours_exceptions(location_id, service_date);
 
-CREATE TABLE `location_hours_exception_intervals` (
+CREATE TABLE IF NOT EXISTS `location_hours_exception_intervals` (
     `instance` varchar(32) NOT NULL DEFAULT '',
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `exception_id` int(11) NOT NULL,

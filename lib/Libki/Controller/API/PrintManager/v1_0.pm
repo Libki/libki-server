@@ -165,6 +165,16 @@ sub job : Path('job') : Args(2) {
     elsif ($job) {
         $job->update( { status => $status } );
 
+        if ($job->user->session && $status == 'Done') {
+            $c->model('DB::Message')->create( {
+                instance => $instance,
+                user_id  => $job->user_id,
+                content  => $c->loc(
+                    "Your print job, ([_1], copies: [_2]), has printed", $job->print_file->filename, $job->copies
+                )
+            } );
+        }
+
         my %data = $job->get_columns;
         $c->stash( { job => \%data } );
 

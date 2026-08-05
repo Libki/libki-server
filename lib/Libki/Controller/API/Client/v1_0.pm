@@ -97,7 +97,7 @@ sub index : Path : Args(0) {
                 minutes  => $client->session->minutes,
                 username => $client->session->user->username,
             );
-        } elsif ($client_status eq "shutdown" || $client_status eq "suspend" || $client_status eq "restart") {
+        } elsif ($client_status eq "shutdown" || $client_status eq "suspended" || $client_status eq "restart" || $client_status eq "drop" ) {
             $c->stash(
                 $client_status => 1,
             );
@@ -167,6 +167,9 @@ sub index : Path : Args(0) {
 
             inactivityWarning          => $c->stash->{Settings}->{ClientInactivityWarning},
             inactivityLogout           => $c->stash->{Settings}->{ClientInactivityLogout},
+
+            ShowTimeRemainingInSplash  => $c->stash->{Settings}->{ShowTimeRemainingInSplash},
+            ShowTimeRemainingInTray    => $c->stash->{Settings}->{ShowTimeRemainingInTray},
 
             ClientTimeNotificationFrequency => $c->stash->{Settings}->{ClientTimeNotificationFrequency} || 5,
             ClientTimeWarningThreshold      => $c->stash->{Settings}->{ClientTimeWarningThreshold} || 5,
@@ -637,6 +640,71 @@ sub statistics : Path('statistics') : Args(0) {
     $c->forward( $c->view('JSON') );
 }
 
+=head2 print_price_check
+
+Client API method to check pricing and available funds for a proposed print job
+
+=cut
+
+sub print_price_check : Path('print_price_check') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $instance = $c->instance;
+
+    my $client_name = $c->request->params->{'client_name'};
+    my $username    = $c->request->params->{'username'};
+    my $printer_id  = $c->request->params->{'printer'};
+    my $location    = $c->request->params->{'location'};
+
+    my $user = $c->model('DB::User')
+        ->single( { instance => $instance, username => $username } );
+    my $client = $c->model('DB::Client')
+        ->single( { instance => $instance, name => $client_name } );
+
+    if (!$user) {
+        $c->stash(
+            success => 0,
+            error   => 'USER NOT FOUND',
+            user    => "$username"
+        );
+    } elsif (!$client) {
+        $c->stash(
+            success => 0,
+            error   => 'CLIENT NOT FOUND',
+            client    => "$client_name"
+        );
+    } else {
+        my $printers = $c->get_printer_configuration;
+        my $printer  = $printers->{printers}->{$printer_id};
+
+        if ($printer) {
+            my $GratisPrintingMethod = $c->setting("GratisPrintingMethod");
+
+            my $cpp    = $printer->{cost_per_page}+0 || 0; 
+            my $available_funds = $user->funds || 0;
+            my $gratis_balance  = $user->gratis_print_balance || 0;
+    
+            $c->stash(
+                success => 1,
+                cpp     => $cpp,
+                currency => '$', # placeholder for multi-currency support in the future
+                funds   => $available_funds,
+                gratis_balance => $gratis_balance,
+                gratis_method    => $GratisPrintingMethod
+            );
+        } else {
+            $c->stash(
+                success => 0,
+                error   => 'PRINTER NOT FOUND',
+                printer    => "$printer_id"
+            );
+        }
+    }
+    delete( $c->stash->{'Settings'} );
+    $c->forward( $c->view('JSON') );
+
+}
+
 =head2 print
 
 Client API method to send a print job to the server.
@@ -656,6 +724,7 @@ sub print : Path('print') : Args(0) {
     my $username    = $c->request->params->{'username'};
     my $printer_id  = $c->request->params->{'printer'};
     my $location    = $c->request->params->{'location'};
+    my $copies      = $c->request->params->{'copies'} || 0;
 
     my $client = $c->model('DB::Client')
         ->single( { instance => $instance, name => $client_name } );
@@ -668,7 +737,9 @@ sub print : Path('print') : Args(0) {
 
         # expected pattern is <documentname><someconstantchar><copies>_<somenumber>.<fileextension>
         $print_file->filename =~ m/[a-zA-z]+(\d+)_(\d+)\.[a-zA-Z]+$/;
-        my $copies = $1 || 1;
+        if (!$copies) {
+            $copies = $1 || 1;
+        }
 
         Libki::Utils::Printing::create_print_job_and_file(
             $c,

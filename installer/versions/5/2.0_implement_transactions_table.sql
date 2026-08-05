@@ -1,4 +1,4 @@
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
     instance VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

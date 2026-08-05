@@ -165,3 +165,9 @@ table {
 .print-row-done {
     color: #999999;
 }
+.truncate-cell {
+    max-width: 32rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

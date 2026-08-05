@@ -2,7 +2,7 @@
 [% IF locations.size > 1 %]
     <div class="col-sm-2 border-right pt-3">
         <h4>[% c.loc("Location") %]</h4>
-        <div id="clientLocationTree" class="locationtree tree pb-3"></div>
+        <div id="clientLocationTree" class="locationtree tree pb-3 notranslate" translate="no"></div>
     </div>
 [% END %]
     <div class="col-sm-10">
@@ -152,6 +152,15 @@ $(document).ready(function() {
           "url": '[% c.uri_for('/api/v2/clients') %]',
           "dataSrc": ''
         },
+        columnDefs: [
+            {
+                "targets": [0,1],
+                "className": 'notranslate',
+                "createdCell": function (td, cellData, rowData, row, col) {
+                    td.setAttribute('translate', 'no');             
+                }
+            }
+        ],
         columns: [
             { 
                 "data": "name"
