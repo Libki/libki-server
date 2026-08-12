@@ -677,6 +677,18 @@ sub print_price_check : Path('print_price_check') : Args(0) {
         my $printers = $c->get_printer_configuration;
         my $printer  = $printers->{printers}->{$printer_id};
 
+        # didn't find a printer with that id... maybe it's the display name?
+        unless ($printer) {
+            while (my ($key, $candidate) = each %{ $printers->{printers} }) {
+                next unless defined $candidate->{public_printer_name};
+                if ($candidate->{public_printer_name} eq $printer_id) {
+                    $printer   = $candidate;
+                    $printer_id = $key;
+                    last;
+                }
+            }
+        }
+
         if ($printer) {
             my $GratisPrintingMethod = $c->setting("GratisPrintingMethod");
 
@@ -686,6 +698,7 @@ sub print_price_check : Path('print_price_check') : Args(0) {
     
             $c->stash(
                 success => 1,
+                printer => $printer_id,
                 cpp     => $cpp,
                 currency => '$', # placeholder for multi-currency support in the future
                 funds   => $available_funds,
