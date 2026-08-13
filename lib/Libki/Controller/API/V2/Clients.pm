@@ -162,7 +162,7 @@ sub shutdown_all : Chained('base') PathPart('shutdown') Args(0) GET {
                     instance        => $c->instance,
                     username        => $c->user->username,
                     client_name     => $client->name,
-                    client_location => $client->location->code,
+                    client_location => $client->location ? $client->location->code : '',
                     client_type     => $client->type,
                     action          => 'SHUTDOWN_ALL',
                     created_on      => $c->now,
@@ -215,7 +215,7 @@ sub restart_all : Chained('base') PathPart('restart') Args(0) GET {
                     instance        => $c->instance,
                     username        => $c->user->username,
                     client_name     => $client->name,
-                    client_location => $client->location->code,
+                    client_location => $client->location ? $client->location->code : '',
                     client_type     => $client->type,
                     action          => 'RESTART_ALL',
                     created_on      => $c->now,
@@ -262,7 +262,7 @@ sub wakeup : Chained('base') PathPart('wakeup') Args(0) GET {
                         instance        => $c->instance,
                         username        => $c->user->username,
                         client_name     => $client->name,
-                        client_location => $client->location->code,
+                        client_location => $client->location ? $client->location->code : '',
                         client_type     => $client->type,
                         action          => 'WAKEUP_ALL',
                         created_on      => $c->now,
@@ -382,7 +382,7 @@ sub client_item_DELETE {
             instance        => $instance,
             username        => $c->user->username,
             client_name     => $client->name,
-            client_location => $client->location->code,
+            client_location => $client->location ? $client->location->code : '',
             client_type     => $client->type,
             action          => 'DELETE',
             created_on      => $c->now,
@@ -396,17 +396,17 @@ sub client_item_DELETE {
 }
 
 
-=head2 unlock
+=head2 autologin
 
-GET /api/v2/clients/:id/unlock
+GET /api/v2/clients/:id/autologin
 
-Unlocks a client by creating a session for a guest account.
+Logs in a client with a new session for a guest account.
 
 REQUIRES: admin
 
 =cut
 
-sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
+sub autologin : Chained('client') PathPart('autologin') Args(0) GET {
     my ( $self, $c ) = @_;
 
     ($c->user && $c->assert_user_roles( qw/admin/ ) ) or return $self->status_forbidden($c, message => "access denied");
@@ -443,7 +443,7 @@ sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
         my $advanced_rule = $c->get_rule(
             {
                 rule            => 'guest_daily',
-                client_location => $client->location->code,
+                client_location => $client->location ? $client->location->code : undef,
                 client_type     => $client->type,
                 client_name     => $client->name,
                 client_type     => $client->type,
@@ -482,7 +482,7 @@ sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
             if ( $session ) {
                 $c->prometheus->inc('logins');
 
-                $client->update( { status => 'unlock' } );
+                $client->update( { status => 'autologin' } );
                 $success = 1;
 
                 $c->model('DB::Statistic')->create(
@@ -490,9 +490,9 @@ sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
                         instance        => $c->instance,
                         username        => $c->user->username,
                         client_name     => $client->name,
-                        client_location => $client->location->code,
+                        client_location => $client->location ? $client->location->code : '',
                         client_type     => $client->type,
-                        action          => 'UNLOCK',
+                        action          => 'AUTOLOGIN_GUEST',
                         created_on      => $c->now,
                         session_id      => $session_id,
                     }
@@ -503,6 +503,55 @@ sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
 
     $self->status_ok($c, entity => {
         'success' => $success
+    });
+}
+
+=head2 unlock
+
+GET /api/v2/clients/:id/unlock
+
+Unlock a client's session lock.
+
+REQUIRES: admin
+
+=cut
+
+sub unlock : Chained('client') PathPart('unlock') Args(0) GET {
+    my ( $self, $c ) = @_;
+
+    ($c->user && $c->assert_user_roles( qw/admin/ ) ) or return $self->status_forbidden($c, message => "access denied");
+
+    my $instance = $c->instance;
+    my $success = 0;
+    my $client = $c->stash->{'client'};
+
+    if( $client && $client->session ) {
+        $client->set_column( 'status', 'unlock' );
+
+        if ( $client->update() ) {
+            $success = 1;
+
+            $c->model('DB::Statistic')->create(
+                {
+                    instance        => $instance,
+                    username        => $c->user->username,
+                    client_name     => $client->name,
+                    client_location => $client->location ? $client->location->code : '',
+                    client_type     => $client->type,
+                    action          => 'UNLOCK',
+                    created_on      => $c->now,
+                    session_id      => $c->sessionid,
+                    info            => to_json( { status => 'unlock' } ),
+                }
+            );
+        } else {
+          $success = 0;
+        }
+    }
+
+    $self->status_ok($c, entity => {
+        'success' => $success, 
+        'status'  => $client->status 
     });
 }
 
@@ -537,7 +586,7 @@ sub toggle_status : Chained('client') PathPart('toggle_status') Args(0) GET {
                     instance        => $instance,
                     username        => $c->user->username,
                     client_name     => $client->name,
-                    client_location => $client->location->code,
+                    client_location => $client->location ? $client->location->code : '',
                     client_type     => $client->type,
                     action          => 'TOGGLE_STATUS',
                     created_on      => $c->now,
@@ -586,7 +635,7 @@ sub shutdown : Chained('client') PathPart('shutdown') Args(0) GET {
                 instance        => $c->instance,
                 username        => $c->user->username,
                 client_name     => $client->name,
-                client_location => $client->location->code,
+                client_location => $client->location ? $client->location->code : '',
                 client_type     => $client->type,
                 action          => 'SHUTDOWN',
                 created_on      => $c->now,
@@ -633,7 +682,7 @@ sub restart : Chained('client') PathPart('restart') Args(0) GET {
                 instance        => $c->instance,
                 username        => $c->user->username,
                 client_name     => $client->name,
-                client_location => $client->location->code,
+                client_location => $client->location ? $client->location->code : '',
                 client_type     => $client->type,
                 action          => 'RESTART',
                 created_on      => $c->now,
