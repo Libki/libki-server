@@ -1059,7 +1059,7 @@ $(document).ready(function() {
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-wrench"></i> [% c.loc("Manage") %]</button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item client-table-row-toolbar-unlock" href="#" data-clientid="${client_id}"><i class="fas fa-unlock"></i> [% c.loc("Create Guest Session") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-autologin" href="#" data-clientid="${client_id}"><i class="fas fa-sign-in-alt"></i> [% c.loc("Create Guest Session") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-status" href="#" data-clientid="${client_id}"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-restart" href="#" data-clientid="${client_id}"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-shutdown" href="#" data-clientid="${client_id}"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</a>
@@ -1743,15 +1743,15 @@ $(document).ready(function() {
     });
 
 
-    /* Unlock */
-    $("#clients-table").on("click", '.client-table-row-toolbar-unlock', async function(){
-      if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/unlock') %]' + '/' + $(this).data('clientid'), function(data) {
+    /* Create guest session */
+    $("#clients-table").on("click", '.client-table-row-toolbar-autologin', async function(){
+      if ( confirm("[% c.loc("Are you sure you want to create a new guest session on this client?") %]") ) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/autologin', function(data) {
            if ( data.success ) {
                DisplayMessage( "success", "[% c.loc("Guest session created") %]" );
                cTable.ajax.reload();
            } else {
-               DisplayMessage( "error", "[% c.loc("Unable to unlock client.") %]" );
+               DisplayMessage( "error", "[% c.loc("Unable to create guest session") %]" );
            }
          });
       }
@@ -1760,7 +1760,7 @@ $(document).ready(function() {
     /* Log out */
     $("#sessions-table").on("click", '.client-table-row-toolbar-logout', async function(){
       if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/logout') %]' + '/' + $(this).data('clientid'), function(data) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/logout', function(data) {
            if ( data.success ) {
                DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
                sTable.ajax.reload();
@@ -1773,7 +1773,7 @@ $(document).ready(function() {
 
     /* Toggle client status */
     $("#clients-table").on("click", '.client-table-row-toolbar-status', async function(){
-        $.getJSON('[% c.uri_for("api/client/toggle_status") %]/' + $(this).data('clientid'), function(data) {
+        $.getJSON('[% c.uri_for("/api/v2/clients/") %]' + $(this).data('clientid') + '/toggle_status', function(data) {
             if ( parseInt( data.success ) ) {
                     const status = TranslateStatus( data.status );
                     DisplayMessage( "success", "[% c.loc("Client status change to: ") %]" + status );
@@ -1816,7 +1816,7 @@ $(document).ready(function() {
     /* Restart Client */
     $("#clients-table").on("click", '.client-table-row-toolbar-restart', async function(){
       if ( confirm("[% c.loc("Are you sure you want to restart this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/restart') %]' + '/' + $(this).data('clientid'), function(data) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/restart', function(data) {
           if ( data.success ) {
             DisplayMessage( "success", "[% c.loc("Client restarted.") %]" );
             cTable.ajax.reload();
@@ -1830,7 +1830,7 @@ $(document).ready(function() {
     /* Turn off Client */
     $("#clients-table").on("click", '.client-table-row-toolbar-shutdown', async function(){
       if ( confirm("[% c.loc("Are you sure you want to turn off this client?") %]") ) {
-        $.getJSON( '[% c.uri_for('/administration/api/client/shutdown') %]' + '/' + $(this).data('clientid'), function(data) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/shutdown', function(data) {
           if ( data.success ) {
             DisplayMessage( "success", "[% c.loc("Client turned off.") %]" );
             cTable.ajax.reload();
