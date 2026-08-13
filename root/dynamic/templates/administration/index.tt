@@ -1060,6 +1060,7 @@ $(document).ready(function() {
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-wrench"></i> [% c.loc("Manage") %]</button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item client-table-row-toolbar-autologin" href="#" data-clientid="${client_id}"><i class="fas fa-sign-in-alt"></i> [% c.loc("Create Guest Session") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-unlock" href="#" data-clientid="${client_id}"><i class="fas fa-unlock"></i> [% c.loc("Unlock Session") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-status" href="#" data-clientid="${client_id}"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-restart" href="#" data-clientid="${client_id}"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-shutdown" href="#" data-clientid="${client_id}"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</a>
@@ -1752,6 +1753,20 @@ $(document).ready(function() {
                cTable.ajax.reload();
            } else {
                DisplayMessage( "error", "[% c.loc("Unable to create guest session") %]" );
+           }
+         });
+      }
+    });
+
+    /* Unlock */
+    $("#clients-table").on("click", '.client-table-row-toolbar-unlock', async function(){
+      if ( confirm("[% c.loc("Are you sure you want to unlock this client?") %]") ) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/unlock', function(data) {
+           if ( data.success ) {
+               DisplayMessage( "success", "[% c.loc("Client session unlocked") %]" );
+               cTable.ajax.reload();
+           } else {
+               DisplayMessage( "error", "[% c.loc("Unable to unlock client session") %]" );
            }
          });
       }
