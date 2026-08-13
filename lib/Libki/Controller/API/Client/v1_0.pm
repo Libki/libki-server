@@ -91,13 +91,17 @@ sub index : Path : Args(0) {
         $client->get_from_storage;
         my $client_status = $client->status // q{};
 
-        if ($client_status eq "unlock") {
+        if ($client_status eq "autologin") {
             $c->stash(
-                unlock   => 1,
+                autologin   => 1,
                 minutes  => $client->session->minutes,
                 username => $client->session->user->username,
             );
-        } elsif ($client_status eq "shutdown" || $client_status eq "suspended" || $client_status eq "restart" || $client_status eq "drop" ) {
+        } elsif ($client_status eq "shutdown"  || 
+                 $client_status eq "suspended" || 
+                 $client_status eq "restart"   || 
+                 $client_status eq "unlock"    || 
+                 $client_status eq "drop"      ){
             $c->stash(
                 $client_status => 1,
             );
