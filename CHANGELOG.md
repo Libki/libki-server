@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.4.0] [r26.08]
+### Added
+- Clients API V2 endpoint for unlocking a locked session
+- Printer Price Check endpoint in Client V1_0, to support Libki Client 2.4's print dialog
+- Show Time Remaining in splash or tray added to Client Behavior Settings
+- Send a 'print job printed' message to a current Client Session (if extant)
+
+### Changed
+- updated Client table to use Clients API V2 endpoints
+- renamed 'unlock' endpoint to 'autologin'
+- limit deletion of Clients to superadmins
+- prevent browser translator from translating printer and client names on public side
+- truncation print job filenames to 32 in table view
+
+### Fixed
+- Fix turn on, turn off and restart all Clients buttons
+- support for when Clients have undefined Locations
+- if ReservationTimeout unset, prevent libki.pl from failing
+- idempotency to v5.x table creation commands
+- anchor print job file name parsing for number of copies
+- requre Net::LDAP before use
+- guard against missing printer configuration in public pages
+
 ## [5.3.1] [r26.05]
 ### Added
 - good-faith migration script from Closing Hours to Locations Hours
