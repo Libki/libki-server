@@ -242,7 +242,6 @@ $(document).ready(function() {
 
         if ( ! errors ) {
                 $.post("[% c.uri_for("/api/public/reservations/create") %]", $("#make-reservation-modal-form").serialize(), function(data) {
-                    $("#make-reservation-modal-form-submit").attr("disabled","disabled");
                     if ( data.success ) {
                         $("#make-reservation-modal").modal("hide");
                     DisplayMessage( "success", "[% c.loc("Reservation created.") %]" );

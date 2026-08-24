@@ -30,9 +30,15 @@ sub create : Local : Args(0) {
     my $username  = $c->request->params->{'username'} || undef;
     my $password  = $c->request->params->{'password'} || undef;
     my $client_id = $c->request->params->{'id'};
-    my $begin_time = $c->request->params->{'reservation_date'}.' '.$c->request->params->{'reservation_hour'}.':'.$c->request->params->{'reservation_minute'}.':00';
 
-    my $datetime = $c->request->params->{reservation_datetime};
+    # legacy datetime construction
+    my $reservation_date = $c->request->params->{'reservation_date'}   || '';
+    my $reservation_hour = $c->request->params->{'reservation_hour'}   || '';
+    my $reservation_min  = $c->request->params->{'reservation_minute'} || '';
+    my $begin_time = $reservation_date .' '. $reservation_hour .':'. $reservation_min .':00';
+
+    # datetime-local construction
+    my $datetime = $c->request->params->{'reservation_datetime'};
     if ($datetime) {
         $begin_time = $datetime =~ s/T/ /r;
     }
