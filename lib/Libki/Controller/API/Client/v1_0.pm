@@ -329,6 +329,14 @@ sub index : Path : Args(0) {
                     #TODO: Move this to a unified sub, see TODO below
                     my $minutes_allotment = $user->minutes($c, $client);
 
+                    unless ( defined( $minutes_allotment ) ) {
+                        # Use 'simple' rules if no advanced rule exists
+                        $minutes_allotment //=
+                              $is_guest
+                            ? $c->setting('DefaultGuestTimeAllowance')
+                            : $c->setting('DefaultTimeAllowance');
+                    }
+
                     # Get advanced rule if there is one
                     my $advanced_rule = $c->get_rule(
                             {
@@ -344,14 +352,6 @@ sub index : Path : Args(0) {
                     # Use advanced rule if there is one
                     if ( defined($advanced_rule) ) {
                         $minutes_allotment = $advanced_rule if ( $minutes_allotment > $advanced_rule );
-                    }
-
-                    unless ( defined( $minutes_allotment ) ) {
-                        # Use 'simple' rules if no advanced rule exists
-                        $minutes_allotment //=
-                              $is_guest
-                            ? $c->setting('DefaultGuestTimeAllowance')
-                            : $c->setting('DefaultTimeAllowance');
                     }
 
                     my $error = {};    # Must be initialized as a hashref
