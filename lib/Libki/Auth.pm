@@ -115,6 +115,10 @@ sub validate_api_key {
     my $api_key  = $params->{key};
     my $type     = $params->{type};
 
+    if (!defined $api_key) {
+        return 0;
+    }
+
     my $instance = $c->instance;
     my $config   = $c->instance_config;
     my $log      = $c->log();
