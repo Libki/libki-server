@@ -1139,7 +1139,7 @@ $(document).ready(function() {
 
                         <button class="client-table-row-toolbar-time btn btn-primary" data-clientid="${client_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
 
-                        <button class="client-table-row-toolbar-logout btn btn-danger" data-clientid="${client_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
+                        <button class="client-table-row-toolbar-logout btn btn-danger" data-sessionid="${session_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
 
                     </div>`;
                     return html;
@@ -1775,13 +1775,17 @@ $(document).ready(function() {
     /* Log out */
     $("#sessions-table").on("click", '.client-table-row-toolbar-logout', async function(){
       if ( confirm("[% c.loc("Are you sure you want to log this user out?") %]") ) {
-        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/logout', function(data) {
-           if ( data.success ) {
-               DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
-               sTable.ajax.reload();
-           } else {
-               DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
-           }
+        $.ajax({ 
+            url: '[% c.uri_for('/api/v2/sessions/') %]' + $(this).data('sessionid'), 
+            method: 'DELETE',
+            success: function(data) {
+               if ( data.success ) {
+                   DisplayMessage( "success", "[% c.loc("Logged user out.") %]" );
+                   sTable.ajax.reload();
+               } else {
+                   DisplayMessage( "error", "[% c.loc("Unable to log user out.") %]" );
+               }
+            }
         });
       }
     });

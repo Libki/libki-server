@@ -161,7 +161,7 @@ sub session_item_DELETE {
                 instance        => $c->instance,
                 username        => $c->user->username,
                 client_name     => $client->name,
-                client_location => $client->location->code,
+                client_location => $client->location ? $client->location->code : '',
                 client_type     => $client->type,
                 action          => 'FORCE_LOGOUT',
                 created_on      => $c->now,
