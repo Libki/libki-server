@@ -170,7 +170,7 @@ sub job : Path('job') : Args(2) {
                 instance => $instance,
                 user_id  => $job->user_id,
                 content  => $c->loc(
-                    "Your print job, ([_1], copies: [_2]), has printed", $job->print_file->filename, $job->copies
+                    "Your print job, ([_1], copies: [_2]), has printed", substr($job->print_file->filename, 0, 32), $job->copies
                 )
             } );
         }
