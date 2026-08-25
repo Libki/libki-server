@@ -1064,6 +1064,7 @@ $(document).ready(function() {
                         <a class="dropdown-item client-table-row-toolbar-status" href="#" data-clientid="${client_id}"><i class="fas fa-tag"></i> [% c.loc("Toggle status") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-restart" href="#" data-clientid="${client_id}"><i class="fas fa-redo"></i> [% c.loc("Restart") %]</a>
                         <a class="dropdown-item client-table-row-toolbar-shutdown" href="#" data-clientid="${client_id}"><i class="fas fa-power-off"></i> [% c.loc("Turn off") %]</a>
+                        <a class="dropdown-item client-table-row-toolbar-drop" href="#" data-clientid="${client_id}"><i class="fas fa-minus-circle"></i> [% c.loc("Drop") %]</a>
                         [% IF c.check_user_roles('superadmin') %]<a class="dropdown-item client-table-row-toolbar-delete" href="#" data-clientid="${client_id}"><i class="fas fa-times"></i> [% c.loc("Delete") %]</a>[% END %]
                     </div>
                 </div>
@@ -1860,6 +1861,20 @@ $(document).ready(function() {
             cTable.ajax.reload();
           } else {
             DisplayMessage( "error", "[% c.loc("Unable to turn off client.") %]" );
+          }
+        });
+      }
+    });
+
+    /* Drop Client */
+    $("#clients-table").on("click", '.client-table-row-toolbar-drop', async function(){
+      if ( confirm("[% c.loc("Are you sure you want exit Libki on this computer?") %]") ) {
+        $.getJSON( '[% c.uri_for('/api/v2/clients/') %]' + $(this).data('clientid') + '/drop', function(data) {
+          if ( data.success ) {
+            DisplayMessage( "success", "[% c.loc("Client dropped.") %]" );
+            cTable.ajax.reload();
+          } else {
+            DisplayMessage( "error", "[% c.loc("Unable to drop client.") %]" );
           }
         });
       }

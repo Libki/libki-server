@@ -698,6 +698,46 @@ sub restart : Chained('client') PathPart('restart') Args(0) GET {
 }
 
 
+=head2 drop
+
+GET /api/v2/clients/:id/drop
+
+Drops the Client by signaling to exit Libki (while keeping the PC running)
+
+REQUIRES: admin
+
+=cut
+
+sub drop : Chained('client') PathPart('drop') Args(0) GET {
+    my ( $self, $c ) = @_;
+
+    my $success = 0;
+    my $client = $c->stash->{'client'};
+
+    if ($client->status eq 'online') {
+        $success = 1 if $client->update( { status => 'drop' } );
+
+        $c->model('DB::Statistic')->create(
+            {
+                instance        => $c->instance,
+                username        => $c->user->username,
+                client_name     => $client->name,
+                client_location => $client->location ? $client->location->code : '',
+                client_type     => $client->type,
+                action          => 'DROP',
+                created_on      => $c->now,
+                session_id      => $c->sessionid,
+            }
+        );
+    }
+
+    $self->status_ok($c, entity => {
+        'success' => $success, 
+        'status'  => $client->status 
+    });
+}
+
+
 =head2 _serialize_client
 
 Serialize client data
