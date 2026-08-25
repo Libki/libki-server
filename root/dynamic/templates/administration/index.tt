@@ -1137,7 +1137,7 @@ $(document).ready(function() {
                     let html = `<div id="client-table-row-toolbar"  role="toolbar">
                         <div class="btn-group" role="group">
 
-                        <button class="client-table-row-toolbar-time btn btn-primary" data-clientid="${client_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
+                        <button class="client-table-row-toolbar-time btn btn-primary" data-sessionid="${session_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
 
                         <button class="client-table-row-toolbar-logout btn btn-danger" data-sessionid="${session_id}"><i class="fas fa-sign-out-alt"></i> [% c.loc("Log out") %]</button>
 
@@ -1683,17 +1683,22 @@ $(document).ready(function() {
         if ( errors ) {
             $('#modify-time-modal-form-minutes').addClass('is-invalid');
         } else {
-            $('#modify-time-modal-form-submit').attr('disabled','disabled');
-
-            $.post('[% c.uri_for("api/client/modify_time") %]', $('#modify-time-modal-form').serialize(), function(data) {
-                $('#modify-time-modal').modal('hide');
-
-                if ( data.success ) {
-                    DisplayMessage( "success", "[% c.loc("User's time updated.") %]" );
+            $.ajax({
+                url: '[% c.uri_for("/api/v2/sessions/") %]' + $('#modify-time-modal-form-id').val(),
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    minutes: $('#modify-time-modal-form-minutes').val(),
+                    add_time_to_allotment: $('#add-time-to-allotment').prop('checked')
+                }),
+                success: function(response) {
+                    $('#modify-time-modal').modal('hide');
+                    DisplayMessage( "success", "[% c.loc("Session time updated.") %]" );
                     ForceSessionTableRefresh();
                     ForceClientTableRefresh();
-                } else {
-                    DisplayMessage( "error", "[% c.loc("Unable to update user's time.") %]" );
+                },
+                error: function(xhr, status, error) {
+                    DisplayMessage( "error", "[% c.loc("Unable to update session time: ") %]" + error );
                 }
             });
         }
@@ -1932,7 +1937,7 @@ $(document).ready(function() {
 
     $("#sessions-table").on("click", '.client-table-row-toolbar-time', async function(){
 
-        $('#modify-time-modal-form-id').val( $(this).data('clientid') );
+        $('#modify-time-modal-form-id').val( $(this).data('sessionid') );
 
         $('#modify-time-modal-form-minutes').val('');
         $('#modify-time-modal-form-minutes').removeClass('is-valid is-invalid');

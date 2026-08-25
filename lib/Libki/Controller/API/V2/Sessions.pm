@@ -225,6 +225,14 @@ sub session_item_PUT {
     # guard against negative time updates
     $session_minutes_update = 0 if ( $session_minutes_update < 0 );
 
+    # check if the client location is closing soon
+    if ($client->location) {
+        my $minutes_til_closing = $client->location->minutes_until_closed();
+        if ($session_minutes_update > $minutes_til_closing) {
+            $session_minutes_update = $minutes_til_closing;
+        }
+    }
+
     $success = 1 if $session->update( { minutes => $session_minutes_update } );
 
     if ($add_time_to_allotment) {
@@ -261,7 +269,7 @@ sub session_item_PUT {
             instance        => $c->instance,
             username        => $c->user->username,
             client_name     => $client->name,
-            client_location => $client->location->code,
+            client_location => $client->location ? $client->location->code : '',
             client_type     => $client->type,
             action          => 'MODIFY_TIME',
             created_on      => $c->now,
@@ -276,8 +284,11 @@ sub session_item_PUT {
             ),
         }
     );
-
-    $self->status_ok($c, entity => _serialize_session($c, $session));
+    if ($success) {
+        $self->status_ok($c, entity => _serialize_session($c, $session));
+    } else {
+        $self->status_bad_request($c, message => "Unable to update session");
+    }
 }
 
 =head2 _serialize_session
