@@ -1094,6 +1094,11 @@ $(document).ready(function() {
         "serverSide": false,
         "ajax": {
           "url": '[% c.uri_for('/api/v2/sessions') %]',
+          "error": function (xhr, textStatus, errorThrown) {
+            if (errorThrown == 'Forbidden') {
+              window.location.reload();
+            }
+          },
           "dataSrc": ''
         },
         columns: [
