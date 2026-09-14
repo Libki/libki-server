@@ -334,10 +334,18 @@ if (length($minutes_to_shutdown)) {
     my $clients = $c->model('DB::Client')->search({ instance => $c->instance });
     while ( my $client = $clients->next() ) {
         if ( $client->status eq 'online' && defined($client->location) ) {
-            my $minutes_until_closing = $client->location->minutes_until_closed();
-
-            if ( defined $minutes_until_closing && ($minutes_until_closing + $minutes_to_shutdown) == 0 ) {
-                $client->update({ status => $status });
+            my $intervals = $client->location->hours_for_date();
+            my $last_closing_time = $intervals->[-1]->{close_time};
+            if ($last_closing_time) {
+                my @close_time_parts = split( ':', $last_closing_time );
+                my $dt = DateTime->now( time_zone => $ENV{LIBKI_TZ} );
+                my $shutdown_datetime = $dt->clone()
+                                           ->set( hour   => $close_time_parts[0],
+                                                  minute => $close_time_parts[1] )
+                                           ->add( minutes => $minutes_to_shutdown );
+                if ( $dt == $shutdown_datetime ) {
+                    $client->update({ status => $status });
+                }
             }
         }
     }
