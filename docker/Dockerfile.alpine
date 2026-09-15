@@ -44,7 +44,7 @@ RUN apk add --no-cache \
         perl-html-parser \
         perl-http-parser-xs \
         perl-io-socket-ssl \
-        perl-json-xs \
+        perl-cpanel-json-xs \
         perl-lwp-protocol-https \
         perl-module-build \
         perl-module-build-tiny \
