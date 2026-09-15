@@ -112,7 +112,7 @@ jobs:
       run: docker network create libki-net
 
     - name: Start database container
-      run:  docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5
+      run:  docker run --name libki-mariadb --network libki-net -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=libki --rm -d mariadb:10.3.5 --ssl=0
 
     - name: Sleep to give database container time to launch
       run: sleep 30
