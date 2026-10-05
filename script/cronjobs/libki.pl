@@ -224,22 +224,24 @@ foreach my $s ( @$sessions ) {
             $minutes_to_add_to_session = $s->{minutes_allotment};
         }
     }
+    # minutes may now be reduced to nothing (or less), so check first
+    if ($minutes_to_add_to_session > 0) {
+        $message_rs->create(
+            {
+                instance => $s->{instance},
+                user_id  => $s->{id},
+                content  => $c->loc(
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
+                    $minutes_to_add_to_session
+                ),
+            }
+        );
 
-    $message_rs->create(
-        {
-            instance => $s->{instance},
-            user_id  => $s->{id},
-            content  => $c->loc(
-                "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
-                "Your session time has been automatically extended by $minutes_to_add_to_session minutes.",
-                $minutes_to_add_to_session
-            ),
-        }
-    );
-
-    ## Now we can store the changes
-    my $minutes_to_add_to_daily_allotment = $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? 0 : $minutes_to_add_to_session;
-    $update_user_sth->execute( $minutes_to_add_to_session, $minutes_to_add_to_daily_allotment, $s->{id} );
+        ## Now we can store the changes
+        my $minutes_to_add_to_daily_allotment = $s->{AutomaticTimeExtensionUseAllotment} eq 'yes' ? 0 : $minutes_to_add_to_session;
+        $update_user_sth->execute( $minutes_to_add_to_session, $minutes_to_add_to_daily_allotment, $s->{id} );
+    }
 }
 
 ## Delete clients that haven't updated recently
