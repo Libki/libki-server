@@ -33,6 +33,9 @@ sub build_mock_c {
         return $opts{print_job};
     });
 
+    $print_job_rs->mock( 'search', sub { return $print_job_rs; } );
+    $print_job_rs->mock( 'update', sub { return 1; } );
+
     # Mock print file result set
     my $print_file_rs = Test::MockObject->new();
     $print_file_rs->mock( 'find', sub {
@@ -162,6 +165,7 @@ sub build_mock_print_job {
 sub build_mock_print_file {
     my (%opts) = @_;
     my $pf = Test::MockObject->new();
+    $pf->mock( 'client_location', sub { return undef; } );
     $pf->mock( 'id',       sub { return $opts{id}       // 100; } );
     $pf->mock( 'pages',    sub { return $opts{pages}    // 5; } );
     $pf->mock( 'filename', sub { return $opts{filename} // 'test.pdf'; } );

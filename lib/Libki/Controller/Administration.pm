@@ -2,6 +2,7 @@ package Libki::Controller::Administration;
 use Moose;
 use namespace::autoclean;
 use Scalar::Util qw(looks_like_number);
+use JSON qw(to_json);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -93,6 +94,13 @@ sub auto : Private {
         }
     }
     else {    # If a user doesn't exist, force login
+        if ( $c->action->reverse eq 'administration/api/printjob/preview' ) {
+            $c->response->status(401);
+            $c->response->content_type('application/json; charset=utf-8');
+            $c->response->header('Cache-Control' => 'no-store');
+            $c->response->body(to_json({ success => 0, error => 'STAFF_SESSION_EXPIRED' }));
+            return 0;
+        }
               # Redirect the user to the login page
         $c->response->redirect( $c->uri_for('/administration/login') );
 

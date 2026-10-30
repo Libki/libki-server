@@ -464,6 +464,11 @@ sub prints : Local Args(0) {
         $filter->{'print_file.client_location'} = $c->request->param("location_filter");
     }
 
+    $filter->{'me.instance'} = $instance;
+    if (($c->request->param('queue_view') || 'all') eq 'pending') {
+        $filter->{'me.status'} = { '-not_in' => ['Done', 'Canceled'] };
+    }
+
     # Sorting options
     my @sorting;
     my $params = $c->request->params;

@@ -65,6 +65,8 @@ Initializes the Net::CUPS module with the values from the configuration.
 
 sub cups_setup : Private : Args(0) {
     my ( $self, $c ) = @_;
+
+    require Net::CUPS;
     my $instance = $c->instance;
 
     my $printers_conf = $c->get_printer_configuration;
@@ -97,6 +99,27 @@ sub cups_create_print_file : Private : Args(0) {
 
 }
 
+=head2 preview
+
+Return a side-effect-free staff review of a held print job.
+
+=cut
+
+sub preview : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->assert_user_roles(qw/admin/);
+
+    my $data = Libki::Utils::Printing::build_release_preview(
+        $c,
+        { print_job_id => $c->request->params->{id}, copies => $c->request->params->{copies} }
+    );
+    # Return only the quote; never serialize unrelated settings from the stash.
+    $c->response->content_type('application/json; charset=utf-8');
+    $c->response->header('Cache-Control' => 'no-store');
+    $c->response->body(to_json($data));
+}
+
 =head2 release
 
 Sends the given print job to the actual print management backend.
@@ -106,11 +129,128 @@ Sends the given print job to the actual print management backend.
 sub release : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->assert_user_roles(qw/admin/);
+
+    unless ( $c->request->method eq 'POST' ) {
+        $c->response->status(405);
+        $c->stash( success => 0, error => 'METHOD_NOT_ALLOWED' );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    unless (
+        ( $c->request->headers->header('X-Requested-With') || q{} )
+        eq 'XMLHttpRequest'
+    ) {
+        $c->response->status(400);
+        $c->stash( success => 0, error => 'INVALID_RELEASE_REQUEST' );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    my $printers = $c->get_printer_configuration;
+    unless ( ( $printers->{staff_print_release} || 'disabled' ) eq 'enabled' ) {
+        $c->stash(
+            success => 0,
+            error   => 'STAFF_PRINT_RELEASE_DISABLED',
+        );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    unless ( ( $c->request->params->{cash_received} || q{} ) eq '1' ) {
+        $c->stash(
+            success => 0,
+            error   => 'CASH_PAYMENT_NOT_CONFIRMED',
+        );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
     my $id = $c->request->params->{id};
 
-    my $data = Libki::Utils::Printing::release( $c, { print_job_id => $id } );
+    my $data = Libki::Utils::Printing::release(
+        $c,
+        {
+            print_job_id    => $id,
+            payment_method  => 'cash',
+            expected_amount => $c->request->params->{expected_amount},
+            copies => $c->request->params->{copies},
+            request_id => $c->request->params->{request_id},
+        }
+    );
     $c->stash( $data );
 
+    $c->forward( $c->view('JSON') );
+}
+
+=head2 reprint
+
+Create a new audited held job from a completed CUPS job and immediately send
+that new job through the normal cash-confirmed production release path.
+
+=cut
+
+sub reprint : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->assert_user_roles(qw/admin/);
+
+    unless ( $c->request->method eq 'POST' ) {
+        $c->response->status(405);
+        $c->stash( success => 0, error => 'METHOD_NOT_ALLOWED' );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    unless (
+        ( $c->request->headers->header('X-Requested-With') || q{} )
+        eq 'XMLHttpRequest'
+    ) {
+        $c->response->status(400);
+        $c->stash( success => 0, error => 'INVALID_REPRINT_REQUEST' );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    unless ( ( $c->request->params->{cash_received} || q{} ) eq '1' ) {
+        $c->stash( success => 0, error => 'CASH_PAYMENT_NOT_CONFIRMED' );
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    my $created = Libki::Utils::Printing::create_reprint_job(
+        $c,
+        {
+            print_job_id    => $c->request->params->{id},
+            expected_amount => $c->request->params->{expected_amount},
+            copies => $c->request->params->{copies},
+            request_id => $c->request->params->{request_id},
+        }
+    );
+    unless ( $created->{success} ) {
+        $c->stash($created);
+        $c->forward( $c->view('JSON') );
+        return;
+    }
+
+    my $existing = $c->model('DB::PrintJob')->find({ id => $created->{reprint_job_id}, instance => $c->instance });
+    if ($existing && ($existing->status eq 'Done' || $existing->status eq 'InProgress')) {
+        $c->stash(success => 1, reprint_job_id => $existing->id, message => 'This reprint request was already accepted.');
+        $c->forward($c->view('JSON'));
+        return;
+    }
+    my $released = Libki::Utils::Printing::release(
+        $c,
+        {
+            print_job_id    => $created->{reprint_job_id},
+            payment_method  => 'cash',
+            expected_amount => $created->{amount_due},
+        }
+    );
+    $released->{source_print_job_id} = $created->{source_print_job_id};
+    $released->{reprint_job_id}      = $created->{reprint_job_id};
+    $c->stash($released);
     $c->forward( $c->view('JSON') );
 }
 
@@ -126,6 +266,16 @@ sub update : Local : Args(0) {
     my $instance = $c->instance;
 
     my $print_job_id = $c->request->params->{id};
+    unless ( defined $print_job_id && $print_job_id =~ m{\A\d+\z} ) {
+        $c->response->status(400);
+        $c->stash(
+            success => 0,
+            error   => 'INVALID_PRINT_JOB_ID',
+        );
+        delete $c->stash->{Settings};
+        $c->forward( $c->view('JSON') );
+        return;
+    }
 
     my $print_job = $c->model('DB::PrintJob')->find($print_job_id);
     if ($print_job) {
