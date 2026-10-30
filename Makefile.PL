@@ -27,6 +27,9 @@ requires 'CatalystX::Script::Server::Starman';
 requires 'Catalyst::Controller::REST';
 
 requires 'Catalyst::Plugin::Authentication';
+requires 'Catalyst::Plugin::OIDC' => '1.05';
+requires 'OIDC::Client' => '1.08';
+requires 'Crypt::PRNG' => '0.085';
 requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Plugin::Authorization::Roles';
 

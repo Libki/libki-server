@@ -3,6 +3,7 @@ package Libki;
 use feature 'say';
 
 use Moose;
+use Libki::Auth::EntraConfig;
 use namespace::autoclean;
 
 use Catalyst::Runtime 5.90132;
@@ -40,6 +41,7 @@ use Catalyst qw(
   Session
   Session::Store::DBIC
   Session::State::Cookie
+  OIDC
 
   StatusMessage
 
@@ -82,6 +84,13 @@ __PACKAGE__->config(
         dbic_class => 'DB::LoginSession',
         expires    => $ENV{LIBKI_SESSION_TIMEOUT} // 3600,
     },
+);
+
+# Staff Entra SSO is opt-in. Deployment credentials belong outside the source.
+my ($entra_config, $oidc_config) = Libki::Auth::EntraConfig->from_env(\%ENV);
+__PACKAGE__->config(
+    'Libki::Entra' => $entra_config,
+    oidc_client => $oidc_config,
 );
 
 my $metrics_dir

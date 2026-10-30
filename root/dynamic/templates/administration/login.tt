@@ -1,7 +1,14 @@
 [% meta.title = c.loc("Log in") %]
 
 <div class="container">
-<form class="form-horizontal" role="form" method="POST" action="[% c.uri_for('/administration/login') %]">
+[% IF error_message %]<div class="alert alert-danger" role="alert">[% error_message | html %]</div>[% END %]
+[% IF entra_sso_enabled %]
+    <p><a class="btn btn-primary" href="[% c.uri_for('/administration/login/entra') %]">[% c.loc("Sign in with Microsoft") %]</a></p>
+    [% IF !breakglass_mode %]<p><a href="[% c.uri_for('/administration/login/emergency') %]">[% c.loc("Local recovery access") %]</a></p>[% END %]
+[% END %]
+[% IF breakglass_mode || !entra_sso_enabled %]
+[% IF breakglass_mode %]<p>[% c.loc("Local recovery access. Use your existing local staff account.") %]</p>[% END %]
+<form class="form-horizontal" role="form" method="POST" action="[% IF breakglass_mode %][% c.uri_for('/administration/login/emergency') %][% ELSE %][% c.uri_for('/administration/login') %][% END %]" >
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
@@ -65,4 +72,5 @@
         </div>
     </div>
 </form>
+[% END %]
 </div>

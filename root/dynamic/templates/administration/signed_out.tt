@@ -1,0 +1,8 @@
+[% meta.title = c.loc("Signed out") %]
+<div class="container">
+    <h2>[% c.loc("You have signed out of Libki.") %]</h2>
+    [% IF entra_sso_enabled %]
+    <p>[% c.loc("Your Microsoft browser session may still be active. On a shared computer, sign out of Microsoft and close the browser when finished.") %]</p>
+    [% END %]
+    <a class="btn btn-primary" href="[% c.uri_for('/administration/login') %]">[% c.loc("Sign in again") %]</a>
+</div>

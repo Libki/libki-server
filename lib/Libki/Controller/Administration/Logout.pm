@@ -2,35 +2,34 @@ package Libki::Controller::Administration::Logout;
 use Moose;
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller'; }
+
+BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
 
-Libki::Controller::Administration::Logout - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
+Libki::Controller::Administration::Logout - staff logout controller
 
 =head1 METHODS
 
-=cut
-
-
 =head2 index
 
+Clear both the Libki authentication state and any OIDC token material retained
+in the server-side session.
+
 =cut
 
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    # Clear the user's state
+    my $entra_enabled = ($c->config->{'Libki::Entra'} || {})->{enabled};
     $c->logout;
-
-    # Send the user to the starting point
-    $c->response->redirect( $c->uri_for('/administration/login') );
+    $c->delete_session('Staff logout');
+    $c->_session_store_delegate(undef) if $c->can('_session_store_delegate');
+    $c->response->headers->header( 'Cache-Control' => 'no-store' );
+    $c->response->redirect( $c->uri_for(
+        $entra_enabled ? '/administration/login/signed-out' : '/administration/login'
+    ) );
 }
-
 
 =head1 AUTHOR
 
@@ -46,14 +45,6 @@ Libki is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
-
-Libki is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Libki.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
