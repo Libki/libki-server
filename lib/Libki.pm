@@ -12,6 +12,7 @@ use DateTime::Format::DateParse;
 use DateTime::Format::MySQL;
 use DateTime;
 use File::Slurp;
+use Libki::ScreenViewer qw(config_from_env);
 
 our $VERSION = '5.4.0';
 
@@ -158,6 +159,8 @@ $log4perl =~ s/__LIBKI_DB_PASSWORD__/$password/g;
 __PACKAGE__->log(Log::Log4perl::Catalyst->new( \$log4perl ));
 # Handle warnings from Perl as fatal log messages
 $SIG{__WARN__} = sub { __PACKAGE__->log->fatal(@_); };
+
+__PACKAGE__->config( 'Libki::ScreenViewer' => config_from_env() );
 
 # Start the application
 __PACKAGE__->setup();

@@ -10,3 +10,7 @@ Please, make [pull requests](https://help.github.com/articles/about-pull-request
 ## Manual
 
 The Libki manual can be found at https://manual.libki.org
+
+## Optional screen viewer
+
+The [staff screen-viewer technical preview](docs/screen-viewer/README.md) adds an opt-in view-only browser workflow. It requires a separately configured VNC endpoint and gateway; it is disabled by default.
