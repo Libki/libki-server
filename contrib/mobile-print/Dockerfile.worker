@@ -1,0 +1,20 @@
+FROM ubuntu:24.04@sha256:561618e2c15bf2397621dd04f96926663a3b5616c189cf7e38db7e82f5c538ea
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates clamav clamav-freshclam fonts-dejavu-core img2pdf libreoffice-core \
+      libreoffice-writer poppler-utils python3 python3-cryptography qpdf unzip \
+ && rm -rf /var/lib/apt/lists/* \
+ && groupadd --gid 10001 mobileprint \
+ && useradd --uid 10001 --gid 10001 --home-dir /nonexistent --shell /usr/sbin/nologin mobileprint
+
+WORKDIR /app
+COPY common.py worker.py /app/
+RUN chown -R 10001:10001 /app
+
+USER 10001:10001
+CMD ["python3", "/app/worker.py"]
