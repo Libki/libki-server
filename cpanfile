@@ -69,3 +69,8 @@ requires 'Test::Pod';
 requires 'Test::Pod::Coverage';
 requires 'Text::CSV';
 requires 'YAML::XS';
+
+# Staff Entra SSO (disabled unless explicitly configured).
+requires 'Catalyst::Plugin::OIDC', '>=1.05';
+requires 'OIDC::Client', '>=1.08';
+requires 'Crypt::PRNG', '>=0.085';

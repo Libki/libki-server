@@ -81,6 +81,16 @@ sub auto : Private {
         return 1;
     }
 
+    if ( ($c->session->{staff_auth_source} // q{}) eq 'Microsoft Entra ID'
+        && ( !$c->config->{'Libki::Entra'}->{enabled}
+             || ($c->session->{staff_entra_expires_at} // 0) <= time ) ) {
+        $c->logout;
+        $c->delete_session('Entra staff session expired');
+        $c->_session_store_delegate(undef) if $c->can('_session_store_delegate');
+        $c->response->redirect( $c->uri_for('/administration/login') );
+        return 0;
+    }
+
     if ( $c->user_exists ) {
         if ( $c->user->instance ne $c->instance ) {
             $c->response->body('Unauthorized!!');
