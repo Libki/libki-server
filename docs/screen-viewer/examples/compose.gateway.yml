@@ -1,0 +1,30 @@
+# Supplement your existing Libki deployment. No host ports are published.
+# Join its reverse proxy to viewer_proxy; gateway alone also needs VNC egress.
+services:
+  viewer-gateway:
+    build: ../../../docker/screen-viewer
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,mode=1777
+    environment:
+      LIBKI_VIEWER_CLIENT_NAME: DEMO-PC-01
+      LIBKI_VIEWER_TARGET_HOST: 192.0.2.10
+      LIBKI_VIEWER_TARGET_PORT: "5901"
+    volumes:
+      - viewer_nonces:/var/lib/libki-viewer
+    secrets:
+      - libki_viewer_hmac
+    networks: [viewer_proxy, viewer_egress]
+secrets:
+  libki_viewer_hmac:
+    file: ./secrets/viewer_hmac
+networks:
+  viewer_proxy:
+    internal: true
+  viewer_egress: {}
+
+volumes:
+  viewer_nonces: {}

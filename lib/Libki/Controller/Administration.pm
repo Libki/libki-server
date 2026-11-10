@@ -2,6 +2,7 @@ package Libki::Controller::Administration;
 use Moose;
 use namespace::autoclean;
 use Scalar::Util qw(looks_like_number);
+use JSON qw(to_json);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -42,6 +43,13 @@ sub index : Path : Args(0) {
         }
     )->get_column('type')->all();
 
+    my $viewer_config = $c->config->{'Libki::ScreenViewer'}
+        || { enabled => 0, clients => {} };
+    my $viewer_enabled = $viewer_config->{enabled}
+        && $c->instance eq ( $viewer_config->{instance} // q{} );
+    my @viewer_clients = $viewer_enabled
+        ? sort keys %{ $viewer_config->{clients} || {} } : ();
+
     $c->stash(
         DefaultTimeAllowance   => $c->setting('DefaultTimeAllowance'),
         CustomJsAdministration => $c->setting('CustomJsAdministration'),
@@ -51,6 +59,8 @@ sub index : Path : Args(0) {
         GratisPrintingValue    => looks_like_number($c->setting('GratisPrintingValue')) ? $c->setting('GratisPrintingValue') : 0,
         locations              => \@locations,
         types                  => \@types,
+        ScreenViewerEnabled => $viewer_enabled ? 1 : 0,
+        ScreenViewerClientsJson => to_json(\@viewer_clients),
     );
 }
 

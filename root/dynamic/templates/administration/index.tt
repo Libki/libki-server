@@ -876,8 +876,61 @@
   </div>
 </div>
 
+[% IF ScreenViewerEnabled %]
+<div class="modal fade" id="screen-viewer-modal" tabindex="-1" role="dialog" aria-labelledby="screen-viewer-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document" style="max-width: 96vw;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title" id="screen-viewer-modal-label">
+            <i class="fas fa-eye"></i>
+            View screen: <span id="screen-viewer-client-name"></span>
+          </h5>
+          <div class="small text-muted">Live view only. The workstation must be configured to block remote input and file transfers.</div>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0 bg-dark">
+        <div id="screen-viewer-request-controls" class="p-4 bg-white text-dark">
+          <div class="form-group mb-3">
+            <label for="screen-viewer-reason"><strong>Reason for viewing</strong></label>
+            <select id="screen-viewer-reason" class="form-control" required>
+              <option value="">Select a reason&hellip;</option>
+              <option value="patron_assistance">Patron requested assistance</option>
+              <option value="technical_troubleshooting">Technical troubleshooting</option>
+              <option value="policy_safety_review">Computer-use policy or safety review</option>
+              <option value="accessibility_assistance">Accessibility assistance</option>
+            </select>
+            <small class="form-text text-muted">The selected reason and signed-in staff identity are written to the Libki audit history.</small>
+          </div>
+          <div class="alert alert-warning" role="note">
+            <i class="fas fa-user-shield"></i>
+            The workstation will notify the active patron and require someone at the computer to accept the connection. No response is treated as a rejection.
+          </div>
+          <button type="button" class="btn btn-info" id="screen-viewer-request-button">
+            <i class="fas fa-eye"></i> Request view-only access
+          </button>
+        </div>
+        <div id="screen-viewer-status" class="alert alert-info m-3" role="status" style="display: none;"></div>
+        <div id="screen-viewer-canvas" style="display: none; height: 72vh; width: 100%; overflow: hidden; background: #111;"></div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <span class="small text-muted"><i class="fas fa-shield-alt"></i> This browser is view-only. Workstation permissions are enforced by its configured VNC service.</span>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close viewer</button>
+      </div>
+    </div>
+  </div>
+</div>
+[% END %]
+
 <script type="text/javascript">
 $(document).ready(function() {
+    const screenViewerClients = new Set([% ScreenViewerClientsJson %]);
+    let activeScreenViewer = null;
+    let pendingScreenViewerClient = null;
+
     /**** Handle refreshing of tables ****/
     // Refresh the client and print jobs tables automatically, as its date will go stale quickly
     sessionRefreshCounter = setInterval( function(){HandleSessionTableRefreshCounter()}, 1000 );
@@ -1048,9 +1101,14 @@ $(document).ready(function() {
                 render: function(data,type,row) {
                     const client_id = row["id"];
                     const client_name = row["name"];
+                    const viewerButton = screenViewerClients.has(client_name)
+                        ? `<button class="client-screen-viewer btn btn-info" data-clientname="${client_name}"><i class="fas fa-eye"></i> View screen</button>`
+                        : '';
+
 
                     let html = `<div id="client-table-row-toolbar"  role="toolbar">
                         <div class="btn-group" role="group">
+                        ${viewerButton}
 
                 [% IF Settings.ClientBehavior.match("RES") # Setting supports reservations %]
                 <button class="client-table-row-toolbar-reserve btn btn-primary" data-clientid="${client_id}" data-clientname="${client_name}"><i class="fas fa-tag"></i> [% c.loc("Reserve") %]</button>
@@ -1139,9 +1197,15 @@ $(document).ready(function() {
                 render: function(data,type,row) {
                     const session_id = row["id"];
                     const client_id = row["client_id"];
+                    const client_name = row["client"];
+                    const viewerButton = screenViewerClients.has(client_name)
+                        ? `<button class="client-screen-viewer btn btn-info" data-clientname="${client_name}"><i class="fas fa-eye"></i> View screen</button>`
+                        : '';
+
 
                     let html = `<div id="client-table-row-toolbar"  role="toolbar">
                         <div class="btn-group" role="group">
+                        ${viewerButton}
 
                         <button class="client-table-row-toolbar-time btn btn-primary" data-sessionid="${session_id}"><i class="fas fa-clock"></i> [% c.loc("Modify time") %]</button>
 
@@ -1659,6 +1723,142 @@ $(document).ready(function() {
     });
 
     /*********** Client Table ***********/
+    let screenViewerGeneration = 0;
+    let screenViewerAbort = null;
+    function cancelScreenViewer() {
+        ++screenViewerGeneration;
+        if (screenViewerAbort) screenViewerAbort.abort();
+        screenViewerAbort = null;
+        const oldViewer = activeScreenViewer;
+        activeScreenViewer = null;
+        if (oldViewer) oldViewer.disconnect();
+    }
+
+    function prepareScreenViewer(clientName) {
+        if (!screenViewerClients.has(clientName)) {
+            DisplayMessage('error', 'Screen viewing is not enabled for this client.');
+            return;
+        }
+
+        cancelScreenViewer();
+
+        const modal = $('#screen-viewer-modal');
+        pendingScreenViewerClient = clientName;
+        $('#screen-viewer-client-name').text(clientName);
+        $('#screen-viewer-reason').val('').removeClass('is-invalid');
+        $('#screen-viewer-request-button').prop('disabled', false);
+        $('#screen-viewer-request-controls').show();
+        $('#screen-viewer-status').hide();
+        document.getElementById('screen-viewer-canvas').style.display = 'none';
+        document.getElementById('screen-viewer-canvas').replaceChildren();
+        modal.modal('show');
+    }
+
+    async function startScreenViewer(clientName, reasonCode) {
+        if (!screenViewerClients.has(clientName)) {
+            DisplayMessage('error', 'Screen viewing is not enabled for this client.');
+            return;
+        }
+
+        cancelScreenViewer();
+        const generation = screenViewerGeneration;
+        screenViewerAbort = new AbortController();
+        const status = $('#screen-viewer-status');
+        const canvas = document.getElementById('screen-viewer-canvas');
+        $('#screen-viewer-request-controls').hide();
+        $('#screen-viewer-request-button').prop('disabled', true);
+        canvas.style.display = 'block';
+        status.removeClass('alert-success alert-danger').addClass('alert-info').text('Notifying the patron and preparing a secure view-only connection…').show();
+        canvas.replaceChildren();
+
+        try {
+            const response = await fetch('[% c.uri_for('/administration/api/screenviewer/token') %]', {
+                method: 'POST',
+                signal: screenViewerAbort.signal,
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({client: clientName, reason: reasonCode}).toString()
+            });
+            const data = await response.json();
+            if (generation !== screenViewerGeneration) return;
+            if (!response.ok) {
+                throw new Error(data.error || `Viewer request failed (${response.status})`);
+            }
+
+            const module = await import('/static/vendor/novnc/core/rfb.js');
+            if (generation !== screenViewerGeneration) return;
+            if (window.location.protocol !== 'https:') throw new Error('HTTPS is required for screen viewing.');
+            const scheme = 'wss';
+            const websocketUrl = `${scheme}://${window.location.host}/screen-viewer/ws?token=${encodeURIComponent(data.token)}`;
+            const rfb = new module.default(canvas, websocketUrl, {
+                credentials: { password: data.vnc_password },
+                shared: true
+            });
+
+            // Defense in depth: TightVNC blocks remote input at the workstation;
+            // noVNC independently suppresses keyboard and pointer events here.
+            rfb.viewOnly = true;
+            rfb.focusOnClick = false;
+            rfb.scaleViewport = true;
+            rfb.resizeSession = false;
+            rfb.showDotCursor = false;
+            activeScreenViewer = rfb;
+            status.text('Waiting for someone at the workstation to accept the view-only connection…');
+
+            rfb.addEventListener('connect', function() {
+                if (generation !== screenViewerGeneration) return;
+                status.removeClass('alert-info alert-danger').addClass('alert-success').text('Connected — live view only.').delay(1800).fadeOut();
+            });
+            rfb.addEventListener('disconnect', function(event) {
+                if (generation !== screenViewerGeneration) return;
+                if (activeScreenViewer === rfb) {
+                    activeScreenViewer = null;
+                }
+                if (event.detail.clean) {
+                    status.removeClass('alert-info alert-danger').addClass('alert-success').text('Viewer disconnected.').show();
+                } else {
+                    status.removeClass('alert-info alert-success').addClass('alert-danger').text('The view-only connection ended unexpectedly.').show();
+                }
+            });
+            rfb.addEventListener('securityfailure', function() {
+                if (generation !== screenViewerGeneration) return;
+                status.removeClass('alert-info alert-success').addClass('alert-danger').text('The workstation rejected the view-only credential.').show();
+            });
+        } catch (error) {
+            if (generation !== screenViewerGeneration) return;
+            status.removeClass('alert-info alert-success').addClass('alert-danger').text(error.message || 'Unable to open the view-only connection.').show();
+        }
+    }
+
+    $('#client-table, #session-table').on('click', '.client-screen-viewer', function(event) {
+        event.preventDefault();
+        prepareScreenViewer($(this).data('clientname'));
+    });
+
+    $('#screen-viewer-request-button').on('click', function() {
+        const reasonCode = $('#screen-viewer-reason').val();
+        if (!reasonCode) {
+            $('#screen-viewer-reason').addClass('is-invalid').focus();
+            return;
+        }
+        $('#screen-viewer-reason').removeClass('is-invalid');
+        startScreenViewer(pendingScreenViewerClient, reasonCode);
+    });
+
+    $('#screen-viewer-modal').on('hide.bs.modal', function() {
+        cancelScreenViewer();
+        pendingScreenViewerClient = null;
+        $('#screen-viewer-request-controls').show();
+        $('#screen-viewer-status').hide();
+        const canvas = document.getElementById('screen-viewer-canvas');
+        canvas.style.display = 'none';
+        canvas.replaceChildren();
+    });
+
+
     /* Modify Time */
     $('#modify-time-modal-form-submit').click(function(){
         var errors = false;

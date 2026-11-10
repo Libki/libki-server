@@ -8,3 +8,8 @@ ansible/vars.yml
 ansible/ansible.cfg
 ansible/hosts
 docker/.env
+
+# Optional screen viewer: generated dependencies and local deployment secrets
+/root/static/vendor/novnc/
+/docs/screen-viewer/examples/secrets/
+__pycache__/

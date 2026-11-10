@@ -1,0 +1,3 @@
+# Optional websockify token/auth backends are intentionally not installed.
+# This gateway uses only the Python standard library and its own token plugin.
+websockify==0.13.0 --hash=sha256:ac497a8dafc7f51d28ca989f01cdf5f8add663a497d425a56b159dcb8d6a314c
