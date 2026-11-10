@@ -24,7 +24,7 @@ sub build_mock_c {
         my $data = shift;
         my $f = Test::MockObject->new();
         $f->mock( 'id', sub { return 101; } );
-        $f->mock( 'type', sub { return $data->{content_type}; } );
+        $f->mock( 'content_type', sub { return $data->{content_type}; } );
         $f->mock( 'filename', sub { return $data->{filename}; } );
         push @created_files, $data;
         return $f;
@@ -79,10 +79,13 @@ sub build_mock_c {
 subtest 'Create print job logs statistic' => sub {
     my ( $c, $stats, $files, $jobs ) = build_mock_c();
 
+    my $pdf = PDF::API2->new();
+    $pdf->page();
+    my $pdf_data = $pdf->to_string();
     my $mock_file = Test::MockObject->new();
-    $mock_file->mock( 'decoded_slurp', sub { return 'fake-data'; } );
-    $mock_file->mock( 'filename', sub { return 'test.txt'; } );
-    $mock_file->mock( 'type',     sub { return 'text/plain'; } );
+    $mock_file->mock( 'decoded_slurp', sub { return $pdf_data; } );
+    $mock_file->mock( 'filename', sub { return 'test.pdf'; } );
+    $mock_file->mock( 'type',     sub { return 'application/pdf'; } );
 
     my $user_obj = Test::MockObject->new();
     $user_obj->mock( 'id',       sub { return 1; } );
@@ -105,7 +108,7 @@ subtest 'Create print job logs statistic' => sub {
     is( $info->{print_job_id}, 501, 'Correct job ID in stat info' );
     is( $info->{printer}, 'printer1', 'Correct printer name in stat info' );
     is( $info->{copies}, 2, 'Correct copies in stat info' );
-    is( $info->{filename}, 'test.txt', 'Correct filename in stat info' );
+    is( $info->{filename}, 'test.pdf', 'Correct filename in stat info' );
 };
 
 done_testing();

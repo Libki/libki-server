@@ -274,7 +274,7 @@
 
         <table id="print-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
             <thead>
-                <th>[% c.loc("Type") %]</th>
+                <th>[% c.loc("Select") %]</th>
                 <th>[% c.loc("Status") %]</th>
                 <th>[% c.loc("Printer") %]</th>
                 <th>[% c.loc("Copies") %]</th>
@@ -292,7 +292,7 @@
                     id="print-table-row-toolbar-release"
                     class="btn libki-toolbar-btn btn-outline-primary"
                 >
-                    <i class="fas fa-print"></i> [% c.loc("Print") %]
+                    <i class="fas fa-print"></i> [% c.loc("Reprint") %]
                 </button>
 
                 <button
@@ -1165,6 +1165,13 @@ $(document).ready(function() {
          },
      } );
 
+    const selectedPrintJobs = new Set();
+    let printQueueView = 'pending';
+    function updatePrintSelection() {
+        const count = selectedPrintJobs.size;
+        $('#print-selected-button').text('Print selected ('+count+')')
+            .prop('disabled', !count || !!$('#staff-print-review').length);
+    }
     // Initalize the Print table as a datatable
     const pTable = $('#print-table').DataTable( {
         [% IF !c.language.match('en') %]"language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/[% c.installed_languages.${c.language} %].json" },[% END %]
@@ -1175,20 +1182,36 @@ $(document).ready(function() {
                 data.location_filter = window.location_filter;
             }
 
+            data.queue_view = printQueueView;
             $.getJSON("[% c.uri_for('/administration/api/datatables/prints') %]", data, function (json) {
+                // Never retain invisible or no-longer-held jobs after a filter,
+                // page change or refresh. Review snapshots are separately quoted.
+                const held = new Set(json.data.filter(row => row[1] === 'Held').map(row => String(row.DT_RowId)));
+                selectedPrintJobs.forEach(id => { if (!held.has(id)) selectedPrintJobs.delete(id); });
                 callback(json);
+                updatePrintSelection();
             } );
         },
-        columnDefs: [
-            { targets: [4], className: 'truncate-cell' }
-        ],
-        "order": [[ 7, "desc" ]],
+        "order": [[ 8, "desc" ]],
+        "columnDefs": [{targets:0, orderable:false, searchable:false}],
         "drawCallback": function(oSettings, json) {
             AddTableRowToolbar( $('#print-table-row-toolbar'), $('#print-table'), $('#print-table tbody tr') );
+            $('#print-table-row-toolbar-release').prop('hidden',true);
         },
         "rowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            // Type column
-            $('td:eq(0)', nRow).html(aData[0].replace('PrintManager', `[% c.loc("Print Manager") %]`));
+            // Staff select documents, not the underlying print backend.
+            $('td:eq(0)', nRow).empty();
+            if (aData[1] === 'Held') {
+                const box = $('<input type="checkbox" class="print-select" aria-label="Select print job">')
+                    .attr('data-print-id', aData.DT_RowId)
+                    .attr('aria-label', 'Select document '+aData[4]+' (job '+aData.DT_RowId+')')
+                    .prop('checked', selectedPrintJobs.has(String(aData.DT_RowId)));
+                $('td:eq(0)', nRow).append(box);
+            }
+            $(nRow).off('mouseenter.staffPrint').on('mouseenter.staffPrint',function() {
+                $('#print-table-row-toolbar-release').prop('hidden',aData[1] !== 'Done');
+            });
+
 
             // Status column
             $('td:eq(1)', nRow).html(aData[1].replace('In_progress', `[% c.loc("In progress") %]`));
@@ -1205,7 +1228,16 @@ $(document).ready(function() {
             }
         },
         "initComplete": function(){
-            $('#print-table-toolbar').prependTo($('#print-table_filter'));
+            // DataTables 2 uses .dt-search; retain the legacy fallback.
+            const filter = $('#print-table_wrapper .dt-search, #print-table_filter').first();
+            $('#print-table-toolbar').prependTo(filter);
+            const queue = $('<select class="form-control" aria-label="Print queue view"><option value="pending">Pending jobs</option><option value="all">All jobs / reprint history</option></select>');
+            queue.on('change', function() { printQueueView = this.value; selectedPrintJobs.clear(); updatePrintSelection(); pTable.ajax.reload(); });
+            const batch = $('<button type="button" id="print-selected-button" class="btn btn-primary" disabled>Print selected (0)</button>');
+            batch.on('click', function() { openPrintReview(Array.from(selectedPrintJobs), true); });
+            filter.append(queue, batch, $('<small class="d-block text-muted">Select up to 20 held documents on this page, then review copies and the total.</small>'));
+            updatePrintSelection();
+
         }
     } );
 
@@ -1957,16 +1989,134 @@ $(document).ready(function() {
 
 /*********** Prints Table  ***********/
 
-    /* Release Print Job */
-    $('#print-table-row-toolbar-release').click(function() {
-      $.getJSON('[% c.uri_for("api/printjob/release") %]', { id: window.selected_id }, function(data) {
-        if ( data.success ) {
-          DisplayMessage( "success", data.message );
-          ForcePrintTableRefresh();
-        } else {
-            DisplayMessage( "error", "[% c.loc("Failed to release print job: ") %]" + data.error );
+    $('#print-table').on('click', '.print-select', function(event) {
+      event.stopPropagation();
+      const id = String($(this).attr('data-print-id'));
+      if (this.checked && selectedPrintJobs.size >= 20 && !selectedPrintJobs.has(id)) {
+        this.checked=false; DisplayMessage('error','Select up to 20 documents at a time.'); return;
+      }
+      if (this.checked) selectedPrintJobs.add(id); else selectedPrintJobs.delete(id);
+      updatePrintSelection();
+    });
+
+    function printPreview(id, copies) {
+      return $.ajax({url:'[% c.uri_for("api/printjob/preview") %]',method:'GET',dataType:'json',timeout:15000,data:{id:id,copies:copies}});
+    }
+    function openPrintReview(ids, batch) {
+      ids = Array.from(new Set(ids.map(String)));
+      if (!ids.length) { DisplayMessage('error','Select a print job first.'); return; }
+      if (ids.length > 20) { DisplayMessage('error','Release up to 20 jobs at a time.'); return; }
+      if ($('#staff-print-review').length) return;
+      const modal = $('<div class="modal" id="staff-print-review" tabindex="-1" role="dialog" aria-label="Review print jobs"><div class="modal-dialog modal-xl" style="max-width:1100px"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Review selected documents</h4></div><div class="modal-body"><p>Check each document, printer and copy count before collecting cash. Copies is the final quantity, not an additional multiplier.</p><div class="table-responsive"><table class="table table-bordered"><thead><tr><th scope="col">Document</th><th scope="col">Printer</th><th scope="col">Pages per copy</th><th scope="col">Copies</th><th scope="col">Cost</th></tr></thead><tbody class="print-review-jobs"></tbody></table></div><p class="print-total" role="status" aria-live="polite" style="font-size:1.4rem;font-weight:700"></p><p class="print-sign-in" hidden><a href="[% c.uri_for('/administration') %]">Sign in again to review this job</a>. No job has been released.</p><label><input type="checkbox" class="print-cash" disabled> <span class="print-cash-label">Cash confirmation unavailable until pricing is loaded</span></label><div class="print-results" role="status" aria-live="polite"></div></div><div class="modal-footer"><button type="button" class="btn btn-default print-close">Cancel</button><button type="button" class="btn btn-primary print-submit" disabled>Print selected documents</button></div></div></div></div>');
+      $('body').append(modal);
+      $('#print-selected-button').prop('disabled',true);
+      const jobs = [];
+      let busy = false;
+      let finished = false;
+      function totals() {
+        const ready = jobs.length === ids.length && jobs.every(j => j.ready);
+        const failed = jobs.some(j => j.error);
+        const cents = jobs.reduce((n,j) => n + Math.round(Number(j.preview?.amount_due || 0)*100),0);
+        const pages = jobs.reduce((n,j) => n + Number(j.preview?.total_pages || 0),0);
+        const amount = '$'+(cents/100).toFixed(2);
+        const reprint = jobs.some(j => j.preview?.action_mode === 'reprint');
+        const chargeLabel = reprint ? 'Additional reprint charge to collect: ' : 'Total to collect: ';
+        modal.find('.print-submit').text(reprint ? 'Reprint document' : 'Print selected documents');
+        modal.find('.print-total').text(ready ? chargeLabel+amount+' | '+jobs.length+' document(s) | Total printed pages: '+pages :
+          (failed ? 'Total unavailable. Do not collect cash or release this job.' : 'Checking quantities and pricing...'));
+        modal.find('.print-cash').prop('disabled', busy || !ready);
+        if (!ready) modal.find('.print-cash').prop('checked',false);
+        modal.find('.print-cash-label').text(ready ? 'Cash collected: '+amount : 'Cash confirmation unavailable until pricing is loaded');
+        modal.find('.print-submit').prop('disabled', busy || !ready || !modal.find('.print-cash').prop('checked'));
+      }
+      function quote(job, initial) {
+        job.ready = false; job.error = false;
+        job.row.find('.print-line-total').text('--');
+        modal.find('.print-cash').prop('checked',false);
+        const version = ++job.version;
+        const copies = initial ? undefined : job.input.val();
+        job.summary.text('Checking price...');
+        totals();
+        if (!initial && (!/^[0-9]{1,2}$/.test(copies) || Number(copies)<1 || Number(copies)>99)) {
+          job.error = true; job.summary.text('Enter 1-99 copies.'); totals(); return;
         }
+        printPreview(job.id,copies).done(function(data) {
+          if (version !== job.version) return;
+          if (!data.success || !['release','reprint'].includes(data.action_mode) || (batch && data.action_mode !== 'release') ||
+              data.amount_due == null || data.amount_due === '' || !Number.isFinite(Number(data.amount_due)) || Number(data.amount_due)<0 ||
+              !Number.isInteger(Number(data.copies)) || Number(data.copies)<1 || Number(data.copies)>99 ||
+              !Number.isInteger(Number(data.pages)) || Number(data.pages)<1 || Number(data.total_pages)!==Number(data.pages)*Number(data.copies) ||
+              (!initial && Number(data.copies)!==Number(copies))) {
+            job.error = true; job.summary.text(data.error || 'Job is no longer held or available.'); totals(); return;
+          }
+          job.preview=data; job.ready=true;
+          if (initial) job.input.val(data.copies);
+          job.row.find('.print-file').text((data.action_mode==='reprint'?'Reprint: ':'')+data.filename);
+          job.row.find('.print-patron').text((data.identifier_label || 'Patron')+': '+data.library_card+' | Job '+job.id);
+          job.row.find('.print-printer').text(data.printer_name);
+          job.row.find('.print-pages').text(data.pages);
+          job.row.find('.print-line-total').text('$'+Number(data.amount_due).toFixed(2));
+          job.input.attr('aria-label','Copies for '+data.filename+' (job '+job.id+')');
+          job.summary.text(data.pages+' pages per copy x '+data.copies+' copies = '+data.total_pages+' printed pages | $'+Number(data.amount_due).toFixed(2));
+          totals();
+        }).fail(function(xhr) {
+          if(version!==job.version) return;
+          job.error=true;
+          const signedOut = xhr.status===401;
+          job.summary.text(signedOut ? 'Your staff session has ended. Sign in again to load pricing.' :
+            'Unable to load pricing. Refresh this page and sign in again if asked.');
+          modal.find('.print-sign-in').prop('hidden',false);
+          totals();
+        });
+      }
+      modal.find('.print-close').on('click',function(){ if(!busy) modal.modal('hide'); });
+      modal.on('hide.bs.modal',function(event){ if(busy) event.preventDefault(); });
+      modal.on('hidden.bs.modal',function(){ modal.remove(); $('#print-selected-button').prop('disabled',!selectedPrintJobs.size); });
+      modal.find('.print-cash').on('change',totals);
+      modal.modal({backdrop:'static',keyboard:false});
+      ids.forEach(function(id) {
+        const row=$('<tr><td><strong class="print-file">Loading document...</strong><small class="print-patron d-block"></small><small class="print-summary d-block" role="status" aria-live="polite"></small></td><td class="print-printer"></td><td class="print-pages"></td><td><input type="number" aria-label="Copies" min="1" max="99" step="1" value="1" class="form-control print-copies" style="min-width:80px;max-width:100px"></td><td class="print-line-total" style="white-space:nowrap">--</td></tr>');
+        modal.find('.print-review-jobs').append(row);
+        const job={id:id,ready:false,error:false,version:0,row:row,input:row.find('.print-copies'),summary:row.find('.print-summary'),requestId:crypto.randomUUID()};
+        jobs.push(job);
+        quote(job,true);
+        job.input.on('input',function(){quote(job,false);});
       });
+      modal.find('.print-submit').on('click',async function() {
+        if(busy || finished || jobs.length!==ids.length || !jobs.every(j=>j.ready) || !modal.find('.print-cash').prop('checked')) return;
+        busy=true;totals();modal.find('input').prop('disabled',true);modal.find('.print-close').prop('disabled',true);
+        const results=modal.find('.print-results').empty();
+        let sessionEnded=false;
+        for (const job of jobs) {
+          const description=job.preview.filename+' (job '+job.id+', '+job.preview.printer_name+', '+job.preview.copies+' copies, $'+Number(job.preview.amount_due).toFixed(2)+'): ';
+          if(sessionEnded) {
+            $('<p>').text(description+'NOT attempted - staff session ended.').appendTo(results); continue;
+          }
+          const endpoint=job.preview.action_mode==='reprint'?'[% c.uri_for("api/printjob/reprint") %]':'[% c.uri_for("api/printjob/release") %]';
+          try {
+            const result=await $.ajax({url:endpoint,method:'POST',dataType:'json',timeout:30000,headers:{'X-Requested-With':'XMLHttpRequest'},
+              data:{id:job.id,copies:job.preview.copies,cash_received:'1',expected_amount:job.preview.amount_due,request_id:job.requestId}});
+            const outcome=result.success ? 'Accepted by print system.' :
+              (result.manual_review || result.safe_to_retry===0 || result.safe_to_retry===false ? 'STATUS UNCERTAIN - check job status before retrying. ' : 'NOT released - ')+(result.error||'Unknown error');
+            $('<p>').text(description+outcome).appendTo(results);
+          } catch(error) {
+            sessionEnded=error.status===401;
+            $('<p>').text(description+(sessionEnded ? 'Staff session ended. ' : 'Request failed. ')+'Check job status before trying again; do not assume it did not print.').appendTo(results);
+          }
+        }
+        selectedPrintJobs.clear();ForcePrintTableRefresh();
+        busy=false;finished=true;
+        modal.find('.print-submit').prop('disabled',true).hide();
+        modal.find('.print-total').text('Submission finished. Review each result below; reconcile collected cash for any unreleased or uncertain jobs.');
+        modal.find('.print-close').prop('disabled',false).text('Close');
+        modal.find('.print-cash').closest('label').hide();
+      });
+    }
+    $('#print-table-row-toolbar-release').click(function(event) {
+      event.preventDefault();
+      // Historical completed jobs retain a separate, explicitly named Reprint.
+      const row=pTable.rows().data().toArray().find(row => String(row.DT_RowId)===String(window.selected_id));
+      if(row && row[1]==='Done') openPrintReview([String(window.selected_id)],false);
     });
 
     /* Refresh Print Job */
